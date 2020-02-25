@@ -13,6 +13,7 @@ vcrpy = "*"
 v = {editable = true,version = "*"}
 python-coveralls = "*"
 asynctest = "*"
+pytest-cov = "*"
 
 [packages]
 aiofiles = "*"
