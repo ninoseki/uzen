@@ -5,7 +5,7 @@ python:
   - 3.8
 install:
   - pip install pipenv
-  - pipenv install
+  - pipenv install --dev
   - nvm install 12
   - nvm use 12
   - npm install

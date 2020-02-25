@@ -12,6 +12,7 @@ pytest-black = "*"
 vcrpy = "*"
 v = {editable = true,version = "*"}
 python-coveralls = "*"
+asynctest = "*"
 
 [packages]
 aiofiles = "*"
