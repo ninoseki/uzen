@@ -1,0 +1,17 @@
+# Config file for automatic testing at travis-ci.org
+dist: xenial
+language: python
+python:
+  - 3.8
+install:
+  - pip install pipenv
+  - pipenv install
+  - nvm install 12
+  - nvm use 12
+  - npm install
+before_script:
+  - npm run build
+  - cp .env.example .env
+script: pytest -v --cov=uzen --cov-report=term-missing
+after_success:
+  - coveralls
