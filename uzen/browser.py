@@ -29,7 +29,6 @@ class Browser:
         server = headers.get("server")
         content_type = headers.get("content-type")
         content_length = headers.get("content-length")
-        print(headers)
 
         hostname = get_hostname_from_url(url)
         ip_address = get_ip_address_by_hostname(hostname)
