@@ -11,7 +11,6 @@ pytest-asyncio = "*"
 pytest-black = "*"
 vcrpy = "*"
 v = {editable = true,version = "*"}
-python-coveralls = "*"
 asynctest = "*"
 pytest-cov = "*"
 
@@ -25,6 +24,7 @@ tortoise-orm = "*"
 uvicorn = "*"
 yara-python = "*"
 validators = "*"
+coveralls = "*"
 
 [requires]
 python_version = "3.8"
