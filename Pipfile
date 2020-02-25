@@ -22,6 +22,7 @@ starlette = "*"
 tortoise-orm = "*"
 uvicorn = "*"
 yara-python = "*"
+validators = "*"
 
 [requires]
 python_version = "3.8"
