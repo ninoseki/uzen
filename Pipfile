@@ -1,0 +1,33 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+autopep8 = "*"
+black = "*"
+pytest = "*"
+pytest-asyncio = "*"
+pytest-black = "*"
+vcrpy = "*"
+v = {editable = true,version = "*"}
+python-coveralls = "*"
+asynctest = "*"
+pytest-cov = "*"
+
+[packages]
+aiofiles = "*"
+aiosqlite = "*"
+pyppeteer = "*"
+requests = "*"
+starlette = "*"
+tortoise-orm = "*"
+uvicorn = "*"
+yara-python = "*"
+validators = "*"
+
+[requires]
+python_version = "3.8"
+
+[pipenv]
+allow_prereleases = true
