@@ -11,7 +11,7 @@ install:
   - npm install
 before_script:
   - npm run build
-  - cp .env.example .env
+  - cp .env.sample .env
 script: pytest -v --cov=uzen --cov-report=term-missing
 after_success:
   - coveralls
