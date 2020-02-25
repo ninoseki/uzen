@@ -1,5 +1,8 @@
 # Uzen: YARA with Puppeteer
 
+[![Build Status](https://travis-ci.com/ninoseki/uzen.svg?branch=master)](https://travis-ci.com/ninoseki/uzen)
+[![Coverage Status](https://coveralls.io/repos/github/ninoseki/uzen/badge.svg?branch=master)](https://coveralls.io/github/ninoseki/uzen?branch=master)
+
 Uzen is an application provides two main functions.
 
 - Record a website with [Puppeteer](https://github.com/puppeteer/puppeteer).
