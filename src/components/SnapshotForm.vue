@@ -46,6 +46,8 @@ export default class SnapshotForm extends Vue {
       loadingComponent.close();
 
       this.snapshot = data.snapshot;
+
+      this.$forceUpdate();
     } catch (error) {
       loadingComponent.close();
 
