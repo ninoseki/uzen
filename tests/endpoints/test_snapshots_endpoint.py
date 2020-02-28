@@ -17,6 +17,15 @@ def test_snapshot_list(client):
     assert isinstance(snapshots, list)
 
 
+def test_snapshot_count(client):
+    response = client.get("/api/snapshots/count")
+    assert response.status_code == 200
+
+    data = response.json()
+    count = data.get("count")
+    assert isinstance(count, int)
+
+
 @pytest.mark.usefixtures("snapshots_setup")
 def test_snapshot_list_with_size(client):
     payload = {"size": 1}

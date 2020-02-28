@@ -13,6 +13,7 @@ from uzen.endpoints.snapshots import (
     SnapshotGet,
     SnapshotPost,
     SnapshotDelete,
+    SnapshotCount,
 )
 from uzen.endpoints.test import TestSetup, TestTearDown
 from uzen.endpoints.yara import YaraScan
@@ -30,6 +31,7 @@ routes = [
             Route("/", SnapshotPost, methods=["POST"]),
             Route("/{id:int}", SnapshotGet, methods=["GET"]),
             Route("/{id:int}", SnapshotDelete, methods=["DELETE"]),
+            Route("/count", SnapshotCount, methods=["GET"]),
         ],
     ),
     Mount(
