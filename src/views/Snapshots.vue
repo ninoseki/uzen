@@ -1,6 +1,9 @@
 <template>
   <div>
-    <h2 class="is-size-5">The last 10 snapshots</h2>
+    <h2 class="is-size-5">
+      The last 10 snapshots
+      <Counter />
+    </h2>
 
     <SnapshotDetail v-for="snapshot in snapshots" v-bind:key="snapshot.id" v-bind:data="snapshot" />
   </div>
@@ -13,10 +16,12 @@ import axios, { AxiosError } from "axios";
 import { Snapshot, SnapshotsData, ErrorData } from "@/types";
 
 import SnapshotDetail from "@/components/SnapshotDetail.vue";
+import Counter from "@/components/Counter.vue";
 
 @Component({
   components: {
-    SnapshotDetail
+    SnapshotDetail,
+    Counter
   }
 })
 export default class Snapshots extends Vue {

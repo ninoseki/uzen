@@ -25,6 +25,10 @@ export interface SnapshotsData {
   snapshots: Snapshot[];
 }
 
+export interface SnapshotCount {
+  count: number;
+}
+
 export interface ErrorData {
   detail: string;
 }

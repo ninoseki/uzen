@@ -54,6 +54,12 @@ class SnapshotGet(HTTPEndpoint):
         return JSONResponse({"snapshot": snapshot.to_dict()})
 
 
+class SnapshotCount(HTTPEndpoint):
+    async def get(self, request) -> JSONResponse:
+        count = await Snapshot.all().count()
+        return JSONResponse({"count": count})
+
+
 class SnapshotPost(HTTPEndpoint):
     async def post(self, request) -> JSONResponse:
         try:

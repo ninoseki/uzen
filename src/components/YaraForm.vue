@@ -7,7 +7,10 @@
         <b-button type="is-light" @click="scan">Scan</b-button>
       </div>
     </div>
-    <h2 v-if="hasCount()">{{ count }} snapshots found</h2>
+    <h2 v-if="hasCount()">
+      {{ count }} snapshots found
+      <Counter />
+    </h2>
     <SnapshotDetail v-for="snapshot in snapshots" v-bind:key="snapshot.id" v-bind:data="snapshot" />
   </div>
 </template>
@@ -19,10 +22,12 @@ import axios, { AxiosError } from "axios";
 import { ErrorData, Snapshot, SnapshotsData } from "@/types";
 
 import SnapshotDetail from "@/components/SnapshotDetail.vue";
+import Counter from "@/components/Counter.vue";
 
 @Component({
   components: {
-    SnapshotDetail
+    SnapshotDetail,
+    Counter
   }
 })
 export default class SnapshotForm extends Vue {
