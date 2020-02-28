@@ -49,7 +49,7 @@ class YaraScan(HTTPEndpoint):
             yara_scanner = Yara(source)
         except yara.Error as e:
             raise HTTPException(
-                status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail="failed to compile YARA rule"
+                status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
             )
 
         # split snapshots into chunks and scan them in parallel
