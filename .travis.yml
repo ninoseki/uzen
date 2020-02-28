@@ -8,10 +8,12 @@ install:
   - pipenv install --dev
   - nvm install 12
   - nvm use 12
-  - npm install
+  - cd frontend && npm install
+  - cd ..
 before_script:
-  - npm run build
   - cp .env.test .env
+  - cd frontend && npm run build
+  - cd ..
 script: pytest -v --cov=uzen --cov-report=term-missing
 after_success:
   - COVERALLS_REPO_TOKEN=78xcfkSWMOYAFjJla5nmgJ2PzpI0s0YJm coveralls
