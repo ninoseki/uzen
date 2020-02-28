@@ -35,12 +35,12 @@ routes = [
         ],
     ),
     Mount(
-        "/api/yara", name="yara", routes=[Route("/scan", YaraScan, methods=["POST"]),],
+        "/api/yara", name="yara", routes=[Route("/scan", YaraScan, methods=["POST"]), ],
     ),
     Mount(
         "/api/import",
         name="import",
-        routes=[Route("/{uuid:str}", URLScanPost, methods=["POST"]),],
+        routes=[Route("/{uuid:str}", URLScanPost, methods=["POST"]), ],
     ),
     Mount(
         "/api/test",
@@ -50,8 +50,8 @@ routes = [
             Route("/teardown", TestTearDown, methods=["GET"]),
         ],
     ),
-    Mount("/", app=StaticFiles(html=True, directory="dist")),
-    Mount("/static", app=StaticFiles(directory="dist/static")),
+    Mount("/", app=StaticFiles(html=True, directory="frontend/dist")),
+    Mount("/static", app=StaticFiles(directory="frontend/dist/static")),
 ]
 
 
