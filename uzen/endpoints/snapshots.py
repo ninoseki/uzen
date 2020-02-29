@@ -15,6 +15,7 @@ import validators
 
 from uzen.models import Snapshot
 from uzen.browser import Browser
+from uzen.services.snapshot_search import SnapshotSearcher
 
 
 class SnapshotList(HTTPEndpoint):
@@ -22,13 +23,17 @@ class SnapshotList(HTTPEndpoint):
         params = request.query_params
         size = int(params.get("size", 100))
         offset = int(params.get("offset", 0))
+        snapshots = await SnapshotSearcher.search({}, size=size, offset=offset)
 
-        if "size" in params.keys() and "offset" not in params.keys():
-            snapshots = await Snapshot.all().order_by("-created_at").limit(size)
-        elif "offset" in params.keys():
-            snapshots = await Snapshot.all().order_by("id").offset(offset).limit(size)
-        else:
-            snapshots = await Snapshot.all().order_by("created_at")
+        return JSONResponse(
+            {"snapshots": [snapshot.to_dict() for snapshot in snapshots]}
+        )
+
+
+class SnapshotSearch(HTTPEndpoint):
+    async def get(self, request) -> JSONResponse:
+        params = request.query_params
+        snapshots = await SnapshotSearcher.search(params)
 
         return JSONResponse(
             {"snapshots": [snapshot.to_dict() for snapshot in snapshots]}
