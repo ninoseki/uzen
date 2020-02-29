@@ -1,4 +1,3 @@
-
 from starlette.config import environ
 from starlette.testclient import TestClient
 from tortoise import Tortoise, run_async

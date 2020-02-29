@@ -32,3 +32,12 @@ export interface SnapshotCount {
 export interface ErrorData {
   detail: string;
 }
+
+export interface SearchFilters {
+  hostname: string | undefined;
+  ip_address: string | undefined;
+  server: string | undefined;
+  content_type: string | undefined;
+  from_at: Date | undefined;
+  to_at: Date | undefined;
+}

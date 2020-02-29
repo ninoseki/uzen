@@ -27,6 +27,34 @@ def test_snapshot_count(client):
 
 
 @pytest.mark.usefixtures("snapshots_setup")
+def test_snapshot_search(client):
+    response = client.get("/api/snapshots/search")
+    assert response.status_code == 200
+
+    data = response.json()
+    snapshots = data.get("snapshots")
+    assert len(snapshots) == 10
+
+    response = client.get("/api/snapshots/search",
+                          params={"hostname": "example"})
+    data = response.json()
+    snapshots = data.get("snapshots")
+    assert len(snapshots) == 10
+
+    response = client.get("/api/snapshots/search",
+                          params={"server": "ECS"})
+    data = response.json()
+    snapshots = data.get("snapshots")
+    assert len(snapshots) == 10
+
+    response = client.get("/api/snapshots/search",
+                          params={"server": "Tomcat"})
+    data = response.json()
+    snapshots = data.get("snapshots")
+    assert len(snapshots) == 0
+
+
+@pytest.mark.usefixtures("snapshots_setup")
 def test_snapshot_list_with_size(client):
     payload = {"size": 1}
     response = client.get("/api/snapshots/", params=payload)
@@ -55,7 +83,7 @@ def test_snapshot_list_with_offset_and_size(client):
     snapshots = data.get("snapshots")
     assert len(snapshots) == 10
     first = snapshots[0]
-    assert first.get("url") == "http://example0.com"
+    assert first.get("url") == "http://example9.com"
 
     payload = {"offset": 5, "size": 100}
     response = client.get("/api/snapshots/", params=payload)
@@ -63,7 +91,7 @@ def test_snapshot_list_with_offset_and_size(client):
     snapshots = data.get("snapshots")
     assert len(snapshots) == 5
     first = snapshots[0]
-    assert first.get("url") == "http://example5.com"
+    assert first.get("url") == "http://example4.com"
 
 
 def test_snapshot_post_without_url(client):

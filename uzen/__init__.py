@@ -9,11 +9,12 @@ from tortoise import Tortoise
 from loguru import logger
 
 from uzen.endpoints.snapshots import (
-    SnapshotList,
-    SnapshotGet,
-    SnapshotPost,
-    SnapshotDelete,
     SnapshotCount,
+    SnapshotDelete,
+    SnapshotGet,
+    SnapshotList,
+    SnapshotPost,
+    SnapshotSearch,
 )
 from uzen.endpoints.test import TestSetup, TestTearDown
 from uzen.endpoints.yara import YaraScan
@@ -28,6 +29,7 @@ routes = [
         name="snapshots",
         routes=[
             Route("/", SnapshotList, methods=["GET"]),
+            Route("/search", SnapshotSearch, methods=["GET"]),
             Route("/", SnapshotPost, methods=["POST"]),
             Route("/{id:int}", SnapshotGet, methods=["GET"]),
             Route("/{id:int}", SnapshotDelete, methods=["DELETE"]),

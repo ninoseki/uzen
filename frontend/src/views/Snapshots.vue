@@ -1,7 +1,16 @@
 <template>
   <div>
-    <h2 class="is-size-5">
-      The last 10 snapshots
+    <div class="box">
+      <SnapshotSearch ref="search" />
+      <br />
+
+      <div class="has-text-centered">
+        <b-button type="is-light" @click="search">Search</b-button>
+      </div>
+    </div>
+
+    <h2 v-if="hasCount()">
+      {{ count }} snapshots found
       <Counter />
     </h2>
 
@@ -15,35 +24,43 @@ import axios, { AxiosError } from "axios";
 
 import { Snapshot, SnapshotsData, ErrorData } from "@/types";
 
-import SnapshotDetail from "@/components/SnapshotDetail.vue";
 import Counter from "@/components/Counter.vue";
+import SnapshotDetail from "@/components/SnapshotDetail.vue";
+import SnapshotSearch from "@/components/SnapshotSearch.vue";
 
 @Component({
   components: {
+    Counter,
     SnapshotDetail,
-    Counter
+    SnapshotSearch
   }
 })
 export default class Snapshots extends Vue {
   private snapshots: Snapshot[] = [];
+  private count: number | undefined = undefined;
 
-  async load(size = 10) {
+  async search(size = 10) {
+    const params = (this.$refs.search as SnapshotSearch).filtersParams();
+
     try {
-      const response = await axios.get<SnapshotsData>("/api/snapshots/", {
-        params: {
-          size: size
-        }
+      const response = await axios.get<SnapshotsData>("/api/snapshots/search", {
+        params: params
       });
       const data = response.data;
       this.snapshots = data.snapshots;
+      this.count = data.snapshots.length;
     } catch (error) {
       const data = error.response.data as ErrorData;
       alert(data.detail);
     }
   }
 
-  created() {
-    this.load();
+  hasCount(): boolean {
+    return this.count !== undefined;
+  }
+
+  mounted() {
+    this.search();
   }
 }
 </script>
