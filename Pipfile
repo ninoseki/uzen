@@ -25,6 +25,7 @@ uvicorn = "*"
 yara-python = "*"
 validators = "*"
 coveralls = "*"
+loguru = "*"
 
 [requires]
 python_version = "3.8"
