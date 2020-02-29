@@ -6,7 +6,7 @@ from starlette.responses import JSONResponse
 from starlette.routing import Route, Mount
 from starlette.staticfiles import StaticFiles
 from tortoise import Tortoise
-import logging
+from loguru import logger
 
 from uzen.endpoints.snapshots import (
     SnapshotList,
@@ -63,6 +63,11 @@ exception_handlers = {HTTPException: http_exception}
 
 
 def create_app(debug=settings.DEBUG):
+    logger.add(
+        settings.LOG_FILE,
+        level=settings.LOG_LEVEL,
+        backtrace=settings.LOG_BACKTRACE
+    )
     return Starlette(debug=debug, routes=routes, exception_handlers=exception_handlers)
 
 

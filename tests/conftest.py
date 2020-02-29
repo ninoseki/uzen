@@ -1,18 +1,16 @@
-import sqlite3
-from uzen import settings
-from uzen import app
+
 from starlette.config import environ
 from starlette.testclient import TestClient
 from tortoise import Tortoise, run_async
 from tortoise.contrib.test import finalizer, initializer
-from uzen import create_app
 import os
-import textwrap
 import pytest
-
 
 # This line would raise an error if we use it after 'settings' has been imported.
 environ["TESTING"] = "TRUE"
+
+from uzen import settings  # noqa
+from uzen import create_app  # noqa
 
 
 @pytest.fixture(scope="session", autouse=True)

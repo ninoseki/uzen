@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "b44183837d4dfb4c685bba342d810b3f186c25dd4f803ff5a11b856fd4c9402f"
+            "sha256": "e30d7aab09c9336537cb8b7d4ed811403d57baa1c7ee525cd6744c07e53f74fc"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -154,6 +154,14 @@
             ],
             "version": "==2.9"
         },
+        "loguru": {
+            "hashes": [
+                "sha256:074b3caa6748452c1e4f2b302093c94b65d5a4c5a4d7743636b4121e06437b0e",
+                "sha256:a6101fd435ac89ba5205a105a26a6ede9e4ddbb4408a6e167852efca47806d11"
+            ],
+            "index": "pypi",
+            "version": "==0.4.1"
+        },
         "pyee": {
             "hashes": [
                 "sha256:705806bb09bc4b17a729d9a3d19a4f4e765abd010eb18e032d72f76452d07552",
@@ -199,10 +207,10 @@
         },
         "tortoise-orm": {
             "hashes": [
-                "sha256:ede37c0637a96189c2aa6395fb25e74d847841289acb5528bb0237aa7232e7e2"
+                "sha256:ffde6be026429b4aa32d750128d40404140482db5b46659017c9957ed0a459a4"
             ],
             "index": "pypi",
-            "version": "==0.15.15"
+            "version": "==0.15.17"
         },
         "tqdm": {
             "hashes": [
