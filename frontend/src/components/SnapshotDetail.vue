@@ -1,53 +1,29 @@
 <template>
   <div class="listItem">
     <div class="listItem header">
-      <h2 class="is-size-5">{{ data.url }} ({{ data.created_at }})</h2>
+      <h2 class="is-size-5">{{ data.id }}: {{ data.url }}</h2>
     </div>
 
-    <div class="dFlex flexAlignCenter flexJustSpace">
-      <div class="dFlex flexAlignCenter flexJustSpace">
-        <span>
-          <strong>Hostname:</strong>
-          {{ data.hostname }}
-        </span>
-      </div>
-      <div class="dFlex flexAlignCenter flexJustSpace">
-        <span>
-          <strong>IP address:</strong>
-          {{ data.ip_address }}
-        </span>
-      </div>
-      <div class="dFlex flexAlignCenter flexJustSpace">
-        <span>
-          <strong>Server:</strong>
-          {{ data.server }}
-        </span>
-      </div>
-      <div class="dFlex flexAlignCenter flexJustSpace">
-        <span>
-          <strong>Content type:</strong>
-          {{ data.content_type }}
-        </span>
-      </div>
-      <div class="dFlex flexAlignCenter flexJustSpace">
-        <span>
-          <strong>Content length:</strong>
-          {{ data.content_length }}
-        </span>
-      </div>
-    </div>
+    <b-table :data="rows" :columns="columns"></b-table>
 
     <div class="column is-full details">
       <div class="columns">
         <div class="column is-half screenshot">
+          <h2 class="is-size-6 has-text-weight-bold middle">Screenshot</h2>
           <img :src="this.imageData()" alt="screenshot" />
         </div>
         <div class="column is-half body">
+          <h2 class="is-size-6 has-text-weight-bold middle">Body</h2>
           <pre class="prettyprint lang-html">
             {{ data.body }}
           </pre>
         </div>
       </div>
+    </div>
+
+    <div>
+      <h2 class="is-size-6 has-text-weight-bold middle">Links</h2>
+      <Links v-bind:snapshot="data" />
     </div>
   </div>
 </template>
@@ -56,28 +32,66 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 
 import { Snapshot } from "@/types";
+import Links from "@/components/Links.vue";
 
-@Component
+// Google code prettifier
+declare const PR: any;
+
+@Component({
+  components: {
+    Links
+  }
+})
 export default class SnapshotDetail extends Vue {
   @Prop() private data!: Snapshot;
 
+  private rows = [this.data];
+
+  private columns = [
+    {
+      field: "id",
+      label: "ID"
+    },
+    {
+      field: "hostname",
+      label: "Hostname"
+    },
+    {
+      field: "ip_address",
+      label: "IP address"
+    },
+    {
+      field: "server",
+      label: "Server"
+    },
+    {
+      field: "content_type",
+      label: "Content-Type"
+    },
+    {
+      field: "content_length",
+      label: "Content-Length"
+    },
+    {
+      field: "created_at",
+      label: "Created at"
+    }
+  ];
+
   public imageData(): string {
     return `data:Image/png;base64,${this.data.screenshot}`;
+  }
+
+  mounted() {
+    PR.prettyPrint();
   }
 }
 </script>
 
 <style scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
-}
 .listItem {
   display: block;
-  padding: 32px;
+  padding: 10px;
   background-color: #fff;
   -webkit-transform: scale(1);
   transform: scale(1);
@@ -103,9 +117,6 @@ export default class SnapshotDetail extends Vue {
   border-bottom-right-radius: 6px;
 }
 
-.list {
-  box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.1);
-}
 .listItem .header {
   margin-bottom: 10px;
 }
@@ -114,19 +125,13 @@ export default class SnapshotDetail extends Vue {
   color: #5892d0;
 }
 
-.dFlex {
-  display: flex;
-}
-.flexAlignCenter {
-  align-items: center;
-}
-.flexJustSpace {
-  justify-content: space-between;
+h2.middle {
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 2px solid lightgray;
 }
 
 .prettyprint {
-  background-color: #f6f8fa;
-  border-radius: 3px;
   max-height: 500px;
   overflow: auto;
   word-break: normal;

@@ -1,10 +1,10 @@
-const path = require('path');
-const webpack = require('webpack');
+const path = require("path");
+const webpack = require("webpack");
 
 /*
  * Webpack Plugins
  */
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const ProductionPlugins = [
   // production webpack plugins go here
@@ -13,21 +13,34 @@ const ProductionPlugins = [
       NODE_ENV: JSON.stringify("production")
     }
   })
-]
+];
 
-const debug = (process.env.NODE_ENV !== 'production');
-const rootAssetPath = path.join(__dirname, 'assets');
+const debug = process.env.NODE_ENV !== "production";
+const rootAssetPath = path.join(__dirname, "assets");
 
 module.exports = {
   // configuration
   context: __dirname,
   entry: {
-    main_js: './assets/js/main',
+    main_js: "./assets/js/main",
     main_css: [
-      path.join(__dirname, 'node_modules', 'font-awesome', 'css', 'font-awesome.css'),
-      path.join(__dirname, 'node_modules', 'bootstrap', 'dist', 'css', 'bootstrap.css'),
-      path.join(__dirname, 'assets', 'css', 'style.css'),
-    ],
+      path.join(
+        __dirname,
+        "node_modules",
+        "font-awesome",
+        "css",
+        "font-awesome.css"
+      ),
+      path.join(
+        __dirname,
+        "node_modules",
+        "bootstrap",
+        "dist",
+        "css",
+        "bootstrap.css"
+      ),
+      path.join(__dirname, "assets", "css", "style.css")
+    ]
   },
   mode: debug,
   output: {
@@ -52,11 +65,11 @@ module.exports = {
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
-              hmr: debug,
-            },
+              hmr: debug
+            }
           },
-          'css-loader!less-loader',
-        ],
+          "css-loader!less-loader"
+        ]
       },
       {
         test: /\.css$/,
@@ -64,19 +77,28 @@ module.exports = {
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
-              hmr: debug,
-            },
+              hmr: debug
+            }
           },
-          'css-loader',
-        ],
+          "css-loader"
+        ]
       },
-      { test: /\.html$/, loader: 'raw-loader' },
-      { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url-loader', options: { limit: 10000, mimetype: 'application/font-woff' } },
+      { test: /\.html$/, loader: "raw-loader" },
+      {
+        test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        loader: "url-loader",
+        options: { limit: 10000, mimetype: "application/font-woff" }
+      },
       {
         test: /\.(ttf|eot|svg|png|jpe?g|gif|ico)(\?.*)?$/i,
         loader: `file-loader?context=${rootAssetPath}&name=[path][name].[ext]`
       },
-      { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader', query: { presets: ["@babel/preset-env"], cacheDirectory: true } },
-    ],
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: "babel-loader",
+        query: { presets: ["@babel/preset-env"], cacheDirectory: true }
+      }
+    ]
   }
 };

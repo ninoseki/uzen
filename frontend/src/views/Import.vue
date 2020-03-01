@@ -2,9 +2,15 @@
   <div>
     <div class="box">
       <b-field>
-        <b-input class="control is-expanded" placeholder="UUID" v-model="uuid"></b-input>
+        <b-input
+          class="control is-expanded"
+          placeholder="UUID"
+          v-model="uuid"
+        ></b-input>
         <p class="control">
-          <b-button type="is-light" @click="import_from_urlscan">Import from urlscan.io</b-button>
+          <b-button type="is-light" @click="import_from_urlscan"
+            >Import from urlscan.io</b-button
+          >
         </p>
       </b-field>
     </div>

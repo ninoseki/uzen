@@ -1,5 +1,5 @@
 <template>
-  <span>(total: {{count}})</span>
+  <span>(total: {{ count }})</span>
 </template>
 
 <script lang="ts">

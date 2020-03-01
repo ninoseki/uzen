@@ -41,3 +41,10 @@ export interface SearchFilters {
   from_at: Date | undefined;
   to_at: Date | undefined;
 }
+
+export interface Link {
+  name: string;
+  baseURL: string;
+  favicon: string;
+  href(hostname: string | undefined, ip_address: string | undefined): string;
+}
