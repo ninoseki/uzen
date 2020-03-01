@@ -35,6 +35,16 @@
     </div>
     <div class="columns">
       <div class="column is-half">
+        <b-field label="SHA256">
+          <b-input
+            placeholder="ea8fac7c65fb589b0d53560f5251f74f9e9b243478dcb6b3ea79b5e36449c8d9"
+            v-model="filters.sha256"
+          ></b-input>
+        </b-field>
+      </div>
+    </div>
+    <div class="columns">
+      <div class="column is-half">
         <b-field label="From">
           <b-datepicker
             :date-formatter="dateFormatter"
@@ -70,6 +80,7 @@ export default class YaraForm extends Vue {
     ip_address: undefined,
     server: undefined,
     content_type: undefined,
+    sha256: undefined,
     from_at: undefined,
     to_at: undefined
   };

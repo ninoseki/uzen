@@ -37,12 +37,15 @@ class URLScan:
 
         requests = result.get("data", {}).get("requests", [])
         response = {}
-        if len(requests) > 0:
-            first = requests[0]
-            response = first.get("response", {}).get("response", {})
+        for request in requests:
+            tmp = request.get("response", {}).get("response", {})
+            if tmp.get("status") == 200:
+                response = tmp
+                break
 
         headers = response.get("headers", {})
         body = instance.body()
+        sha256 = result.get("lists", {}).get("hashes", [])[0]
         screenshot = instance.screenshot()
         return Snapshot(
             url=result.get("page", {}).get("url"),
@@ -54,5 +57,6 @@ class URLScan:
             content_length=headers.get("content-length"),
             headers=headers,
             body=body,
+            sha256=sha256,
             screenshot=screenshot,
         )
