@@ -64,16 +64,16 @@ export default class SnapshotDetail extends Vue {
       label: "IP address"
     },
     {
+      field: "asn",
+      label: "ASN"
+    },
+    {
       field: "server",
       label: "Server"
     },
     {
       field: "content_type",
       label: "Content-Type"
-    },
-    {
-      field: "content_length",
-      label: "Content-Length"
     },
     {
       field: "created_at",
@@ -83,6 +83,10 @@ export default class SnapshotDetail extends Vue {
 
   public imageData(): string {
     return `data:Image/png;base64,${this.data.screenshot}`;
+  }
+
+  public normalizedASN(): string {
+    return this.data.asn.split(" ")[0];
   }
 
   mounted() {
@@ -107,7 +111,7 @@ export default class SnapshotDetail extends Vue {
 }
 
 .listItem:not(:first-child) {
-  border-top: 3px solid #eee;
+  margin-top: 20px;
 }
 
 .listItem:first-child {

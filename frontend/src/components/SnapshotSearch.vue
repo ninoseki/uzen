@@ -17,6 +17,11 @@
     </div>
     <div class="columns">
       <div class="column is-half">
+        <b-field label="ASN">
+          <b-input placeholder="AS15133" v-model="filters.asn"></b-input>
+        </b-field>
+      </div>
+      <div class="column is-half">
         <b-field label="Server">
           <b-input
             placeholder="Apache-Coyote/1.1"
@@ -24,6 +29,8 @@
           ></b-input>
         </b-field>
       </div>
+    </div>
+    <div class="columns">
       <div class="column is-half">
         <b-field label="Content-Type">
           <b-input
@@ -32,8 +39,6 @@
           ></b-input>
         </b-field>
       </div>
-    </div>
-    <div class="columns">
       <div class="column is-half">
         <b-field label="SHA256">
           <b-input
