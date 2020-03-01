@@ -1,7 +1,7 @@
 <template>
   <div class="listItem">
     <div class="listItem header">
-      <h2 class="is-size-5">{{ data.id }}: {{ data.url }}</h2>
+      <h2 class="is-size-5">{{ data.url }}</h2>
     </div>
 
     <b-table :data="rows" :columns="columns"></b-table>
@@ -17,6 +17,9 @@
           <pre class="prettyprint lang-html">
             {{ data.body }}
           </pre>
+          <br />
+          <h2 class="is-size-6 has-text-weight-bold middle">SHA256</h2>
+          <p>{{ data.sha256 }}</p>
         </div>
       </div>
     </div>

@@ -13,6 +13,7 @@ class Snapshot(Model):
     content_type = fields.TextField(null=True)
     content_length = fields.IntField(null=True)
     body = fields.TextField()
+    sha256 = fields.CharField(max_length=64)
     headers = fields.JSONField()
     screenshot = fields.TextField()
     created_at = fields.DatetimeField(auto_now_add=True)
@@ -29,6 +30,7 @@ class Snapshot(Model):
             content_length=self.content_length,
             headers=self.headers,
             body=self.body,
+            sha256=self.sha256,
             screenshot=self.screenshot,
             created_at=self.created_at.isoformat() if self.created_at else None,
         )

@@ -52,6 +52,10 @@ class SnapshotSearcher:
         if content_type is not None:
             queries.append(Q(content_type__contains=content_type))
 
+        sha256 = filters.get("sha256")
+        if sha256 is not None:
+            queries.append(Q(sha256=sha256))
+
         from_at = filters.get("from_at")
         if from_at is not None:
             from_at = convert_to_datetime(from_at)

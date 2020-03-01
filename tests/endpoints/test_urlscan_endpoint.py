@@ -19,6 +19,7 @@ def mock_import_as_snapshot(url: str):
         content_length=1256,
         headers={},
         body="foo bar",
+        sha256="fbc1a9f858ea9e177916964bd88c3d37b91a1e84412765e29950777f265c4b75",
         screenshot="yoyo",
     )
 
