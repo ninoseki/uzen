@@ -9,6 +9,7 @@ class Snapshot(Model):
     status = fields.IntField()
     hostname = fields.TextField()
     ip_address = fields.CharField(max_length=255)
+    asn = fields.TextField()
     server = fields.TextField(null=True)
     content_type = fields.TextField(null=True)
     content_length = fields.IntField(null=True)
@@ -25,6 +26,7 @@ class Snapshot(Model):
             status=self.status,
             hostname=self.hostname,
             ip_address=self.ip_address,
+            asn=self.asn,
             server=self.server,
             content_type=self.content_type,
             content_length=self.content_length,

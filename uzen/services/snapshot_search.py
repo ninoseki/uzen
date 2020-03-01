@@ -44,6 +44,10 @@ class SnapshotSearcher:
         if ip_address is not None:
             queries.append(Q(ip_address__contains=ip_address))
 
+        asn = filters.get("asn")
+        if asn is not None:
+            queries.append(Q(asn__contains=asn))
+
         server = filters.get("server")
         if server is not None:
             queries.append(Q(server__contains=server))

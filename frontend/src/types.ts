@@ -8,6 +8,7 @@ export interface Snapshot {
   status: number;
   hostname: string;
   ip_address: string;
+  asn: string;
   server: string;
   content_type: string;
   content_lenth: number;
@@ -36,6 +37,7 @@ export interface ErrorData {
 export interface SearchFilters {
   hostname: string | undefined;
   ip_address: string | undefined;
+  asn: string | undefined;
   server: string | undefined;
   content_type: string | undefined;
   sha256: string | undefined;

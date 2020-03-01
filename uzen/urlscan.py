@@ -47,11 +47,15 @@ class URLScan:
         body = instance.body()
         sha256 = result.get("lists", {}).get("hashes", [])[0]
         screenshot = instance.screenshot()
+
+        asn = result.get("page", {}).get("asn")
+        asnname = result.get("page", {}).get("asnname")
         return Snapshot(
             url=result.get("page", {}).get("url"),
             status=200,
             hostname=result.get("page", {}).get("domain"),
             ip_address=result.get("page", {}).get("ip"),
+            asn=f"{asn} {asnname}",
             server=result.get("page", {}).get("server"),
             content_type=headers.get("content-type"),
             content_length=headers.get("content-length"),
