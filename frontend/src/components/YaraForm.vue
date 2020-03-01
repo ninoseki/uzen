@@ -21,7 +21,11 @@
       {{ count }} snapshots found
       <Counter />
     </h2>
-    <SnapshotDetail v-for="snapshot in snapshots" v-bind:key="snapshot.id" v-bind:data="snapshot" />
+    <SnapshotDetail
+      v-for="snapshot in snapshots"
+      v-bind:key="snapshot.id"
+      v-bind:data="snapshot"
+    />
   </div>
 </template>
 

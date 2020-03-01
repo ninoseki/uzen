@@ -14,7 +14,11 @@
       <Counter />
     </h2>
 
-    <SnapshotDetail v-for="snapshot in snapshots" v-bind:key="snapshot.id" v-bind:data="snapshot" />
+    <SnapshotDetail
+      v-for="snapshot in snapshots"
+      v-bind:key="snapshot.id"
+      v-bind:data="snapshot"
+    />
   </div>
 </template>
 
@@ -40,6 +44,10 @@ export default class Snapshots extends Vue {
   private count: number | undefined = undefined;
 
   async search(size = 10) {
+    const loadingComponent = this.$buefy.loading.open({
+      container: this.$refs.element
+    });
+
     const params = (this.$refs.search as SnapshotSearch).filtersParams();
 
     try {
@@ -47,9 +55,13 @@ export default class Snapshots extends Vue {
         params: params
       });
       const data = response.data;
+      loadingComponent.close();
+
       this.snapshots = data.snapshots;
       this.count = data.snapshots.length;
     } catch (error) {
+      loadingComponent.close();
+
       const data = error.response.data as ErrorData;
       alert(data.detail);
     }
@@ -57,10 +69,6 @@ export default class Snapshots extends Vue {
 
   hasCount(): boolean {
     return this.count !== undefined;
-  }
-
-  mounted() {
-    this.search();
   }
 }
 </script>

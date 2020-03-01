@@ -7,11 +7,22 @@
     </template>
     <template slot="end">
       <b-navbar-item tag="router-link" :to="{ path: '/' }">Home</b-navbar-item>
-      <b-navbar-item tag="router-link" :to="{ path: '/snapshots' }">Snapshots</b-navbar-item>
-      <b-navbar-item tag="router-link" :to="{ path: '/yara' }">YARA</b-navbar-item>
-      <b-navbar-item tag="router-link" :to="{ path: '/import' }">Import</b-navbar-item>
+      <b-navbar-item tag="router-link" :to="{ path: '/snapshots' }"
+        >Snapshots</b-navbar-item
+      >
+      <b-navbar-item tag="router-link" :to="{ path: '/yara' }"
+        >YARA</b-navbar-item
+      >
+      <b-navbar-item tag="router-link" :to="{ path: '/import' }"
+        >Import</b-navbar-item
+      >
       <b-navbar-item>
-        <a href="https://github.com/ninoseki/uzen" target="_blank" class="navbar-item">GitHub</a>
+        <a
+          href="https://github.com/ninoseki/uzen"
+          target="_blank"
+          class="navbar-item"
+          >GitHub</a
+        >
       </b-navbar-item>
     </template>
   </b-navbar>
@@ -23,7 +34,6 @@ import { Component, Vue } from "vue-property-decorator";
 @Component
 export default class Navbar extends Vue {}
 </script>
-
 
 <style>
 .navbar {

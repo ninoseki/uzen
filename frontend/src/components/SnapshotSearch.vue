@@ -3,7 +3,10 @@
     <div class="columns">
       <div class="column is-half">
         <b-field label="Hostname">
-          <b-input placeholder="example.com" v-model="filters.hostname"></b-input>
+          <b-input
+            placeholder="example.com"
+            v-model="filters.hostname"
+          ></b-input>
         </b-field>
       </div>
       <div class="column is-half">
@@ -15,12 +18,18 @@
     <div class="columns">
       <div class="column is-half">
         <b-field label="Server">
-          <b-input placeholder="Apache-Coyote/1.1" v-model="filters.server"></b-input>
+          <b-input
+            placeholder="Apache-Coyote/1.1"
+            v-model="filters.server"
+          ></b-input>
         </b-field>
       </div>
       <div class="column is-half">
         <b-field label="Content-Type">
-          <b-input placeholder="text/html" v-model="filters.content_type"></b-input>
+          <b-input
+            placeholder="text/html"
+            v-model="filters.content_type"
+          ></b-input>
         </b-field>
       </div>
     </div>

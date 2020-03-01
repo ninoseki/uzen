@@ -2,7 +2,11 @@
   <div>
     <div class="box">
       <b-field>
-        <b-input class="control is-expanded" placeholder="URL" v-model="url"></b-input>
+        <b-input
+          class="control is-expanded"
+          placeholder="URL"
+          v-model="url"
+        ></b-input>
         <p class="control">
           <b-button type="is-light" @click="take">Take a snapshot</b-button>
         </p>
