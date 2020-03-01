@@ -83,6 +83,7 @@ export default class YaraForm extends Vue {
   private filters: SearchFilters = {
     hostname: undefined,
     ip_address: undefined,
+    asn: undefined,
     server: undefined,
     content_type: undefined,
     sha256: undefined,
