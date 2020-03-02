@@ -15,6 +15,10 @@
       </b-field>
     </div>
 
+    <b-message type="is-warning">
+      Importing data from urlscan.io might be lossy
+    </b-message>
+
     <div>
       <SnapshotDetail v-if="hasSnapshot()" v-bind:data="snapshot" />
     </div>
@@ -52,6 +56,8 @@ export default class SnapshotForm extends Vue {
       loadingComponent.close();
 
       this.snapshot = data.snapshot;
+
+      this.$forceUpdate();
     } catch (error) {
       loadingComponent.close();
 
