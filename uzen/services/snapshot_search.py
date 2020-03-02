@@ -33,7 +33,7 @@ class SnapshotSearcher:
         return await Snapshot.filter(query).order_by("-id").offset(offset).limit(size)
 
     @staticmethod
-    async def search(filters, size=None, offset=None, id_only=False):
+    async def search(filters, size=None, offset=None, id_only=False, count_only=False):
         queries = []
 
         hostname = filters.get("hostname")
@@ -71,6 +71,9 @@ class SnapshotSearcher:
             queries.append(Q(created_at__lte=to_at))
 
         query = Q(*queries)
+
+        if count_only:
+            return await Snapshot.filter(query).count()
 
         if size is not None and offset is None:
             return await SnapshotSearcher.search_with_size(query, size=size, id_only=id_only)
