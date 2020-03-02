@@ -5,20 +5,29 @@
       <br />
 
       <div class="has-text-centered">
-        <b-button type="is-light" @click="search">Search</b-button>
+        <b-button
+          type="is-light"
+          @click="
+            search();
+            getTotalCount();
+          "
+          >Search</b-button
+        >
       </div>
     </div>
 
-    <h2 v-if="hasCount()">
-      {{ count }} snapshots found
-      <Counter />
-    </h2>
+    <h2 v-if="hasCount()">Search results ({{ count }} / {{ totalCount }})</h2>
 
     <SnapshotDetail
       v-for="snapshot in snapshots"
       v-bind:key="snapshot.id"
       v-bind:data="snapshot"
     />
+    <br />
+
+    <b-button v-if="hasLoadMore()" type="is-dark" @click="loadMore"
+      >Load more...</b-button
+    >
   </div>
 </template>
 
@@ -26,7 +35,7 @@
 import { Component, Vue, Prop } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 
-import { Snapshot, SnapshotsData, ErrorData } from "@/types";
+import { Snapshot, SnapshotCount, SnapshotsData, ErrorData } from "@/types";
 
 import Counter from "@/components/Counter.vue";
 import SnapshotDetail from "@/components/SnapshotDetail.vue";
@@ -42,13 +51,18 @@ import SnapshotSearch from "@/components/SnapshotSearch.vue";
 export default class Snapshots extends Vue {
   private snapshots: Snapshot[] = [];
   private count: number | undefined = undefined;
+  private totalCount: number | undefined = undefined;
+  private size = 10;
+  private offset = 0;
 
-  async search(size = 10) {
+  async search() {
     const loadingComponent = this.$buefy.loading.open({
       container: this.$refs.element
     });
 
     const params = (this.$refs.search as SnapshotSearch).filtersParams();
+    params["size"] = this.size;
+    params["offset"] = this.offset;
 
     try {
       const response = await axios.get<SnapshotsData>("/api/snapshots/search", {
@@ -57,7 +71,7 @@ export default class Snapshots extends Vue {
       const data = response.data;
       loadingComponent.close();
 
-      this.snapshots = data.snapshots;
+      this.snapshots = this.snapshots.concat(data.snapshots);
       this.count = data.snapshots.length;
     } catch (error) {
       loadingComponent.close();
@@ -69,6 +83,33 @@ export default class Snapshots extends Vue {
 
   hasCount(): boolean {
     return this.count !== undefined;
+  }
+
+  async getTotalCount() {
+    try {
+      const params = (this.$refs.search as SnapshotSearch).filtersParams();
+
+      const response = await axios.get<SnapshotCount>("/api/snapshots/count", {
+        params: params
+      });
+      const data = response.data;
+      this.totalCount = data.count;
+      this.$forceUpdate();
+    } catch (error) {
+      this.totalCount = 0;
+    }
+  }
+
+  hasLoadMore() {
+    const count = this.count || 0;
+    const total = this.totalCount || 0;
+
+    return count < total;
+  }
+
+  async loadMore() {
+    this.offset += this.size;
+    this.search();
   }
 }
 </script>

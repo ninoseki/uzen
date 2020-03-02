@@ -33,7 +33,15 @@ class SnapshotList(HTTPEndpoint):
 class SnapshotSearch(HTTPEndpoint):
     async def get(self, request) -> JSONResponse:
         params = request.query_params
-        snapshots = await SnapshotSearcher.search(params)
+
+        size = params.get("size")
+        if size is not None:
+            size = int(size)
+        offset = params.get("offset")
+        if offset is not None:
+            offset = int(offset)
+
+        snapshots = await SnapshotSearcher.search(params, size=size, offset=offset)
 
         return JSONResponse(
             {"snapshots": [snapshot.to_dict() for snapshot in snapshots]}
@@ -61,7 +69,8 @@ class SnapshotGet(HTTPEndpoint):
 
 class SnapshotCount(HTTPEndpoint):
     async def get(self, request) -> JSONResponse:
-        count = await Snapshot.all().count()
+        params = request.query_params
+        count = await SnapshotSearcher.search(params, count_only=True)
         return JSONResponse({"count": count})
 
 
