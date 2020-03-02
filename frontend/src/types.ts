@@ -51,3 +51,8 @@ export interface Link {
   favicon: string;
   href(hostname: string | undefined, ip_address: string | undefined): string;
 }
+
+export interface Oneshot {
+  matched: boolean;
+  snapshot: Snapshot;
+}
