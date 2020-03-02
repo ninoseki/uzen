@@ -46,3 +46,6 @@ class YaraScanner:
 
         matched_ids = sum(results, [])
         return await Snapshot.filter(id__in=matched_ids).order_by("-id")
+
+    def match(self, data: str):
+        return self.rule.match(data=data)

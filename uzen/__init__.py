@@ -17,7 +17,7 @@ from uzen.endpoints.snapshots import (
     SnapshotSearch,
 )
 from uzen.endpoints.test import TestSetup, TestTearDown
-from uzen.endpoints.yara import YaraScan
+from uzen.endpoints.yara import YaraScan, YaraOneshot
 from uzen.endpoints.urlscan import URLScanPost
 
 from uzen import settings
@@ -37,7 +37,10 @@ routes = [
         ],
     ),
     Mount(
-        "/api/yara", name="yara", routes=[Route("/scan", YaraScan, methods=["POST"]), ],
+        "/api/yara", name="yara", routes=[
+            Route("/scan", YaraScan, methods=["POST"]),
+            Route("/oneshot", YaraOneshot, methods=["POST"]),
+        ],
     ),
     Mount(
         "/api/import",

@@ -5,6 +5,7 @@ import Home from "@/views/Home.vue";
 import Snapshots from "@/views/Snapshots.vue";
 import Yara from "@/views/Yara.vue";
 import Import from "@/views/Import.vue";
+import Oneshot from "@/views/Oneshot.vue";
 
 Vue.use(VueRouter);
 
@@ -28,6 +29,11 @@ const routes = [
     path: "/import",
     name: "Import",
     component: Import
+  },
+  {
+    path: "/oneshot",
+    name: "Oneshot",
+    component: Oneshot
   }
 ];
 

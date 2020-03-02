@@ -41,3 +41,35 @@ class YaraScan(HTTPEndpoint):
             {"snapshots": [snapshot.to_dict()
                            for snapshot in snapshots]}
         )
+
+
+class YaraOneshot(HTTPEndpoint):
+    async def post(self, request) -> JSONResponse:
+        try:
+            payload = await request.json()
+            source = payload["source"]
+            url = payload["url"]
+        except JSONDecodeError:
+            raise HTTPException(
+                status_code=HTTP_400_BAD_REQUEST, detail="cannot parse request body"
+            )
+        except KeyError:
+            raise HTTPException(
+                status_code=HTTP_400_BAD_REQUEST, detail="source and url are required"
+            )
+
+        try:
+            yara_scanner = YaraScanner(source)
+        except yara.Error as e:
+            raise HTTPException(
+                status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
+            )
+
+        snapshot = await Browser.take_snapshot(url)
+        matches = yara_scanner.match(snapshot.body)
+        matched = True if len(matches) > 0 else False
+
+        return JSONResponse({
+            "snapshot": snapshot.to_dict(),
+            "matched": matched
+        })

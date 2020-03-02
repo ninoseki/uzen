@@ -13,6 +13,9 @@
       <b-navbar-item tag="router-link" :to="{ path: '/yara' }"
         >YARA</b-navbar-item
       >
+      <b-navbar-item tag="router-link" :to="{ path: '/oneshot' }"
+        >Oneshot</b-navbar-item
+      >
       <b-navbar-item tag="router-link" :to="{ path: '/import' }"
         >Import</b-navbar-item
       >
