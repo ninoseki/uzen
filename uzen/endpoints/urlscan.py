@@ -2,6 +2,7 @@ from json import JSONDecodeError
 from pyppeteer.errors import PyppeteerError
 from starlette.endpoints import HTTPEndpoint
 from starlette.exceptions import HTTPException
+from starlette.requests import Request
 from starlette.responses import JSONResponse
 from starlette.status import (
     HTTP_201_CREATED,
@@ -15,7 +16,7 @@ from uzen.urlscan import URLScan
 
 
 class URLScanPost(HTTPEndpoint):
-    async def post(self, request) -> JSONResponse:
+    async def post(self, request: Request) -> JSONResponse:
         try:
             uuid = request.path_params["uuid"]
         except KeyError:

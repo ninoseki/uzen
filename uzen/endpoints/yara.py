@@ -1,6 +1,7 @@
 from json import JSONDecodeError
 from starlette.endpoints import HTTPEndpoint
 from starlette.exceptions import HTTPException
+from starlette.requests import Request
 from starlette.responses import JSONResponse
 from starlette.status import HTTP_400_BAD_REQUEST, HTTP_500_INTERNAL_SERVER_ERROR
 import asyncio
@@ -15,7 +16,7 @@ from uzen.services.yara_scanner import YaraScanner
 
 
 class YaraScan(HTTPEndpoint):
-    async def post(self, request) -> JSONResponse:
+    async def post(self, request: Request) -> JSONResponse:
         try:
             payload = await request.json()
             source = payload["source"]
@@ -44,7 +45,7 @@ class YaraScan(HTTPEndpoint):
 
 
 class YaraOneshot(HTTPEndpoint):
-    async def post(self, request) -> JSONResponse:
+    async def post(self, request: Request) -> JSONResponse:
         try:
             payload = await request.json()
             source = payload["source"]

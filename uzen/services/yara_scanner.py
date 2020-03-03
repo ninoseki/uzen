@@ -13,7 +13,7 @@ sem = asyncio.Semaphore(PARALLEL_LIMIT)
 
 class YaraScanner:
     def __init__(self, source: str):
-        self.rule = yara.compile(source=source)
+        self.rule: yara.Rules = yara.compile(source=source)
 
     async def partial_scan(self, ids: List[int]) -> List[int]:
         async with sem:
@@ -28,7 +28,7 @@ class YaraScanner:
 
             return matched_ids
 
-    async def scan_snapshots(self, filters) -> List[Snapshot]:
+    async def scan_snapshots(self, filters: dict) -> List[Snapshot]:
         # get snapshots ids based on filters
         snapshot_ids = await SnapshotSearcher.search(filters, id_only=True)
         if len(snapshot_ids) == 0:
@@ -47,5 +47,5 @@ class YaraScanner:
         matched_ids = sum(results, [])
         return await Snapshot.filter(id__in=matched_ids).order_by("-id")
 
-    def match(self, data: str):
+    def match(self, data: str) -> List[yara.Match]:
         return self.rule.match(data=data)
