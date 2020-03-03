@@ -24,12 +24,12 @@ def mock_import_as_snapshot(url: str):
         screenshot="yoyo",
     )
 
-
+@pytest.mark.asyncio
 @pytest.mark.usefixtures("snapshots_setup")
-def test_snapshot_post(client, monkeypatch):
+async def test_snapshot_post(client, monkeypatch):
     monkeypatch.setattr(URLScan, "import_as_snapshot", mock_import_as_snapshot)
 
-    response = client.post("/api/import/foo")
+    response = await client.post("/api/import/foo")
 
     assert response.status_code == 201
 

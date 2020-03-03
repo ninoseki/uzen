@@ -16,7 +16,6 @@ from uzen.endpoints.snapshots import (
     SnapshotPost,
     SnapshotSearch,
 )
-from uzen.endpoints.test import TestSetup, TestTearDown
 from uzen.endpoints.yara import YaraScan, YaraOneshot
 from uzen.endpoints.urlscan import URLScanPost
 
@@ -46,14 +45,6 @@ routes = [
         "/api/import",
         name="import",
         routes=[Route("/{uuid:str}", URLScanPost, methods=["POST"]), ],
-    ),
-    Mount(
-        "/api/test",
-        name="test",
-        routes=[
-            Route("/setup", TestSetup, methods=["GET"]),
-            Route("/teardown", TestTearDown, methods=["GET"]),
-        ],
     ),
     Mount("/", app=StaticFiles(html=True, directory="frontend/dist")),
     Mount("/static", app=StaticFiles(directory="frontend/dist/static")),
