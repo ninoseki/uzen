@@ -7,10 +7,11 @@ from uzen.browser import Browser
 from uzen.models import Snapshot
 
 
+@pytest.mark.asyncio
 @pytest.mark.usefixtures("snapshots_setup")
-def test_yara_scan(client):
+async def test_yara_scan(client):
     payload = {"source": 'rule foo: bar {strings: $a = "foo" condition: $a}'}
-    response = client.post("/api/yara/scan", data=json.dumps(payload))
+    response = await client.post("/api/yara/scan", data=json.dumps(payload))
     assert response.status_code == 200
 
     data = response.json()
@@ -18,9 +19,10 @@ def test_yara_scan(client):
     assert len(snapshots) == 10
 
 
-def test_yara_scan_with_invalid_input(client):
+@pytest.mark.asyncio
+async def test_yara_scan_with_invalid_input(client):
     payload = {"source": "boo"}
-    response = client.post("/api/yara/scan", data=json.dumps(payload))
+    response = await client.post("/api/yara/scan", data=json.dumps(payload))
     assert response.status_code == 500
 
 
@@ -41,14 +43,15 @@ def mock_take_snapshot(url: str):
     )
 
 
-def test_yara_oneshot(client, monkeypatch):
+@pytest.mark.asyncio
+async def test_yara_oneshot(client, monkeypatch):
     monkeypatch.setattr(Browser, "take_snapshot", mock_take_snapshot)
 
     payload = {
         "source": 'rule foo: bar {strings: $a = "foo" condition: $a}',
         "url": 'http://example.com'
     }
-    response = client.post("/api/yara/oneshot", data=json.dumps(payload))
+    response = await client.post("/api/yara/oneshot", data=json.dumps(payload))
     assert response.status_code == 200
 
     data = response.json()
@@ -58,17 +61,18 @@ def test_yara_oneshot(client, monkeypatch):
         "source": 'rule foo: bar {strings: $a = "aaa" condition: $a}',
         "url": 'http://example.com'
     }
-    response = client.post("/api/yara/oneshot", data=json.dumps(payload))
+    response = await client.post("/api/yara/oneshot", data=json.dumps(payload))
     assert response.status_code == 200
 
     data = response.json()
     assert data.get("matched") == False
 
 
-def test_yara_oneshot_with_invalid_input(client):
+@pytest.mark.asyncio
+async def test_yara_oneshot_with_invalid_input(client):
     # without url
     payload = {
         "source": 'rule foo: bar {strings: $a = "foo" condition: $a}',
     }
-    response = client.post("/api/yara/oneshot", data=json.dumps(payload))
+    response = await client.post("/api/yara/oneshot", data=json.dumps(payload))
     assert response.status_code == 400

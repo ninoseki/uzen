@@ -27,6 +27,7 @@ validators = "*"
 coveralls = "*"
 loguru = "*"
 alembic = "*"
+httpx = "*"
 
 [requires]
 python_version = "3.8"
