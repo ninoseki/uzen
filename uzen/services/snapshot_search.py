@@ -1,6 +1,6 @@
 from tortoise.query_utils import Q
+from typing import List, Union
 import datetime
-
 
 from uzen.models import Snapshot
 
@@ -12,28 +12,28 @@ def convert_to_datetime(s: str) -> datetime.datetime:
 class SnapshotSearcher:
 
     @staticmethod
-    async def search_all(query, id_only=False):
+    async def search_all(query: Q, id_only=False) -> Union[List[Snapshot], int]:
         if id_only:
             return await Snapshot.filter(query).order_by("-id").values_list("id", flat=True)
 
         return await Snapshot.filter(query).order_by("-id")
 
     @staticmethod
-    async def search_with_size(query, size=100, id_only=False):
+    async def search_with_size(query: Q, size=100, id_only=False) -> Union[List[Snapshot], int]:
         if id_only:
             return await Snapshot.filter(query).order_by("-id").limit(size).values_list("id", flat=True)
 
         return await Snapshot.filter(query).order_by("-id").limit(size)
 
     @staticmethod
-    async def search_with_size_and_offset(query, offset=0, size=100, id_only=False):
+    async def search_with_size_and_offset(query: Q, offset=0, size=100, id_only=False) -> Union[List[Snapshot], int]:
         if id_only:
             return await Snapshot.filter(query).order_by("-id").offset(offset).limit(size).values_list("id", flat=True)
 
         return await Snapshot.filter(query).order_by("-id").offset(offset).limit(size)
 
     @staticmethod
-    async def search(filters, size=None, offset=None, id_only=False, count_only=False):
+    async def search(filters: dict, size=None, offset=None, id_only=False, count_only=False) -> Union[List[Snapshot], int]:
         queries = []
 
         hostname = filters.get("hostname")

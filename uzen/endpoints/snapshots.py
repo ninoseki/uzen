@@ -2,6 +2,7 @@ from json import JSONDecodeError
 from pyppeteer.errors import PyppeteerError
 from starlette.endpoints import HTTPEndpoint
 from starlette.exceptions import HTTPException
+from starlette.requests import Request
 from starlette.responses import JSONResponse
 from starlette.status import (
     HTTP_201_CREATED,
@@ -19,7 +20,7 @@ from uzen.services.snapshot_search import SnapshotSearcher
 
 
 class SnapshotList(HTTPEndpoint):
-    async def get(self, request) -> JSONResponse:
+    async def get(self, request: Request) -> JSONResponse:
         params = request.query_params
         size = int(params.get("size", 100))
         offset = int(params.get("offset", 0))
@@ -31,7 +32,7 @@ class SnapshotList(HTTPEndpoint):
 
 
 class SnapshotSearch(HTTPEndpoint):
-    async def get(self, request) -> JSONResponse:
+    async def get(self, request: Request) -> JSONResponse:
         params = request.query_params
 
         size = params.get("size")
@@ -49,7 +50,7 @@ class SnapshotSearch(HTTPEndpoint):
 
 
 class SnapshotGet(HTTPEndpoint):
-    async def get(self, request) -> JSONResponse:
+    async def get(self, request: Request) -> JSONResponse:
         try:
             id = request.path_params["id"]
         except KeyError:
@@ -68,14 +69,14 @@ class SnapshotGet(HTTPEndpoint):
 
 
 class SnapshotCount(HTTPEndpoint):
-    async def get(self, request) -> JSONResponse:
+    async def get(self, request: Request) -> JSONResponse:
         params = request.query_params
         count = await SnapshotSearcher.search(params, count_only=True)
         return JSONResponse({"count": count})
 
 
 class SnapshotPost(HTTPEndpoint):
-    async def post(self, request) -> JSONResponse:
+    async def post(self, request: Request) -> JSONResponse:
         try:
             payload = await request.json()
             url = payload["url"]
@@ -107,7 +108,7 @@ class SnapshotPost(HTTPEndpoint):
 
 
 class SnapshotDelete(HTTPEndpoint):
-    async def delete(self, request) -> JSONResponse:
+    async def delete(self, request: Request) -> JSONResponse:
         try:
             id = request.path_params["id"]
         except KeyError:

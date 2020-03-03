@@ -1,6 +1,6 @@
-import requests
 import base64
 import datetime
+import requests
 
 from uzen.models import Snapshot
 
@@ -13,19 +13,19 @@ class URLScan:
         self.session = requests.Session()
         self.uuid = uuid
 
-    def body(self):
+    def body(self) -> str:
         url = f"{self.BASE_URL}/dom/{self.uuid}/"
         r = self.session.get(url)
         r.raise_for_status()
         return r.text
 
-    def screenshot(self):
+    def screenshot(self) -> str:
         url = f"{self.BASE_URL}/screenshots/{self.uuid}.png"
         r = self.session.get(url)
         r.raise_for_status()
         return str(base64.b64encode(r.content), "utf-8")
 
-    def result(self):
+    def result(self) -> dict:
         url = f"{self.BASE_URL}/api/v1/result/{self.uuid}/"
         r = self.session.get(url)
         r.raise_for_status()
