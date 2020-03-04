@@ -17,6 +17,7 @@ class Snapshot(Model):
     sha256 = fields.CharField(max_length=64)
     headers = fields.JSONField()
     screenshot = fields.TextField()
+    whois = fields.TextField(null=True)
     created_at = fields.DatetimeField(auto_now_add=True)
 
     def to_dict(self) -> dict:
@@ -34,6 +35,7 @@ class Snapshot(Model):
             body=self.body,
             sha256=self.sha256,
             screenshot=self.screenshot,
+            whois=self.whois,
             created_at=self.created_at.isoformat() if self.created_at else None,
         )
 

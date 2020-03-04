@@ -28,6 +28,7 @@ coveralls = "*"
 loguru = "*"
 alembic = "*"
 httpx = "*"
+python-whois = "*"
 
 [requires]
 python_version = "3.8"

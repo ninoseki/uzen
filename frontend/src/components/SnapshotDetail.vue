@@ -1,32 +1,86 @@
 <template>
   <div class="listItem">
-    <div class="listItem header">
-      <h2 class="is-size-5">{{ data.url }}</h2>
-    </div>
-
-    <b-table :data="rows" :columns="columns"></b-table>
-
-    <div class="column is-full details">
+    <div class="column is-full">
       <div class="columns">
-        <div class="column is-half screenshot">
-          <h2 class="is-size-6 has-text-weight-bold middle">Screenshot</h2>
-          <img :src="this.imageData()" alt="screenshot" />
+        <div class="column is-half">
+          <h2 class="is-size-5 has-text-weight-bold middle">Info</h2>
+          <div class="table-container">
+            <table class="table">
+              <tbody>
+                <tr>
+                  <th>ID</th>
+                  <td>{{ data.id }}</td>
+                </tr>
+                <tr>
+                  <th>URL</th>
+                  <td>{{ data.url }}</td>
+                </tr>
+                <tr>
+                  <th>Hostname</th>
+                  <td>{{ data.hostname }}</td>
+                </tr>
+
+                <tr>
+                  <th>IP address</th>
+                  <td>{{ data.ip_address }}</td>
+                </tr>
+
+                <tr>
+                  <th>ASN</th>
+                  <td>{{ data.asn }}</td>
+                </tr>
+
+                <tr>
+                  <th>Server</th>
+                  <td>{{ data.server }}</td>
+                </tr>
+
+                <tr>
+                  <th>Content-Type</th>
+                  <td>{{ data.content_type }}</td>
+                </tr>
+
+                <tr>
+                  <th>SHA256</th>
+                  <td>{{ data.sha256 }}</td>
+                </tr>
+
+                <tr>
+                  <th>Created at</th>
+                  <td>{{ data.created_at }}</td>
+                </tr>
+
+                <tr>
+                  <th>Links</th>
+                  <td>
+                    <Links v-bind:snapshot="data" />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-        <div class="column is-half body">
-          <h2 class="is-size-6 has-text-weight-bold middle">Body</h2>
-          <pre class="prettyprint lang-html">
-            {{ data.body }}
-          </pre>
-          <br />
-          <h2 class="is-size-6 has-text-weight-bold middle">SHA256</h2>
-          <p>{{ data.sha256 }}</p>
+        <div class="column is-half">
+          <h2 class="is-size-5 has-text-weight-bold middle">Screenshot</h2>
+          <img :src="this.imageData()" alt="screenshot" />
         </div>
       </div>
     </div>
 
-    <div>
-      <h2 class="is-size-6 has-text-weight-bold middle">Links</h2>
-      <Links v-bind:snapshot="data" />
+    <div class="column">
+      <h2 class="is-size-5 has-text-weight-bold middle" @click="showBody = !showBody">
+        Body
+        <b-icon :icon="showBody ? 'menu-down' : 'menu-up'"></b-icon>
+      </h2>
+      <pre v-show="showBody" class="prettyprint lang-html"> {{ data.body }} </pre>
+    </div>
+
+    <div class="column">
+      <h2 class="is-size-5 has-text-weight-bold middle" @click="showWhois = !showWhois">
+        Whois
+        <b-icon :icon="showWhois ? 'menu-down' : 'menu-up'"></b-icon>
+      </h2>
+      <pre v-if="showWhois" class="prettyprint">{{ data.whois }}</pre>
     </div>
   </div>
 </template>
@@ -48,38 +102,8 @@ declare const PR: any;
 export default class SnapshotDetail extends Vue {
   @Prop() private data!: Snapshot;
 
-  private rows = [this.data];
-
-  private columns = [
-    {
-      field: "id",
-      label: "ID"
-    },
-    {
-      field: "hostname",
-      label: "Hostname"
-    },
-    {
-      field: "ip_address",
-      label: "IP address"
-    },
-    {
-      field: "asn",
-      label: "ASN"
-    },
-    {
-      field: "server",
-      label: "Server"
-    },
-    {
-      field: "content_type",
-      label: "Content-Type"
-    },
-    {
-      field: "created_at",
-      label: "Created at"
-    }
-  ];
+  private showBody = false;
+  private showWhois = false;
 
   public imageData(): string {
     return `data:Image/png;base64,${this.data.screenshot}`;
