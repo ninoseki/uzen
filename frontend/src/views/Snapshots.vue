@@ -49,16 +49,29 @@ import SnapshotSearch from "@/components/SnapshotSearch.vue";
   }
 })
 export default class Snapshots extends Vue {
+  DEFAULT_PAGE_SIZE = 10;
+  DEFAULT_OFFSET = 0;
+
   private snapshots: Snapshot[] = [];
   private count: number | undefined = undefined;
   private totalCount: number | undefined = undefined;
-  private size = 10;
-  private offset = 0;
+  private size = this.DEFAULT_PAGE_SIZE;
+  private offset = this.DEFAULT_OFFSET;
 
-  async search() {
+  resetPagination() {
+    this.snapshots = [];
+    this.size = this.DEFAULT_PAGE_SIZE;
+    this.offset = this.DEFAULT_OFFSET;
+  }
+
+  async search(additonalLoading = false) {
     const loadingComponent = this.$buefy.loading.open({
       container: this.$refs.element
     });
+
+    if (!additonalLoading) {
+      this.resetPagination();
+    }
 
     const params = (this.$refs.search as SnapshotSearch).filtersParams();
     params["size"] = this.size;
@@ -109,7 +122,7 @@ export default class Snapshots extends Vue {
 
   async loadMore() {
     this.offset += this.size;
-    this.search();
+    this.search(true);
   }
 }
 </script>
