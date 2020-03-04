@@ -6,6 +6,7 @@ import hashlib
 from uzen.models import Snapshot
 from uzen.utils import get_hostname_from_url
 from uzen.utils import get_ip_address_by_hostname, get_asn_by_ip_address
+from uzen.whois import Whois
 
 
 class Browser:
@@ -35,6 +36,7 @@ class Browser:
         hostname = get_hostname_from_url(url)
         ip_address = get_ip_address_by_hostname(hostname)
         asn = get_asn_by_ip_address(ip_address)
+        whois = Whois.whois(hostname)
 
         snapshot = await Snapshot(
             url=url,
@@ -48,6 +50,7 @@ class Browser:
             server=server,
             content_length=content_length,
             content_type=content_type,
+            whois=whois,
             screenshot=screenshot,
         )
         return snapshot
