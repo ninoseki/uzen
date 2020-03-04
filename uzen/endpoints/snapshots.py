@@ -89,13 +89,15 @@ class SnapshotPost(HTTPEndpoint):
                 status_code=HTTP_400_BAD_REQUEST, detail="url is required"
             )
 
+        user_agent = payload.get("user_agent")
+        timeout = int(payload.get("timeout", 30000))
         if not validators.url(url):
             raise HTTPException(
                 status_code=HTTP_400_BAD_REQUEST, detail=f"{url} is not a valid URL"
             )
 
         try:
-            snapshot = await Browser.take_snapshot(url)
+            snapshot = await Browser.take_snapshot(url, user_agent=user_agent, timeout=timeout)
         except PyppeteerError as e:
             raise HTTPException(
                 status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
