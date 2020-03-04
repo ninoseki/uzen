@@ -9,8 +9,28 @@
         ></b-input>
         <p class="control">
           <b-button type="is-light" @click="take">Take a snapshot</b-button>
+          <b-button
+            type="is-info"
+            icon-left="fas fa-cogs"
+            @click="showOptions = !showOptions"
+            >Optipons</b-button
+          >
         </p>
       </b-field>
+      <div id="options" v-if="showOptions">
+        <b-field label="User Agent">
+          <b-input
+            placeholder="Specific user agent to use"
+            v-model="userAgent"
+          ></b-input>
+        </b-field>
+        <b-field label="Timeout (milliseconds)">
+          <b-input
+            v-model="timeout"
+            placeholder="Maximum navigation time in milliseconds, defaults to 30 seconds, pass 0 to disable timeout"
+          ></b-input>
+        </b-field>
+      </div>
     </div>
 
     <div>
@@ -34,6 +54,9 @@ import SnapshotDetail from "@/components/SnapshotDetail.vue";
 })
 export default class SnapshotForm extends Vue {
   private url = "";
+  private showOptions = false;
+  private userAgent = "";
+  private timeout = 30000;
   private snapshot: Snapshot | undefined = undefined;
 
   async take() {
@@ -43,7 +66,9 @@ export default class SnapshotForm extends Vue {
 
     try {
       const response = await axios.post<SnapshotData>("/api/snapshots/", {
-        url: this.url
+        url: this.url,
+        user_agent: this.userAgent === "" ? undefined : this.userAgent,
+        timeout: this.timeout
       });
       const data = response.data;
 

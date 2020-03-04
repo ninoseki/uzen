@@ -1,5 +1,6 @@
 from pyppeteer import launch
 from pyppeteer.errors import PyppeteerError
+from typing import Optional
 import asyncio
 import hashlib
 
@@ -11,11 +12,17 @@ from uzen.whois import Whois
 
 class Browser:
     @staticmethod
-    async def take_snapshot(url: str) -> Snapshot:
+    async def take_snapshot(url: str, user_agent: Optional[str] = None, timeout: Optional[int] = None) -> Snapshot:
         try:
             browser = await launch(headless=True)
             page = await browser.newPage()
-            res = await page.goto(url)
+
+            if user_agent is not None:
+                await page.setUserAgent(user_agent)
+
+            # default timeout = 30 seconds
+            timeout = timeout if timeout is None else 30 * 1000
+            res = await page.goto(url, timeout=timeout)
 
             status = res.status
             screenshot = await page.screenshot(encoding="base64")
