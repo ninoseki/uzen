@@ -2,9 +2,7 @@ import vcr
 import socket
 import pytest
 
-from uzen.utils import get_country_code_by_ip_address
-from uzen.utils import get_hostname_from_url
-from uzen.utils import get_ip_address_by_hostname
+from uzen.utils import get_country_code_by_ip_address, get_hostname_from_url, get_ip_address_by_hostname
 
 
 @vcr.use_cassette("tests/fixtures/vcr_cassettes/get_country_code_by_ip_address.yaml")
