@@ -1,95 +1,84 @@
 <template>
   <div class="listItem">
-    <div class="column is-full">
-      <div class="columns">
-        <div class="column is-half">
-          <h2 class="is-size-5 has-text-weight-bold middle">Info</h2>
-          <div class="table-container">
-            <table class="table">
-              <tbody>
-                <tr>
-                  <th>ID</th>
-                  <td>{{ data.id }}</td>
-                </tr>
-                <tr>
-                  <th>URL</th>
-                  <td>{{ data.url }}</td>
-                </tr>
-                <tr>
-                  <th>Hostname</th>
-                  <td>{{ data.hostname }}</td>
-                </tr>
+    <b-tabs type="is-boxed">
+      <b-tab-item label="Summary">
+        <div class="column is-full">
+          <div class="columns">
+            <div class="column is-half">
+              <h2 class="is-size-5 has-text-weight-bold middle">Info</h2>
+              <div class="table-container">
+                <table class="table">
+                  <tbody>
+                    <tr>
+                      <th>ID</th>
+                      <td>{{ data.id }}</td>
+                    </tr>
+                    <tr>
+                      <th>URL</th>
+                      <td>{{ data.url }}</td>
+                    </tr>
+                    <tr>
+                      <th>Hostname</th>
+                      <td>{{ data.hostname }}</td>
+                    </tr>
 
-                <tr>
-                  <th>IP address</th>
-                  <td>{{ data.ip_address }}</td>
-                </tr>
+                    <tr>
+                      <th>IP address</th>
+                      <td>{{ data.ip_address }}</td>
+                    </tr>
 
-                <tr>
-                  <th>ASN</th>
-                  <td>{{ data.asn }}</td>
-                </tr>
+                    <tr>
+                      <th>ASN</th>
+                      <td>{{ data.asn }}</td>
+                    </tr>
 
-                <tr>
-                  <th>Server</th>
-                  <td>{{ data.server }}</td>
-                </tr>
+                    <tr>
+                      <th>Server</th>
+                      <td>{{ data.server }}</td>
+                    </tr>
 
-                <tr>
-                  <th>Content-Type</th>
-                  <td>{{ data.content_type }}</td>
-                </tr>
+                    <tr>
+                      <th>Content-Type</th>
+                      <td>{{ data.content_type }}</td>
+                    </tr>
 
-                <tr>
-                  <th>SHA256</th>
-                  <td>{{ data.sha256 }}</td>
-                </tr>
+                    <tr>
+                      <th>SHA256</th>
+                      <td>{{ data.sha256 }}</td>
+                    </tr>
 
-                <tr>
-                  <th>Created at</th>
-                  <td>{{ data.created_at }}</td>
-                </tr>
-
-                <tr>
-                  <th>Links</th>
-                  <td>
-                    <Links v-bind:snapshot="data" />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                    <tr>
+                      <th>Created at</th>
+                      <td>{{ data.created_at }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="column is-half">
+              <h2 class="is-size-5 has-text-weight-bold middle">Screenshot</h2>
+              <img :src="this.imageData()" alt="screenshot" />
+            </div>
+          </div>
+          <div class="column">
+            <h2 class="is-size-5 has-text-weight-bold middle">Links</h2>
+            <Links v-bind:snapshot="data" />
           </div>
         </div>
-        <div class="column is-half">
-          <h2 class="is-size-5 has-text-weight-bold middle">Screenshot</h2>
-          <img :src="this.imageData()" alt="screenshot" />
-        </div>
-      </div>
-    </div>
+      </b-tab-item>
 
-    <div class="column">
-      <h2 class="is-size-5 has-text-weight-bold middle" @click="showBody = !showBody">
-        Body
-        <b-icon :icon="showBody ? 'menu-down' : 'menu-up'"></b-icon>
-      </h2>
-      <pre v-show="showBody" class="prettyprint lang-html"> {{ data.body }} </pre>
-    </div>
+      <b-tab-item label="Body">
+        <pre class="prettyprint lang-html"> {{ data.body }} </pre>
+      </b-tab-item>
 
-    <div class="column">
-      <h2 class="is-size-5 has-text-weight-bold middle" @click="showWhois = !showWhois">
-        Whois
-        <b-icon :icon="showWhois ? 'menu-down' : 'menu-up'"></b-icon>
-      </h2>
-      <pre v-if="showWhois" class="prettyprint">{{ data.whois }}</pre>
-    </div>
+      <b-tab-item label="Whois">
+        <pre>{{ data.whois || "N/A" }}</pre>
+      </b-tab-item>
 
-    <div class="column">
-      <h2 class="is-size-5 has-text-weight-bold middle" @click="showCertificate = !showCertificate">
-        Certificate
-        <b-icon :icon="showCertificate ? 'menu-down' : 'menu-up'"></b-icon>
-      </h2>
-      <pre v-if="showCertificate" class="prettyprint">{{ data.certificate || "N/A" }}</pre>
-    </div>
+      <b-tab-item label="Certificate">
+        <pre>{{ data.certificate || "N/A" }}</pre>
+      </b-tab-item>
+    </b-tabs>
   </div>
 </template>
 
@@ -109,10 +98,6 @@ declare const PR: any;
 })
 export default class SnapshotDetail extends Vue {
   @Prop() private data!: Snapshot;
-
-  private showBody = false;
-  private showWhois = false;
-  private showCertificate = false;
 
   public imageData(): string {
     return `data:Image/png;base64,${this.data.screenshot}`;
@@ -137,10 +122,6 @@ export default class SnapshotDetail extends Vue {
   transform: scale(1);
   -webkit-transition: all 0.15s ease;
   transition: all 0.2s ease;
-  z-index: 1;
-  position: relative;
-  cursor: pointer;
-  overflow: hidden;
 }
 
 .listItem:not(:first-child) {
@@ -165,13 +146,13 @@ export default class SnapshotDetail extends Vue {
   color: #5892d0;
 }
 
-h2.middle {
+.listItem h2.middle {
   padding-bottom: 10px;
   margin-bottom: 10px;
   border-bottom: 2px solid lightgray;
 }
 
-.prettyprint {
+.listItem pre {
   max-height: 500px;
   overflow: auto;
   word-break: normal;
