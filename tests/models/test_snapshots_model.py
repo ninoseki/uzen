@@ -17,6 +17,7 @@ def test_to_str():
         body="foo bar",
         sha256="fbc1a9f858ea9e177916964bd88c3d37b91a1e84412765e29950777f265c4b75",
         whois=None,
+        certificate=None,
         screenshot="yoyo",
     )
 
@@ -36,6 +37,7 @@ def test_to_str():
             sha256="fbc1a9f858ea9e177916964bd88c3d37b91a1e84412765e29950777f265c4b75",
             screenshot="yoyo",
             whois=None,
+            certificate=None,
             created_at=None,
         )
     )

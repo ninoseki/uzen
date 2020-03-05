@@ -5,8 +5,12 @@ import asyncio
 import hashlib
 
 from uzen.models import Snapshot
-from uzen.utils import get_hostname_from_url
-from uzen.utils import get_ip_address_by_hostname, get_asn_by_ip_address
+from uzen.utils import (
+    get_asn_by_ip_address,
+    get_certificate_from_url,
+    get_hostname_from_url,
+    get_ip_address_by_hostname,
+)
 from uzen.whois import Whois
 
 
@@ -41,6 +45,7 @@ class Browser:
         content_length = headers.get("content-length")
 
         hostname = get_hostname_from_url(url)
+        certificate = get_certificate_from_url(url)
         ip_address = get_ip_address_by_hostname(hostname)
         asn = get_asn_by_ip_address(ip_address)
         whois = Whois.whois(hostname)
@@ -58,6 +63,7 @@ class Browser:
             content_length=content_length,
             content_type=content_type,
             whois=whois,
+            certificate=certificate,
             screenshot=screenshot,
         )
         return snapshot

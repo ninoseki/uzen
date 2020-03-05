@@ -16,6 +16,7 @@ export interface Snapshot {
   headers: Headers;
   screenshot: string;
   whois: string | undefined;
+  certificate: string | undefined;
   created_at: string;
 }
 

@@ -82,6 +82,14 @@
       </h2>
       <pre v-if="showWhois" class="prettyprint">{{ data.whois }}</pre>
     </div>
+
+    <div class="column">
+      <h2 class="is-size-5 has-text-weight-bold middle" @click="showCertificate = !showCertificate">
+        Certificate
+        <b-icon :icon="showCertificate ? 'menu-down' : 'menu-up'"></b-icon>
+      </h2>
+      <pre v-if="showCertificate" class="prettyprint">{{ data.certificate || "N/A" }}</pre>
+    </div>
   </div>
 </template>
 
@@ -104,6 +112,7 @@ export default class SnapshotDetail extends Vue {
 
   private showBody = false;
   private showWhois = false;
+  private showCertificate = false;
 
   public imageData(): string {
     return `data:Image/png;base64,${this.data.screenshot}`;

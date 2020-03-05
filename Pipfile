@@ -29,6 +29,7 @@ loguru = "*"
 alembic = "*"
 httpx = "*"
 python-whois = "*"
+pyopenssl = "*"
 
 [requires]
 python_version = "3.8"

@@ -2,9 +2,7 @@ import vcr
 import socket
 import pytest
 
-from uzen.utils import get_country_code_by_ip_address
-from uzen.utils import get_hostname_from_url
-from uzen.utils import get_ip_address_by_hostname
+from uzen.utils import get_country_code_by_ip_address, get_hostname_from_url, get_ip_address_by_hostname, get_certificate_from_url
 
 
 @vcr.use_cassette("tests/fixtures/vcr_cassettes/get_country_code_by_ip_address.yaml")
@@ -31,3 +29,8 @@ def test_get_ip_address_by_hostname(monkeypatch):
     monkeypatch.setattr(socket, "gethostbyname", mockreturn)
 
     assert get_ip_address_by_hostname("one.one.one.one") == "1.1.1.1"
+
+
+def test_get_certificate_from_url():
+    assert "example.com" in get_certificate_from_url("https://example.com")
+    assert get_certificate_from_url("http://example.com") == None
