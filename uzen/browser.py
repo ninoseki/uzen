@@ -7,11 +7,11 @@ import hashlib
 from uzen.models import Snapshot
 from uzen.utils import (
     get_asn_by_ip_address,
-    get_certificate_from_url,
     get_hostname_from_url,
     get_ip_address_by_hostname,
 )
 from uzen.whois import Whois
+from uzen.certificate import Certificate
 
 
 class Browser:
@@ -25,7 +25,7 @@ class Browser:
                 await page.setUserAgent(user_agent)
 
             # default timeout = 30 seconds
-            timeout = timeout if timeout is None else 30 * 1000
+            timeout = timeout if timeout is not None else 30 * 1000
             res = await page.goto(url, timeout=timeout)
 
             status = res.status
@@ -45,7 +45,7 @@ class Browser:
         content_length = headers.get("content-length")
 
         hostname = get_hostname_from_url(url)
-        certificate = get_certificate_from_url(url)
+        certificate = Certificate.load_and_dump_from_url(url)
         ip_address = get_ip_address_by_hostname(hostname)
         asn = get_asn_by_ip_address(ip_address)
         whois = Whois.whois(hostname)

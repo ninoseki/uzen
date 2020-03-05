@@ -4,6 +4,7 @@ import vcr
 from uzen.browser import Browser
 from uzen.utils import IPInfo
 from uzen.whois import Whois
+from uzen.certificate import Certificate
 
 
 def mock_get_basic(ip_address: str):
@@ -14,10 +15,16 @@ def mock_whois(hostname: str):
     return "foo"
 
 
+def mock_load_and_dump_from_url(url: str):
+    return "Certificate:"
+
+
 @pytest.mark.asyncio
 async def test_take_snapshot(monkeypatch):
     monkeypatch.setattr(IPInfo, "get_basic", mock_get_basic)
     monkeypatch.setattr(Whois, "whois", mock_whois)
+    monkeypatch.setattr(Certificate, "load_and_dump_from_url",
+                        mock_load_and_dump_from_url)
 
     snapshot = await Browser.take_snapshot("http://example.com")
     assert snapshot.url == "http://example.com"

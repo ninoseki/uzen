@@ -67,17 +67,3 @@ def get_asn_by_ip_address(ip_address: str) -> Optional[str]:
     except Exception as e:
         return None
 
-
-def get_certificate_from_url(url: str) -> Optional[str]:
-    parsed = urlparse(url)
-    if parsed.scheme != "https":
-        return None
-
-    hostname = parsed.netloc
-    try:
-        cert_pem = ssl.get_server_certificate((hostname, 443))
-        cert = crypto.load_certificate(crypto.FILETYPE_PEM, cert_pem)
-        dump = crypto.dump_certificate(crypto.FILETYPE_TEXT, cert)
-        return dump.decode(encoding="utf-8")
-    except (ssl.SSLError, ValueError):
-        return None
