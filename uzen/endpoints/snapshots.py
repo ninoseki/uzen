@@ -91,13 +91,19 @@ class SnapshotPost(HTTPEndpoint):
 
         user_agent = payload.get("user_agent")
         timeout = int(payload.get("timeout", 30000))
+        ignore_https_errors = payload.get("ignore_https_errors", False)
         if not validators.url(url):
             raise HTTPException(
                 status_code=HTTP_400_BAD_REQUEST, detail=f"{url} is not a valid URL"
             )
 
         try:
-            snapshot = await Browser.take_snapshot(url, user_agent=user_agent, timeout=timeout)
+            snapshot = await Browser.take_snapshot(
+                url,
+                user_agent=user_agent,
+                timeout=timeout,
+                ignore_https_errors=ignore_https_errors
+            )
         except PyppeteerError as e:
             raise HTTPException(
                 status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)

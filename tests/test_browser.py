@@ -1,5 +1,6 @@
 import pytest
 import vcr
+from pyppeteer.errors import PyppeteerError
 
 from uzen.browser import Browser
 from uzen.utils import IPInfo
@@ -48,3 +49,15 @@ async def test_take_snapshot_with_options(monkeypatch):
 
     snapshot = await Browser.take_snapshot("http://example.com", timeout=10000, user_agent="foo")
     assert snapshot.url == "http://example.com"
+
+
+@pytest.mark.asyncio
+async def test_take_snapshot_with_bad_ssl(monkeypatch):
+    monkeypatch.setattr(IPInfo, "get_basic", mock_get_basic)
+    monkeypatch.setattr(Whois, "whois", mock_whois)
+
+    with pytest.raises(PyppeteerError):
+        snapshot = await Browser.take_snapshot("https://expired.badssl.com")
+
+    snapshot = await Browser.take_snapshot("https://expired.badssl.com", ignore_https_errors=True)
+    assert snapshot.url == "https://expired.badssl.com"
