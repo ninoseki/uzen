@@ -16,9 +16,16 @@ from uzen.certificate import Certificate
 
 class Browser:
     @staticmethod
-    async def take_snapshot(url: str, user_agent: Optional[str] = None, timeout: Optional[int] = None) -> Snapshot:
+    async def take_snapshot(
+            url: str,
+            user_agent: Optional[str] = None,
+            timeout: Optional[int] = None,
+            ignore_https_errors: bool = False) -> Snapshot:
         try:
-            browser = await launch(headless=True)
+            browser = await launch(
+                headless=True,
+                ignoreHTTPSErrors=ignore_https_errors
+            )
             page = await browser.newPage()
 
             if user_agent is not None:

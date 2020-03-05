@@ -30,6 +30,9 @@
             placeholder="Maximum navigation time in milliseconds, defaults to 30 seconds, pass 0 to disable timeout"
           ></b-input>
         </b-field>
+        <b-field label="Ignore HTTPS errors">
+          <b-checkbox v-model="ignoreHTTPSErrors"></b-checkbox>
+        </b-field>
       </div>
     </div>
 
@@ -57,6 +60,7 @@ export default class SnapshotForm extends Vue {
   private showOptions = false;
   private userAgent = "";
   private timeout = 30000;
+  private ignoreHTTPSErrors = false;
   private snapshot: Snapshot | undefined = undefined;
 
   async take() {
@@ -68,7 +72,8 @@ export default class SnapshotForm extends Vue {
       const response = await axios.post<SnapshotData>("/api/snapshots/", {
         url: this.url,
         user_agent: this.userAgent === "" ? undefined : this.userAgent,
-        timeout: this.timeout
+        timeout: this.timeout,
+        ignore_https_errors: this.ignoreHTTPSErrors
       });
       const data = response.data;
 
