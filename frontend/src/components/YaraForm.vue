@@ -1,17 +1,9 @@
 <template>
   <div>
     <div class="box">
-      <b-field label="YARA rule">
-        <b-input
-          class="is-expanded"
-          type="textarea"
-          placeholder="rule foo: bar {strings: $a = 'lmn' condition: $a}"
-          v-model="source"
-        ></b-input>
-      </b-field>
-
+      <BasicYaraForm v-bind:source.sync="source" v-bind:target.sync="target" />
+      <hr>
       <SnapshotSearch ref="search" />
-
       <br />
       <div class="has-text-centered">
         <b-button type="is-light" @click="scan">Scan</b-button>
@@ -33,14 +25,22 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 
-import { ErrorData, Snapshot, SnapshotsData, SearchFilters } from "@/types";
+import {
+  ErrorData,
+  Snapshot,
+  SnapshotsData,
+  SearchFilters,
+  TargetTypes
+} from "@/types";
 
 import Counter from "@/components/Counter.vue";
 import SnapshotDetail from "@/components/SnapshotDetail.vue";
 import SnapshotSearch from "@/components/SnapshotSearch.vue";
+import BasicYaraForm from "@/components/BasicYaraForm.vue";
 
 @Component({
   components: {
+    BasicYaraForm,
     Counter,
     SnapshotDetail,
     SnapshotSearch
@@ -48,6 +48,7 @@ import SnapshotSearch from "@/components/SnapshotSearch.vue";
 })
 export default class YaraForm extends Vue {
   private source: string = "";
+  private target: TargetTypes = "body";
   private count: number | undefined = undefined;
   private snapshots: Snapshot[] = [];
 
@@ -65,7 +66,8 @@ export default class YaraForm extends Vue {
       const response = await axios.post<SnapshotsData>(
         "/api/yara/scan",
         {
-          source: this.source
+          source: this.source,
+          target: this.target
         },
         { params: params }
       );

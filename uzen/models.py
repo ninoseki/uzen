@@ -6,7 +6,7 @@ import datetime
 
 
 class SnapshotModel(BaseModel):
-    id: int
+    id: Optional[int]
     url: str
     status: int
     hostname: str
@@ -21,7 +21,7 @@ class SnapshotModel(BaseModel):
     screenshot: str
     whois: Optional[str]
     certificate: Optional[str]
-    created_at: datetime.datetime
+    created_at: Optional[datetime.datetime]
 
     class Config:
         orm_mode = True
