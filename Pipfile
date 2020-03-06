@@ -13,6 +13,7 @@ vcrpy = "*"
 v = {editable = true,version = "*"}
 asynctest = "*"
 pytest-cov = "*"
+coveralls = "*"
 
 [packages]
 aiofiles = "*"
@@ -23,15 +24,13 @@ starlette = "*"
 tortoise-orm = "*"
 uvicorn = "*"
 yara-python = "*"
-validators = "*"
-coveralls = "*"
 loguru = "*"
 alembic = "*"
 httpx = "*"
 python-whois = "*"
 pyopenssl = "*"
 pydantic = "*"
-orjson = "*"
+fastapi = "*"
 
 [requires]
 python_version = "3.8"

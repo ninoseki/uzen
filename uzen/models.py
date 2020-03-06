@@ -1,12 +1,11 @@
 from pydantic import BaseModel, HttpUrl
 from tortoise import fields
 from tortoise.models import Model
-from typing import Optional
+from typing import Optional, Union
 import datetime
 
 
-class SnapshotModel(BaseModel):
-    id: Optional[int]
+class SnapshotBaseModel(BaseModel):
     url: str
     status: int
     hostname: str
@@ -21,10 +20,14 @@ class SnapshotModel(BaseModel):
     screenshot: str
     whois: Optional[str]
     certificate: Optional[str]
-    created_at: Optional[datetime.datetime]
 
     class Config:
         orm_mode = True
+
+
+class SnapshotModel(SnapshotBaseModel):
+    id: int
+    created_at: datetime.datetime
 
 
 class Snapshot(Model):
@@ -48,12 +51,21 @@ class Snapshot(Model):
     def to_pandantic_model(self) -> SnapshotModel:
         return SnapshotModel.from_orm(self)
 
+    def to_base_model(self) -> SnapshotBaseModel:
+        return SnapshotBaseModel.from_orm(self)
+
+    def to_model(self) -> Union[SnapshotModel, SnapshotBaseModel]:
+        if (self.id is not None):
+            return SnapshotModel.from_orm(self)
+        else:
+            return SnapshotBaseModel.from_orm(self)
+
     def to_dict(self) -> dict:
-        model = self.to_pandantic_model()
+        model = self.to_model()
         return model.dict()
 
     def __str__(self) -> str:
-        model = self.to_pandantic_model()
+        model = self.to_model()
         return model.json()
 
     class Meta:

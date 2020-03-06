@@ -29,7 +29,7 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 
-import { ErrorData, Snapshot, SnapshotData } from "@/types";
+import { ErrorData, Snapshot } from "@/types";
 
 import SnapshotDetail from "@/components/SnapshotDetail.vue";
 
@@ -48,14 +48,11 @@ export default class SnapshotForm extends Vue {
     });
 
     try {
-      const response = await axios.post<SnapshotData>(
-        `/api/import/${this.uuid}`
-      );
-      const data = response.data;
+      const response = await axios.post<Snapshot>(`/api/import/${this.uuid}`);
 
       loadingComponent.close();
 
-      this.snapshot = data.snapshot;
+      this.snapshot = response.data;
 
       this.$forceUpdate();
     } catch (error) {

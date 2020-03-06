@@ -28,7 +28,6 @@ import axios, { AxiosError } from "axios";
 import {
   ErrorData,
   Snapshot,
-  SnapshotsData,
   SearchFilters,
   TargetTypes
 } from "@/types";
@@ -63,7 +62,7 @@ export default class YaraForm extends Vue {
     const params = (this.$refs.search as SnapshotSearch).filtersParams();
 
     try {
-      const response = await axios.post<SnapshotsData>(
+      const response = await axios.post<Snapshot[]>(
         "/api/yara/scan",
         {
           source: this.source,
@@ -72,11 +71,10 @@ export default class YaraForm extends Vue {
         { params: params }
       );
 
-      const data = response.data;
       loadingComponent.close();
 
-      this.snapshots = data.snapshots;
-      this.count = data.snapshots.length;
+      this.snapshots = response.data;
+      this.count = this.snapshots.length;
     } catch (error) {
       loadingComponent.close();
 

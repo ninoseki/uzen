@@ -5,6 +5,12 @@ module.exports = {
     proxy: {
       "/api/*": {
         target: "http://localhost:8000/"
+      },
+      "/docs": {
+        target: "http://localhost:8000/"
+      },
+      "/openapi.json": {
+        target: "http://localhost:8000/"
       }
     }
   }
