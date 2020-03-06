@@ -82,7 +82,7 @@ async def test_yara_oneshot(client, monkeypatch):
     assert response.status_code == 200
 
     data = response.json()
-    assert data.get("matched") == True
+    assert data.get("matched")
 
     payload = {
         "source": 'rule foo: bar {strings: $a = "aaa" condition: $a}',
@@ -92,7 +92,7 @@ async def test_yara_oneshot(client, monkeypatch):
     assert response.status_code == 200
 
     data = response.json()
-    assert data.get("matched") == False
+    assert not data.get("matched")
 
 
 @pytest.mark.asyncio

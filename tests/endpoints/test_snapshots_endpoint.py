@@ -25,7 +25,6 @@ async def test_snapshot_count(client):
     assert response.status_code == 200
 
     data = response.json()
-    print(data)
     count = data.get("count")
     assert isinstance(count, int)
 
