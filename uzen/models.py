@@ -1,6 +1,30 @@
+from pydantic import BaseModel, HttpUrl
 from tortoise import fields
 from tortoise.models import Model
-import json
+from typing import Optional
+import datetime
+
+
+class SnapshotModel(BaseModel):
+    id: int
+    url: str
+    status: int
+    hostname: str
+    ip_address: str
+    asn: str
+    server: Optional[str]
+    content_type: Optional[str]
+    content_length: Optional[int]
+    body: str
+    sha256: str
+    headers: dict
+    screenshot: str
+    whois: Optional[str]
+    certificate: Optional[str]
+    created_at: datetime.datetime
+
+    class Config:
+        orm_mode = True
 
 
 class Snapshot(Model):
@@ -21,28 +45,16 @@ class Snapshot(Model):
     certificate = fields.TextField(null=True)
     created_at = fields.DatetimeField(auto_now_add=True)
 
+    def to_pandantic_model(self) -> SnapshotModel:
+        return SnapshotModel.from_orm(self)
+
     def to_dict(self) -> dict:
-        return dict(
-            id=self.id,
-            url=self.url,
-            status=self.status,
-            hostname=self.hostname,
-            ip_address=self.ip_address,
-            asn=self.asn,
-            server=self.server,
-            content_type=self.content_type,
-            content_length=self.content_length,
-            headers=self.headers,
-            body=self.body,
-            sha256=self.sha256,
-            screenshot=self.screenshot,
-            whois=self.whois,
-            certificate=self.certificate,
-            created_at=self.created_at.isoformat() if self.created_at else None,
-        )
+        model = self.to_pandantic_model()
+        return model.dict()
 
     def __str__(self) -> str:
-        return json.dumps(self.to_dict())
+        model = self.to_pandantic_model()
+        return model.json()
 
     class Meta:
         table = "snapshots"

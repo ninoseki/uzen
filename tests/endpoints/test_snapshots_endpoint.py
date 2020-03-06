@@ -2,10 +2,12 @@ from starlette.responses import HTMLResponse
 from starlette.testclient import TestClient
 import json
 import pytest
+import datetime
 
 
 from uzen.browser import Browser
 from uzen.models import Snapshot
+from tests.utils import make_snapshot
 
 
 @pytest.mark.asyncio
@@ -114,20 +116,7 @@ async def test_snapshot_post_with_invalid_url(client):
 
 
 def mock_take_snapshot(url: str, user_agent: None, timeout: None, ignore_https_errors: False):
-    return Snapshot(
-        url="http://example.com",
-        status=200,
-        hostname="example.com",
-        ip_address="1.1.1.1",
-        asn="AS15133 MCI Communications Services, Inc. d/b/a Verizon Business",
-        server="ECS (sjc/4E5D)",
-        content_type="text/html; charset=UTF-8",
-        content_length=1256,
-        headers={},
-        body="foo bar",
-        sha256="fbc1a9f858ea9e177916964bd88c3d37b91a1e84412765e29950777f265c4b75",
-        screenshot="yoyo",
-    )
+    return make_snapshot()
 
 
 @pytest.mark.asyncio
