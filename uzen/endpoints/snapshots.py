@@ -3,7 +3,6 @@ from pyppeteer.errors import PyppeteerError
 from starlette.endpoints import HTTPEndpoint
 from starlette.exceptions import HTTPException
 from starlette.requests import Request
-from starlette.responses import JSONResponse
 from starlette.status import (
     HTTP_201_CREATED,
     HTTP_204_NO_CONTENT,
@@ -14,8 +13,9 @@ from starlette.status import (
 from tortoise.exceptions import DoesNotExist
 import validators
 
-from uzen.models import Snapshot
 from uzen.browser import Browser
+from uzen.models import Snapshot
+from uzen.responses import ORJSONResponse as JSONResponse
 from uzen.services.snapshot_search import SnapshotSearcher
 
 

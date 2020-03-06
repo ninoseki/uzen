@@ -2,7 +2,6 @@ from json import JSONDecodeError
 from starlette.endpoints import HTTPEndpoint
 from starlette.exceptions import HTTPException
 from starlette.requests import Request
-from starlette.responses import JSONResponse
 from starlette.status import HTTP_400_BAD_REQUEST, HTTP_500_INTERNAL_SERVER_ERROR
 import asyncio
 import math
@@ -11,6 +10,7 @@ from loguru import logger
 
 from uzen.browser import Browser
 from uzen.models import Snapshot
+from uzen.responses import ORJSONResponse as JSONResponse
 from uzen.services.snapshot_search import SnapshotSearcher
 from uzen.services.yara_scanner import YaraScanner
 

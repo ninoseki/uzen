@@ -3,7 +3,6 @@ from pyppeteer.errors import PyppeteerError
 from starlette.endpoints import HTTPEndpoint
 from starlette.exceptions import HTTPException
 from starlette.requests import Request
-from starlette.responses import JSONResponse
 from starlette.status import (
     HTTP_201_CREATED,
     HTTP_400_BAD_REQUEST,
@@ -12,6 +11,7 @@ from starlette.status import (
 import requests
 
 from uzen.models import Snapshot
+from uzen.responses import ORJSONResponse as JSONResponse
 from uzen.urlscan import URLScan
 
 

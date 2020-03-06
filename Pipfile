@@ -30,6 +30,8 @@ alembic = "*"
 httpx = "*"
 python-whois = "*"
 pyopenssl = "*"
+pydantic = "*"
+orjson = "*"
 
 [requires]
 python_version = "3.8"
