@@ -36,8 +36,9 @@ class YaraScan(HTTPEndpoint):
                 status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
             )
 
-        params = request.query_params
-        snapshots = await yara_scanner.scan_snapshots(params)
+        filters = request.query_params
+        target = payload.get("target", "body")
+        snapshots = await yara_scanner.scan_snapshots(target, filters)
         return JSONResponse(
             {"snapshots": [snapshot.to_dict()
                            for snapshot in snapshots]}
@@ -67,7 +68,10 @@ class YaraOneshot(HTTPEndpoint):
             )
 
         snapshot = await Browser.take_snapshot(url)
-        matches = yara_scanner.match(snapshot.body)
+
+        target = payload.get("target", "body")
+        data = snapshot.to_dict().get(target, "")
+        matches = yara_scanner.match(data)
         matched = True if len(matches) > 0 else False
 
         return JSONResponse({

@@ -58,3 +58,5 @@ export interface Oneshot {
   matched: boolean;
   snapshot: Snapshot;
 }
+
+export type TargetTypes = "body" | "whois" | "certificate";

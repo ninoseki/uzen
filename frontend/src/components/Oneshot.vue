@@ -8,14 +8,9 @@
           v-model="url"
         ></b-input>
       </b-field>
-      <b-field label="YARA rule">
-        <b-input
-          class="is-expanded"
-          type="textarea"
-          placeholder="rule foo: bar {strings: $a = 'lmn' condition: $a}"
-          v-model="source"
-        ></b-input>
-      </b-field>
+
+      <BasicYaraForm v-bind:source.sync="source" v-bind:target.sync="target" />
+
       <br />
       <div class="has-text-centered">
         <b-button type="is-light" @click="scan">Scan</b-button>
@@ -37,17 +32,20 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 
-import { ErrorData, Snapshot, Oneshot } from "@/types";
+import { ErrorData, Snapshot, Oneshot, TargetTypes } from "@/types";
 
 import SnapshotDetail from "@/components/SnapshotDetail.vue";
+import BasicYaraForm from "@/components/BasicYaraForm.vue";
 
 @Component({
   components: {
+    BasicYaraForm,
     SnapshotDetail
   }
 })
 export default class OneshotView extends Vue {
   private source: string = "";
+  private target: TargetTypes = "body";
   private url: string = "";
   private snapshot: Snapshot | undefined = undefined;
   private matched: boolean | undefined = undefined;
@@ -60,7 +58,8 @@ export default class OneshotView extends Vue {
     try {
       const response = await axios.post<Oneshot>("/api/yara/oneshot", {
         source: this.source,
-        url: this.url
+        url: this.url,
+        target: this.target
       });
 
       const data = response.data;
