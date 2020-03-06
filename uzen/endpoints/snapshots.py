@@ -1,135 +1,126 @@
-from json import JSONDecodeError
+from fastapi import APIRouter, HTTPException, status
+from pydantic import BaseModel, AnyHttpUrl
 from pyppeteer.errors import PyppeteerError
-from starlette.endpoints import HTTPEndpoint
-from starlette.exceptions import HTTPException
-from starlette.requests import Request
-from starlette.status import (
-    HTTP_201_CREATED,
-    HTTP_204_NO_CONTENT,
-    HTTP_400_BAD_REQUEST,
-    HTTP_404_NOT_FOUND,
-    HTTP_500_INTERNAL_SERVER_ERROR,
-)
 from tortoise.exceptions import DoesNotExist
-import validators
+from typing import Optional, List
+
 
 from uzen.browser import Browser
-from uzen.models import Snapshot
-from uzen.responses import ORJSONResponse as JSONResponse
+from uzen.models import Snapshot, SnapshotModel
 from uzen.services.snapshot_search import SnapshotSearcher
 
+router = APIRouter()
 
-class SnapshotList(HTTPEndpoint):
-    async def get(self, request: Request) -> JSONResponse:
-        params = request.query_params
-        size = int(params.get("size", 100))
-        offset = int(params.get("offset", 0))
-        snapshots = await SnapshotSearcher.search({}, size=size, offset=offset)
 
-        return JSONResponse(
-            {"snapshots": [snapshot.to_dict() for snapshot in snapshots]}
+@router.get("/search", response_model=List[SnapshotModel])
+async def search(size: int = None, offset: int = None, hostname: str = None, ip_address: str = None, asn: str = None, server: str = None, content_type: str = None, sha256: str = None, from_at: str = None, to_at: str = None):
+    """
+    Search snapshots
+    """
+    filters = {
+        "hostname": hostname,
+        "ip_address": ip_address,
+        "asn": asn,
+        "server": server,
+        "content_type": content_type,
+        "sha256": sha256,
+        "from_at": from_at,
+        "to_at": to_at,
+    }
+    snapshots = await SnapshotSearcher.search(filters, size=size, offset=offset)
+    return [snapshot.to_pandantic_model() for snapshot in snapshots]
+
+
+class CountResponse(BaseModel):
+    count: int
+
+
+@router.get("/count", response_model=CountResponse)
+async def count(hostname: str = None, ip_address: str = None, asn: str = None, server: str = None, content_type: str = None, sha256: str = None, from_at: str = None, to_at: str = None):
+    """
+    Count snapshots
+    """
+    filters = {
+        "hostname": hostname,
+        "ip_address": ip_address,
+        "asn": asn,
+        "server": server,
+        "content_type": content_type,
+        "sha256": sha256,
+        "from_at": from_at,
+        "to_at": to_at,
+    }
+    count = await SnapshotSearcher.search(filters, count_only=True)
+    return CountResponse(count=count)
+
+
+@router.get("/{snapshot_id}", response_model=SnapshotModel)
+async def get(snapshot_id: int):
+    """
+    Get a snapshot
+    """
+    try:
+        snapshot = await Snapshot.get(id=snapshot_id)
+    except DoesNotExist:
+        raise HTTPException(
+            status_code=404, detail=f"Snapshot:{id} is not found")
+
+    return snapshot.to_pandantic_model()
+
+
+@router.get("/", response_model=List[SnapshotModel])
+async def list(size: int = None, offset: int = None):
+    """
+    List snapshots
+    """
+    size = size or 100
+    offset = offset or 0
+
+    snapshots = await SnapshotSearcher.search({}, size=size, offset=offset)
+    return [snapshot.to_pandantic_model() for snapshot in snapshots]
+
+
+class TakeSnapshotPayload(BaseModel):
+    url: AnyHttpUrl
+    user_agent: Optional[str]
+    timeout: Optional[int]
+    ignore_https_errors: Optional[bool]
+
+
+@router.post("/", response_model=SnapshotModel, status_code=201)
+async def create(payload: TakeSnapshotPayload):
+    """
+    Create a snapshot
+    """
+    url = payload.url
+    user_agent = payload.user_agent
+    timeout = payload.timeout or 30000
+    ignore_https_errors = payload.ignore_https_errors or False
+
+    try:
+        snapshot = await Browser.take_snapshot(
+            url,
+            user_agent=user_agent,
+            timeout=timeout,
+            ignore_https_errors=ignore_https_errors
         )
+    except PyppeteerError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    await snapshot.save()
+    return snapshot.to_pandantic_model()
 
 
-class SnapshotSearch(HTTPEndpoint):
-    async def get(self, request: Request) -> JSONResponse:
-        params = request.query_params
+@router.delete("/{snapshot_id}", status_code=204)
+async def delete(snapshot_id: int):
+    """
+    Delete a snapshot
+    """
+    try:
+        snapshot = await Snapshot.get(id=snapshot_id)
+    except DoesNotExist:
+        raise HTTPException(
+            status_code=404, detail=f"Snapshot:{id} is not found")
 
-        size = params.get("size")
-        if size is not None:
-            size = int(size)
-        offset = params.get("offset")
-        if offset is not None:
-            offset = int(offset)
-
-        snapshots = await SnapshotSearcher.search(params, size=size, offset=offset)
-
-        return JSONResponse(
-            {"snapshots": [snapshot.to_dict() for snapshot in snapshots]}
-        )
-
-
-class SnapshotGet(HTTPEndpoint):
-    async def get(self, request: Request) -> JSONResponse:
-        try:
-            id = request.path_params["id"]
-        except KeyError:
-            raise HTTPException(
-                status_code=HTTP_400_BAD_REQUEST, detail="id is required"
-            )
-
-        try:
-            snapshot = await Snapshot.get(id=id)
-        except DoesNotExist:
-            raise HTTPException(
-                status_code=HTTP_404_NOT_FOUND, detail=f"Snapshot:{id} is not found"
-            )
-
-        return JSONResponse({"snapshot": snapshot.to_dict()})
-
-
-class SnapshotCount(HTTPEndpoint):
-    async def get(self, request: Request) -> JSONResponse:
-        params = request.query_params
-        count = await SnapshotSearcher.search(params, count_only=True)
-        return JSONResponse({"count": count})
-
-
-class SnapshotPost(HTTPEndpoint):
-    async def post(self, request: Request) -> JSONResponse:
-        try:
-            payload = await request.json()
-            url = payload["url"]
-        except JSONDecodeError:
-            raise HTTPException(
-                status_code=HTTP_400_BAD_REQUEST, detail="cannot parse request body"
-            )
-        except KeyError:
-            raise HTTPException(
-                status_code=HTTP_400_BAD_REQUEST, detail="url is required"
-            )
-
-        user_agent = payload.get("user_agent")
-        timeout = int(payload.get("timeout", 30000))
-        ignore_https_errors = payload.get("ignore_https_errors", False)
-        if not validators.url(url):
-            raise HTTPException(
-                status_code=HTTP_400_BAD_REQUEST, detail=f"{url} is not a valid URL"
-            )
-
-        try:
-            snapshot = await Browser.take_snapshot(
-                url,
-                user_agent=user_agent,
-                timeout=timeout,
-                ignore_https_errors=ignore_https_errors
-            )
-        except PyppeteerError as e:
-            raise HTTPException(
-                status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
-            )
-
-        await snapshot.save()
-        return JSONResponse(
-            {"snapshot": snapshot.to_dict()}, status_code=HTTP_201_CREATED
-        )
-
-
-class SnapshotDelete(HTTPEndpoint):
-    async def delete(self, request: Request) -> JSONResponse:
-        try:
-            id = request.path_params["id"]
-        except KeyError:
-            raise HTTPException(
-                status_code=HTTP_400_BAD_REQUEST, detail="id is required"
-            )
-
-        try:
-            snapshot = await Snapshot.get(id=id)
-        except DoesNotExist:
-            raise HTTPException(
-                status_code=HTTP_404_NOT_FOUND, detail=f"Snapshot:{id} is not found"
-            )
-
-        await snapshot.delete()
-        return JSONResponse({}, status_code=HTTP_204_NO_CONTENT)
+    await snapshot.delete()
+    return {}

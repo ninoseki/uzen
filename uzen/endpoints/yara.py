@@ -1,80 +1,77 @@
-from json import JSONDecodeError
-from starlette.endpoints import HTTPEndpoint
-from starlette.exceptions import HTTPException
-from starlette.requests import Request
-from starlette.status import HTTP_400_BAD_REQUEST, HTTP_500_INTERNAL_SERVER_ERROR
-import asyncio
-import math
+from fastapi import APIRouter, HTTPException, status
+from pydantic import BaseModel, AnyHttpUrl
+from typing import List, Optional
 import yara
-from loguru import logger
 
 from uzen.browser import Browser
-from uzen.models import Snapshot
-from uzen.responses import ORJSONResponse as JSONResponse
-from uzen.services.snapshot_search import SnapshotSearcher
+from uzen.models import SnapshotModel, SnapshotBaseModel
 from uzen.services.yara_scanner import YaraScanner
 
 
-class YaraScan(HTTPEndpoint):
-    async def post(self, request: Request) -> JSONResponse:
-        try:
-            payload = await request.json()
-            source = payload["source"]
-        except JSONDecodeError:
-            raise HTTPException(
-                status_code=HTTP_400_BAD_REQUEST, detail="cannot parse request body"
-            )
-        except KeyError:
-            raise HTTPException(
-                status_code=HTTP_400_BAD_REQUEST, detail="source is required"
-            )
-
-        try:
-            yara_scanner = YaraScanner(source)
-        except yara.Error as e:
-            raise HTTPException(
-                status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
-            )
-
-        filters = request.query_params
-        target = payload.get("target", "body")
-        snapshots = await yara_scanner.scan_snapshots(target, filters)
-        return JSONResponse(
-            {"snapshots": [snapshot.to_dict()
-                           for snapshot in snapshots]}
-        )
+router = APIRouter()
 
 
-class YaraOneshot(HTTPEndpoint):
-    async def post(self, request: Request) -> JSONResponse:
-        try:
-            payload = await request.json()
-            source = payload["source"]
-            url = payload["url"]
-        except JSONDecodeError:
-            raise HTTPException(
-                status_code=HTTP_400_BAD_REQUEST, detail="cannot parse request body"
-            )
-        except KeyError:
-            raise HTTPException(
-                status_code=HTTP_400_BAD_REQUEST, detail="source and url are required"
-            )
+class ScanPayload(BaseModel):
+    source: str
+    target: Optional[str]
 
-        try:
-            yara_scanner = YaraScanner(source)
-        except yara.Error as e:
-            raise HTTPException(
-                status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
-            )
 
-        snapshot = await Browser.take_snapshot(url)
+@router.post("/scan", response_model=List[SnapshotModel])
+async def scan(payload: ScanPayload, hostname: str = None, ip_address: str = None, asn: str = None, server: str = None, content_type: str = None, sha256: str = None, from_at: str = None, to_at: str = None):
+    """
+    Make a YARA scan against snapshots
+    """
+    source = payload.source
+    target = payload.target or "body"
 
-        target = payload.get("target", "body")
-        data = snapshot.to_dict().get(target, "")
-        matches = yara_scanner.match(data)
-        matched = True if len(matches) > 0 else False
+    try:
+        yara_scanner = YaraScanner(source)
+    except yara.Error as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
-        return JSONResponse({
-            "snapshot": snapshot.to_dict(),
-            "matched": matched
-        })
+    filters = {
+        "hostname": hostname,
+        "ip_address": ip_address,
+        "asn": asn,
+        "server": server,
+        "content_type": content_type,
+        "sha256": sha256,
+        "from_at": from_at,
+        "to_at": to_at,
+    }
+    snapshots = await yara_scanner.scan_snapshots(target, filters)
+    return [snapshot.to_pandantic_model() for snapshot in snapshots]
+
+
+class OneshotPayload(BaseModel):
+    url: AnyHttpUrl
+    source: str
+    target: Optional[str]
+
+
+class OneshotResponse(BaseModel):
+    snapshot: SnapshotBaseModel
+    matched: bool
+
+
+@router.post("/oneshot", response_model=OneshotResponse)
+async def oneshot(payload: OneshotPayload):
+    """
+    Make oneshot YARA scan against a URL
+    """
+    source = payload.source
+    url = payload.url
+    target = payload.target or "body"
+
+    try:
+        yara_scanner = YaraScanner(source)
+    except yara.Error as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    snapshot = await Browser.take_snapshot(url)
+
+    data = snapshot.to_dict().get(target, "")
+    matches = yara_scanner.match(data)
+    matched = True if len(matches) > 0 else False
+
+    return OneshotResponse(snapshot=snapshot.to_base_model(), matched=matched)

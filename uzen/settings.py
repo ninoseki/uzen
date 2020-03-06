@@ -5,6 +5,8 @@ import sys
 
 config = Config(".env")
 
+PROJECT_NAME = config("PROJECT_NAME", default="uzen")
+
 DEBUG = config("DEBUG", cast=bool, default=False)
 TESTING = config("TESTING", cast=bool, default=False)
 

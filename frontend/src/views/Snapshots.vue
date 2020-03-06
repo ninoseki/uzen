@@ -35,7 +35,7 @@
 import { Component, Vue, Prop } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 
-import { Snapshot, SnapshotCount, SnapshotsData, ErrorData } from "@/types";
+import { SnapshotCount, Snapshot, ErrorData } from "@/types";
 
 import Counter from "@/components/Counter.vue";
 import SnapshotDetail from "@/components/SnapshotDetail.vue";
@@ -78,14 +78,14 @@ export default class Snapshots extends Vue {
     params["offset"] = this.offset;
 
     try {
-      const response = await axios.get<SnapshotsData>("/api/snapshots/search", {
+      const response = await axios.get<Snapshot[]>("/api/snapshots/search", {
         params: params
       });
-      const data = response.data;
+
       loadingComponent.close();
 
-      this.snapshots = this.snapshots.concat(data.snapshots);
-      this.count = data.snapshots.length;
+      this.snapshots = response.data;
+      this.count = this.snapshots.length;
     } catch (error) {
       loadingComponent.close();
 

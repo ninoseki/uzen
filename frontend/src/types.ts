@@ -20,14 +20,6 @@ export interface Snapshot {
   created_at: string;
 }
 
-export interface SnapshotData {
-  snapshot: Snapshot;
-}
-
-export interface SnapshotsData {
-  snapshots: Snapshot[];
-}
-
 export interface SnapshotCount {
   count: number;
 }

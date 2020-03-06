@@ -23,6 +23,5 @@ async def test_snapshot_post(client, monkeypatch):
     assert response.status_code == 201
 
     data = response.json()
-    snapshot = data.get("snapshot", {})
-    assert snapshot.get("url") == "http://example.com"
-    assert snapshot.get("body") == "foo bar"
+    assert data.get("url") == "http://example.com"
+    assert data.get("body") == "foo bar"

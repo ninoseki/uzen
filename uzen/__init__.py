@@ -1,83 +1,36 @@
+from fastapi import FastAPI
+from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.staticfiles import StaticFiles
 from loguru import logger
-from starlette.applications import Starlette
-from starlette.config import Config
-from starlette.datastructures import CommaSeparatedStrings
-from starlette.exceptions import HTTPException
-from starlette.middleware import Middleware
-from starlette.middleware.gzip import GZipMiddleware
-from starlette.responses import JSONResponse
-from starlette.routing import Route, Mount
-from starlette.staticfiles import StaticFiles
 from tortoise import Tortoise
 
-
-from uzen.endpoints.snapshots import (
-    SnapshotCount,
-    SnapshotDelete,
-    SnapshotGet,
-    SnapshotList,
-    SnapshotPost,
-    SnapshotSearch,
-)
-from uzen.endpoints.yara import YaraScan, YaraOneshot
-from uzen.endpoints.urlscan import URLScanPost
-
 from uzen import settings
+from uzen.endpoints import api_router
 
 
-routes = [
-    Mount(
-        "/api/snapshots",
-        name="snapshots",
-        routes=[
-            Route("/", SnapshotList, methods=["GET"]),
-            Route("/search", SnapshotSearch, methods=["GET"]),
-            Route("/", SnapshotPost, methods=["POST"]),
-            Route("/{id:int}", SnapshotGet, methods=["GET"]),
-            Route("/{id:int}", SnapshotDelete, methods=["DELETE"]),
-            Route("/count", SnapshotCount, methods=["GET"]),
-        ],
-    ),
-    Mount(
-        "/api/yara", name="yara", routes=[
-            Route("/scan", YaraScan, methods=["POST"]),
-            Route("/oneshot", YaraOneshot, methods=["POST"]),
-        ],
-    ),
-    Mount(
-        "/api/import",
-        name="import",
-        routes=[Route("/{uuid:str}", URLScanPost, methods=["POST"]), ],
-    ),
-    Mount("/", app=StaticFiles(html=True, directory="frontend/dist")),
-    Mount("/static", app=StaticFiles(directory="frontend/dist/static")),
-]
-
-
-async def http_exception(request, exc):
-    return JSONResponse({"detail": exc.detail}, status_code=exc.status_code)
-
-
-exception_handlers = {HTTPException: http_exception}
-
-
-middleware = [
-    Middleware(GZipMiddleware, minimum_size=1000)
-]
-
-
-def create_app(debug=settings.DEBUG):
+def create_app():
     logger.add(
         settings.LOG_FILE,
         level=settings.LOG_LEVEL,
         backtrace=settings.LOG_BACKTRACE
     )
-    return Starlette(
-        debug=debug,
-        routes=routes,
-        middleware=middleware,
-        exception_handlers=exception_handlers,
+
+    app = FastAPI(
+        debug=settings.DEBUG,
+        title=settings.PROJECT_NAME,
     )
+
+    app.include_router(api_router, prefix="/api")
+    app.mount(
+        "/static", StaticFiles(directory="frontend/dist/static"), name="static"
+    )
+    app.mount(
+        "/", StaticFiles(html=True, directory="frontend/dist/"), name="index"
+    )
+
+    app.add_middleware(GZipMiddleware, minimum_size=1000)
+
+    return app
 
 
 app = create_app()
