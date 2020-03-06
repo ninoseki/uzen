@@ -1,12 +1,15 @@
+from loguru import logger
 from starlette.applications import Starlette
 from starlette.config import Config
 from starlette.datastructures import CommaSeparatedStrings
 from starlette.exceptions import HTTPException
+from starlette.middleware import Middleware
+from starlette.middleware.gzip import GZipMiddleware
 from starlette.responses import JSONResponse
 from starlette.routing import Route, Mount
 from starlette.staticfiles import StaticFiles
 from tortoise import Tortoise
-from loguru import logger
+
 
 from uzen.endpoints.snapshots import (
     SnapshotCount,
@@ -58,13 +61,23 @@ async def http_exception(request, exc):
 exception_handlers = {HTTPException: http_exception}
 
 
+middleware = [
+    Middleware(GZipMiddleware, minimum_size=1000)
+]
+
+
 def create_app(debug=settings.DEBUG):
     logger.add(
         settings.LOG_FILE,
         level=settings.LOG_LEVEL,
         backtrace=settings.LOG_BACKTRACE
     )
-    return Starlette(debug=debug, routes=routes, exception_handlers=exception_handlers)
+    return Starlette(
+        debug=debug,
+        routes=routes,
+        middleware=middleware,
+        exception_handlers=exception_handlers,
+    )
 
 
 app = create_app()
