@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel, AnyHttpUrl
 from typing import List, Optional
 import yara
@@ -6,47 +6,37 @@ import yara
 from uzen.browser import Browser
 from uzen.models import SnapshotModel, SnapshotBaseModel
 from uzen.services.yara_scanner import YaraScanner
-
+from uzen.dependencies import search_filters
 
 router = APIRouter()
 
 
 class ScanPayload(BaseModel):
     source: str
-    target: Optional[str]
+    target: Optional[str] = "body"
 
 
 @router.post("/scan", response_model=List[SnapshotModel])
-async def scan(payload: ScanPayload, hostname: str = None, ip_address: str = None, asn: str = None, server: str = None, content_type: str = None, sha256: str = None, from_at: str = None, to_at: str = None):
+async def scan(payload: ScanPayload, filters: dict = Depends(search_filters)):
     """
     Make a YARA scan against snapshots
     """
     source = payload.source
-    target = payload.target or "body"
+    target = payload.target
 
     try:
         yara_scanner = YaraScanner(source)
     except yara.Error as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-    filters = {
-        "hostname": hostname,
-        "ip_address": ip_address,
-        "asn": asn,
-        "server": server,
-        "content_type": content_type,
-        "sha256": sha256,
-        "from_at": from_at,
-        "to_at": to_at,
-    }
     snapshots = await yara_scanner.scan_snapshots(target, filters)
-    return [snapshot.to_pandantic_model() for snapshot in snapshots]
+    return [snapshot.to_full_model() for snapshot in snapshots]
 
 
 class OneshotPayload(BaseModel):
     url: AnyHttpUrl
     source: str
-    target: Optional[str]
+    target: Optional[str] = "body"
 
 
 class OneshotResponse(BaseModel):
@@ -61,7 +51,7 @@ async def oneshot(payload: OneshotPayload):
     """
     source = payload.source
     url = payload.url
-    target = payload.target or "body"
+    target = payload.target
 
     try:
         yara_scanner = YaraScanner(source)

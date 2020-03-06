@@ -24,4 +24,4 @@ async def import_from_urlscan(uuid: str):
 
     await snapshot.save()
 
-    return snapshot.to_pandantic_model()
+    return snapshot.to_full_model()

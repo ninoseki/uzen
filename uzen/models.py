@@ -1,4 +1,4 @@
-from pydantic import BaseModel, HttpUrl
+from pydantic import BaseModel, AnyHttpUrl, IPvAnyAddress
 from tortoise import fields
 from tortoise.models import Model
 from typing import Optional, Union
@@ -6,10 +6,10 @@ import datetime
 
 
 class SnapshotBaseModel(BaseModel):
-    url: str
+    url: AnyHttpUrl
     status: int
     hostname: str
-    ip_address: str
+    ip_address: IPvAnyAddress
     asn: str
     server: Optional[str]
     content_type: Optional[str]
@@ -48,7 +48,7 @@ class Snapshot(Model):
     certificate = fields.TextField(null=True)
     created_at = fields.DatetimeField(auto_now_add=True)
 
-    def to_pandantic_model(self) -> SnapshotModel:
+    def to_full_model(self) -> SnapshotModel:
         return SnapshotModel.from_orm(self)
 
     def to_base_model(self) -> SnapshotBaseModel:
