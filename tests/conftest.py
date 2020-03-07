@@ -14,9 +14,9 @@ import pytest
 # This line would raise an error if we use it after 'settings' has been imported.
 environ["TESTING"] = "TRUE"
 
-from uzen import settings  # noqa
 from uzen import create_app  # noqa
-from uzen.models import Snapshot  # noqa
+from uzen.core import settings  # noqa
+from uzen.models.snapshots import Snapshot  # noqa
 
 
 @pytest.fixture

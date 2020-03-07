@@ -1,6 +1,6 @@
 import datetime
 
-from uzen.models import Snapshot
+from uzen.models.snapshots import Snapshot
 
 
 def make_snapshot() -> Snapshot:

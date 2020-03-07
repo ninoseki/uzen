@@ -1,12 +1,7 @@
-from starlette.responses import HTMLResponse
-from starlette.testclient import TestClient
-import json
 import pytest
-import datetime
 
-from uzen.urlscan import URLScan
-from uzen.models import Snapshot
 from tests.utils import make_snapshot
+from uzen.services.urlscan import URLScan
 
 
 def mock_import_as_snapshot(url: str):

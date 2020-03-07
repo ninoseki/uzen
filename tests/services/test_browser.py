@@ -2,10 +2,10 @@ import pytest
 import vcr
 from pyppeteer.errors import PyppeteerError
 
-from uzen.browser import Browser
-from uzen.utils import IPInfo
-from uzen.whois import Whois
-from uzen.certificate import Certificate
+from uzen.services.browser import Browser
+from uzen.services.utils import IPInfo
+from uzen.services.whois import Whois
+from uzen.services.certificate import Certificate
 
 
 def mock_get_basic(ip_address: str):

@@ -1,13 +1,9 @@
-from starlette.responses import HTMLResponse
-from starlette.testclient import TestClient
 import json
 import pytest
-import datetime
 
 
-from uzen.browser import Browser
-from uzen.models import Snapshot
 from tests.utils import make_snapshot
+from uzen.services.browser import Browser
 
 
 @pytest.mark.asyncio

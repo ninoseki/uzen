@@ -4,7 +4,7 @@ import pytest
 import datetime
 
 
-from uzen.urlscan import URLScan
+from uzen.services.urlscan import URLScan
 
 
 @vcr.use_cassette("tests/fixtures/vcr_cassettes/urlscan_import.yaml")

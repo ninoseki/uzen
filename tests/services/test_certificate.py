@@ -2,7 +2,7 @@ import vcr
 import socket
 import pytest
 
-from uzen.certificate import Certificate
+from uzen.services.certificate import Certificate
 
 
 def test_load_and_dump_from_url():

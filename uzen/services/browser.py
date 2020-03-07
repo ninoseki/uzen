@@ -4,14 +4,14 @@ from typing import Optional
 import asyncio
 import hashlib
 
-from uzen.models import Snapshot
-from uzen.utils import (
+from uzen.models.snapshots import Snapshot
+from uzen.services.certificate import Certificate
+from uzen.services.utils import (
     get_asn_by_ip_address,
     get_hostname_from_url,
-    get_ip_address_by_hostname,
+    get_ip_address_by_hostname
 )
-from uzen.whois import Whois
-from uzen.certificate import Certificate
+from uzen.services.whois import Whois
 
 
 class Browser:

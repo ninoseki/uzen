@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from uzen.endpoints import snapshots, urlscan, yara
+from uzen.api.routes import snapshots, urlscan, yara
 
 api_router = APIRouter()
 api_router.include_router(
