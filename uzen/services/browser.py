@@ -48,6 +48,13 @@ class Browser:
             timeout = timeout if timeout is not None else 30 * 1000
             res = await page.goto(url, timeout=timeout)
 
+            request = {
+                "browser": await browser.version(),
+                "ignore_https_errors": ignore_https_errors,
+                "timeout": timeout,
+                "user_agent": user_agent or await browser.userAgent(),
+            }
+
             status = res.status
             screenshot = await page.screenshot(encoding="base64")
             body = await res.text()
@@ -56,6 +63,9 @@ class Browser:
         except PyppeteerError as e:
             await browser.close()
             raise (e)
+        else:
+            await browser.close()
+            print("closed")
         finally:
             if browser is not None:
                 await browser.close()
@@ -84,6 +94,7 @@ class Browser:
             content_type=content_type,
             whois=whois,
             certificate=certificate,
+            request=request,
             screenshot=screenshot,
         )
         return snapshot

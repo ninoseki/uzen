@@ -74,6 +74,7 @@ async def snapshots_setup(client):
             sha256="fbc1a9f858ea9e177916964bd88c3d37b91a1e84412765e29950777f265c4b75",
             screenshot="yoyo",
             whois="foo",
+            request={},
             created_at=datetime.datetime.now()
 
         )
