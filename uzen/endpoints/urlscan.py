@@ -10,11 +10,15 @@ from uzen.urlscan import URLScan
 router = APIRouter()
 
 
-@router.post("/{uuid}", response_model=SnapshotModel, status_code=201)
-async def import_from_urlscan(uuid: str):
-    """
-    Import a snapshot from urlscan.io
-    """
+@router.post(
+    "/{uuid}",
+    response_model=SnapshotModel,
+    response_description="Returns an imported snapshot",
+    status_code=201,
+    summary="Import data from urlscan.io",
+    description="Import scan data from urlscan.io as a snapshot",
+)
+async def import_from_urlscan(uuid: str) -> SnapshotModel:
     try:
         snapshot = URLScan.import_as_snapshot(uuid)
     except requests.exceptions.HTTPError:

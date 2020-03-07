@@ -33,6 +33,14 @@ class URLScan:
 
     @classmethod
     def import_as_snapshot(cls, uuid: str) -> Snapshot:
+        """Import urlscan.io scan as a snapshot
+
+        Arguments:
+            uuid {str} -- Scan ID
+
+        Returns:
+            Snapshot -- Snapshot ORM instance
+        """
         instance = cls(uuid)
         result = instance.result()
 

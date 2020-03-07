@@ -34,6 +34,20 @@ class SnapshotSearcher:
 
     @staticmethod
     async def search(filters: dict, size=None, offset=None, id_only=False, count_only=False) -> Union[List[Snapshot], int]:
+        """Search snapshots
+
+        Arguments:
+            filters {dict} -- Filters for snapshot search
+
+        Keyword Arguments:
+            size {[int]} -- Nmber of results returned (default: {None})
+            offset {[int]} -- Offset of the first result for pagination (default: {None})
+            id_only {bool} -- Whether to return only a list of ids (default: {False})
+            count_only {bool} -- Whether to return only a count of results (default: {False})
+
+        Returns:
+            Union[List[Snapshot], int] -- [description]
+        """
         queries = []
 
         hostname = filters.get("hostname")

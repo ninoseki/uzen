@@ -39,6 +39,14 @@ class IPInfo:
 
 
 def get_hostname_from_url(url: str) -> Optional[str]:
+    """Get a hostname from a URL
+
+    Arguments:
+        url {str} -- URL
+
+    Returns:
+        Optional[str] -- A hostname, returns None if an invalid input is given
+    """
     parsed = urlparse(url)
     if parsed.netloc == "":
         return None
@@ -46,6 +54,14 @@ def get_hostname_from_url(url: str) -> Optional[str]:
 
 
 def get_ip_address_by_hostname(hostname: str) -> Optional[str]:
+    """Get an IP address by a hostname
+
+    Arguments:
+        hostname {str} -- Hostname
+
+    Returns:
+        Optional[str] -- An IP address, returns None if an error occurs
+    """
     try:
         return socket.gethostbyname(hostname)
     except socket.error:
@@ -61,9 +77,16 @@ def get_country_code_by_ip_address(ip_address: str) -> Optional[str]:
 
 
 def get_asn_by_ip_address(ip_address: str) -> Optional[str]:
+    """Get ASN by an IP address
+
+    Arguments:
+        ip_address {str} -- IP address
+
+    Returns:
+        Optional[str] -- ASN as a string, returns None if an error occurs
+    """
     try:
         json = IPInfo.get_basic(ip_address)
         return json.get("org")
     except Exception as e:
         return None
-

@@ -16,6 +16,15 @@ class YaraScanner:
         self.rule: yara.Rules = yara.compile(source=source)
 
     async def partial_scan(self, target: str, ids: List[int]) -> List[int]:
+        """Scan a list of snapshots with a YARA rule
+
+        Arguments:
+            target {str} -- A target of a snapshot's attribute
+            ids {List[int]} -- A list of ids of snapshots
+
+        Returns:
+            List[int] -- A list of ids which are matched with a YARA rule
+        """
         async with sem:
             snapshots = await Snapshot.filter(id__in=ids).values("id", target)
             matched_ids = []
@@ -29,6 +38,15 @@ class YaraScanner:
             return matched_ids
 
     async def scan_snapshots(self, target: str = "body", filters: dict = {}) -> List[Snapshot]:
+        """Scan snapshots data with a YARA rule
+
+        Keyword Arguments:
+            target {str} -- A target of a snapshot's attribute (default: {"body"})
+            filters {dict} -- Filters for snapshot search (default: {{}})
+
+        Returns:
+            List[Snapshot] -- A list of snapshot ORM instances
+        """
         # get snapshots ids based on filters
         snapshot_ids = await SnapshotSearcher.search(filters, id_only=True)
         if len(snapshot_ids) == 0:
@@ -48,5 +66,13 @@ class YaraScanner:
         return await Snapshot.filter(id__in=matched_ids).order_by("-id")
 
     def match(self, data: Optional[str]) -> List[yara.Match]:
+        """Scan a data with a YARA rule
+
+        Arguments:
+            data {Optional[str]} -- Data to scan
+
+        Returns:
+            List[yara.Match] -- YARA matches
+        """
         data = "" if data is None else data
         return self.rule.match(data=data)

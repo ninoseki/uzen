@@ -21,6 +21,19 @@ class Browser:
             user_agent: Optional[str] = None,
             timeout: Optional[int] = None,
             ignore_https_errors: bool = False) -> Snapshot:
+        """Take a snapshot of a website by puppeteer
+
+        Arguments:
+            url {str} -- A URL of a website
+
+        Keyword Arguments:
+            user_agent {Optional[str]} -- User agent to use (default: {None})
+            timeout {Optional[int]} -- Maximum time to wait for in seconds (default: {None})
+            ignore_https_errors {bool} -- Whether to ignore HTTPS errors (default: {False})
+
+        Returns:
+            Snapshot -- Snapshot ORM instance
+        """
         try:
             browser = await launch(
                 headless=True,

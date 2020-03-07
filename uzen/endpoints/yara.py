@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
-from pydantic import BaseModel, AnyHttpUrl
+from pydantic import BaseModel, Field, AnyHttpUrl
 from typing import List, Optional
 import yara
 
@@ -12,15 +12,26 @@ router = APIRouter()
 
 
 class ScanPayload(BaseModel):
-    source: str
-    target: Optional[str] = "body"
+    source: str = Field(
+        None,
+        title="YARA rule",
+        description="String containing the rules code"
+    )
+    target: Optional[str] = Field(
+        "body",
+        title="Target to scan",
+        description="Target field to scan (body, whois or certificate)"
+    )
 
 
-@router.post("/scan", response_model=List[SnapshotModel])
-async def scan(payload: ScanPayload, filters: dict = Depends(search_filters)):
-    """
-    Make a YARA scan against snapshots
-    """
+@router.post(
+    "/scan",
+    response_model=List[SnapshotModel],
+    response_description="Returns a list of matched snapshots",
+    summary="Perform YARA scans against snapshtos",
+    description="Perform YARA scans against snapshtos (which can be narrowed down by filters)",
+)
+async def scan(payload: ScanPayload, filters: dict = Depends(search_filters)) -> List[SnapshotModel]:
     source = payload.source
     target = payload.target
 
@@ -33,22 +44,31 @@ async def scan(payload: ScanPayload, filters: dict = Depends(search_filters)):
     return [snapshot.to_full_model() for snapshot in snapshots]
 
 
-class OneshotPayload(BaseModel):
+class OneshotPayload(ScanPayload):
     url: AnyHttpUrl
-    source: str
-    target: Optional[str] = "body"
 
 
 class OneshotResponse(BaseModel):
-    snapshot: SnapshotBaseModel
-    matched: bool
+    snapshot: SnapshotBaseModel = Field(
+        None,
+        title="Snapshot model",
+        description="Snapshot model without id & created_at fields"
+    )
+    matched: bool = Field(
+        None,
+        title="whether matched or not",
+        description="whether matched or not"
+    )
 
 
-@router.post("/oneshot", response_model=OneshotResponse)
-async def oneshot(payload: OneshotPayload):
-    """
-    Make oneshot YARA scan against a URL
-    """
+@router.post(
+    "/oneshot",
+    response_model=OneshotResponse,
+    response_description="Returns a snapshot and a matching result",
+    summary="Perform a YARA scan against a website",
+    description="Perform oneshot YARA scan against a website",
+)
+async def oneshot(payload: OneshotPayload) -> OneshotResponse:
     source = payload.source
     url = payload.url
     target = payload.target
