@@ -2,9 +2,8 @@ from fastapi import APIRouter, HTTPException
 from pyppeteer.errors import PyppeteerError
 import requests
 
-
-from uzen.models import SnapshotModel
-from uzen.urlscan import URLScan
+from uzen.models.snapshots import SnapshotModel
+from uzen.services.urlscan import URLScan
 
 
 router = APIRouter()

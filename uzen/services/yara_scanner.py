@@ -3,7 +3,7 @@ import asyncio
 import math
 import yara
 
-from uzen.models import Snapshot
+from uzen.models.snapshots import Snapshot
 from uzen.services.snapshot_search import SnapshotSearcher
 
 CHUNK_SIZE = 100

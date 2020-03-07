@@ -1,27 +1,16 @@
 from fastapi import APIRouter, HTTPException, Depends
-from pydantic import BaseModel, Field, AnyHttpUrl
-from typing import List, Optional
+from typing import List
 import yara
 
-from uzen.browser import Browser
-from uzen.models import SnapshotModel, SnapshotBaseModel
+from uzen.api.dependencies.snapshots import search_filters
+from uzen.services.browser import Browser
+from uzen.models.schemas.yara import (
+    ScanPayload, OneshotPayload, OneshotResponse
+)
+from uzen.models.snapshots import SnapshotModel
 from uzen.services.yara_scanner import YaraScanner
-from uzen.dependencies import search_filters
 
 router = APIRouter()
-
-
-class ScanPayload(BaseModel):
-    source: str = Field(
-        None,
-        title="YARA rule",
-        description="String containing the rules code"
-    )
-    target: Optional[str] = Field(
-        "body",
-        title="Target to scan",
-        description="Target field to scan (body, whois or certificate)"
-    )
 
 
 @router.post(
@@ -31,7 +20,10 @@ class ScanPayload(BaseModel):
     summary="Perform YARA scans against snapshtos",
     description="Perform YARA scans against snapshtos (which can be narrowed down by filters)",
 )
-async def scan(payload: ScanPayload, filters: dict = Depends(search_filters)) -> List[SnapshotModel]:
+async def scan(
+    payload: ScanPayload,
+    filters: dict = Depends(search_filters)
+) -> List[SnapshotModel]:
     source = payload.source
     target = payload.target
 
@@ -42,23 +34,6 @@ async def scan(payload: ScanPayload, filters: dict = Depends(search_filters)) ->
 
     snapshots = await yara_scanner.scan_snapshots(target, filters)
     return [snapshot.to_full_model() for snapshot in snapshots]
-
-
-class OneshotPayload(ScanPayload):
-    url: AnyHttpUrl
-
-
-class OneshotResponse(BaseModel):
-    snapshot: SnapshotBaseModel = Field(
-        None,
-        title="Snapshot model",
-        description="Snapshot model without id & created_at fields"
-    )
-    matched: bool = Field(
-        None,
-        title="whether matched or not",
-        description="whether matched or not"
-    )
 
 
 @router.post(

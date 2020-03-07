@@ -4,11 +4,11 @@ from pyppeteer.errors import PyppeteerError
 from tortoise.exceptions import DoesNotExist
 from typing import Optional, List
 
-
-from uzen.browser import Browser
-from uzen.models import Snapshot, SnapshotModel
+from uzen.api.dependencies.snapshots import search_filters
+from uzen.models.schemas.snapshots import CreateSnapshotPayload, CountResponse
+from uzen.models.snapshots import Snapshot, SnapshotModel
+from uzen.services.browser import Browser
 from uzen.services.snapshot_search import SnapshotSearcher
-from uzen.dependencies import search_filters
 
 router = APIRouter()
 
@@ -20,17 +20,17 @@ router = APIRouter()
     summary="Search snapshots",
     description="Searcn snapshtos with filters",
 )
-async def search(size: Optional[int] = None, offset: Optional[int] = None, filters: dict = Depends(search_filters)) -> List[SnapshotModel]:
-    snapshots = await SnapshotSearcher.search(filters, size=size, offset=offset)
-    return [snapshot.to_full_model() for snapshot in snapshots]
-
-
-class CountResponse(BaseModel):
-    count: int = Field(
-        None,
-        title="A number of snapshots",
-        description="A number of snapshots matched with filters"
+async def search(
+    size: Optional[int] = None,
+    offset: Optional[int] = None,
+    filters: dict = Depends(search_filters)
+) -> List[SnapshotModel]:
+    snapshots = await SnapshotSearcher.search(
+        filters,
+        size=size,
+        offset=offset
     )
+    return [snapshot.to_full_model() for snapshot in snapshots]
 
 
 @router.get(
@@ -74,25 +74,6 @@ async def list(size: int = 100, offset: int = 0) -> List[SnapshotModel]:
     return [snapshot.to_full_model() for snapshot in snapshots]
 
 
-class TakeSnapshotPayload(BaseModel):
-    url: AnyHttpUrl
-    user_agent: Optional[str] = Field(
-        None,
-        title="User agent",
-        description="Specific user agent to use"
-    )
-    timeout: Optional[int] = Field(
-        None,
-        title="Timeout",
-        description="Maximum time to wait for in seconds"
-    )
-    ignore_https_errors: Optional[bool] = Field(
-        None,
-        title="Ignore HTTPS erros",
-        description="Whether to ignore HTTPS errors"
-    )
-
-
 @router.post(
     "/",
     response_model=SnapshotModel,
@@ -101,7 +82,7 @@ class TakeSnapshotPayload(BaseModel):
     description="Create a snapshot of a website by using puppeteer",
     status_code=201
 )
-async def create(payload: TakeSnapshotPayload) -> SnapshotModel:
+async def create(payload: CreateSnapshotPayload) -> SnapshotModel:
     url = payload.url
     user_agent = payload.user_agent
     timeout = payload.timeout or 30000

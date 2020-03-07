@@ -2,7 +2,7 @@ from tortoise.query_utils import Q
 from typing import List, Union
 import datetime
 
-from uzen.models import Snapshot
+from uzen.models.snapshots import Snapshot
 
 
 def convert_to_datetime(s: str) -> datetime.datetime:
