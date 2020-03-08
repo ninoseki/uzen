@@ -22,4 +22,5 @@ def upgrade():
 
 
 def downgrade():
-    op.drop_column("snapshots", "certificate")
+    with op.batch_alter_table("snapshots") as batch_op:
+        batch_op.drop_column("certificate")

@@ -24,6 +24,7 @@ class SnapshotBaseModel(BaseModel):
     screenshot: str
     whois: Optional[str]
     certificate: Optional[str]
+    request: dict
 
     class Config:
         orm_mode = True
@@ -56,6 +57,7 @@ class Snapshot(Model):
     screenshot = fields.TextField()
     whois = fields.TextField(null=True)
     certificate = fields.TextField(null=True)
+    request = fields.JSONField()
     created_at = fields.DatetimeField(auto_now_add=True)
 
     def to_full_model(self) -> SnapshotModel:
