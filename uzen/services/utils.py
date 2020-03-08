@@ -1,11 +1,12 @@
 """Helper utilities and decorators."""
+from OpenSSL import crypto
 from typing import Optional
 from urllib.parse import urlparse
+import hashlib
 import json
 import requests
 import socket
 import ssl
-from OpenSSL import crypto
 
 
 class IPInfo:
@@ -90,3 +91,7 @@ def get_asn_by_ip_address(ip_address: str) -> Optional[str]:
         return json.get("org")
     except Exception as e:
         return None
+
+
+def calculate_sha256(s: str) -> str:
+    return hashlib.sha256(s.encode('utf-8')).hexdigest()

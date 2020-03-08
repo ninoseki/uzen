@@ -1,13 +1,17 @@
 from fastapi import APIRouter, HTTPException, Depends
+from fastapi import BackgroundTasks
 from pydantic import BaseModel, Field, AnyHttpUrl
 from pyppeteer.errors import PyppeteerError
-from tortoise.exceptions import DoesNotExist
+from tortoise.exceptions import DoesNotExist, OperationalError
+from tortoise.transactions import in_transaction
 from typing import Optional, List
 
 from uzen.api.dependencies.snapshots import search_filters
 from uzen.models.schemas.snapshots import CreateSnapshotPayload, CountResponse
+from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot, SnapshotModel
 from uzen.services.browser import Browser
+from uzen.services.scripts import ScriptBuilder
 from uzen.services.snapshot_search import SnapshotSearcher
 
 router = APIRouter()
@@ -74,6 +78,11 @@ async def list(size: int = 100, offset: int = 0) -> List[SnapshotModel]:
     return [snapshot.to_full_model() for snapshot in snapshots]
 
 
+async def create_scripts(snapshot: Snapshot):
+    scripts = ScriptBuilder.build_from_snapshot(snapshot)
+    await Script.bulk_create(scripts)
+
+
 @router.post(
     "/",
     response_model=SnapshotModel,
@@ -82,7 +91,10 @@ async def list(size: int = 100, offset: int = 0) -> List[SnapshotModel]:
     description="Create a snapshot of a website by using puppeteer",
     status_code=201
 )
-async def create(payload: CreateSnapshotPayload) -> SnapshotModel:
+async def create(
+    payload: CreateSnapshotPayload,
+    background_tasks: BackgroundTasks
+) -> SnapshotModel:
     url = payload.url
     user_agent = payload.user_agent
     timeout = payload.timeout or 30000
@@ -99,6 +111,9 @@ async def create(payload: CreateSnapshotPayload) -> SnapshotModel:
         raise HTTPException(status_code=500, detail=str(e))
 
     await snapshot.save()
+
+    background_tasks.add_task(create_scripts, snapshot)
+
     return snapshot.to_full_model()
 
 

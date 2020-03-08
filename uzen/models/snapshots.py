@@ -60,6 +60,9 @@ class Snapshot(Model):
     request = fields.JSONField()
     created_at = fields.DatetimeField(auto_now_add=True)
 
+    scripts: fields.ReverseRelation["Script"]
+
+
     def to_full_model(self) -> SnapshotModel:
         return SnapshotModel.from_orm(self)
 

@@ -1,9 +1,12 @@
 from pyppeteer import launch
+from pyppeteer.element_handle import ElementHandle
 from pyppeteer.errors import PyppeteerError
-from typing import Optional
+from pyppeteer.page import Page
+from typing import Optional, List
 import asyncio
-import hashlib
+import httpx
 
+from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot
 from uzen.services.certificate import Certificate
 from uzen.services.utils import (
@@ -12,6 +15,7 @@ from uzen.services.utils import (
     get_ip_address_by_hostname
 )
 from uzen.services.whois import Whois
+from uzen.services.utils import calculate_sha256
 
 
 class Browser:
@@ -58,14 +62,13 @@ class Browser:
             status = res.status
             screenshot = await page.screenshot(encoding="base64")
             body = await res.text()
-            sha256 = hashlib.sha256(body.encode('utf-8')).hexdigest()
+            sha256 = calculate_sha256(body)
             headers = res.headers
         except PyppeteerError as e:
             await browser.close()
             raise (e)
         else:
             await browser.close()
-            print("closed")
         finally:
             if browser is not None:
                 await browser.close()
@@ -80,7 +83,7 @@ class Browser:
         asn = get_asn_by_ip_address(ip_address)
         whois = Whois.whois(hostname)
 
-        snapshot = await Snapshot(
+        snapshot = Snapshot(
             url=url,
             status=status,
             body=body,
@@ -97,4 +100,5 @@ class Browser:
             request=request,
             screenshot=screenshot,
         )
+
         return snapshot

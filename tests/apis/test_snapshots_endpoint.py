@@ -4,6 +4,7 @@ import pytest
 
 from tests.utils import make_snapshot
 from uzen.services.browser import Browser
+from uzen.models.snapshots import Snapshot
 
 
 @pytest.mark.asyncio
@@ -119,3 +120,7 @@ async def test_snapshot_post(client, monkeypatch):
     snapshot = response.json()
     assert snapshot.get("url") == "http://example.com"
     assert snapshot.get("body") == "foo bar"
+
+    snapshot = await Snapshot.get(id=snapshot.get("id"))
+    await snapshot.fetch_related("scripts")
+    assert len(snapshot.scripts) == 0

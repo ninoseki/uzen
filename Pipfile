@@ -31,6 +31,7 @@ python-whois = "*"
 pyopenssl = "*"
 pydantic = "*"
 fastapi = "*"
+requests-html = "*"
 
 [requires]
 python_version = "3.8"
