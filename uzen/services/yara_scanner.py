@@ -47,11 +47,11 @@ class YaraScanner:
             snapshots = await Snapshot.filter(id__in=ids).values("id", target)
             matched_ids = []
             for snapshot in snapshots:
-                id = snapshot.get("id")
+                snapshot_id = snapshot.get("id")
                 data = snapshot.get(target, "")
                 matches = self.match(data=data)
                 if len(matches) > 0:
-                    matched_ids.append(id)
+                    matched_ids.append(snapshot_id)
 
             return matched_ids
 

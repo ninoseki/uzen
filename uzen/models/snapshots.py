@@ -75,8 +75,8 @@ class Snapshot(Model):
     def to_model(self) -> Union[SnapshotModel, SnapshotBaseModel]:
         if self.id is not None:
             return SnapshotModel.from_orm(self)
-        else:
-            return SnapshotBaseModel.from_orm(self)
+
+        return SnapshotBaseModel.from_orm(self)
 
     def to_dict(self) -> dict:
         model = self.to_model()
