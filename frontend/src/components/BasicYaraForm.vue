@@ -26,7 +26,7 @@ import { TargetTypes } from "@/types";
 export default class BasicYaraForm extends Vue {
   private source: string = "";
   private target: TargetTypes = "body";
-  private targets: TargetTypes[] = ["body", "whois", "certificate"];
+  private targets: TargetTypes[] = ["body", "whois", "certificate", "script"];
 
   get _source() {
     return this.source;
