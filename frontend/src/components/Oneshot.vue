@@ -23,7 +23,11 @@
     </div>
 
     <div>
-      <SnapshotDetail v-if="hasSnapshot()" v-bind:data="snapshot" />
+      <SnapshotDetail
+        v-if="hasSnapshot()"
+        v-bind:snapshot="snapshot"
+        v-bind:propScripts="scripts"
+      />
     </div>
   </div>
 </template>
@@ -32,7 +36,7 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 
-import { ErrorData, Snapshot, Oneshot, TargetTypes } from "@/types";
+import { ErrorData, Snapshot, Oneshot, TargetTypes, Script } from "@/types";
 
 import SnapshotDetail from "@/components/SnapshotDetail.vue";
 import BasicYaraForm from "@/components/BasicYaraForm.vue";
@@ -48,6 +52,7 @@ export default class OneshotView extends Vue {
   private target: TargetTypes = "body";
   private url: string = "";
   private snapshot: Snapshot | undefined = undefined;
+  private scripts: Script[] = [];
   private matched: boolean | undefined = undefined;
 
   async scan() {
@@ -66,6 +71,7 @@ export default class OneshotView extends Vue {
       loadingComponent.close();
 
       this.snapshot = data.snapshot;
+      this.scripts = data.scripts;
       this.matched = data.matched;
 
       this.$forceUpdate();

@@ -20,7 +20,7 @@
     </b-message>
 
     <div>
-      <SnapshotDetail v-if="hasSnapshot()" v-bind:data="snapshot" />
+      <SnapshotDetail v-if="hasSnapshot()" v-bind:snapshot="snapshot" />
     </div>
   </div>
 </template>

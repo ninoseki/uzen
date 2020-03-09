@@ -3,7 +3,7 @@ export interface Headers {
 }
 
 export interface Snapshot {
-  id: number;
+  id: number | undefined;
   url: string;
   status: number;
   hostname: string;
@@ -18,7 +18,7 @@ export interface Snapshot {
   screenshot: string;
   whois: string | undefined;
   certificate: string | undefined;
-  created_at: string;
+  created_at: string | undefined;
 }
 
 export interface SnapshotCount {
@@ -47,17 +47,18 @@ export interface Link {
   href(hostname: string | undefined, ip_address: string | undefined): string;
 }
 
-export interface Oneshot {
-  matched: boolean;
-  snapshot: Snapshot;
-}
-
 export interface Script {
-  id: number;
+  id: number | undefined;
   url: string;
   content: string;
   sha256: string;
-  created_at: string;
+  created_at: string | undefined;
+}
+
+export interface Oneshot {
+  matched: boolean;
+  snapshot: Snapshot;
+  scripts: Script[];
 }
 
 export type TargetTypes = "body" | "whois" | "certificate" | "script";

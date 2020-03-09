@@ -2,7 +2,7 @@
   <div>
     <div class="box">
       <BasicYaraForm v-bind:source.sync="source" v-bind:target.sync="target" />
-      <hr>
+      <hr />
       <SnapshotSearch ref="search" />
       <br />
       <div class="has-text-centered">
@@ -16,7 +16,7 @@
     <SnapshotDetail
       v-for="snapshot in snapshots"
       v-bind:key="snapshot.id"
-      v-bind:data="snapshot"
+      v-bind:snapshot="snapshot"
     />
   </div>
 </template>
@@ -25,12 +25,7 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 
-import {
-  ErrorData,
-  Snapshot,
-  SearchFilters,
-  TargetTypes
-} from "@/types";
+import { ErrorData, Snapshot, SearchFilters, TargetTypes } from "@/types";
 
 import Counter from "@/components/Counter.vue";
 import SnapshotDetail from "@/components/SnapshotDetail.vue";

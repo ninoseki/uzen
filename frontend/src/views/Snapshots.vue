@@ -21,7 +21,7 @@
     <SnapshotDetail
       v-for="snapshot in snapshots"
       v-bind:key="snapshot.id"
-      v-bind:data="snapshot"
+      v-bind:snapshot="snapshot"
     />
     <br />
 
