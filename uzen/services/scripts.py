@@ -1,6 +1,7 @@
-from requests_html import HTML
-from typing import Optional, List
+from typing import List, Optional
+
 import requests
+from requests_html import HTML
 
 from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot
@@ -50,7 +51,7 @@ class ScriptBuilder:
                 url=source,
                 content=content,
                 sha256=calculate_sha256(content),
-                snapshot_id=snapshot.id
+                snapshot_id=snapshot.id,
             )
             scripts.append(script)
         return scripts

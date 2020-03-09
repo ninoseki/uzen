@@ -1,13 +1,13 @@
-from fastapi import APIRouter, HTTPException, Depends
 from typing import List
+
 import yara
+from fastapi import APIRouter, Depends, HTTPException
 
 from uzen.api.dependencies.snapshots import search_filters
-from uzen.services.browser import Browser
-from uzen.models.schemas.yara import (
-    ScanPayload, OneshotPayload, OneshotResponse
-)
+from uzen.models.schemas.yara import (OneshotPayload, OneshotResponse,
+                                      ScanPayload)
 from uzen.models.snapshots import SnapshotModel
+from uzen.services.browser import Browser
 from uzen.services.yara_scanner import YaraScanner
 
 router = APIRouter()
@@ -21,8 +21,7 @@ router = APIRouter()
     description="Perform YARA scans against snapshtos (which can be narrowed down by filters)",
 )
 async def scan(
-    payload: ScanPayload,
-    filters: dict = Depends(search_filters)
+    payload: ScanPayload, filters: dict = Depends(search_filters)
 ) -> List[SnapshotModel]:
     source = payload.source
     target = payload.target

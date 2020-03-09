@@ -9,7 +9,7 @@ async def search_filters(
     content_type: Optional[str] = None,
     sha256: Optional[str] = None,
     from_at: Optional[str] = None,
-    to_at: Optional[str] = None
+    to_at: Optional[str] = None,
 ) -> dict:
     """Filters for snapshot search
 

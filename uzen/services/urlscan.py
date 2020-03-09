@@ -1,5 +1,6 @@
 import base64
 import datetime
+
 import requests
 
 from uzen.models.snapshots import Snapshot
@@ -68,13 +69,12 @@ class URLScan:
             ip_address=result.get("page", {}).get("ip"),
             asn=f"{asn} {asnname}",
             server=result.get("page", {}).get("server"),
-            content_type=headers.get(
-                "Content-Type") or headers.get("content-type"),
-            content_length=headers.get(
-                "Content-Length") or headers.get("content-length"),
+            content_type=headers.get("Content-Type") or headers.get("content-type"),
+            content_length=headers.get("Content-Length")
+            or headers.get("content-length"),
             headers=headers,
             body=body,
             sha256=sha256,
             screenshot=screenshot,
-            created_at=created_at
+            created_at=created_at,
         )

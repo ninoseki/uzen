@@ -62,3 +62,8 @@ dist/
 
 # VS code
 .vscode
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json

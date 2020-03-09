@@ -1,13 +1,11 @@
-from fastapi import APIRouter, HTTPException, Depends
-from fastapi import BackgroundTasks
-from pydantic import BaseModel, Field, AnyHttpUrl
+from typing import List, Optional
+
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from pyppeteer.errors import PyppeteerError
-from tortoise.exceptions import DoesNotExist, OperationalError
-from tortoise.transactions import in_transaction
-from typing import Optional, List
+from tortoise.exceptions import DoesNotExist
 
 from uzen.api.dependencies.snapshots import search_filters
-from uzen.models.schemas.snapshots import CreateSnapshotPayload, CountResponse
+from uzen.models.schemas.snapshots import CountResponse, CreateSnapshotPayload
 from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot, SnapshotModel
 from uzen.services.browser import Browser
@@ -27,13 +25,9 @@ router = APIRouter()
 async def search(
     size: Optional[int] = None,
     offset: Optional[int] = None,
-    filters: dict = Depends(search_filters)
+    filters: dict = Depends(search_filters),
 ) -> List[SnapshotModel]:
-    snapshots = await SnapshotSearcher.search(
-        filters,
-        size=size,
-        offset=offset
-    )
+    snapshots = await SnapshotSearcher.search(filters, size=size, offset=offset)
     return [snapshot.to_full_model() for snapshot in snapshots]
 
 
@@ -60,8 +54,7 @@ async def get(snapshot_id: int) -> SnapshotModel:
     try:
         snapshot = await Snapshot.get(id=snapshot_id)
     except DoesNotExist:
-        raise HTTPException(
-            status_code=404, detail=f"Snapshot:{id} is not found")
+        raise HTTPException(status_code=404, detail=f"Snapshot:{id} is not found")
 
     return snapshot.to_full_model()
 
@@ -89,11 +82,10 @@ async def create_scripts(snapshot: Snapshot):
     response_description="Returns a created snapshot",
     summary="Create a snapshot",
     description="Create a snapshot of a website by using puppeteer",
-    status_code=201
+    status_code=201,
 )
 async def create(
-    payload: CreateSnapshotPayload,
-    background_tasks: BackgroundTasks
+    payload: CreateSnapshotPayload, background_tasks: BackgroundTasks
 ) -> SnapshotModel:
     url = payload.url
     user_agent = payload.user_agent
@@ -105,7 +97,7 @@ async def create(
             url,
             user_agent=user_agent,
             timeout=timeout,
-            ignore_https_errors=ignore_https_errors
+            ignore_https_errors=ignore_https_errors,
         )
     except PyppeteerError as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -122,14 +114,13 @@ async def create(
     response_description="Returns an empty JSON",
     summary="Delete a snapshot",
     description="Delete a snapshot which has a given ID",
-    status_code=204
+    status_code=204,
 )
 async def delete(snapshot_id: int) -> dict:
     try:
         snapshot = await Snapshot.get(id=snapshot_id)
     except DoesNotExist:
-        raise HTTPException(
-            status_code=404, detail=f"Snapshot:{id} is not found")
+        raise HTTPException(status_code=404, detail=f"Snapshot:{id} is not found")
 
     await snapshot.delete()
     return {}

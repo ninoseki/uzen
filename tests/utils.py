@@ -20,5 +20,5 @@ def make_snapshot() -> Snapshot:
         screenshot="yoyo",
         whois="foo",
         request={},
-        created_at=datetime.datetime.now()
+        created_at=datetime.datetime.now(),
     )

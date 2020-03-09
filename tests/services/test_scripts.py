@@ -1,10 +1,7 @@
 import vcr
-import socket
-import pytest
 
-from uzen.services.scripts import ScriptBuilder
-from uzen.models.snapshots import Snapshot
 from tests.utils import make_snapshot
+from uzen.services.scripts import ScriptBuilder
 
 
 @vcr.use_cassette("tests/fixtures/vcr_cassettes/build_from_snapshot.yaml")
@@ -17,10 +14,15 @@ def test_build_from_snapshot():
 
     script = scripts[0]
     assert script.url == "https://www.w3.org/2008/site/js/main"
-    assert "/*! See W3C-specific code uncompressed at http://www.w3.org/2008/site/js/core.js */" in script.content
+    assert (
+        "/*! See W3C-specific code uncompressed at http://www.w3.org/2008/site/js/core.js */"
+        in script.content
+    )
 
 
-@vcr.use_cassette("tests/fixtures/vcr_cassettes/build_from_snapshot_with_relative_src.yaml")
+@vcr.use_cassette(
+    "tests/fixtures/vcr_cassettes/build_from_snapshot_with_relative_src.yaml"
+)
 def test_build_from_snapshot_with_relative_src():
     snapshot = make_snapshot()
     snapshot.url = "https://www.w3.org"
@@ -31,7 +33,10 @@ def test_build_from_snapshot_with_relative_src():
 
     script = scripts[0]
     assert script.url == "https://www.w3.org/2008/site/js/main"
-    assert "/*! See W3C-specific code uncompressed at http://www.w3.org/2008/site/js/core.js */" in script.content
+    assert (
+        "/*! See W3C-specific code uncompressed at http://www.w3.org/2008/site/js/core.js */"
+        in script.content
+    )
 
 
 def test_build_from_snapshot_with_no_src():

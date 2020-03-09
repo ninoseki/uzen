@@ -1,10 +1,10 @@
 import json
+
 import pytest
 
-
 from tests.utils import make_snapshot
-from uzen.services.browser import Browser
 from uzen.models.snapshots import Snapshot
+from uzen.services.browser import Browser
 
 
 @pytest.mark.asyncio
@@ -35,18 +35,15 @@ async def test_snapshot_search(client):
     snapshots = response.json()
     assert len(snapshots) == 10
 
-    response = await client.get("/api/snapshots/search",
-                                params={"hostname": "example"})
+    response = await client.get("/api/snapshots/search", params={"hostname": "example"})
     snapshots = response.json()
     assert len(snapshots) == 10
 
-    response = await client.get("/api/snapshots/search",
-                                params={"server": "ECS"})
+    response = await client.get("/api/snapshots/search", params={"server": "ECS"})
     snapshots = response.json()
     assert len(snapshots) == 10
 
-    response = await client.get("/api/snapshots/search",
-                                params={"server": "Tomcat"})
+    response = await client.get("/api/snapshots/search", params={"server": "Tomcat"})
     snapshots = response.json()
     assert len(snapshots) == 0
 
@@ -103,7 +100,9 @@ async def test_snapshot_post_with_invalid_url(client):
     assert response.status_code == 422
 
 
-def mock_take_snapshot(url: str, user_agent: None, timeout: None, ignore_https_errors: False):
+def mock_take_snapshot(
+    url: str, user_agent: None, timeout: None, ignore_https_errors: False
+):
     return make_snapshot()
 
 

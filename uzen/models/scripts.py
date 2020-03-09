@@ -1,5 +1,5 @@
-from tortoise.models import Model
 from tortoise import fields
+from tortoise.models import Model
 
 from uzen.models.snapshots import Snapshot
 
@@ -12,7 +12,8 @@ class Script(Model):
     created_at = fields.DatetimeField(auto_now_add=True)
 
     snapshot: fields.ForeignKeyRelation[Snapshot] = fields.ForeignKeyField(
-        "models.Snapshot", related_name="scripts", to_field="id")
+        "models.Snapshot", related_name="scripts", to_field="id"
+    )
 
     class Meta:
         table = "scripts"

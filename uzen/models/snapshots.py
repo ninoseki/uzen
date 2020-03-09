@@ -1,8 +1,9 @@
-from pydantic import BaseModel, Field, AnyHttpUrl, IPvAnyAddress
+import datetime
+from typing import Optional, Union
+
+from pydantic import AnyHttpUrl, BaseModel, IPvAnyAddress
 from tortoise import fields
 from tortoise.models import Model
-from typing import Optional, Union
-import datetime
 
 
 class SnapshotBaseModel(BaseModel):
@@ -10,6 +11,7 @@ class SnapshotBaseModel(BaseModel):
 
     Note that this model doesn't have "id" and "created_at" fields.
     """
+
     url: AnyHttpUrl
     status: int
     hostname: str
@@ -34,6 +36,7 @@ class SnapshotModel(SnapshotBaseModel):
     """Full Pydantic model for Snapshot
 
     """
+
     id: int
     created_at: datetime.datetime
 
@@ -42,6 +45,7 @@ class Snapshot(Model):
     """An ORM class for snapshots table
 
     """
+
     id = fields.IntField(pk=True)
     url = fields.TextField()
     status = fields.IntField()
@@ -62,7 +66,6 @@ class Snapshot(Model):
 
     scripts: fields.ReverseRelation["Script"]
 
-
     def to_full_model(self) -> SnapshotModel:
         return SnapshotModel.from_orm(self)
 
@@ -70,7 +73,7 @@ class Snapshot(Model):
         return SnapshotBaseModel.from_orm(self)
 
     def to_model(self) -> Union[SnapshotModel, SnapshotBaseModel]:
-        if (self.id is not None):
+        if self.id is not None:
             return SnapshotModel.from_orm(self)
         else:
             return SnapshotBaseModel.from_orm(self)

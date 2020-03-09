@@ -1,4 +1,5 @@
 import json
+
 import pytest
 
 from uzen.models.snapshots import Snapshot
@@ -22,7 +23,7 @@ async def test_yara_scan_with_target(client):
     # it should return all snapshots because every snapshot has "whois" which contains "foo"
     payload = {
         "source": 'rule foo: bar {strings: $a = "foo" condition: $a}',
-        "target": "whois"
+        "target": "whois",
     }
     response = await client.post("/api/yara/scan", data=json.dumps(payload))
     assert response.status_code == 200
@@ -33,7 +34,7 @@ async def test_yara_scan_with_target(client):
     # it should return an empty list because there is no snapshot which has "certificate"
     payload = {
         "source": 'rule foo: bar {strings: $a = "foo" condition: $a}',
-        "target": "certificate"
+        "target": "certificate",
     }
     response = await client.post("/api/yara/scan", data=json.dumps(payload))
     assert response.status_code == 200
@@ -64,7 +65,7 @@ def mock_take_snapshot(url: str):
         sha256="fbc1a9f858ea9e177916964bd88c3d37b91a1e84412765e29950777f265c4b75",
         screenshot="yoyo",
         whois="foo",
-        request={}
+        request={},
     )
 
 
@@ -74,7 +75,7 @@ async def test_yara_oneshot(client, monkeypatch):
 
     payload = {
         "source": 'rule foo: bar {strings: $a = "foo" condition: $a}',
-        "url": 'http://example.com'
+        "url": "http://example.com",
     }
     response = await client.post("/api/yara/oneshot", data=json.dumps(payload))
     assert response.status_code == 200
@@ -84,7 +85,7 @@ async def test_yara_oneshot(client, monkeypatch):
 
     payload = {
         "source": 'rule foo: bar {strings: $a = "aaa" condition: $a}',
-        "url": 'http://example.com'
+        "url": "http://example.com",
     }
     response = await client.post("/api/yara/oneshot", data=json.dumps(payload))
     assert response.status_code == 200
