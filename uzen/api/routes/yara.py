@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, cast
 
 import yara
 from fastapi import APIRouter, Depends, HTTPException

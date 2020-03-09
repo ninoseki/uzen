@@ -1,5 +1,6 @@
+from typing import List, Optional, cast
 import asyncio
-from typing import List, Optional
+import itertools
 
 import yara
 
@@ -68,7 +69,8 @@ class YaraScanner:
             List[Snapshot] -- A list of snapshot ORM instances
         """
         # get snapshots ids based on filters
-        snapshot_ids = await SnapshotSearcher.search(filters, id_only=True)
+        snapshot_ids: object = await SnapshotSearcher.search(filters, id_only=True)
+        snapshot_ids = cast(List[int], snapshot_ids)
         if len(snapshot_ids) == 0:
             return []
 
@@ -82,7 +84,7 @@ class YaraScanner:
         completed, pending = await asyncio.wait(tasks)
         results = [t.result() for t in completed]
 
-        matched_ids = sum(results, [])
+        matched_ids = list(itertools.chain(*results))
         return await Snapshot.filter(id__in=matched_ids).order_by("-id")
 
     def match(self, data: Optional[str]) -> List[yara.Match]:

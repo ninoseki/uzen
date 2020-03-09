@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, cast
 
 from pyppeteer import launch
 from pyppeteer.errors import PyppeteerError
@@ -71,9 +71,9 @@ class Browser:
         content_type = headers.get("content-type")
         content_length = headers.get("content-length")
 
-        hostname = get_hostname_from_url(url)
+        hostname = cast(str, get_hostname_from_url(url))
         certificate = Certificate.load_and_dump_from_url(url)
-        ip_address = get_ip_address_by_hostname(hostname)
+        ip_address = cast(str, get_ip_address_by_hostname(hostname))
         asn = get_asn_by_ip_address(ip_address)
         whois = Whois.whois(hostname)
 
