@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.com/ninoseki/uzen.svg?branch=master)](https://travis-ci.com/ninoseki/uzen)
 [![Coverage Status](https://coveralls.io/repos/github/ninoseki/uzen/badge.svg?branch=master)](https://coveralls.io/github/ninoseki/uzen?branch=master)
+[![CodeFactor](https://www.codefactor.io/repository/github/ninoseki/uzen/badge)](https://www.codefactor.io/repository/github/ninoseki/uzen)
 
 Uzen is an application combines YARA and Puppeteer. Uzen provides two main functions:
 
