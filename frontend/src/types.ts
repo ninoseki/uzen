@@ -13,6 +13,7 @@ export interface Snapshot {
   content_type: string;
   content_lenth: number;
   body: string;
+  sha256: string;
   headers: Headers;
   screenshot: string;
   whois: string | undefined;
@@ -51,4 +52,12 @@ export interface Oneshot {
   snapshot: Snapshot;
 }
 
-export type TargetTypes = "body" | "whois" | "certificate";
+export interface Script {
+  id: number;
+  url: string;
+  content: string;
+  sha256: string;
+  created_at: string;
+}
+
+export type TargetTypes = "body" | "whois" | "certificate" | "script";

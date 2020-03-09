@@ -4,6 +4,7 @@ from typing import List, Optional
 import yara
 
 from uzen.models.snapshots import Snapshot
+from uzen.models.scripts import Script
 from uzen.services.snapshot_search import SnapshotSearcher
 
 CHUNK_SIZE = 100
@@ -14,6 +15,20 @@ sem = asyncio.Semaphore(PARALLEL_LIMIT)
 class YaraScanner:
     def __init__(self, source: str):
         self.rule: yara.Rules = yara.compile(source=source)
+
+    async def partial_scan_for_scripts(self, ids: List[int]) -> List[int]:
+        scripts = await Script.filter(snapshot_id__in=ids).values(
+            "snapshot_id", "content"
+        )
+        matched_ids = []
+        for script in scripts:
+            snapshot_id = script.get("snapshot_id")
+            content = script.get("content")
+            matches = self.match(data=content)
+            if len(matches) > 0:
+                matched_ids.append(snapshot_id)
+
+        return list(set(matched_ids))
 
     async def partial_scan(self, target: str, ids: List[int]) -> List[int]:
         """Scan a list of snapshots with a YARA rule
@@ -26,6 +41,9 @@ class YaraScanner:
             List[int] -- A list of ids which are matched with a YARA rule
         """
         async with sem:
+            if target == "script":
+                return await self.partial_scan_for_scripts(ids)
+
             snapshots = await Snapshot.filter(id__in=ids).values("id", target)
             matched_ids = []
             for snapshot in snapshots:

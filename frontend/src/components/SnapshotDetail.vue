@@ -78,26 +78,34 @@
       <b-tab-item label="Certificate">
         <pre>{{ data.certificate || "N/A" }}</pre>
       </b-tab-item>
+
+      <b-tab-item label="Scripts">
+        <Scripts v-bind:scripts="scripts" />
+      </b-tab-item>
     </b-tabs>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
+import axios, { AxiosError } from "axios";
 
-import { Snapshot } from "@/types";
+import { Snapshot, Script, ErrorData } from "@/types";
 import Links from "@/components/Links.vue";
+import Scripts from "@/components/Scripts.vue";
 
 // Google code prettifier
 declare const PR: any;
 
 @Component({
   components: {
-    Links
+    Links,
+    Scripts
   }
 })
 export default class SnapshotDetail extends Vue {
   @Prop() private data!: Snapshot;
+  private scripts: Script[] = [];
 
   public imageData(): string {
     return `data:Image/png;base64,${this.data.screenshot}`;
@@ -105,6 +113,25 @@ export default class SnapshotDetail extends Vue {
 
   public normalizedASN(): string {
     return this.data.asn.split(" ")[0];
+  }
+
+  async fetchScripts() {
+    try {
+      const response = await axios.get<Script[]>("/api/scripts/search", {
+        params: { snapshot_id: this.data.id }
+      });
+
+      this.scripts = response.data;
+
+      this.$forceUpdate();
+    } catch (error) {
+      const data = error.response.data as ErrorData;
+      alert(data.detail);
+    }
+  }
+
+  created() {
+    this.fetchScripts();
   }
 
   mounted() {

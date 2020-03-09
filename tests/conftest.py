@@ -11,9 +11,10 @@ from tortoise.exceptions import DBConnectionError
 # This line would raise an error if we use it after 'settings' has been imported.
 environ["TESTING"] = "TRUE"  # noqa
 
-from uzen import create_app  # noqa
-from uzen.core import settings  # noqa
-from uzen.models.snapshots import Snapshot  # noqa
+from uzen import create_app
+from uzen.core import settings
+from uzen.models.scripts import Script
+from uzen.models.snapshots import Snapshot
 
 
 @pytest.fixture
@@ -71,6 +72,20 @@ async def snapshots_setup(client):
             created_at=datetime.datetime.now(),
         )
         await snapshot.save()
+
+
+@pytest.fixture
+async def scripts_setup(client, snapshots_setup):
+    for i in range(0, 10):
+        script = Script(
+            id=i,
+            snapshot_id=i,
+            url=f"http://example{i}.com/test.js",
+            content="foo bar",
+            sha256="fbc1a9f858ea9e177916964bd88c3d37b91a1e84412765e29950777f265c4b75",
+            created_at=datetime.datetime.now(),
+        )
+        await script.save()
 
 
 @pytest.fixture
