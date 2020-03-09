@@ -1,6 +1,7 @@
-from tortoise.query_utils import Q
-from typing import List, Union
 import datetime
+from typing import List, Union
+
+from tortoise.query_utils import Q
 
 from uzen.models.snapshots import Snapshot
 
@@ -10,30 +11,50 @@ def convert_to_datetime(s: str) -> datetime.datetime:
 
 
 class SnapshotSearcher:
-
     @staticmethod
     async def search_all(query: Q, id_only=False) -> Union[List[Snapshot], int]:
         if id_only:
-            return await Snapshot.filter(query).order_by("-id").values_list("id", flat=True)
+            return (
+                await Snapshot.filter(query)
+                .order_by("-id")
+                .values_list("id", flat=True)
+            )
 
         return await Snapshot.filter(query).order_by("-id")
 
     @staticmethod
-    async def search_with_size(query: Q, size=100, id_only=False) -> Union[List[Snapshot], int]:
+    async def search_with_size(
+        query: Q, size=100, id_only=False
+    ) -> Union[List[Snapshot], int]:
         if id_only:
-            return await Snapshot.filter(query).order_by("-id").limit(size).values_list("id", flat=True)
+            return (
+                await Snapshot.filter(query)
+                .order_by("-id")
+                .limit(size)
+                .values_list("id", flat=True)
+            )
 
         return await Snapshot.filter(query).order_by("-id").limit(size)
 
     @staticmethod
-    async def search_with_size_and_offset(query: Q, offset=0, size=100, id_only=False) -> Union[List[Snapshot], int]:
+    async def search_with_size_and_offset(
+        query: Q, offset=0, size=100, id_only=False
+    ) -> Union[List[Snapshot], int]:
         if id_only:
-            return await Snapshot.filter(query).order_by("-id").offset(offset).limit(size).values_list("id", flat=True)
+            return (
+                await Snapshot.filter(query)
+                .order_by("-id")
+                .offset(offset)
+                .limit(size)
+                .values_list("id", flat=True)
+            )
 
         return await Snapshot.filter(query).order_by("-id").offset(offset).limit(size)
 
     @staticmethod
-    async def search(filters: dict, size=None, offset=None, id_only=False, count_only=False) -> Union[List[Snapshot], int]:
+    async def search(
+        filters: dict, size=None, offset=None, id_only=False, count_only=False
+    ) -> Union[List[Snapshot], int]:
         """Search snapshots
 
         Arguments:
@@ -90,10 +111,14 @@ class SnapshotSearcher:
             return await Snapshot.filter(query).count()
 
         if size is not None and offset is None:
-            return await SnapshotSearcher.search_with_size(query, size=size, id_only=id_only)
+            return await SnapshotSearcher.search_with_size(
+                query, size=size, id_only=id_only
+            )
         elif offset is not None:
             if size is None:
                 size = 100
-            return await SnapshotSearcher.search_with_size_and_offset(query, size=size, offset=offset, id_only=id_only)
+            return await SnapshotSearcher.search_with_size_and_offset(
+                query, size=size, offset=offset, id_only=id_only
+            )
 
         return await SnapshotSearcher.search_all(query, id_only=id_only)

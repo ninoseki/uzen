@@ -1,16 +1,12 @@
-import vcr
-import socket
-import pytest
 import datetime
-
+import vcr
 
 from uzen.services.urlscan import URLScan
 
 
 @vcr.use_cassette("tests/fixtures/vcr_cassettes/urlscan_import.yaml")
 def test_urlscan_import():
-    snapshot = URLScan.import_as_snapshot(
-        "e6d69372-b402-487a-9825-7e25cc15ce41")
+    snapshot = URLScan.import_as_snapshot("e6d69372-b402-487a-9825-7e25cc15ce41")
     assert snapshot.url == "https://nnpub.org/"
     assert snapshot.ip_address == "162.215.240.128"
     assert (

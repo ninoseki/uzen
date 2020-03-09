@@ -1,18 +1,15 @@
-from starlette.config import environ
-from starlette.testclient import TestClient
-from tortoise import Tortoise
-from tortoise import Tortoise, run_async
-from tortoise.backends.base.config_generator import generate_config
-from tortoise.contrib.test import finalizer, initializer
-from tortoise.exceptions import DBConnectionError
-from typing import List
-import asyncio
 import datetime
+from typing import List
+
 import httpx
 import pytest
+from starlette.config import environ
+from tortoise import Tortoise
+from tortoise.backends.base.config_generator import generate_config
+from tortoise.exceptions import DBConnectionError
 
 # This line would raise an error if we use it after 'settings' has been imported.
-environ["TESTING"] = "TRUE"
+environ["TESTING"] = "TRUE"  # noqa
 
 from uzen import create_app  # noqa
 from uzen.core import settings  # noqa
@@ -37,11 +34,7 @@ def getDBConfig(app_label: str, db_url: str, modules: List[str]) -> dict:
 @pytest.fixture(autouse=True)
 async def tortoise_db():
     db_url = environ.get("TORTOISE_TEST_DB", "sqlite://:memory:")
-    config = getDBConfig(
-        app_label="models",
-        db_url=db_url,
-        modules=settings.APP_MODELS
-    )
+    config = getDBConfig(app_label="models", db_url=db_url, modules=settings.APP_MODELS)
     try:
         await Tortoise.init(config)
         await Tortoise._drop_databases()
@@ -75,8 +68,7 @@ async def snapshots_setup(client):
             screenshot="yoyo",
             whois="foo",
             request={},
-            created_at=datetime.datetime.now()
-
+            created_at=datetime.datetime.now(),
         )
         await snapshot.save()
 

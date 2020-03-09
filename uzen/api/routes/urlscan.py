@@ -1,10 +1,8 @@
-from fastapi import APIRouter, HTTPException
-from pyppeteer.errors import PyppeteerError
 import requests
+from fastapi import APIRouter, HTTPException
 
 from uzen.models.snapshots import SnapshotModel
 from uzen.services.urlscan import URLScan
-
 
 router = APIRouter()
 
@@ -21,9 +19,7 @@ async def import_from_urlscan(uuid: str) -> SnapshotModel:
     try:
         snapshot = URLScan.import_as_snapshot(uuid)
     except requests.exceptions.HTTPError:
-        raise HTTPException(
-            status_code=404, detail=f"{uuid} is not found"
-        )
+        raise HTTPException(status_code=404, detail=f"{uuid} is not found")
 
     await snapshot.save()
 

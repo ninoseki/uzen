@@ -14,13 +14,15 @@ v = {editable = true,version = "*"}
 asynctest = "*"
 pytest-cov = "*"
 coveralls = "*"
+autoflake = "*"
+isort = {extras = ["pipfile"],version = "*"}
+mypy = "*"
 
 [packages]
 aiofiles = "*"
 aiosqlite = "*"
 pyppeteer = "*"
 requests = "*"
-starlette = "*"
 tortoise-orm = "*"
 uvicorn = "*"
 yara-python = "*"

@@ -1,5 +1,6 @@
-import whois
 from typing import Optional
+
+import whois
 
 
 class Whois:

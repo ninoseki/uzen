@@ -1,6 +1,7 @@
+import ssl
 from typing import Optional
 from urllib.parse import urlparse
-import ssl
+
 from OpenSSL import crypto
 
 

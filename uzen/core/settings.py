@@ -1,7 +1,7 @@
-from starlette.applications import Starlette
+import sys
+
 from starlette.config import Config
 from starlette.datastructures import CommaSeparatedStrings
-import sys
 
 config = Config(".env")
 

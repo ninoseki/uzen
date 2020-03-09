@@ -1,30 +1,27 @@
-from pyppeteer import launch
-from pyppeteer.element_handle import ElementHandle
-from pyppeteer.errors import PyppeteerError
-from pyppeteer.page import Page
-from typing import Optional, List
-import asyncio
-import httpx
+from typing import Optional
 
-from uzen.models.scripts import Script
+from pyppeteer import launch
+from pyppeteer.errors import PyppeteerError
+
 from uzen.models.snapshots import Snapshot
 from uzen.services.certificate import Certificate
 from uzen.services.utils import (
+    calculate_sha256,
     get_asn_by_ip_address,
     get_hostname_from_url,
-    get_ip_address_by_hostname
+    get_ip_address_by_hostname,
 )
 from uzen.services.whois import Whois
-from uzen.services.utils import calculate_sha256
 
 
 class Browser:
     @staticmethod
     async def take_snapshot(
-            url: str,
-            user_agent: Optional[str] = None,
-            timeout: Optional[int] = None,
-            ignore_https_errors: bool = False) -> Snapshot:
+        url: str,
+        user_agent: Optional[str] = None,
+        timeout: Optional[int] = None,
+        ignore_https_errors: bool = False,
+    ) -> Snapshot:
         """Take a snapshot of a website by puppeteer
 
         Arguments:
@@ -39,10 +36,7 @@ class Browser:
             Snapshot -- Snapshot ORM instance
         """
         try:
-            browser = await launch(
-                headless=True,
-                ignoreHTTPSErrors=ignore_https_errors
-            )
+            browser = await launch(headless=True, ignoreHTTPSErrors=ignore_https_errors)
             page = await browser.newPage()
 
             if user_agent is not None:

@@ -1,6 +1,6 @@
-from typing import List, Optional
 import asyncio
-import math
+from typing import List, Optional
+
 import yara
 
 from uzen.models.snapshots import Snapshot
@@ -37,7 +37,9 @@ class YaraScanner:
 
             return matched_ids
 
-    async def scan_snapshots(self, target: str = "body", filters: dict = {}) -> List[Snapshot]:
+    async def scan_snapshots(
+        self, target: str = "body", filters: dict = {}
+    ) -> List[Snapshot]:
         """Scan snapshots data with a YARA rule
 
         Keyword Arguments:
@@ -53,12 +55,12 @@ class YaraScanner:
             return []
 
         # split ids into chunks
-        chunks = [snapshot_ids[i: i + CHUNK_SIZE]
-                  for i in range(0, len(snapshot_ids), CHUNK_SIZE)]
-        # make scan tasks
-        tasks = [
-            self.partial_scan(target=target, ids=chunk) for chunk in chunks
+        chunks = [
+            snapshot_ids[i : i + CHUNK_SIZE]
+            for i in range(0, len(snapshot_ids), CHUNK_SIZE)
         ]
+        # make scan tasks
+        tasks = [self.partial_scan(target=target, ids=chunk) for chunk in chunks]
         completed, pending = await asyncio.wait(tasks)
         results = [t.result() for t in completed]
 

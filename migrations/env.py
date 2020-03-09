@@ -1,11 +1,10 @@
+import sys
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
-
 from alembic import context
+from sqlalchemy import engine_from_config, pool
 
-import sys
+from uzen import settings  # noqa
 
 sys.path = ['', '..'] + sys.path[1:]
 
@@ -28,7 +27,6 @@ target_metadata = None
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 
-from uzen import settings  # noqa
 
 config.set_main_option('sqlalchemy.url', str(settings.DATABASE_URL))
 
