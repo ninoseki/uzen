@@ -1,13 +1,10 @@
 """Helper utilities and decorators."""
 import hashlib
-import json
 import socket
-import ssl
 from typing import Optional
 from urllib.parse import urlparse
 
 import requests
-from OpenSSL import crypto
 
 
 class IPInfo:
@@ -74,7 +71,7 @@ def get_country_code_by_ip_address(ip_address: str) -> Optional[str]:
     try:
         json = IPInfo.get_geo(ip_address)
         return json.get("country")
-    except Exception as e:
+    except Exception:
         return None
 
 
@@ -90,7 +87,7 @@ def get_asn_by_ip_address(ip_address: str) -> Optional[str]:
     try:
         json = IPInfo.get_basic(ip_address)
         return json.get("org")
-    except Exception as e:
+    except Exception:
         return None
 
 

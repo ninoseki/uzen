@@ -9,7 +9,7 @@ class ScanPayload(BaseModel):
     source: str = Field(
         None, title="YARA rule", description="String containing the rules code"
     )
-    target: Optional[str] = Field(
+    target: str = Field(
         "body",
         title="Target to scan",
         description="Target field to scan (body, whois or certificate)",

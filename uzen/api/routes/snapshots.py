@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, cast
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from pyppeteer.errors import PyppeteerError
@@ -28,6 +28,7 @@ async def search(
     filters: dict = Depends(search_filters),
 ) -> List[SnapshotModel]:
     snapshots = await SnapshotSearcher.search(filters, size=size, offset=offset)
+    snapshots = cast(List[Snapshot], snapshots)
     return [snapshot.to_full_model() for snapshot in snapshots]
 
 
@@ -68,6 +69,7 @@ async def get(snapshot_id: int) -> SnapshotModel:
 )
 async def list(size: int = 100, offset: int = 0) -> List[SnapshotModel]:
     snapshots = await SnapshotSearcher.search({}, size=size, offset=offset)
+    snapshots = cast(List[Snapshot], snapshots)
     return [snapshot.to_full_model() for snapshot in snapshots]
 
 
