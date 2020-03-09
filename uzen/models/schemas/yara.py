@@ -1,7 +1,8 @@
-from typing import Optional
+from typing import List
 
 from pydantic import AnyHttpUrl, BaseModel, Field
 
+from uzen.models.scripts import ScriptBaseModel
 from uzen.models.snapshots import SnapshotBaseModel
 
 
@@ -25,6 +26,11 @@ class OneshotResponse(BaseModel):
         None,
         title="Snapshot model",
         description="Snapshot model without id & created_at fields",
+    )
+    scripts: List[ScriptBaseModel] = Field(
+        None,
+        title="Script model",
+        description="Script model without id & created_at fields",
     )
     matched: bool = Field(
         None, title="whether matched or not", description="whether matched or not"

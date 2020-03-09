@@ -1,6 +1,7 @@
 import json
 
 import pytest
+import vcr
 
 from uzen.models.snapshots import Snapshot
 from uzen.services.browser import Browser
@@ -52,7 +53,7 @@ async def test_yara_scan_with_invalid_input(client):
 
 def mock_take_snapshot(url: str):
     return Snapshot(
-        url=f"http://example.com",
+        url="https://www.w3.org",
         status=200,
         hostname="example.com",
         ip_address="1.1.1.1",
@@ -61,7 +62,7 @@ def mock_take_snapshot(url: str):
         content_type="text/html; charset=UTF-8",
         content_length=1256,
         headers={},
-        body="foo bar",
+        body='<html><body><script type="text/javascript" src="/2008/site/js/main"></body></html>',
         sha256="fbc1a9f858ea9e177916964bd88c3d37b91a1e84412765e29950777f265c4b75",
         screenshot="yoyo",
         whois="foo",
@@ -74,8 +75,8 @@ async def test_yara_oneshot(client, monkeypatch):
     monkeypatch.setattr(Browser, "take_snapshot", mock_take_snapshot)
 
     payload = {
-        "source": 'rule foo: bar {strings: $a = "foo" condition: $a}',
-        "url": "http://example.com",
+        "source": 'rule foo: bar {strings: $a = "2008" condition: $a}',
+        "url": "https://www.w3.org",
     }
     response = await client.post("/api/yara/oneshot", data=json.dumps(payload))
     assert response.status_code == 200
@@ -84,14 +85,31 @@ async def test_yara_oneshot(client, monkeypatch):
     assert data.get("matched")
 
     payload = {
-        "source": 'rule foo: bar {strings: $a = "aaa" condition: $a}',
-        "url": "http://example.com",
+        "source": 'rule foo: bar {strings: $a = "foo bar" condition: $a}',
+        "url": "https://www.w3.org",
     }
     response = await client.post("/api/yara/oneshot", data=json.dumps(payload))
     assert response.status_code == 200
 
     data = response.json()
     assert not data.get("matched")
+
+
+@pytest.mark.asyncio
+@vcr.use_cassette("tests/fixtures/vcr_cassettes/yara_oneshot_with_script.yaml")
+async def test_yara_oneshot_with_script(client, monkeypatch):
+    monkeypatch.setattr(Browser, "take_snapshot", mock_take_snapshot)
+
+    payload = {
+        "source": 'rule foo: bar {strings: $a = "W3C" condition: $a}',
+        "url": "https://www.w3.org",
+        "target": "script",
+    }
+    response = await client.post("/api/yara/oneshot", data=json.dumps(payload))
+    assert response.status_code == 200
+
+    data = response.json()
+    assert data.get("matched")
 
 
 @pytest.mark.asyncio

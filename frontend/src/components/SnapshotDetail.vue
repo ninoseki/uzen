@@ -11,45 +11,45 @@
                   <tbody>
                     <tr>
                       <th>ID</th>
-                      <td>{{ data.id }}</td>
+                      <td>{{ snapshot.id || "N/A" }}</td>
                     </tr>
                     <tr>
                       <th>URL</th>
-                      <td>{{ data.url }}</td>
+                      <td>{{ snapshot.url }}</td>
                     </tr>
                     <tr>
                       <th>Hostname</th>
-                      <td>{{ data.hostname }}</td>
+                      <td>{{ snapshot.hostname }}</td>
                     </tr>
 
                     <tr>
                       <th>IP address</th>
-                      <td>{{ data.ip_address }}</td>
+                      <td>{{ snapshot.ip_address }}</td>
                     </tr>
 
                     <tr>
                       <th>ASN</th>
-                      <td>{{ data.asn }}</td>
+                      <td>{{ snapshot.asn }}</td>
                     </tr>
 
                     <tr>
                       <th>Server</th>
-                      <td>{{ data.server }}</td>
+                      <td>{{ snapshot.server }}</td>
                     </tr>
 
                     <tr>
                       <th>Content-Type</th>
-                      <td>{{ data.content_type }}</td>
+                      <td>{{ snapshot.content_type }}</td>
                     </tr>
 
                     <tr>
                       <th>SHA256</th>
-                      <td>{{ data.sha256 }}</td>
+                      <td>{{ snapshot.sha256 }}</td>
                     </tr>
 
                     <tr>
                       <th>Created at</th>
-                      <td>{{ data.created_at }}</td>
+                      <td>{{ snapshot.created_at || "N/A" }}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -62,21 +62,21 @@
           </div>
           <div class="column">
             <h2 class="is-size-5 has-text-weight-bold middle">Links</h2>
-            <Links v-bind:snapshot="data" />
+            <Links v-bind:snapshot="snapshot" />
           </div>
         </div>
       </b-tab-item>
 
       <b-tab-item label="Body">
-        <pre class="prettyprint lang-html"> {{ data.body }} </pre>
+        <pre class="prettyprint lang-html"> {{ snapshot.body }} </pre>
       </b-tab-item>
 
       <b-tab-item label="Whois">
-        <pre>{{ data.whois || "N/A" }}</pre>
+        <pre>{{ snapshot.whois || "N/A" }}</pre>
       </b-tab-item>
 
       <b-tab-item label="Certificate">
-        <pre>{{ data.certificate || "N/A" }}</pre>
+        <pre>{{ snapshot.certificate || "N/A" }}</pre>
       </b-tab-item>
 
       <b-tab-item label="Scripts">
@@ -104,21 +104,19 @@ declare const PR: any;
   }
 })
 export default class SnapshotDetail extends Vue {
-  @Prop() private data!: Snapshot;
+  @Prop() private snapshot!: Snapshot;
+  @Prop() private propScripts!: Script[];
+
   private scripts: Script[] = [];
 
   public imageData(): string {
-    return `data:Image/png;base64,${this.data.screenshot}`;
-  }
-
-  public normalizedASN(): string {
-    return this.data.asn.split(" ")[0];
+    return `data:Image/png;base64,${this.snapshot.screenshot}`;
   }
 
   async fetchScripts() {
     try {
       const response = await axios.get<Script[]>("/api/scripts/search", {
-        params: { snapshot_id: this.data.id }
+        params: { snapshot_id: this.snapshot.id }
       });
 
       this.scripts = response.data;
@@ -131,7 +129,13 @@ export default class SnapshotDetail extends Vue {
   }
 
   created() {
-    this.fetchScripts();
+    if (this.propScripts !== undefined) {
+      // oneshot scan returns a snapshot with scripts (as propScripts)
+      this.scripts = this.propScripts;
+    } else if (this.snapshot.id !== undefined) {
+      // fetch scripts if a snapshot has the ID
+      this.fetchScripts();
+    }
   }
 
   mounted() {

@@ -51,7 +51,8 @@ class ScriptBuilder:
                 url=source,
                 content=content,
                 sha256=calculate_sha256(content),
-                snapshot_id=snapshot.id,
+                # insert a dummy ID if a snapshot doesn't have ID
+                snapshot_id=snapshot.id or -1,
             )
             scripts.append(script)
         return scripts

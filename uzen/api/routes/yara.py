@@ -7,6 +7,7 @@ from uzen.api.dependencies.snapshots import search_filters
 from uzen.models.schemas.yara import OneshotPayload, OneshotResponse, ScanPayload
 from uzen.models.snapshots import SnapshotModel
 from uzen.services.browser import Browser
+from uzen.services.scripts import ScriptBuilder
 from uzen.services.yara_scanner import YaraScanner
 
 router = APIRouter()
@@ -52,9 +53,20 @@ async def oneshot(payload: OneshotPayload) -> OneshotResponse:
         raise HTTPException(status_code=500, detail=str(e))
 
     snapshot = await Browser.take_snapshot(url)
+    scripts = ScriptBuilder.build_from_snapshot(snapshot)
 
-    data = snapshot.to_dict().get(target, "")
-    matches = yara_scanner.match(data)
-    matched = True if len(matches) > 0 else False
+    matched = False
+    if target == "script":
+        for script in scripts:
+            matches = yara_scanner.match(script.content)
+            if len(matches) > 0:
+                matched = True
+                break
+    else:
+        data = snapshot.to_dict().get(target, "")
+        matches = yara_scanner.match(data)
+        matched = True if len(matches) > 0 else False
 
-    return OneshotResponse(snapshot=snapshot.to_base_model(), matched=matched)
+    return OneshotResponse(
+        snapshot=snapshot.to_base_model(), scripts=scripts, matched=matched
+    )
