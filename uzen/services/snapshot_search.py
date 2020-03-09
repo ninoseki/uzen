@@ -114,9 +114,9 @@ class SnapshotSearcher:
             return await SnapshotSearcher.search_with_size(
                 query, size=size, id_only=id_only
             )
-        elif offset is not None:
-            if size is None:
-                size = 100
+
+        size = 100 if size is None else size
+        if offset is not None:
             return await SnapshotSearcher.search_with_size_and_offset(
                 query, size=size, offset=offset, id_only=id_only
             )
