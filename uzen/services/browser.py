@@ -36,7 +36,11 @@ class Browser:
             Snapshot -- Snapshot ORM instance
         """
         try:
-            browser = await launch(headless=True, ignoreHTTPSErrors=ignore_https_errors)
+            browser = await launch(
+                headless=True,
+                ignoreHTTPSErrors=ignore_https_errors,
+                args=["--no-sandbox"],
+            )
             page = await browser.newPage()
 
             if user_agent is not None:
