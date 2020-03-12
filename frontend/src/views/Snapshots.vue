@@ -13,14 +13,7 @@
       <br />
 
       <div class="has-text-centered">
-        <b-button
-          type="is-light"
-          @click="
-            search();
-            getTotalCount();
-          "
-          >Search</b-button
-        >
+        <b-button type="is-light" @click="initSearch()">Search</b-button>
       </div>
     </div>
 
@@ -125,14 +118,19 @@ export default class Snapshots extends Vue {
     return count < total;
   }
 
-  async loadMore() {
+  loadMore() {
     this.offset += this.size;
     this.search(true);
   }
 
+  initSearch() {
+    this.search();
+    this.getTotalCount();
+  }
+
   mounted() {
     if (Object.keys(this.$route.query).length > 0) {
-      this.search();
+      this.initSearch();
     }
   }
 }
