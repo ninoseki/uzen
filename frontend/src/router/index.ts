@@ -2,10 +2,11 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 
 import Home from "@/views/Home.vue";
-import Snapshots from "@/views/Snapshots.vue";
-import Yara from "@/views/Yara.vue";
 import Import from "@/views/Import.vue";
 import Oneshot from "@/views/Oneshot.vue";
+import Snapshot from "@/views/Snapshot.vue";
+import Snapshots from "@/views/Snapshots.vue";
+import Yara from "@/views/Yara.vue";
 
 Vue.use(VueRouter);
 
@@ -34,6 +35,11 @@ const routes = [
     path: "/oneshot",
     name: "Oneshot",
     component: Oneshot
+  },
+  {
+    path: "/snapshots/:id",
+    name: "Snapshot",
+    component: Snapshot
   }
 ];
 

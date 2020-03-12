@@ -13,11 +13,8 @@
       {{ count }} snapshots found
       <Counter />
     </h2>
-    <SnapshotDetail
-      v-for="snapshot in snapshots"
-      v-bind:key="snapshot.id"
-      v-bind:snapshot="snapshot"
-    />
+
+    <SnapshotTable v-bind:snapshots="snapshots" />
   </div>
 </template>
 
@@ -27,17 +24,19 @@ import axios, { AxiosError } from "axios";
 
 import { ErrorData, Snapshot, SearchFilters, TargetTypes } from "@/types";
 
+import BasicYaraForm from "@/components/BasicYaraForm.vue";
 import Counter from "@/components/Counter.vue";
 import SnapshotDetail from "@/components/SnapshotDetail.vue";
 import SnapshotSearch from "@/components/SnapshotSearch.vue";
-import BasicYaraForm from "@/components/BasicYaraForm.vue";
+import SnapshotTable from "@/components/SnapshotTable.vue";
 
 @Component({
   components: {
     BasicYaraForm,
     Counter,
     SnapshotDetail,
-    SnapshotSearch
+    SnapshotSearch,
+    SnapshotTable
   }
 })
 export default class YaraForm extends Vue {

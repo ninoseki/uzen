@@ -43,6 +43,6 @@ export default class Navbar extends Vue {}
 
 <style>
 .navbar {
-  background-color: #f2f9ff !important;
+  border-bottom: 1px solid #cce6ff;
 }
 </style>
