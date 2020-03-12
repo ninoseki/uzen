@@ -31,6 +31,8 @@ RUN cp .env.sample .env
 
 RUN cd frontend && npm install && npm run build
 
-EXPOSE 5000
+ENV PORT 8000
 
-CMD ["uvicorn", "--host", "0.0.0.0", "--port", "5000", "uzen:app"]
+EXPOSE $PORT
+
+CMD uvicorn --host 0.0.0.0 --port $PORT uzen:app
