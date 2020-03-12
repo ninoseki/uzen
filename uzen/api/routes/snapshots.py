@@ -7,7 +7,7 @@ from tortoise.exceptions import DoesNotExist
 from uzen.api.dependencies.snapshots import search_filters
 from uzen.models.schemas.snapshots import CountResponse, CreateSnapshotPayload
 from uzen.models.scripts import Script
-from uzen.models.snapshots import Snapshot, SnapshotModel
+from uzen.models.snapshots import Snapshot, SnapshotModel, SearchResultModel
 from uzen.services.browser import Browser
 from uzen.services.scripts import ScriptBuilder
 from uzen.services.snapshot_search import SnapshotSearcher
@@ -17,7 +17,7 @@ router = APIRouter()
 
 @router.get(
     "/search",
-    response_model=List[SnapshotModel],
+    response_model=List[SearchResultModel],
     response_description="Returns a list of matched snapshots",
     summary="Search snapshots",
     description="Searcn snapshtos with filters",
@@ -26,10 +26,10 @@ async def search(
     size: Optional[int] = None,
     offset: Optional[int] = None,
     filters: dict = Depends(search_filters),
-) -> List[SnapshotModel]:
+) -> List[SearchResultModel]:
     snapshots = await SnapshotSearcher.search(filters, size=size, offset=offset)
-    snapshots = cast(List[Snapshot], snapshots)
-    return [snapshot.to_full_model() for snapshot in snapshots]
+    snapshots = cast(List[SearchResultModel], snapshots)
+    return snapshots
 
 
 @router.get(
@@ -62,15 +62,15 @@ async def get(snapshot_id: int) -> SnapshotModel:
 
 @router.get(
     "/",
-    response_model=List[SnapshotModel],
+    response_model=List[SearchResultModel],
     response_description="Returns a list of snapshots",
     summary="List snapshtos",
     description="Get a list of snapshots",
 )
-async def list(size: int = 100, offset: int = 0) -> List[SnapshotModel]:
+async def list(size: int = 100, offset: int = 0) -> List[SearchResultModel]:
     snapshots = await SnapshotSearcher.search({}, size=size, offset=offset)
-    snapshots = cast(List[Snapshot], snapshots)
-    return [snapshot.to_full_model() for snapshot in snapshots]
+    snapshots = cast(List[SearchResultModel], snapshots)
+    return snapshots
 
 
 async def create_scripts(snapshot: Snapshot):

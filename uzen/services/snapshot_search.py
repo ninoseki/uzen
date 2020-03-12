@@ -3,16 +3,22 @@ from typing import List, Union
 
 from tortoise.query_utils import Q
 
-from uzen.models.snapshots import Snapshot
+from uzen.models.snapshots import Snapshot, SearchResultModel
 
 
 def convert_to_datetime(s: str) -> datetime.datetime:
     return datetime.datetime.strptime(s, "%Y-%m-%d")
 
 
+def convert_to_simple_snapshot_models(snapshots: List[dict]):
+    return [SearchResultModel(**snapshot) for snapshot in snapshots]
+
+
 class SnapshotSearcher:
     @staticmethod
-    async def search_all(query: Q, id_only=False) -> Union[List[Snapshot], int]:
+    async def search_all(
+        query: Q, id_only=False
+    ) -> Union[List[SearchResultModel], int]:
         if id_only:
             return (
                 await Snapshot.filter(query)
@@ -20,12 +26,17 @@ class SnapshotSearcher:
                 .values_list("id", flat=True)
             )
 
-        return await Snapshot.filter(query).order_by("-id")
+        snapshots = (
+            await Snapshot.filter(query)
+            .order_by("-id")
+            .values(*SearchResultModel.field_keys())
+        )
+        return convert_to_simple_snapshot_models(snapshots)
 
     @staticmethod
     async def search_with_size(
         query: Q, size=100, id_only=False
-    ) -> Union[List[Snapshot], int]:
+    ) -> Union[List[SearchResultModel], int]:
         if id_only:
             return (
                 await Snapshot.filter(query)
@@ -34,12 +45,18 @@ class SnapshotSearcher:
                 .values_list("id", flat=True)
             )
 
-        return await Snapshot.filter(query).order_by("-id").limit(size)
+        snapshots = (
+            await Snapshot.filter(query)
+            .order_by("-id")
+            .limit(size)
+            .values(*SearchResultModel.field_keys())
+        )
+        return convert_to_simple_snapshot_models(snapshots)
 
     @staticmethod
     async def search_with_size_and_offset(
         query: Q, offset=0, size=100, id_only=False
-    ) -> Union[List[Snapshot], int]:
+    ) -> Union[List[SearchResultModel], int]:
         if id_only:
             return (
                 await Snapshot.filter(query)
@@ -49,12 +66,19 @@ class SnapshotSearcher:
                 .values_list("id", flat=True)
             )
 
-        return await Snapshot.filter(query).order_by("-id").offset(offset).limit(size)
+        snapshots = (
+            await Snapshot.filter(query)
+            .order_by("-id")
+            .offset(offset)
+            .limit(size)
+            .values(*SearchResultModel.field_keys())
+        )
+        return convert_to_simple_snapshot_models(snapshots)
 
     @staticmethod
     async def search(
         filters: dict, size=None, offset=None, id_only=False, count_only=False
-    ) -> Union[List[Snapshot], int]:
+    ) -> Union[List[SearchResultModel], int]:
         """Search snapshots
 
         Arguments:
@@ -67,7 +91,7 @@ class SnapshotSearcher:
             count_only {bool} -- Whether to return only a count of results (default: {False})
 
         Returns:
-            Union[List[Snapshot], int] -- [description]
+            Union[List[SearchResultModel], int] -- A list of simlified snapshot models or count of the list
         """
         queries = []
 

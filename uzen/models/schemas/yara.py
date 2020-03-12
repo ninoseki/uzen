@@ -3,7 +3,7 @@ from typing import List
 from pydantic import AnyHttpUrl, BaseModel, Field
 
 from uzen.models.scripts import ScriptBaseModel
-from uzen.models.snapshots import SnapshotBaseModel
+from uzen.models.snapshots import BasicSnapshotModel
 
 
 class ScanPayload(BaseModel):
@@ -22,7 +22,7 @@ class OneshotPayload(ScanPayload):
 
 
 class OneshotResponse(BaseModel):
-    snapshot: SnapshotBaseModel = Field(
+    snapshot: BasicSnapshotModel = Field(
         None,
         title="Snapshot model",
         description="Snapshot model without id & created_at fields",
