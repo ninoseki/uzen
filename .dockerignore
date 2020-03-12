@@ -1,4 +1,11 @@
+# git
+.git
+
+# vscode
+.vscode
+
 # node
+**/node_modules
 node_modules
 
 # SQLite
