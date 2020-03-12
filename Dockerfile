@@ -1,3 +1,11 @@
+# build env
+FROM node:13-alpine as build
+
+COPY ./frontend /frontend
+WORKDIR /frontend
+RUN npm install && npm run build && rm -rf node_modules
+
+# prod env
 FROM python:3.8-slim-buster
 
 RUN apt-get update \
@@ -10,26 +18,22 @@ RUN apt-get update \
   libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 \
   libxi6 libxrandr2 libxrender1 libxss1 libxtst6 \
   ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release \
-  xdg-utils wget
-
-RUN curl -sL https://deb.nodesource.com/setup_13.x | bash -
-RUN apt-get install -y nodejs
-
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+  xdg-utils wget \
+  && apt-get clean  \
+  && rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install pipenv
 
-RUN mkdir -p /opt/uzen
-WORKDIR /opt/uzen
+WORKDIR /app
 
-COPY . .
+COPY Pipfile /app
+COPY Pipfile.lock /app
+COPY .env.sample /app/.env
+COPY uzen /app/uzen
+COPY --from=build /frontend /app/frontend
 
-RUN pipenv install --deploy --system
-RUN pyppeteer-install
-
-RUN cp .env.sample .env
-
-RUN cd frontend && npm install && npm run build
+RUN pipenv install --deploy --system \
+  && pyppeteer-install
 
 ENV PORT 8000
 
