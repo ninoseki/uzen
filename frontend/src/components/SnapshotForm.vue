@@ -13,7 +13,7 @@
             type="is-info"
             icon-left="fas fa-cogs"
             @click="showOptions = !showOptions"
-            >Optipons</b-button
+            >Options</b-button
           >
         </p>
       </b-field>
