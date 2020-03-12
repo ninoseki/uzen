@@ -80,13 +80,20 @@ import { SearchFilters } from "@/types";
 
 @Component
 export default class YaraForm extends Vue {
+  @Prop() private asn: string | undefined;
+  @Prop() private content_type: string | undefined;
+  @Prop() private hostname: string | undefined;
+  @Prop() private ip_address: string | undefined;
+  @Prop() private server: string | undefined;
+  @Prop() private sha256: string | undefined;
+
   private filters: SearchFilters = {
-    hostname: undefined,
-    ip_address: undefined,
-    asn: undefined,
-    server: undefined,
-    content_type: undefined,
-    sha256: undefined,
+    hostname: this.hostname,
+    ip_address: this.ip_address,
+    asn: this.asn,
+    server: this.server,
+    content_type: this.content_type,
+    sha256: this.sha256,
     from_at: undefined,
     to_at: undefined
   };

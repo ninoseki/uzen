@@ -17,8 +17,6 @@ export default class ScriptView extends Vue {
 
 <style scoped>
 pre {
-  max-height: 500px;
-  overflow: auto;
   word-break: normal;
 }
 </style>

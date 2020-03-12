@@ -1,7 +1,15 @@
 <template>
   <div>
     <div class="box">
-      <SnapshotSearch ref="search" />
+      <SnapshotSearch
+        ref="search"
+        v-bind:sha256="$route.query.sha256"
+        v-bind:asn="$route.query.asn"
+        v-bind:content_type="$route.query.content_type"
+        v-bind:hostname="$route.query.hostname"
+        v-bind:ip_address="$route.query.ip_address"
+        v-bind:server="$route.query.server"
+      />
       <br />
 
       <div class="has-text-centered">
@@ -18,12 +26,7 @@
 
     <h2 v-if="hasCount()">Search results ({{ count }} / {{ totalCount }})</h2>
 
-    <SnapshotDetail
-      v-for="snapshot in snapshots"
-      v-bind:key="snapshot.id"
-      v-bind:snapshot="snapshot"
-    />
-    <br />
+    <SnapshotTable v-bind:snapshots="snapshots" />
 
     <b-button v-if="hasLoadMore()" type="is-dark" @click="loadMore"
       >Load more...</b-button
@@ -40,12 +43,14 @@ import { SnapshotCount, Snapshot, ErrorData } from "@/types";
 import Counter from "@/components/Counter.vue";
 import SnapshotDetail from "@/components/SnapshotDetail.vue";
 import SnapshotSearch from "@/components/SnapshotSearch.vue";
+import SnapshotTable from "@/components/SnapshotTable.vue";
 
 @Component({
   components: {
     Counter,
     SnapshotDetail,
-    SnapshotSearch
+    SnapshotSearch,
+    SnapshotTable
   }
 })
 export default class Snapshots extends Vue {
@@ -84,7 +89,7 @@ export default class Snapshots extends Vue {
 
       loadingComponent.close();
 
-      this.snapshots = response.data;
+      this.snapshots = this.snapshots.concat(response.data);
       this.count = this.snapshots.length;
     } catch (error) {
       loadingComponent.close();
@@ -123,6 +128,12 @@ export default class Snapshots extends Vue {
   async loadMore() {
     this.offset += this.size;
     this.search(true);
+  }
+
+  mounted() {
+    if (Object.keys(this.$route.query).length > 0) {
+      this.search();
+    }
   }
 }
 </script>

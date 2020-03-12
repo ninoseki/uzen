@@ -1,5 +1,5 @@
 <template>
-  <div class="listItem">
+  <div class="box">
     <b-tabs type="is-boxed">
       <b-tab-item label="Summary">
         <div class="column is-full">
@@ -19,32 +19,67 @@
                     </tr>
                     <tr>
                       <th>Hostname</th>
-                      <td>{{ snapshot.hostname }}</td>
+                      <td>
+                        <router-link
+                          :to="{
+                            name: 'Snapshots',
+                            query: { hostname: snapshot.hostname }
+                          }"
+                          >{{ snapshot.hostname }}
+                        </router-link>
+                      </td>
                     </tr>
 
                     <tr>
                       <th>IP address</th>
-                      <td>{{ snapshot.ip_address }}</td>
+                      <td>
+                        <router-link
+                          :to="{
+                            name: 'Snapshots',
+                            query: { ip_address: snapshot.ip_address }
+                          }"
+                          >{{ snapshot.ip_address }}
+                        </router-link>
+                      </td>
                     </tr>
 
                     <tr>
                       <th>ASN</th>
-                      <td>{{ snapshot.asn }}</td>
+                      <td>
+                        <router-link
+                          :to="{
+                            name: 'Snapshots',
+                            query: { asn: snapshot.asn }
+                          }"
+                          >{{ snapshot.asn }}
+                        </router-link>
+                      </td>
                     </tr>
 
                     <tr>
                       <th>Server</th>
-                      <td>{{ snapshot.server }}</td>
+                      <td>
+                        <router-link
+                          :to="{
+                            name: 'Snapshots',
+                            query: { server: snapshot.server }
+                          }"
+                          >{{ snapshot.server }}
+                        </router-link>
+                      </td>
                     </tr>
 
                     <tr>
                       <th>Content-Type</th>
-                      <td>{{ snapshot.content_type }}</td>
-                    </tr>
-
-                    <tr>
-                      <th>SHA256</th>
-                      <td>{{ snapshot.sha256 }}</td>
+                      <td>
+                        <router-link
+                          :to="{
+                            name: 'Snapshots',
+                            query: { content_type: snapshot.content_type }
+                          }"
+                          >{{ snapshot.content_type }}
+                        </router-link>
+                      </td>
                     </tr>
 
                     <tr>
@@ -59,6 +94,13 @@
               <h2 class="is-size-5 has-text-weight-bold middle">Screenshot</h2>
               <img :src="this.imageData()" alt="screenshot" />
             </div>
+          </div>
+          <div class="column">
+            <h2 class="is-size-5 has-text-weight-bold middle">SHA256</h2>
+            <router-link
+              :to="{ name: 'Snapshots', query: { sha256: snapshot.sha256 } }"
+              >{{ snapshot.sha256 }}
+            </router-link>
           </div>
           <div class="column">
             <h2 class="is-size-5 has-text-weight-bold middle">Links</h2>
@@ -113,7 +155,7 @@ export default class SnapshotDetail extends Vue {
     return `data:Image/png;base64,${this.snapshot.screenshot}`;
   }
 
-  async fetchScripts() {
+  async loadScripts() {
     try {
       const response = await axios.get<Script[]>("/api/scripts/search", {
         params: { snapshot_id: this.snapshot.id }
@@ -133,8 +175,8 @@ export default class SnapshotDetail extends Vue {
       // oneshot scan returns a snapshot with scripts (as propScripts)
       this.scripts = this.propScripts;
     } else if (this.snapshot.id !== undefined) {
-      // fetch scripts if a snapshot has the ID
-      this.fetchScripts();
+      // load scripts if a snapshot has the ID
+      this.loadScripts();
     }
   }
 
@@ -145,47 +187,21 @@ export default class SnapshotDetail extends Vue {
 </script>
 
 <style scoped>
-.listItem {
-  display: block;
-  padding: 10px;
-  background-color: #fff;
-  -webkit-transform: scale(1);
-  transform: scale(1);
-  -webkit-transition: all 0.15s ease;
-  transition: all 0.2s ease;
-}
-
-.listItem:not(:first-child) {
-  margin-top: 20px;
-}
-
-.listItem:first-child {
-  border-top-left-radius: 6px;
-  border-top-right-radius: 6px;
-}
-
-.listItem:last-child {
-  border-bottom-left-radius: 6px;
-  border-bottom-right-radius: 6px;
-}
-
-.listItem .header {
+.header {
   margin-bottom: 10px;
 }
 
-.listItem .header h2 {
+.header h2 {
   color: #5892d0;
 }
 
-.listItem h2.middle {
+h2.middle {
   padding-bottom: 10px;
   margin-bottom: 10px;
   border-bottom: 2px solid lightgray;
 }
 
-.listItem pre {
-  max-height: 500px;
-  overflow: auto;
+pre {
   word-break: normal;
 }
 </style>
