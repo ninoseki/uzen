@@ -1,13 +1,13 @@
 import datetime
-from typing import Optional, Union
+from typing import Optional, Union, List
 
 from pydantic import AnyHttpUrl, BaseModel, IPvAnyAddress
 from tortoise import fields
 from tortoise.models import Model
 
 
-class SnapshotBaseModel(BaseModel):
-    """Base Pydantic model for Snapshot
+class BasicSnapshotModel(BaseModel):
+    """Base Pydantic model of Snapshot
 
     Note that this model doesn't have "id" and "created_at" fields.
     """
@@ -32,13 +32,30 @@ class SnapshotBaseModel(BaseModel):
         orm_mode = True
 
 
-class SnapshotModel(SnapshotBaseModel):
-    """Full Pydantic model for Snapshot
+class SnapshotModel(BasicSnapshotModel):
+    """FUll Pydantic model of Snapshot
 
     """
 
     id: int
     created_at: datetime.datetime
+
+
+class SearchResultModel(BaseModel):
+    """Simplified version of Pydantic model of Snapshot"""
+
+    id: int
+    url: AnyHttpUrl
+    hostname: str
+    ip_address: IPvAnyAddress
+    asn: str
+    server: Optional[str]
+    content_type: Optional[str]
+    created_at: datetime.datetime
+
+    @classmethod
+    def field_keys(cls) -> List[str]:
+        return list(cls.__fields__.keys())
 
 
 class Snapshot(Model):
@@ -69,14 +86,14 @@ class Snapshot(Model):
     def to_full_model(self) -> SnapshotModel:
         return SnapshotModel.from_orm(self)
 
-    def to_base_model(self) -> SnapshotBaseModel:
-        return SnapshotBaseModel.from_orm(self)
+    def to_base_model(self) -> BasicSnapshotModel:
+        return BasicSnapshotModel.from_orm(self)
 
-    def to_model(self) -> Union[SnapshotModel, SnapshotBaseModel]:
+    def to_model(self) -> Union[SnapshotModel, BasicSnapshotModel]:
         if self.id is not None:
             return SnapshotModel.from_orm(self)
 
-        return SnapshotBaseModel.from_orm(self)
+        return BasicSnapshotModel.from_orm(self)
 
     def to_dict(self) -> dict:
         model = self.to_model()

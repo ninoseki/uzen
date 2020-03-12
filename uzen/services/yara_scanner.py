@@ -4,7 +4,7 @@ import itertools
 
 import yara
 
-from uzen.models.snapshots import Snapshot
+from uzen.models.snapshots import Snapshot, SearchResultModel
 from uzen.models.scripts import Script
 from uzen.services.snapshot_search import SnapshotSearcher
 
@@ -58,7 +58,7 @@ class YaraScanner:
 
     async def scan_snapshots(
         self, target: str = "body", filters: dict = {}
-    ) -> List[Snapshot]:
+    ) -> List[SearchResultModel]:
         """Scan snapshots data with a YARA rule
 
         Keyword Arguments:
@@ -66,7 +66,7 @@ class YaraScanner:
             filters {dict} -- Filters for snapshot search (default: {{}})
 
         Returns:
-            List[Snapshot] -- A list of snapshot ORM instances
+            List[SearchResultModel] -- A list of simlified snapshot models
         """
         # get snapshots ids based on filters
         snapshot_ids: object = await SnapshotSearcher.search(filters, id_only=True)
@@ -85,7 +85,12 @@ class YaraScanner:
         results = [t.result() for t in completed]
 
         matched_ids = list(itertools.chain(*results))
-        return await Snapshot.filter(id__in=matched_ids).order_by("-id")
+        snapshots = (
+            await Snapshot.filter(id__in=matched_ids)
+            .order_by("-id")
+            .values(*SearchResultModel.field_keys())
+        )
+        return [SearchResultModel(**snapshot) for snapshot in snapshots]
 
     def match(self, data: Optional[str]) -> List[yara.Match]:
         """Scan a data with a YARA rule
