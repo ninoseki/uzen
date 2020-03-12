@@ -14,5 +14,9 @@ LOG_FILE = config("LOG_FILE", default=sys.stderr)
 LOG_LEVEL = config("LOG_LEVEL", cast=str, default="DEBUG")
 LOG_BACKTRACE = config("LOG_BACKTRACE", cast=bool, default=True)
 
-DATABASE_URL = config("DATABASE_URL", cast=str)
-APP_MODELS = config("APP_MODELS", cast=CommaSeparatedStrings)
+DATABASE_URL = config("DATABASE_URL", cast=str, default="sqlite://:memory:")
+APP_MODELS = config(
+    "APP_MODELS",
+    cast=CommaSeparatedStrings,
+    default="uzen.models.snapshots,uzen.models.scripts",
+)
