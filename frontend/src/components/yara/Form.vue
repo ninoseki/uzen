@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="box">
-      <BasicYaraForm v-bind:source.sync="source" v-bind:target.sync="target" />
+      <BasicForm v-bind:source.sync="source" v-bind:target.sync="target" />
       <hr />
       <SnapshotSearch ref="search" />
       <br />
@@ -24,17 +24,15 @@ import axios, { AxiosError } from "axios";
 
 import { ErrorData, Snapshot, SearchFilters, TargetTypes } from "@/types";
 
-import BasicYaraForm from "@/components/BasicYaraForm.vue";
-import Counter from "@/components/Counter.vue";
-import SnapshotDetail from "@/components/SnapshotDetail.vue";
-import SnapshotSearch from "@/components/SnapshotSearch.vue";
-import SnapshotTable from "@/components/SnapshotTable.vue";
+import BasicForm from "@/components/yara/BasicForm.vue";
+import Counter from "@/components/ui/Counter.vue";
+import SnapshotSearch from "@/components/snapshots/Search.vue";
+import SnapshotTable from "@/components/snapshots/Table.vue";
 
 @Component({
   components: {
-    BasicYaraForm,
+    BasicForm,
     Counter,
-    SnapshotDetail,
     SnapshotSearch,
     SnapshotTable
   }

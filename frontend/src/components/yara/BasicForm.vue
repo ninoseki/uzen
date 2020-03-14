@@ -23,7 +23,7 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import { TargetTypes } from "@/types";
 
 @Component
-export default class BasicYaraForm extends Vue {
+export default class BasicForm extends Vue {
   private source: string = "";
   private target: TargetTypes = "body";
   private targets: TargetTypes[] = ["body", "whois", "certificate", "script"];

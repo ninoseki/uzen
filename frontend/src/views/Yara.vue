@@ -7,7 +7,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
-import YaraForm from "@/components/YaraForm.vue";
+import YaraForm from "@/components/yara/Form.vue";
 
 @Component({
   components: {

@@ -37,7 +37,7 @@
     </div>
 
     <div>
-      <SnapshotDetail v-if="hasSnapshot()" v-bind:snapshot="snapshot" />
+      <SnapshotComponent v-if="hasSnapshot()" v-bind:snapshot="snapshot" />
     </div>
   </div>
 </template>
@@ -48,14 +48,14 @@ import axios, { AxiosError } from "axios";
 
 import { ErrorData, Snapshot } from "@/types";
 
-import SnapshotDetail from "@/components/SnapshotDetail.vue";
+import SnapshotComponent from "@/components/snapshots/Snapshot.vue";
 
 @Component({
   components: {
-    SnapshotDetail
+    SnapshotComponent
   }
 })
-export default class SnapshotForm extends Vue {
+export default class Form extends Vue {
   private url = "";
   private showOptions = false;
   private userAgent = "";

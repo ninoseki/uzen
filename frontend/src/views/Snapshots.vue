@@ -33,15 +33,13 @@ import axios, { AxiosError } from "axios";
 
 import { SnapshotCount, Snapshot, ErrorData } from "@/types";
 
-import Counter from "@/components/Counter.vue";
-import SnapshotDetail from "@/components/SnapshotDetail.vue";
-import SnapshotSearch from "@/components/SnapshotSearch.vue";
-import SnapshotTable from "@/components/SnapshotTable.vue";
+import Counter from "@/components/ui/Counter.vue";
+import SnapshotSearch from "@/components/snapshots/Search.vue";
+import SnapshotTable from "@/components/snapshots/Table.vue";
 
 @Component({
   components: {
     Counter,
-    SnapshotDetail,
     SnapshotSearch,
     SnapshotTable
   }

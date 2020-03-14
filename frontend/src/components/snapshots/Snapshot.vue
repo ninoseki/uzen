@@ -137,8 +137,8 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 
 import { Snapshot, Script, ErrorData } from "@/types";
-import Links from "@/components/Links.vue";
-import Scripts from "@/components/Scripts.vue";
+import Links from "@/components/links/Links.vue";
+import Scripts from "@/components/scripts/Scripts.vue";
 
 // Google code prettifier
 declare const PR: any;
@@ -149,7 +149,7 @@ declare const PR: any;
     Scripts
   }
 })
-export default class SnapshotDetail extends Vue {
+export default class SnapshotComponent extends Vue {
   @Prop() private snapshot!: Snapshot;
   @Prop() private propScripts!: Script[];
 

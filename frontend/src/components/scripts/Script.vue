@@ -10,7 +10,7 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import { Script } from "@/types";
 
 @Component
-export default class ScriptView extends Vue {
+export default class ScriptComponent extends Vue {
   @Prop() private script!: Script;
 }
 </script>
