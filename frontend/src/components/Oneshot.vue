@@ -5,6 +5,7 @@
         <b-input
           class="control is-expanded"
           placeholder="http://example.com"
+          type="url"
           v-model="url"
         ></b-input>
       </b-field>

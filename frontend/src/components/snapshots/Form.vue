@@ -27,6 +27,7 @@
         <b-field label="Timeout (milliseconds)">
           <b-input
             v-model="timeout"
+            type="number"
             placeholder="Maximum navigation time in milliseconds, defaults to 30 seconds, pass 0 to disable timeout"
           ></b-input>
         </b-field>
