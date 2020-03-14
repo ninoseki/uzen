@@ -53,25 +53,34 @@ class URLScan:
                 response = tmp
                 break
 
+        url = result.get("page", {}).get("url")
+        submitted_url = result.get("task", {}).get("url")
+        hostname = result.get("page", {}).get("domain")
+        ip_address = result.get("page", {}).get("ip")
+        asn = result.get("page", {}).get("asn")
+        asnname = result.get("page", {}).get("asnname")
+
         headers = response.get("headers", {})
+        server = result.get("page", {}).get("server")
+        content_type = headers.get("Content-Type") or headers.get("content-type")
+        content_length = headers.get("Content-Length") or headers.get("content-length")
+
         body = instance.body()
         sha256 = result.get("lists", {}).get("hashes", [])[0]
         screenshot = instance.screenshot()
         time = result.get("task", {}).get("time")
         created_at = datetime.datetime.strptime(time, "%Y-%m-%dT%H:%M:%S.%fZ")
 
-        asn = result.get("page", {}).get("asn")
-        asnname = result.get("page", {}).get("asnname")
         return Snapshot(
-            url=result.get("page", {}).get("url"),
+            url=url,
+            submitted_url=submitted_url,
             status=200,
-            hostname=result.get("page", {}).get("domain"),
-            ip_address=result.get("page", {}).get("ip"),
+            hostname=hostname,
+            ip_address=ip_address,
             asn=f"{asn} {asnname}",
-            server=result.get("page", {}).get("server"),
-            content_type=headers.get("Content-Type") or headers.get("content-type"),
-            content_length=headers.get("Content-Length")
-            or headers.get("content-length"),
+            server=server,
+            content_type=content_type,
+            content_length=content_length,
             headers=headers,
             body=body,
             sha256=sha256,

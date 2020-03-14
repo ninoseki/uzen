@@ -11,7 +11,7 @@ interactions:
       User-Agent:
       - python-requests/2.23.0
     method: GET
-    uri: https://www.w3.org/2008/site/js/main
+    uri: https://www.w3.org//2008/site/js/main
   response:
     body:
       string: !!binary |
@@ -562,11 +562,11 @@ interactions:
       content-type:
       - text/javascript
       date:
-      - Sat, 07 Mar 2020 00:53:46 GMT
+      - Sat, 14 Mar 2020 00:17:54 GMT
       etag:
-      - '"760c-59e869038c880;59e8692eaba09"'
+      - '"760c-59e869038c880;59e8692eb5aff"'
       expires:
-      - Sat, 14 Mar 2020 00:53:46 GMT
+      - Sat, 21 Mar 2020 00:17:54 GMT
       last-modified:
       - Fri, 14 Feb 2020 10:21:06 GMT
       strict-transport-security:
@@ -574,7 +574,7 @@ interactions:
       tcn:
       - choice
       vary:
-      - negotiate,accept,accept-encoding,upgrade-insecure-requests
+      - negotiate,accept,accept-encoding
     status:
       code: 200
       message: OK

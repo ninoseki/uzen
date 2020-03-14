@@ -35,6 +35,7 @@ class Browser:
         Returns:
             Snapshot -- Snapshot ORM instance
         """
+        submitted_url: str = url
         try:
             browser = await launch(
                 headless=True,
@@ -57,9 +58,10 @@ class Browser:
                 "user_agent": user_agent or await browser.userAgent(),
             }
 
+            url = page.url
             status = res.status
             screenshot = await page.screenshot(encoding="base64")
-            body = await res.text()
+            body = await page.content()
             sha256 = calculate_sha256(body)
             headers = res.headers
         except PyppeteerError as e:
@@ -83,6 +85,7 @@ class Browser:
 
         snapshot = Snapshot(
             url=url,
+            submitted_url=submitted_url,
             status=status,
             body=body,
             sha256=sha256,

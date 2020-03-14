@@ -7,9 +7,11 @@
         </b-table-column>
 
         <b-table-column field="url" label="URL">
+          <strong>URL:</strong>
           <router-link :to="`/snapshots/${props.row.id}`">
             {{ props.row.url }}
           </router-link>
+          <p>(<strong>Submitted URL:</strong> {{ props.row.submitted_url }})</p>
         </b-table-column>
 
         <b-table-column field="hostname" label="Hostname">

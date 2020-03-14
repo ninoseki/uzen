@@ -53,7 +53,8 @@ async def test_yara_scan_with_invalid_input(client):
 
 def mock_take_snapshot(url: str):
     return Snapshot(
-        url="https://www.w3.org",
+        url="https://www.w3.org/",
+        submitted_url="https://www.w3.org",
         status=200,
         hostname="example.com",
         ip_address="1.1.1.1",

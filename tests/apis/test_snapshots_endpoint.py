@@ -58,7 +58,7 @@ async def test_snapshot_list_with_size(client):
     snapshots = response.json()
     assert len(snapshots) == 1
     first = snapshots[0]
-    assert first.get("url") == "http://example9.com"
+    assert first.get("url") == "http://example9.com/"
 
 
 @pytest.mark.asyncio
@@ -76,14 +76,14 @@ async def test_snapshot_list_with_offset_and_size(client):
     snapshots = response.json()
     assert len(snapshots) == 10
     first = snapshots[0]
-    assert first.get("url") == "http://example9.com"
+    assert first.get("url") == "http://example9.com/"
 
     payload = {"offset": 5, "size": 100}
     response = await client.get("/api/snapshots/", params=payload)
     snapshots = response.json()
     assert len(snapshots) == 5
     first = snapshots[0]
-    assert first.get("url") == "http://example4.com"
+    assert first.get("url") == "http://example4.com/"
 
 
 @pytest.mark.asyncio
@@ -117,7 +117,7 @@ async def test_snapshot_post(client, monkeypatch):
     assert response.status_code == 201
 
     snapshot = response.json()
-    assert snapshot.get("url") == "http://example.com"
+    assert snapshot.get("url") == "http://example.com/"
     assert snapshot.get("body") == "foo bar"
 
     snapshot = await Snapshot.get(id=snapshot.get("id"))
