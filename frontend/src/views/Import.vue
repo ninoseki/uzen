@@ -20,7 +20,7 @@
     </b-message>
 
     <div>
-      <SnapshotDetail v-if="hasSnapshot()" v-bind:snapshot="snapshot" />
+      <SnapshotComponebnt v-if="hasSnapshot()" v-bind:snapshot="snapshot" />
     </div>
   </div>
 </template>
@@ -31,11 +31,11 @@ import axios, { AxiosError } from "axios";
 
 import { ErrorData, Snapshot } from "@/types";
 
-import SnapshotDetail from "@/components/SnapshotDetail.vue";
+import SnapshotComponebnt from "@/components/snapshots/Snapshot.vue";
 
 @Component({
   components: {
-    SnapshotDetail
+    SnapshotComponebnt
   }
 })
 export default class SnapshotForm extends Vue {

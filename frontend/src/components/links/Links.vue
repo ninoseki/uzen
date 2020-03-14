@@ -11,7 +11,7 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 import { Snapshot, Link } from "@/types";
 
 @Component
-export default class LinkView extends Vue {
+export default class LinkComponent extends Vue {
   @Prop() private hostname!: string;
   @Prop() private ip_address!: string;
   @Prop() private link!: Link;

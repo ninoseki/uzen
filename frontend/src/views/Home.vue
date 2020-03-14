@@ -7,7 +7,7 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 
-import SnapshotForm from "@/components/SnapshotForm.vue";
+import SnapshotForm from "@/components/snapshots/Form.vue";
 
 @Component({
   components: {

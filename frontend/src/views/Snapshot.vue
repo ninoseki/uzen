@@ -1,5 +1,5 @@
 <template>
-  <SnapshotDetail v-bind:snapshot="snapshot" v-if="hasSnapshot()" />
+  <SnapshotComponebnt v-bind:snapshot="snapshot" v-if="hasSnapshot()" />
 </template>
 
 <script lang="ts">
@@ -8,11 +8,11 @@ import axios, { AxiosError } from "axios";
 
 import { Snapshot, ErrorData } from "@/types";
 
-import SnapshotDetail from "@/components/SnapshotDetail.vue";
+import SnapshotComponebnt from "@/components/snapshots/Snapshot.vue";
 
 @Component({
   components: {
-    SnapshotDetail
+    SnapshotComponebnt
   }
 })
 export default class SnapshotView extends Vue {

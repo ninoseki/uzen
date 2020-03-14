@@ -79,7 +79,7 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import { SearchFilters } from "@/types";
 
 @Component
-export default class YaraForm extends Vue {
+export default class Search extends Vue {
   @Prop() private asn: string | undefined;
   @Prop() private content_type: string | undefined;
   @Prop() private hostname: string | undefined;

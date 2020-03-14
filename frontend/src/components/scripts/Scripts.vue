@@ -22,7 +22,7 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 
-import ScriptView from "@/components/Script.vue";
+import ScriptView from "@/components/scripts/Script.vue";
 import { Script } from "@/types";
 
 @Component({

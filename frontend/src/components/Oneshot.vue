@@ -5,6 +5,7 @@
         <b-input
           class="control is-expanded"
           placeholder="http://example.com"
+          type="url"
           v-model="url"
         ></b-input>
       </b-field>
@@ -23,7 +24,7 @@
     </div>
 
     <div>
-      <SnapshotDetail
+      <SnapshotComponent
         v-if="hasSnapshot()"
         v-bind:snapshot="snapshot"
         v-bind:propScripts="scripts"
@@ -38,13 +39,13 @@ import axios, { AxiosError } from "axios";
 
 import { ErrorData, Snapshot, Oneshot, TargetTypes, Script } from "@/types";
 
-import SnapshotDetail from "@/components/SnapshotDetail.vue";
-import BasicYaraForm from "@/components/BasicYaraForm.vue";
+import SnapshotComponent from "@/components/snapshots/Snapshot.vue";
+import BasicYaraForm from "@/components/yara/BasicForm.vue";
 
 @Component({
   components: {
     BasicYaraForm,
-    SnapshotDetail
+    SnapshotComponent
   }
 })
 export default class OneshotView extends Vue {
