@@ -13,6 +13,7 @@ class BasicSnapshotModel(BaseModel):
     """
 
     url: AnyHttpUrl
+    submitted_url: AnyHttpUrl
     status: int
     hostname: str
     ip_address: IPvAnyAddress
@@ -46,6 +47,7 @@ class SearchResultModel(BaseModel):
 
     id: int
     url: AnyHttpUrl
+    submitted_url: AnyHttpUrl
     hostname: str
     ip_address: IPvAnyAddress
     asn: str
@@ -65,6 +67,7 @@ class Snapshot(Model):
 
     id = fields.IntField(pk=True)
     url = fields.TextField()
+    submitted_url = fields.TextField()
     status = fields.IntField()
     hostname = fields.TextField()
     ip_address = fields.CharField(max_length=255)

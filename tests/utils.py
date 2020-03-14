@@ -6,7 +6,8 @@ from uzen.models.snapshots import Snapshot
 def make_snapshot() -> Snapshot:
     return Snapshot(
         id=10000,
-        url=f"http://example.com",
+        url=f"http://example.com/",
+        submitted_url=f"http://example.com",
         status=200,
         hostname="example.com",
         ip_address="1.1.1.1",

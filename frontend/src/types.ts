@@ -5,6 +5,7 @@ export interface Headers {
 export interface Snapshot {
   id: number | undefined;
   url: string;
+  submitted_url: string;
   status: number;
   hostname: string;
   ip_address: string;

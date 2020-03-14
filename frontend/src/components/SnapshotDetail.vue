@@ -18,6 +18,10 @@
                       <td>{{ snapshot.url }}</td>
                     </tr>
                     <tr>
+                      <th>Submitted URL</th>
+                      <td>{{ snapshot.submitted_url }}</td>
+                    </tr>
+                    <tr>
                       <th>Hostname</th>
                       <td>
                         <router-link

@@ -55,7 +55,8 @@ async def snapshots_setup(client):
     for i in range(0, 10):
         snapshot = Snapshot(
             id=i,
-            url=f"http://example{i}.com",
+            url=f"http://example{i}.com/",
+            submitted_url=f"http://example{i}.com",
             status=200,
             hostname="example.com",
             ip_address="1.1.1.1",
