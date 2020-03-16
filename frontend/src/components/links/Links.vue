@@ -1,25 +1,29 @@
 <template>
-  <a v-bind:href="link.href(hostname, ip_address)" class="link" target="_blank">
-    <img v-bind:src="link.favicon" alt="favicon" />
-    <span>{{ link.name }}</span>
-  </a>
+  <div class="buttons">
+    <b-button v-for="link in links" v-bind:key="link.baseURL">
+      <Link
+        v-bind:hostname="snapshot.hostname"
+        v-bind:ip_address="snapshot.ip_address"
+        v-bind:link="link"
+      />
+    </b-button>
+  </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 
-import { Snapshot, Link } from "@/types";
+import Link from "@/components/links/Link.vue";
+import { Links } from "@/links";
+import { Snapshot } from "@/types";
 
-@Component
-export default class LinkComponent extends Vue {
-  @Prop() private hostname!: string;
-  @Prop() private ip_address!: string;
-  @Prop() private link!: Link;
+@Component({
+  components: {
+    Link
+  }
+})
+export default class LinksComponent extends Vue {
+  @Prop() private snapshot!: Snapshot;
+  private links = Links;
 }
 </script>
-
-<style scoped>
-.link img {
-  margin-right: 5px;
-}
-</style>
