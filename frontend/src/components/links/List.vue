@@ -1,7 +1,7 @@
 <template>
   <div class="buttons">
     <b-button v-for="link in links" v-bind:key="link.baseURL">
-      <Detail
+      <Link
         v-bind:hostname="snapshot.hostname"
         v-bind:ip_address="snapshot.ip_address"
         v-bind:link="link"
