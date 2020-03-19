@@ -9,10 +9,10 @@ TYPES: List[str] = ["A", "AAAA", "CNAME", "MX", "NS", "PTR", "TXT"]
 
 def query(hostname: str) -> List[DnsRecordBaseModel]:
     records = []
-    for type in TYPES:
-        values = pydig.query(hostname, type)
+    for record_type in TYPES:
+        values = pydig.query(hostname, record_type)
         for value in values:
-            record = DnsRecordBaseModel(type=type, value=value)
+            record = DnsRecordBaseModel(type=record_type, value=value)
             records.append(record)
     return records
 
