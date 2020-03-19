@@ -101,7 +101,11 @@ async def test_snapshot_post_with_invalid_url(client):
 
 
 def mock_take_snapshot(
-    url: str, user_agent: None, timeout: None, ignore_https_errors: False
+    url: str,
+    user_agent: None,
+    accept_language: None,
+    timeout: None,
+    ignore_https_errors: False,
 ):
     return make_snapshot()
 

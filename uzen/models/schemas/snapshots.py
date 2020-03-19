@@ -22,3 +22,6 @@ class CreateSnapshotPayload(BaseModel):
     ignore_https_errors: Optional[bool] = Field(
         None, title="Ignore HTTPS erros", description="Whether to ignore HTTPS errors"
     )
+    accept_language: Optional[str] = Field(
+        None, title="Accept language", description="Accept-Language request HTTP header"
+    )

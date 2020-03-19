@@ -53,6 +53,11 @@ async def test_take_snapshot_with_options(monkeypatch):
     assert snapshot.url == "http://example.com/"
 
     snapshot = await Browser.take_snapshot(
+        "http://example.com", accept_language="ja-JP"
+    )
+    assert snapshot.url == "http://example.com/"
+
+    snapshot = await Browser.take_snapshot(
         "http://example.com", timeout=10000, user_agent="foo"
     )
     assert snapshot.url == "http://example.com/"
