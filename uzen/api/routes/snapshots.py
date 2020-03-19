@@ -101,6 +101,7 @@ async def create(
 ) -> SnapshotModel:
     url = payload.url
     user_agent = payload.user_agent
+    accept_language = payload.accept_language
     timeout = payload.timeout or 30000
     ignore_https_errors = payload.ignore_https_errors or False
 
@@ -108,6 +109,7 @@ async def create(
         snapshot = await Browser.take_snapshot(
             url,
             user_agent=user_agent,
+            accept_language=accept_language,
             timeout=timeout,
             ignore_https_errors=ignore_https_errors,
         )

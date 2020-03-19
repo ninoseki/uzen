@@ -21,6 +21,7 @@ class Browser:
         user_agent: Optional[str] = None,
         timeout: Optional[int] = None,
         ignore_https_errors: bool = False,
+        accept_language: Optional[str] = None,
     ) -> Snapshot:
         """Take a snapshot of a website by puppeteer
 
@@ -47,6 +48,9 @@ class Browser:
             if user_agent is not None:
                 await page.setUserAgent(user_agent)
 
+            if accept_language is not None:
+                await page.setExtraHTTPHeaders({"Accept-Language": accept_language})
+
             # default timeout = 30 seconds
             timeout = timeout if timeout is not None else 30 * 1000
             res = await page.goto(url, timeout=timeout)
@@ -56,6 +60,7 @@ class Browser:
                 "ignore_https_errors": ignore_https_errors,
                 "timeout": timeout,
                 "user_agent": user_agent or await browser.userAgent(),
+                "accept_language": accept_language,
             }
 
             url = page.url

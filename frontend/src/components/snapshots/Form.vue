@@ -24,6 +24,22 @@
             v-model="userAgent"
           ></b-input>
         </b-field>
+
+        <b-field label="Accept Language">
+          <b-select
+            v-model="acceptLanguage"
+            placeholder="Select Accept Language HTTP header to use"
+          >
+            <option
+              v-for="langKey in languagKeys"
+              :value="langKey"
+              :key="langKey"
+            >
+              {{ langKey }} / {{ languages[langKey] }}
+            </option>
+          </b-select>
+        </b-field>
+
         <b-field label="Timeout (milliseconds)">
           <b-input
             v-model="timeout"
@@ -48,8 +64,8 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 
 import { ErrorData, Snapshot } from "@/types";
-
 import SnapshotComponent from "@/components/snapshots/Snapshot.vue";
+import { languages } from "@/languages";
 
 @Component({
   components: {
@@ -60,9 +76,12 @@ export default class Form extends Vue {
   private url = "";
   private showOptions = false;
   private userAgent = "";
+  private acceptLanguage = "";
   private timeout = 30000;
   private ignoreHTTPSErrors = false;
   private snapshot: Snapshot | undefined = undefined;
+  private languages = languages;
+  private languagKeys = Object.keys(languages);
 
   async take() {
     const loadingComponent = this.$buefy.loading.open({
@@ -73,6 +92,8 @@ export default class Form extends Vue {
       const response = await axios.post<Snapshot>("/api/snapshots/", {
         url: this.url,
         user_agent: this.userAgent === "" ? undefined : this.userAgent,
+        accept_language:
+          this.acceptLanguage === "" ? undefined : this.acceptLanguage,
         timeout: this.timeout,
         ignore_https_errors: this.ignoreHTTPSErrors
       });
