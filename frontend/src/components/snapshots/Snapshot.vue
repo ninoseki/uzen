@@ -128,6 +128,10 @@
       <b-tab-item label="Scripts">
         <Scripts v-bind:scripts="scripts" />
       </b-tab-item>
+
+      <b-tab-item label="DNS records">
+        <DnsRecords v-bind:dnsRecords="dnsRecords" />
+      </b-tab-item>
     </b-tabs>
   </div>
 </template>
@@ -136,9 +140,10 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 
-import { Snapshot, Script, ErrorData } from "@/types";
+import { Snapshot, Script, ErrorData, DnsRecord } from "@/types";
 import Links from "@/components/links/Links.vue";
 import Scripts from "@/components/scripts/Scripts.vue";
+import DnsRecords from "@/components/dns_records/DnsRecords.vue";
 
 // Google code prettifier
 declare const PR: any;
@@ -146,14 +151,17 @@ declare const PR: any;
 @Component({
   components: {
     Links,
-    Scripts
+    Scripts,
+    DnsRecords
   }
 })
 export default class SnapshotComponent extends Vue {
   @Prop() private snapshot!: Snapshot;
   @Prop() private propScripts!: Script[];
+  @Prop() private propDnsRecords!: DnsRecord[];
 
   private scripts: Script[] = [];
+  private dnsRecords: DnsRecord[] = [];
 
   public imageData(): string {
     return `data:Image/png;base64,${this.snapshot.screenshot}`;
@@ -174,13 +182,30 @@ export default class SnapshotComponent extends Vue {
     }
   }
 
+  async loadDnsRecords() {
+    try {
+      const response = await axios.get<DnsRecord[]>("/api/dns_records/search", {
+        params: { snapshot_id: this.snapshot.id }
+      });
+
+      this.dnsRecords = response.data;
+
+      this.$forceUpdate();
+    } catch (error) {
+      const data = error.response.data as ErrorData;
+      alert(data.detail);
+    }
+  }
+
   created() {
     if (this.propScripts !== undefined) {
       // oneshot scan returns a snapshot with scripts (as propScripts)
       this.scripts = this.propScripts;
+      this.dnsRecords = this.propDnsRecords;
     } else if (this.snapshot.id !== undefined) {
       // load scripts if a snapshot has the ID
       this.loadScripts();
+      this.loadDnsRecords();
     }
   }
 

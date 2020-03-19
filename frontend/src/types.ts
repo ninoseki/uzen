@@ -56,10 +56,18 @@ export interface Script {
   created_at: string | undefined;
 }
 
+export interface DnsRecord {
+  id: number | undefined;
+  type: string;
+  value: string;
+  created_at: string | undefined;
+}
+
 export interface Oneshot {
   matched: boolean;
   snapshot: Snapshot;
   scripts: Script[];
+  dnsRecords: DnsRecord[];
 }
 
 export type TargetTypes = "body" | "whois" | "certificate" | "script";

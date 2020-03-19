@@ -85,6 +85,7 @@ class Snapshot(Model):
     created_at = fields.DatetimeField(auto_now_add=True)
 
     scripts: fields.ReverseRelation["Script"]
+    dns_records: fields.ReverseRelation["DnsRecord"]
 
     def to_full_model(self) -> SnapshotModel:
         return SnapshotModel.from_orm(self)

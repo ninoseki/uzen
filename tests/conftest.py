@@ -13,6 +13,7 @@ environ["TESTING"] = "TRUE"  # noqa
 
 from uzen import create_app
 from uzen.core import settings
+from uzen.models.dns_records import DnsRecord
 from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot
 
@@ -87,6 +88,19 @@ async def scripts_setup(client, snapshots_setup):
             created_at=datetime.datetime.now(),
         )
         await script.save()
+
+
+@pytest.fixture
+async def dns_records_setup(client, snapshots_setup):
+    for i in range(0, 5):
+        record = DnsRecord(
+            id=i,
+            snapshot_id=i,
+            value="1.1.1.1",
+            type="A",
+            created_at=datetime.datetime.now(),
+        )
+        await record.save()
 
 
 @pytest.fixture

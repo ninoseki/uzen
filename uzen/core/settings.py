@@ -18,5 +18,5 @@ DATABASE_URL = config("DATABASE_URL", cast=str, default="sqlite://:memory:")
 APP_MODELS = config(
     "APP_MODELS",
     cast=CommaSeparatedStrings,
-    default="uzen.models.snapshots,uzen.models.scripts",
+    default="uzen.models.snapshots,uzen.models.scripts,uzen.models.dns_records",
 )
