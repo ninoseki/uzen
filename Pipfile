@@ -35,6 +35,7 @@ fastapi = "*"
 requests-html = "*"
 urllib3 = "<1.25"
 pyppeteer = "*"
+pydig = "*"
 
 [requires]
 python_version = "3.8"

@@ -28,6 +28,7 @@
         v-if="hasSnapshot()"
         v-bind:snapshot="snapshot"
         v-bind:propScripts="scripts"
+        v-bind:propDnsRecords="dnsRecords"
       />
     </div>
   </div>
@@ -37,7 +38,14 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 
-import { ErrorData, Snapshot, Oneshot, TargetTypes, Script } from "@/types";
+import {
+  ErrorData,
+  Snapshot,
+  Oneshot,
+  TargetTypes,
+  Script,
+  DnsRecord
+} from "@/types";
 
 import SnapshotComponent from "@/components/snapshots/Snapshot.vue";
 import BasicYaraForm from "@/components/yara/BasicForm.vue";
@@ -54,6 +62,7 @@ export default class OneshotView extends Vue {
   private url: string = "";
   private snapshot: Snapshot | undefined = undefined;
   private scripts: Script[] = [];
+  private dnsRecords: DnsRecord[] = [];
   private matched: boolean | undefined = undefined;
 
   async scan() {
@@ -73,6 +82,7 @@ export default class OneshotView extends Vue {
 
       this.snapshot = data.snapshot;
       this.scripts = data.scripts;
+      this.dnsRecords = data.dnsRecords;
       this.matched = data.matched;
 
       this.$forceUpdate();

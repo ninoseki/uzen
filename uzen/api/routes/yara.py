@@ -5,8 +5,9 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from uzen.api.dependencies.snapshots import search_filters
 from uzen.models.schemas.yara import OneshotPayload, OneshotResponse, ScanPayload
-from uzen.models.snapshots import SnapshotModel, SearchResultModel
+from uzen.models.snapshots import SearchResultModel
 from uzen.services.browser import Browser
+from uzen.services.dns_records import DnsRecordBuilder
 from uzen.services.scripts import ScriptBuilder
 from uzen.services.yara_scanner import YaraScanner
 
@@ -54,6 +55,7 @@ async def oneshot(payload: OneshotPayload) -> OneshotResponse:
 
     snapshot = await Browser.take_snapshot(url)
     scripts = ScriptBuilder.build_from_snapshot(snapshot)
+    records = DnsRecordBuilder.build_from_snapshot(snapshot)
 
     matched = False
     if target == "script":
@@ -68,5 +70,8 @@ async def oneshot(payload: OneshotPayload) -> OneshotResponse:
         matched = True if len(matches) > 0 else False
 
     return OneshotResponse(
-        snapshot=snapshot.to_base_model(), scripts=scripts, matched=matched
+        snapshot=snapshot.to_base_model(),
+        scripts=scripts,
+        dnsRecords=records,
+        matched=matched,
     )

@@ -6,11 +6,14 @@ from tortoise.exceptions import DoesNotExist
 
 from uzen.api.dependencies.snapshots import search_filters
 from uzen.models.schemas.snapshots import CountResponse, CreateSnapshotPayload
+from uzen.models.dns_records import DnsRecord
 from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot, SnapshotModel, SearchResultModel
 from uzen.services.browser import Browser
+from uzen.services.dns_records import DnsRecordBuilder
 from uzen.services.scripts import ScriptBuilder
 from uzen.services.snapshot_search import SnapshotSearcher
+
 
 router = APIRouter()
 
@@ -53,7 +56,9 @@ async def count(filters: dict = Depends(search_filters)) -> CountResponse:
 )
 async def get(snapshot_id: int) -> SnapshotModel:
     try:
-        snapshot = await Snapshot.get(id=snapshot_id)
+        snapshot = await Snapshot.get(id=snapshot_id).prefetch_related(
+            "scripts", "dns_records"
+        )
     except DoesNotExist:
         raise HTTPException(status_code=404, detail=f"Snapshot:{id} is not found")
 
@@ -76,6 +81,11 @@ async def list(size: int = 100, offset: int = 0) -> List[SearchResultModel]:
 async def create_scripts(snapshot: Snapshot):
     scripts = ScriptBuilder.build_from_snapshot(snapshot)
     await Script.bulk_create(scripts)
+
+
+async def create_dns_records(snapshot: Snapshot):
+    records = DnsRecordBuilder.build_from_snapshot(snapshot)
+    await DnsRecord.bulk_create(records)
 
 
 @router.post(
@@ -107,6 +117,7 @@ async def create(
     await snapshot.save()
 
     background_tasks.add_task(create_scripts, snapshot)
+    background_tasks.add_task(create_dns_records, snapshot)
 
     return snapshot.to_full_model()
 
