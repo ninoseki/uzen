@@ -2,9 +2,9 @@ from typing import List, Union, Optional
 
 from pydantic import AnyHttpUrl, BaseModel, Field
 
-from uzen.models.dns_records import DnsRecordBaseModel
-from uzen.models.scripts import ScriptBaseModel
-from uzen.models.snapshots import BasicSnapshotModel, SearchResultModel
+from uzen.models.schemas.dns_records import BaseDnsRecord
+from uzen.models.schemas.scripts import BaseScript
+from uzen.models.schemas.snapshots import BaseSnapshot, SearchResult
 
 
 class ScanPayload(BaseModel):
@@ -58,17 +58,17 @@ class YaraResult(BaseModel):
 
 
 class OneshotResponse(BaseModel):
-    snapshot: BasicSnapshotModel = Field(
+    snapshot: BaseSnapshot = Field(
         None,
         title="Snapshot model",
         description="Snapshot model without id & created_at fields",
     )
-    scripts: List[ScriptBaseModel] = Field(
+    scripts: List[BaseScript] = Field(
         None,
         title="Script model",
         description="Script model without id & created_at fields",
     )
-    dnsRecords: List[DnsRecordBaseModel] = Field(
+    dnsRecords: List[BaseDnsRecord] = Field(
         None,
         title="DNS record model",
         description="DNS record model without id & created_at fields",
@@ -81,7 +81,7 @@ class OneshotResponse(BaseModel):
     )
 
 
-class ScanResult(SearchResultModel):
+class ScanResult(SearchResult):
     """Simplified version of Pydantic model of Snapshot"""
 
     yara_result: YaraResult

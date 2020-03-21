@@ -1,7 +1,8 @@
-import requests
 from fastapi import APIRouter, HTTPException
+from typing import cast
+import requests
 
-from uzen.models.snapshots import SnapshotModel
+from uzen.models.schemas.snapshots import Snapshot
 from uzen.services.urlscan import URLScan
 
 router = APIRouter()
@@ -9,13 +10,13 @@ router = APIRouter()
 
 @router.post(
     "/{uuid}",
-    response_model=SnapshotModel,
+    response_model=Snapshot,
     response_description="Returns an imported snapshot",
     status_code=201,
     summary="Import data from urlscan.io",
     description="Import scan data from urlscan.io as a snapshot",
 )
-async def import_from_urlscan(uuid: str) -> SnapshotModel:
+async def import_from_urlscan(uuid: str) -> Snapshot:
     try:
         snapshot = URLScan.import_as_snapshot(uuid)
     except requests.exceptions.HTTPError:
@@ -23,4 +24,5 @@ async def import_from_urlscan(uuid: str) -> SnapshotModel:
 
     await snapshot.save()
 
-    return snapshot.to_full_model()
+    model = cast(Snapshot, snapshot.to_model())
+    return model

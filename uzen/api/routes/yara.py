@@ -1,5 +1,4 @@
 from typing import List, cast
-
 import yara
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -75,7 +74,7 @@ async def oneshot(payload: OneshotPayload) -> OneshotResponse:
         matched = True if len(matches) > 0 else False
 
     return OneshotResponse(
-        snapshot=snapshot.to_base_model(),
+        snapshot=snapshot.to_model(),
         scripts=scripts,
         dnsRecords=records,
         matched=matched,

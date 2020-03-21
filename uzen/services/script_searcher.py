@@ -1,5 +1,4 @@
 from typing import List
-
 from tortoise.query_utils import Q
 
 from uzen.models.scripts import Script
@@ -9,10 +8,10 @@ class ScriptSearcher:
     @staticmethod
     async def search(filters: dict) -> List[Script]:
         """Search scripts
-        
+
         Arguments:
             filters {dict} -- Filters for script search
-        
+
         Returns:
             List[Script] -- a list of matched scripts
         """
