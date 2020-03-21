@@ -1,69 +1,12 @@
-import datetime
-from typing import Optional, Union, List
-
-from pydantic import AnyHttpUrl, BaseModel, IPvAnyAddress
 from tortoise import fields
 from tortoise.models import Model
+from typing import Union
 
-
-class BasicSnapshotModel(BaseModel):
-    """Base Pydantic model of Snapshot
-
-    Note that this model doesn't have "id" and "created_at" fields.
-    """
-
-    url: AnyHttpUrl
-    submitted_url: AnyHttpUrl
-    status: int
-    hostname: str
-    ip_address: IPvAnyAddress
-    asn: str
-    server: Optional[str]
-    content_type: Optional[str]
-    content_length: Optional[int]
-    body: str
-    sha256: str
-    headers: dict
-    screenshot: str
-    whois: Optional[str]
-    certificate: Optional[str]
-    request: dict
-
-    class Config:
-        orm_mode = True
-
-
-class SnapshotModel(BasicSnapshotModel):
-    """FUll Pydantic model of Snapshot
-
-    """
-
-    id: int
-    created_at: datetime.datetime
-
-
-class SearchResultModel(BaseModel):
-    """Simplified version of Pydantic model of Snapshot"""
-
-    id: int
-    url: AnyHttpUrl
-    submitted_url: AnyHttpUrl
-    hostname: str
-    ip_address: IPvAnyAddress
-    asn: str
-    server: Optional[str]
-    content_type: Optional[str]
-    created_at: datetime.datetime
-
-    @classmethod
-    def field_keys(cls) -> List[str]:
-        return list(cls.__fields__.keys())
+from uzen.models.schemas.snapshots import BaseSnapshot, Snapshot as SnapshotModel
 
 
 class Snapshot(Model):
-    """An ORM class for snapshots table
-
-    """
+    """An ORM class for snapshots table"""
 
     id = fields.IntField(pk=True)
     url = fields.TextField()
@@ -87,25 +30,15 @@ class Snapshot(Model):
     scripts: fields.ReverseRelation["Script"]
     dns_records: fields.ReverseRelation["DnsRecord"]
 
-    def to_full_model(self) -> SnapshotModel:
-        return SnapshotModel.from_orm(self)
-
-    def to_base_model(self) -> BasicSnapshotModel:
-        return BasicSnapshotModel.from_orm(self)
-
-    def to_model(self) -> Union[SnapshotModel, BasicSnapshotModel]:
+    def to_model(self) -> Union[BaseSnapshot, SnapshotModel]:
         if self.id is not None:
             return SnapshotModel.from_orm(self)
 
-        return BasicSnapshotModel.from_orm(self)
+        return BaseSnapshot.from_orm(self)
 
     def to_dict(self) -> dict:
         model = self.to_model()
         return model.dict()
-
-    def __str__(self) -> str:
-        model = self.to_model()
-        return model.json()
 
     class Meta:
         table = "snapshots"

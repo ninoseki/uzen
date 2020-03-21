@@ -5,22 +5,22 @@ from pyppeteer.errors import PyppeteerError
 from tortoise.exceptions import DoesNotExist
 
 from uzen.api.dependencies.snapshots import search_filters
-from uzen.models.schemas.snapshots import CountResponse, CreateSnapshotPayload
 from uzen.models.dns_records import DnsRecord
+from uzen.models.schemas.snapshots import CountResponse, CreateSnapshotPayload
+from uzen.models.schemas.snapshots import SearchResult, Snapshot as SnapshotModel
 from uzen.models.scripts import Script
-from uzen.models.snapshots import Snapshot, SnapshotModel, SearchResultModel
+from uzen.models.snapshots import Snapshot
 from uzen.services.browser import Browser
 from uzen.services.dns_records import DnsRecordBuilder
 from uzen.services.scripts import ScriptBuilder
 from uzen.services.snapshot_search import SnapshotSearcher
-
 
 router = APIRouter()
 
 
 @router.get(
     "/search",
-    response_model=List[SearchResultModel],
+    response_model=List[SearchResult],
     response_description="Returns a list of matched snapshots",
     summary="Search snapshots",
     description="Searcn snapshtos with filters",
@@ -29,9 +29,9 @@ async def search(
     size: Optional[int] = None,
     offset: Optional[int] = None,
     filters: dict = Depends(search_filters),
-) -> List[SearchResultModel]:
+) -> List[SearchResult]:
     snapshots = await SnapshotSearcher.search(filters, size=size, offset=offset)
-    snapshots = cast(List[SearchResultModel], snapshots)
+    snapshots = cast(List[SearchResult], snapshots)
     return snapshots
 
 
@@ -56,25 +56,26 @@ async def count(filters: dict = Depends(search_filters)) -> CountResponse:
 )
 async def get(snapshot_id: int) -> SnapshotModel:
     try:
-        snapshot = await Snapshot.get(id=snapshot_id).prefetch_related(
+        snapshot: Snapshot = await Snapshot.get(id=snapshot_id).prefetch_related(
             "scripts", "dns_records"
         )
     except DoesNotExist:
         raise HTTPException(status_code=404, detail=f"Snapshot:{id} is not found")
 
-    return snapshot.to_full_model()
+    model = cast(SnapshotModel, snapshot.to_model())
+    return model
 
 
 @router.get(
     "/",
-    response_model=List[SearchResultModel],
+    response_model=List[SearchResult],
     response_description="Returns a list of snapshots",
     summary="List snapshtos",
     description="Get a list of snapshots",
 )
-async def list(size: int = 100, offset: int = 0) -> List[SearchResultModel]:
+async def list(size: int = 100, offset: int = 0) -> List[SearchResult]:
     snapshots = await SnapshotSearcher.search({}, size=size, offset=offset)
-    snapshots = cast(List[SearchResultModel], snapshots)
+    snapshots = cast(List[SearchResult], snapshots)
     return snapshots
 
 
@@ -121,7 +122,8 @@ async def create(
     background_tasks.add_task(create_scripts, snapshot)
     background_tasks.add_task(create_dns_records, snapshot)
 
-    return snapshot.to_full_model()
+    model = cast(SnapshotModel, snapshot.to_model())
+    return model
 
 
 @router.delete(

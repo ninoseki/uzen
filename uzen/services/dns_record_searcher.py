@@ -1,6 +1,5 @@
-from typing import List
-
 from tortoise.query_utils import Q
+from typing import List
 
 from uzen.models.dns_records import DnsRecord
 
@@ -9,10 +8,10 @@ class DnsRecordSearcher:
     @staticmethod
     async def search(filters: dict) -> List[DnsRecord]:
         """Search DNS records
-        
+
         Arguments:
             filters {dict} -- Filters for DNS record search
-        
+
         Returns:
             List[DnsRecord] -- a list of matched DNS records
         """
