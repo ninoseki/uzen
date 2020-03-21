@@ -26,9 +26,10 @@
     <div>
       <SnapshotComponent
         v-if="hasSnapshot()"
-        v-bind:snapshot="snapshot"
-        v-bind:propScripts="scripts"
-        v-bind:propDnsRecords="dnsRecords"
+        v-bind:snapshot="oneshot.snapshot"
+        v-bind:yaraResult="yaraResult()"
+        v-bind:propScripts="oneshot.scripts"
+        v-bind:propDnsRecords="oneshot.dnsRecords"
       />
     </div>
   </div>
@@ -44,7 +45,8 @@ import {
   Oneshot,
   TargetTypes,
   Script,
-  DnsRecord
+  DnsRecord,
+  YaraResult
 } from "@/types";
 
 import SnapshotComponent from "@/components/snapshots/Snapshot.vue";
@@ -60,10 +62,7 @@ export default class OneshotView extends Vue {
   private source: string = "";
   private target: TargetTypes = "body";
   private url: string = "";
-  private snapshot: Snapshot | undefined = undefined;
-  private scripts: Script[] = [];
-  private dnsRecords: DnsRecord[] = [];
-  private matched: boolean | undefined = undefined;
+  private oneshot: Oneshot | undefined = undefined;
 
   async scan() {
     const loadingComponent = this.$buefy.loading.open({
@@ -77,13 +76,8 @@ export default class OneshotView extends Vue {
         target: this.target
       });
 
-      const data = response.data;
+      this.oneshot = response.data;
       loadingComponent.close();
-
-      this.snapshot = data.snapshot;
-      this.scripts = data.scripts;
-      this.dnsRecords = data.dnsRecords;
-      this.matched = data.matched;
 
       this.$forceUpdate();
     } catch (error) {
@@ -95,27 +89,41 @@ export default class OneshotView extends Vue {
   }
 
   hasSnapshot(): boolean {
-    return this.snapshot !== undefined;
+    return this.oneshot?.snapshot !== undefined;
+  }
+
+  matched(): boolean {
+    if (this.oneshot?.matched === undefined) {
+      return false;
+    }
+    return this.oneshot.matched;
   }
 
   message(): string {
-    if (this.matched === undefined) {
-      return "";
-    } else if (this.matched) {
+    if (this.matched()) {
       return "Matched with YARA rule";
-    } else {
-      return "Not matched with YARA rule";
     }
+    return "Not matched with YARA rule";
   }
 
   messageType(): string {
-    if (this.matched === undefined) {
-      return "";
-    } else if (this.matched) {
+    if (this.matched()) {
       return "is-warning";
-    } else {
-      return "is-success";
     }
+    return "is-success";
+  }
+
+  yaraResult(): YaraResult | undefined {
+    if (this.oneshot?.matches !== undefined) {
+      const result: YaraResult = {
+        snapshot_id: -1,
+        script_id: undefined,
+        target: this.target,
+        matches: this.oneshot.matches
+      };
+      return result;
+    }
+    return undefined;
   }
 }
 </script>

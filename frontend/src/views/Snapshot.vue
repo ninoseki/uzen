@@ -1,12 +1,16 @@
 <template>
-  <SnapshotComponebnt v-bind:snapshot="snapshot" v-if="hasSnapshot()" />
+  <SnapshotComponebnt
+    v-bind:snapshot="snapshot"
+    v-bind:yaraResult="yaraResult"
+    v-if="hasSnapshot()"
+  />
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 
-import { Snapshot, ErrorData } from "@/types";
+import { Snapshot, ErrorData, YaraResult } from "@/types";
 
 import SnapshotComponebnt from "@/components/snapshots/Snapshot.vue";
 
@@ -16,6 +20,8 @@ import SnapshotComponebnt from "@/components/snapshots/Snapshot.vue";
   }
 })
 export default class SnapshotView extends Vue {
+  @Prop() private yaraResult!: YaraResult;
+  @Prop() private test!: string;
   private snapshot: Snapshot | undefined = undefined;
 
   async load() {

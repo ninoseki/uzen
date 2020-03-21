@@ -132,6 +132,10 @@
       <b-tab-item label="DNS records">
         <DnsRecords v-bind:dnsRecords="dnsRecords" />
       </b-tab-item>
+
+      <b-tab-item v-if="hasYaraResult()" label="YARA matches">
+        <YaraResultComponent v-bind:yaraResult="yaraResult" />
+      </b-tab-item>
     </b-tabs>
   </div>
 </template>
@@ -140,10 +144,18 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 
-import { Snapshot, Script, ErrorData, DnsRecord } from "@/types";
+import {
+  Snapshot,
+  Script,
+  ErrorData,
+  DnsRecord,
+  YaraResult,
+  SnapshotWithYaraResult
+} from "@/types";
 import Links from "@/components/links/Links.vue";
 import Scripts from "@/components/scripts/Scripts.vue";
 import DnsRecords from "@/components/dns_records/DnsRecords.vue";
+import YaraResultComponent from "@/components/yara/Result.vue";
 
 // Google code prettifier
 declare const PR: any;
@@ -152,11 +164,13 @@ declare const PR: any;
   components: {
     Links,
     Scripts,
-    DnsRecords
+    DnsRecords,
+    YaraResultComponent
   }
 })
 export default class SnapshotComponent extends Vue {
   @Prop() private snapshot!: Snapshot;
+  @Prop() private yaraResult!: YaraResult;
   @Prop() private propScripts!: Script[];
   @Prop() private propDnsRecords!: DnsRecord[];
 
@@ -211,6 +225,10 @@ export default class SnapshotComponent extends Vue {
 
   mounted() {
     PR.prettyPrint();
+  }
+
+  hasYaraResult(): boolean {
+    return this.yaraResult !== undefined;
   }
 }
 </script>

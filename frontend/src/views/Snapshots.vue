@@ -50,7 +50,7 @@ export default class Snapshots extends Vue {
 
   private snapshots: Snapshot[] = [];
   private count: number | undefined = undefined;
-  private totalCount: number | undefined = undefined;
+  private totalCount: number = 0;
   private size = this.DEFAULT_PAGE_SIZE;
   private offset = this.DEFAULT_OFFSET;
 

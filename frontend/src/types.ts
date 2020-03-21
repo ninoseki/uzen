@@ -1,4 +1,4 @@
-export interface Headers {
+export interface Dict {
   [key: string]: string | number;
 }
 
@@ -15,7 +15,7 @@ export interface Snapshot {
   content_lenth: number;
   body: string;
   sha256: string;
-  headers: Headers;
+  headers: Dict;
   screenshot: string;
   whois: string | undefined;
   certificate: string | undefined;
@@ -63,8 +63,28 @@ export interface DnsRecord {
   created_at: string | undefined;
 }
 
+export interface YaraMatch {
+  meta: Dict;
+  namespace: string;
+  rule: string;
+  strings: (string | number)[];
+  tags: string[];
+}
+
+export interface YaraResult {
+  snapshot_id: number;
+  script_id: number | undefined;
+  target: string;
+  matches: YaraMatch[];
+}
+
+export interface SnapshotWithYaraResult extends Snapshot {
+  yara_result: YaraResult | undefined;
+}
+
 export interface Oneshot {
   matched: boolean;
+  matches: YaraMatch[];
   snapshot: Snapshot;
   scripts: Script[];
   dnsRecords: DnsRecord[];

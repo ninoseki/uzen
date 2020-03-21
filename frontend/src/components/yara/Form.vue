@@ -14,7 +14,7 @@
       <Counter />
     </h2>
 
-    <SnapshotTable v-bind:snapshots="snapshots" />
+    <SnapshotTable v-bind:snapshots="results" />
   </div>
 </template>
 
@@ -22,7 +22,13 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 
-import { ErrorData, Snapshot, SearchFilters, TargetTypes } from "@/types";
+import {
+  ErrorData,
+  Snapshot,
+  SearchFilters,
+  TargetTypes,
+  SnapshotWithYaraResult
+} from "@/types";
 
 import BasicForm from "@/components/yara/BasicForm.vue";
 import Counter from "@/components/ui/Counter.vue";
@@ -41,10 +47,10 @@ export default class YaraForm extends Vue {
   private source: string = "";
   private target: TargetTypes = "body";
   private count: number | undefined = undefined;
-  private snapshots: Snapshot[] = [];
+  private results: SnapshotWithYaraResult[] = [];
 
   async scan() {
-    this.snapshots = [];
+    this.results = [];
     this.count = undefined;
 
     const loadingComponent = this.$buefy.loading.open({
@@ -54,7 +60,7 @@ export default class YaraForm extends Vue {
     const params = (this.$refs.search as SnapshotSearch).filtersParams();
 
     try {
-      const response = await axios.post<Snapshot[]>(
+      const response = await axios.post<SnapshotWithYaraResult[]>(
         "/api/yara/scan",
         {
           source: this.source,
@@ -65,8 +71,8 @@ export default class YaraForm extends Vue {
 
       loadingComponent.close();
 
-      this.snapshots = response.data;
-      this.count = this.snapshots.length;
+      this.results = response.data;
+      this.count = this.results.length;
     } catch (error) {
       loadingComponent.close();
 

@@ -39,7 +39,8 @@ const routes = [
   {
     path: "/snapshots/:id",
     name: "Snapshot",
-    component: Snapshot
+    component: Snapshot,
+    props: true
   }
 ];
 

@@ -1,12 +1,13 @@
 from typing import List, Optional, cast
 import asyncio
 import itertools
-
 import yara
 
-from uzen.models.snapshots import Snapshot, SearchResultModel
+from uzen.models.snapshots import Snapshot
 from uzen.models.scripts import Script
 from uzen.services.snapshot_search import SnapshotSearcher
+from uzen.services.matches_converter import MatchesConverter
+from uzen.models.schemas.yara import YaraMatch, YaraResult, ScanResult
 
 CHUNK_SIZE = 100
 PARALLEL_LIMIT = 10
@@ -17,21 +18,27 @@ class YaraScanner:
     def __init__(self, source: str):
         self.rule: yara.Rules = yara.compile(source=source)
 
-    async def partial_scan_for_scripts(self, ids: List[int]) -> List[int]:
+    async def partial_scan_for_scripts(self, ids: List[int]) -> List[YaraResult]:
         scripts = await Script.filter(snapshot_id__in=ids).values(
             "snapshot_id", "content"
         )
-        matched_ids = []
+        matched_results = []
         for script in scripts:
             snapshot_id = script.get("snapshot_id")
             content = script.get("content")
             matches = self.match(data=content)
             if len(matches) > 0:
-                matched_ids.append(snapshot_id)
+                result = YaraResult(
+                    snapshot_id=snapshot_id,
+                    script_id=script.id,
+                    target="script",
+                    matches=MatchesConverter.convert(matches),
+                )
+                matched_results.append(result)
 
-        return list(set(matched_ids))
+        return matched_results
 
-    async def partial_scan(self, target: str, ids: List[int]) -> List[int]:
+    async def partial_scan(self, target: str, ids: List[int]) -> List[YaraResult]:
         """Scan a list of snapshots with a YARA rule
 
         Arguments:
@@ -46,19 +53,25 @@ class YaraScanner:
                 return await self.partial_scan_for_scripts(ids)
 
             snapshots = await Snapshot.filter(id__in=ids).values("id", target)
-            matched_ids = []
+            matched_results = []
             for snapshot in snapshots:
                 snapshot_id = snapshot.get("id")
                 data = snapshot.get(target, "")
                 matches = self.match(data=data)
                 if len(matches) > 0:
-                    matched_ids.append(snapshot_id)
+                    result = YaraResult(
+                        snapshot_id=snapshot_id,
+                        script_id=None,
+                        target=target,
+                        matches=MatchesConverter.convert(matches),
+                    )
+                    matched_results.append(result)
 
-            return matched_ids
+            return matched_results
 
     async def scan_snapshots(
         self, target: str = "body", filters: dict = {}
-    ) -> List[SearchResultModel]:
+    ) -> List[ScanResult]:
         """Scan snapshots data with a YARA rule
 
         Keyword Arguments:
@@ -82,17 +95,22 @@ class YaraScanner:
         # make scan tasks
         tasks = [self.partial_scan(target=target, ids=chunk) for chunk in chunks]
         completed, pending = await asyncio.wait(tasks)
-        results = [t.result() for t in completed]
+        results = list(itertools.chain(*[t.result() for t in completed]))
 
-        matched_ids = list(itertools.chain(*results))
-        snapshots = (
+        matched_ids = [result.snapshot_id for result in results]
+        snapshots: List[dict] = (
             await Snapshot.filter(id__in=matched_ids)
             .order_by("-id")
-            .values(*SearchResultModel.field_keys())
+            .values(*ScanResult.field_keys())
         )
-        return [SearchResultModel(**snapshot) for snapshot in snapshots]
+        for idx in range(len(results)):
+            result = results[idx]
+            snapshot = snapshots[idx]
+            snapshot["yara_result"] = result
 
-    def match(self, data: Optional[str]) -> List[yara.Match]:
+        return [ScanResult(**snapshot) for snapshot in snapshots]
+
+    def match(self, data: Optional[str]) -> List[YaraMatch]:
         """Scan a data with a YARA rule
 
         Arguments:
@@ -102,4 +120,4 @@ class YaraScanner:
             List[yara.Match] -- YARA matches
         """
         data = "" if data is None else data
-        return self.rule.match(data=data)
+        return MatchesConverter.convert(self.rule.match(data=data))
