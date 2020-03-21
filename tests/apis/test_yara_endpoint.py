@@ -112,6 +112,9 @@ async def test_yara_oneshot_with_script(client, monkeypatch):
     data = response.json()
     assert data.get("matched")
 
+    matches = data.get("matches")
+    assert isinstance(matches, list)
+
 
 @pytest.mark.asyncio
 async def test_yara_oneshot_with_invalid_input(client):

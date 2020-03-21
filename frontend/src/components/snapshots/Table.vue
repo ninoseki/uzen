@@ -1,5 +1,5 @@
 <template>
-  <div class="box" v-if="hashSnapshot()">
+  <div class="box" v-if="hasSnapshots()">
     <b-table :data="snapshots">
       <template slot-scope="props">
         <b-table-column field="id" label="ID" width="40" numeric>
@@ -8,7 +8,12 @@
 
         <b-table-column field="url" label="URL">
           <strong>URL:</strong>
-          <router-link :to="`/snapshots/${props.row.id}`">
+          <router-link
+            :to="{
+              name: 'Snapshot',
+              params: { id: props.row.id, yaraResult: props.row.yara_result }
+            }"
+          >
             {{ props.row.url }}
           </router-link>
           <p>(<strong>Submitted URL:</strong> {{ props.row.submitted_url }})</p>
@@ -42,13 +47,13 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 
-import { Snapshot } from "@/types";
+import { Snapshot, SnapshotWithYaraResult } from "@/types";
 
 @Component
 export default class Table extends Vue {
-  @Prop() private snapshots!: Snapshot[];
+  @Prop() private snapshots!: Snapshot[] | SnapshotWithYaraResult[];
 
-  hashSnapshot(): boolean {
+  hasSnapshots(): boolean {
     return this.snapshots.length > 0;
   }
 }

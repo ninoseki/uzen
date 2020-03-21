@@ -4,8 +4,12 @@ import yara
 from fastapi import APIRouter, Depends, HTTPException
 
 from uzen.api.dependencies.snapshots import search_filters
-from uzen.models.schemas.yara import OneshotPayload, OneshotResponse, ScanPayload
-from uzen.models.snapshots import SearchResultModel
+from uzen.models.schemas.yara import (
+    OneshotPayload,
+    OneshotResponse,
+    ScanPayload,
+    ScanResult,
+)
 from uzen.services.browser import Browser
 from uzen.services.dns_records import DnsRecordBuilder
 from uzen.services.scripts import ScriptBuilder
@@ -16,14 +20,14 @@ router = APIRouter()
 
 @router.post(
     "/scan",
-    response_model=List[SearchResultModel],
+    response_model=List[ScanResult],
     response_description="Returns a list of matched snapshots",
     summary="Perform YARA scans against snapshtos",
     description="Perform YARA scans against snapshtos (which can be narrowed down by filters)",
 )
 async def scan(
     payload: ScanPayload, filters: dict = Depends(search_filters)
-) -> List[SearchResultModel]:
+) -> List[ScanResult]:
     source = payload.source
     target = payload.target
 
@@ -32,8 +36,8 @@ async def scan(
     except yara.Error as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-    snapshots = await yara_scanner.scan_snapshots(target, filters)
-    return snapshots
+    results = await yara_scanner.scan_snapshots(target, filters)
+    return results
 
 
 @router.post(
@@ -58,6 +62,7 @@ async def oneshot(payload: OneshotPayload) -> OneshotResponse:
     records = DnsRecordBuilder.build_from_snapshot(snapshot)
 
     matched = False
+    matches = []
     if target == "script":
         for script in scripts:
             matches = yara_scanner.match(script.content)
@@ -74,4 +79,5 @@ async def oneshot(payload: OneshotPayload) -> OneshotResponse:
         scripts=scripts,
         dnsRecords=records,
         matched=matched,
+        matches=matches,
     )
