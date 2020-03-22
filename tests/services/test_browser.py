@@ -1,4 +1,5 @@
 import pytest
+import pyppeteer
 from pyppeteer.errors import PyppeteerError
 
 from uzen.services.browser import Browser
@@ -75,3 +76,4 @@ async def test_take_snapshot_with_bad_ssl(monkeypatch):
         "https://expired.badssl.com", ignore_https_errors=True
     )
     assert snapshot.url == "https://expired.badssl.com/"
+
