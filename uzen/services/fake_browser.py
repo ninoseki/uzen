@@ -1,6 +1,5 @@
-from pyppeteer import launch
-from pyppeteer.errors import PyppeteerError
 from typing import Optional, cast
+import requests
 
 from uzen.models.snapshots import Snapshot
 from uzen.services.certificate import Certificate
@@ -12,17 +11,20 @@ from uzen.services.utils import (
 )
 from uzen.services.whois import Whois
 
+DEFAULT_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
+DEFAULT_AL = "en-US"
 
-class Browser:
+
+class FakeBrowser:
     @staticmethod
-    async def take_snapshot(
+    def take_snapshot(
         url: str,
         user_agent: Optional[str] = None,
         timeout: Optional[int] = None,
         ignore_https_errors: bool = False,
         accept_language: Optional[str] = None,
     ) -> Snapshot:
-        """Take a snapshot of a website by puppeteer
+        """Take a snapshot of a website by requests
 
         Arguments:
             url {str} -- A URL of a website
@@ -36,46 +38,36 @@ class Browser:
             Snapshot -- Snapshot ORM instance
         """
         submitted_url: str = url
+
         try:
-            browser = await launch(
-                headless=True,
-                ignoreHTTPSErrors=ignore_https_errors,
-                args=["--no-sandbox"],
-            )
-            page = await browser.newPage()
-
-            if user_agent is not None:
-                await page.setUserAgent(user_agent)
-
-            if accept_language is not None:
-                await page.setExtraHTTPHeaders({"Accept-Language": accept_language})
-
             # default timeout = 30 seconds
-            timeout = timeout if timeout is not None else 30 * 1000
-            res = await page.goto(url, timeout=timeout)
+            timeout = int(timeout / 1000) if timeout is not None else 30
+            res = requests.get(
+                url,
+                headers={
+                    "user-agent": user_agent or DEFAULT_UA,
+                    "accept-language": accept_language or DEFAULT_AL,
+                },
+                timeout=timeout,
+                allow_redirects=True,
+            )
 
             request = {
-                "browser": await browser.version(),
+                "browser": "requests",
                 "ignore_https_errors": ignore_https_errors,
                 "timeout": timeout,
-                "user_agent": user_agent or await browser.userAgent(),
+                "user_agent": user_agent or DEFAULT_UA,
                 "accept_language": accept_language,
             }
 
-            url = page.url
-            status = res.status
-            screenshot = await page.screenshot(encoding="base64")
-            body = await page.content()
+            url = res.url
+            status = res.status_code
+            screenshot = ""
+            body = res.text
             sha256 = calculate_sha256(body)
-            headers = res.headers
-        except PyppeteerError as e:
-            await browser.close()
+            headers = {k.lower(): v for (k, v) in res.headers.items()}
+        except requests.HTTPError as e:
             raise (e)
-        else:
-            await browser.close()
-        finally:
-            if browser is not None:
-                await browser.close()
 
         server = headers.get("server")
         content_type = headers.get("content-type")

@@ -1,8 +1,10 @@
 from typing import List, Optional, cast
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
+from loguru import logger
 from pyppeteer.errors import PyppeteerError
 from tortoise.exceptions import DoesNotExist
+import requests
 
 from uzen.api.dependencies.snapshots import search_filters
 from uzen.models.dns_records import DnsRecord
@@ -11,6 +13,7 @@ from uzen.models.schemas.snapshots import SearchResult, Snapshot as SnapshotMode
 from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot
 from uzen.services.browser import Browser
+from uzen.services.fake_browser import FakeBrowser
 from uzen.services.dns_records import DnsRecordBuilder
 from uzen.services.scripts import ScriptBuilder
 from uzen.services.snapshot_search import SnapshotSearcher
@@ -106,6 +109,8 @@ async def create(
     timeout = payload.timeout or 30000
     ignore_https_errors = payload.ignore_https_errors or False
 
+    snapshot = None
+    error = None
     try:
         snapshot = await Browser.take_snapshot(
             url,
@@ -115,7 +120,26 @@ async def create(
             ignore_https_errors=ignore_https_errors,
         )
     except PyppeteerError as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.debug(f"Failed to take a snapshot by pyppeteer: {e}")
+        error = e
+
+    # fallback to fake browser (requests)
+    if snapshot is None:
+        logger.debug("Fallback to requests")
+        try:
+            snapshot = await FakeBrowser.take_snapshot(
+                url,
+                user_agent=user_agent,
+                accept_language=accept_language,
+                timeout=timeout,
+                ignore_https_errors=ignore_https_errors,
+            )
+        except requests.RequestException as e:
+            logger.debug(f"Failed to take a snapshot by requests: {e}")
+            error = e
+
+    if snapshot is None or error is not None:
+        raise HTTPException(status_code=500, detail=str(error))
 
     await snapshot.save()
 
