@@ -65,7 +65,7 @@ class FakeBrowser:
             screenshot = ""
             body = res.text
             sha256 = calculate_sha256(body)
-            headers = dict(res.headers)
+            headers = {k.lower(): v for (k, v) in res.headers.items()}
         except requests.HTTPError as e:
             raise (e)
 

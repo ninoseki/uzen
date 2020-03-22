@@ -36,7 +36,7 @@ def test_take_snapshot(monkeypatch):
 
     assert snapshot.hostname == "example.com"
     assert snapshot.status == 200
-    assert snapshot.content_type == "text/html; charset=UTF-8"
+    assert "text/html" in snapshot.content_type
     assert (
         snapshot.asn
         == "AS15133 MCI Communications Services, Inc. d/b/a Verizon Business"
