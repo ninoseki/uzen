@@ -13,6 +13,7 @@ environ["TESTING"] = "TRUE"  # noqa
 
 from uzen import create_app
 from uzen.core import settings
+from uzen.models.classifications import Classification
 from uzen.models.dns_records import DnsRecord
 from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot
@@ -101,6 +102,19 @@ async def dns_records_setup(client, snapshots_setup):
             created_at=datetime.datetime.now(),
         )
         await record.save()
+
+
+@pytest.fixture
+async def classifications_setup(client, snapshots_setup):
+    for i in range(0, 5):
+        classification = Classification(
+            id=i,
+            snapshot_id=i,
+            name="test",
+            malicious=True,
+            created_at=datetime.datetime.now(),
+        )
+        await classification.save()
 
 
 @pytest.fixture

@@ -29,6 +29,7 @@ class Snapshot(Model):
 
     scripts: fields.ReverseRelation["Script"]
     dns_records: fields.ReverseRelation["DnsRecord"]
+    classifications: fields.ReverseRelation["Classification"]
 
     def to_model(self) -> Union[BaseSnapshot, SnapshotModel]:
         if self.id is not None:

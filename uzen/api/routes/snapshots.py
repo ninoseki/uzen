@@ -7,14 +7,16 @@ from tortoise.exceptions import DoesNotExist
 import requests
 
 from uzen.api.dependencies.snapshots import search_filters
+from uzen.models.classifications import Classification
 from uzen.models.dns_records import DnsRecord
 from uzen.models.schemas.snapshots import CountResponse, CreateSnapshotPayload
 from uzen.models.schemas.snapshots import SearchResult, Snapshot as SnapshotModel
 from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot
 from uzen.services.browser import Browser
-from uzen.services.fake_browser import FakeBrowser
+from uzen.services.classifications import ClassificationBuilder
 from uzen.services.dns_records import DnsRecordBuilder
+from uzen.services.fake_browser import FakeBrowser
 from uzen.services.scripts import ScriptBuilder
 from uzen.services.snapshot_search import SnapshotSearcher
 
@@ -60,7 +62,7 @@ async def count(filters: dict = Depends(search_filters)) -> CountResponse:
 async def get(snapshot_id: int) -> SnapshotModel:
     try:
         snapshot: Snapshot = await Snapshot.get(id=snapshot_id).prefetch_related(
-            "scripts", "dns_records"
+            "scripts", "dns_records", "classifications"
         )
     except DoesNotExist:
         raise HTTPException(status_code=404, detail=f"Snapshot:{id} is not found")
@@ -96,10 +98,19 @@ async def create_dns_records(snapshot: Snapshot):
     try:
         records = DnsRecordBuilder.build_from_snapshot(snapshot)
         await DnsRecord.bulk_create(records)
-        raise RuntimeError("foo")
     except Exception as e:
         logger.error(
             f"Failed to process create_dns_records job. URL: {snapshot.url} / Error: {e}"
+        )
+
+
+async def create_classifications(snapshot: Snapshot):
+    try:
+        classifications = ClassificationBuilder.build_from_snapshot(snapshot)
+        await Classification.bulk_create(classifications)
+    except Exception as e:
+        logger.error(
+            f"Failed to process create_classifications job. URL: {snapshot.url} / Error: {e}"
         )
 
 
@@ -156,6 +167,7 @@ async def create(
 
     background_tasks.add_task(create_scripts, snapshot)
     background_tasks.add_task(create_dns_records, snapshot)
+    background_tasks.add_task(create_classifications, snapshot)
 
     model = cast(SnapshotModel, snapshot.to_model())
     return model

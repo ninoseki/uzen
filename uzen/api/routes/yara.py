@@ -10,6 +10,7 @@ from uzen.models.schemas.yara import (
     ScanResult,
 )
 from uzen.services.browser import Browser
+from uzen.services.classifications import ClassificationBuilder
 from uzen.services.dns_records import DnsRecordBuilder
 from uzen.services.scripts import ScriptBuilder
 from uzen.services.yara_scanner import YaraScanner
@@ -59,6 +60,7 @@ async def oneshot(payload: OneshotPayload) -> OneshotResponse:
     snapshot = await Browser.take_snapshot(url)
     scripts = ScriptBuilder.build_from_snapshot(snapshot)
     records = DnsRecordBuilder.build_from_snapshot(snapshot)
+    classifications = ClassificationBuilder.build_from_snapshot(snapshot)
 
     matched = False
     matches = []
@@ -77,6 +79,7 @@ async def oneshot(payload: OneshotPayload) -> OneshotResponse:
         snapshot=snapshot.to_model(),
         scripts=scripts,
         dnsRecords=records,
+        classifications=classifications,
         matched=matched,
         matches=matches,
     )

@@ -1,7 +1,7 @@
 import sys
 
 from starlette.config import Config
-from starlette.datastructures import CommaSeparatedStrings
+from starlette.datastructures import CommaSeparatedStrings, Secret
 
 config = Config(".env")
 
@@ -18,5 +18,9 @@ DATABASE_URL = config("DATABASE_URL", cast=str, default="sqlite://:memory:")
 APP_MODELS = config(
     "APP_MODELS",
     cast=CommaSeparatedStrings,
-    default="uzen.models.snapshots,uzen.models.scripts,uzen.models.dns_records",
+    default="uzen.models.snapshots,uzen.models.scripts,uzen.models.dns_records,uzen.models.classifications",
+)
+
+GOOGLE_SAFE_BROWSING_API_KEY = config(
+    "GOOGLE_SAFE_BROWSING_API_KEY", cast=Secret, default=""
 )
