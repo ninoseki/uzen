@@ -83,13 +83,24 @@ async def list(size: int = 100, offset: int = 0) -> List[SearchResult]:
 
 
 async def create_scripts(snapshot: Snapshot):
-    scripts = ScriptBuilder.build_from_snapshot(snapshot)
-    await Script.bulk_create(scripts)
+    try:
+        scripts = ScriptBuilder.build_from_snapshot(snapshot)
+        await Script.bulk_create(scripts)
+    except Exception as e:
+        logger.error(
+            f"Failed to process create_scrpts job. URL: {snapshot.url} / Error: {e}"
+        )
 
 
 async def create_dns_records(snapshot: Snapshot):
-    records = DnsRecordBuilder.build_from_snapshot(snapshot)
-    await DnsRecord.bulk_create(records)
+    try:
+        records = DnsRecordBuilder.build_from_snapshot(snapshot)
+        await DnsRecord.bulk_create(records)
+        raise RuntimeError("foo")
+    except Exception as e:
+        logger.error(
+            f"Failed to process create_dns_records job. URL: {snapshot.url} / Error: {e}"
+        )
 
 
 @router.post(
