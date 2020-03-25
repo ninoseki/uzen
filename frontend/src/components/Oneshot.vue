@@ -30,6 +30,7 @@
         v-bind:yaraResult="yaraResult()"
         v-bind:propScripts="oneshot.scripts"
         v-bind:propDnsRecords="oneshot.dnsRecords"
+        v-bind:propClassifications="oneshot.classifications"
       />
     </div>
   </div>

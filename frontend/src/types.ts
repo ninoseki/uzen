@@ -63,6 +63,14 @@ export interface DnsRecord {
   created_at: string | undefined;
 }
 
+export interface Classification {
+  id: number | undefined;
+  name: string;
+  malicious: boolean;
+  note: string | undefined;
+  created_at: string | undefined;
+}
+
 export interface YaraMatch {
   meta: Dict;
   namespace: string;
@@ -88,6 +96,7 @@ export interface Oneshot {
   snapshot: Snapshot;
   scripts: Script[];
   dnsRecords: DnsRecord[];
+  classifications: Classification[];
 }
 
 export type TargetTypes = "body" | "whois" | "certificate" | "script";

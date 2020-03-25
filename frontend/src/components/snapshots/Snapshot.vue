@@ -133,6 +133,10 @@
         <DnsRecords v-bind:dnsRecords="dnsRecords" />
       </b-tab-item>
 
+      <b-tab-item label="Classifications">
+        <Classifications v-bind:classifications="classifications" />
+      </b-tab-item>
+
       <b-tab-item v-if="hasYaraResult()" label="YARA matches">
         <YaraResultComponent v-bind:yaraResult="yaraResult" />
       </b-tab-item>
@@ -150,11 +154,13 @@ import {
   ErrorData,
   DnsRecord,
   YaraResult,
-  SnapshotWithYaraResult
+  SnapshotWithYaraResult,
+  Classification
 } from "@/types";
 import Links from "@/components/links/Links.vue";
 import Scripts from "@/components/scripts/Scripts.vue";
 import DnsRecords from "@/components/dns_records/DnsRecords.vue";
+import Classifications from "@/components/classifications/Classifications.vue";
 import YaraResultComponent from "@/components/yara/Result.vue";
 
 // Google code prettifier
@@ -165,7 +171,8 @@ declare const PR: any;
     Links,
     Scripts,
     DnsRecords,
-    YaraResultComponent
+    YaraResultComponent,
+    Classifications
   }
 })
 export default class SnapshotComponent extends Vue {
@@ -173,9 +180,11 @@ export default class SnapshotComponent extends Vue {
   @Prop() private yaraResult!: YaraResult;
   @Prop() private propScripts!: Script[];
   @Prop() private propDnsRecords!: DnsRecord[];
+  @Prop() private propClassifications!: Classification[];
 
   private scripts: Script[] = [];
   private dnsRecords: DnsRecord[] = [];
+  private classifications: Classification[] = [];
 
   public imageData(): string {
     return `data:Image/png;base64,${this.snapshot.screenshot}`;
@@ -211,15 +220,35 @@ export default class SnapshotComponent extends Vue {
     }
   }
 
+  async loadClassifications() {
+    try {
+      const response = await axios.get<Classification[]>(
+        "/api/classifications/search",
+        {
+          params: { snapshot_id: this.snapshot.id }
+        }
+      );
+
+      this.classifications = response.data;
+
+      this.$forceUpdate();
+    } catch (error) {
+      const data = error.response.data as ErrorData;
+      alert(data.detail);
+    }
+  }
+
   created() {
     if (this.propScripts !== undefined) {
       // oneshot scan returns a snapshot with scripts (as propScripts)
       this.scripts = this.propScripts;
       this.dnsRecords = this.propDnsRecords;
+      this.classifications = this.propClassifications;
     } else if (this.snapshot.id !== undefined) {
       // load scripts if a snapshot has the ID
       this.loadScripts();
       this.loadDnsRecords();
+      this.loadClassifications();
     }
   }
 

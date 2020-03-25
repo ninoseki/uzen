@@ -2,6 +2,7 @@ from typing import List, Union, Optional
 
 from pydantic import AnyHttpUrl, BaseModel, Field
 
+from uzen.models.schemas.classifications import BaseClassification
 from uzen.models.schemas.dns_records import BaseDnsRecord
 from uzen.models.schemas.scripts import BaseScript
 from uzen.models.schemas.snapshots import BaseSnapshot, SearchResult
@@ -72,6 +73,11 @@ class OneshotResponse(BaseModel):
         None,
         title="DNS record model",
         description="DNS record model without id & created_at fields",
+    )
+    classifications: List[BaseClassification] = Field(
+        None,
+        title="Classification model",
+        description="Classification model without id & created_at fields",
     )
     matched: bool = Field(
         None, title="whether matched or not", description="whether matched or not"

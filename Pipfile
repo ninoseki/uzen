@@ -36,6 +36,7 @@ requests-html = "*"
 urllib3 = "<1.25"
 pyppeteer = "*"
 pydig = "*"
+pysafebrowsing = "*"
 
 [requires]
 python_version = "3.8"
