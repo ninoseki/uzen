@@ -2,7 +2,7 @@ from typing import List
 
 from fastapi import APIRouter, Depends
 
-from uzen.api.dependencies.scripts import script_filters
+from uzen.api.dependencies.dns_records import dns_record_filters
 from uzen.models.schemas.dns_records import DnsRecord
 from uzen.services.dns_record_searcher import DnsRecordSearcher
 
@@ -16,6 +16,6 @@ router = APIRouter()
     summary="Search DNS records",
     description="Searcn DNS records with filters",
 )
-async def search(filters: dict = Depends(script_filters)) -> List[DnsRecord]:
+async def search(filters: dict = Depends(dns_record_filters)) -> List[DnsRecord]:
     records = await DnsRecordSearcher.search(filters)
     return [record.to_model() for record in records]

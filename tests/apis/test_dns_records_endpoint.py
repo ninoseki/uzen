@@ -16,4 +16,4 @@ async def test_dns_record_search(client):
     assert response.status_code == 200
 
     records = response.json()
-    assert len(records) == 5
+    assert len(records) == 1
