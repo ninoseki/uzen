@@ -1,7 +1,6 @@
 from tortoise import fields
 from tortoise.models import Model
 
-from uzen.models.snapshots import Snapshot
 from uzen.models.schemas.classifications import Classification as ClassificationModel
 
 
@@ -12,8 +11,8 @@ class Classification(Model):
     note = fields.TextField(null=True)
     created_at = fields.DatetimeField(auto_now_add=True)
 
-    snapshot: fields.ForeignKeyRelation[Snapshot] = fields.ForeignKeyField(
-        "models.Snapshot", related_name="classifications", to_field="id"
+    snapshot: fields.ForeignKeyRelation["Snapshot"] = fields.ForeignKeyField(
+        "models.Snapshot", related_name="_classifications", to_field="id"
     )
 
     def to_model(self) -> ClassificationModel:

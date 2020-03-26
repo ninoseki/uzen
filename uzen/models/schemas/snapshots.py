@@ -2,6 +2,10 @@ from pydantic import AnyHttpUrl, BaseModel, IPvAnyAddress, Field
 from typing import Optional, List
 import datetime
 
+from uzen.models.schemas.classifications import Classification
+from uzen.models.schemas.dns_records import DnsRecord
+from uzen.models.schemas.scripts import Script
+
 
 class BaseSnapshot(BaseModel):
     """Base Pydantic model of Snapshot
@@ -37,6 +41,9 @@ class Snapshot(BaseSnapshot):
 
     id: int
     created_at: datetime.datetime
+    scripts: List[Script]
+    classifications: List[Classification]
+    dns_records: List[DnsRecord]
 
 
 class SearchResult(BaseModel):

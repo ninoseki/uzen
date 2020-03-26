@@ -62,7 +62,7 @@ async def count(filters: dict = Depends(search_filters)) -> CountResponse:
 async def get(snapshot_id: int) -> SnapshotModel:
     try:
         snapshot: Snapshot = await Snapshot.get(id=snapshot_id).prefetch_related(
-            "scripts", "dns_records", "classifications"
+            "_scripts", "_dns_records", "_classifications"
         )
     except DoesNotExist:
         raise HTTPException(status_code=404, detail=f"Snapshot:{id} is not found")
