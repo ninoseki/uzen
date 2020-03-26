@@ -1,7 +1,11 @@
+from typing import Union
 from tortoise import fields
 from tortoise.models import Model
 
-from uzen.models.schemas.classifications import Classification as ClassificationModel
+from uzen.models.schemas.classifications import (
+    Classification as ClassificationModel,
+    BaseClassification,
+)
 
 
 class Classification(Model):
@@ -15,8 +19,11 @@ class Classification(Model):
         "models.Snapshot", related_name="_classifications", to_field="id"
     )
 
-    def to_model(self) -> ClassificationModel:
-        return ClassificationModel.from_orm(self)
+    def to_model(self) -> Union[ClassificationModel, BaseClassification]:
+        if self.id is not None:
+            return ClassificationModel.from_orm(self)
+
+        return BaseClassification.from_orm(self)
 
     class Meta:
         table = "classifications"

@@ -1,7 +1,8 @@
 from tortoise import fields
 from tortoise.models import Model
+from typing import Union
 
-from uzen.models.schemas.scripts import Script as ScriptModel
+from uzen.models.schemas.scripts import Script as ScriptModel, BaseScript
 
 
 class Script(Model):
@@ -15,8 +16,11 @@ class Script(Model):
         "models.Snapshot", related_name="_scripts", to_field="id"
     )
 
-    def to_model(self) -> ScriptModel:
-        return ScriptModel.from_orm(self)
+    def to_model(self) -> Union[ScriptModel, BaseScript]:
+        if self.id is not None:
+            return ScriptModel.from_orm(self)
+
+        return BaseScript.from_orm(self)
 
     class Meta:
         table = "scripts"

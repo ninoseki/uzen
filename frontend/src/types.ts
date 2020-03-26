@@ -98,9 +98,6 @@ export interface Oneshot {
   matched: boolean;
   matches: YaraMatch[];
   snapshot: Snapshot;
-  scripts: Script[];
-  dnsRecords: DnsRecord[];
-  classifications: Classification[];
 }
 
 export type TargetTypes = "body" | "whois" | "certificate" | "script";
