@@ -1,8 +1,9 @@
-from typing import List, cast
+from typing import List
 import yara
 from fastapi import APIRouter, Depends, HTTPException
 
 from uzen.api.dependencies.snapshots import search_filters
+from uzen.api.jobs import create_classifications, create_dns_records, create_scripts
 from uzen.models.schemas.yara import (
     OneshotPayload,
     OneshotResponse,
@@ -10,9 +11,6 @@ from uzen.models.schemas.yara import (
     ScanResult,
 )
 from uzen.services.browser import Browser
-from uzen.services.classifications import ClassificationBuilder
-from uzen.services.dns_records import DnsRecordBuilder
-from uzen.services.scripts import ScriptBuilder
 from uzen.services.yara_scanner import YaraScanner
 
 router = APIRouter()
@@ -58,9 +56,16 @@ async def oneshot(payload: OneshotPayload) -> OneshotResponse:
         raise HTTPException(status_code=500, detail=str(e))
 
     snapshot = await Browser.take_snapshot(url)
-    scripts = ScriptBuilder.build_from_snapshot(snapshot)
-    records = DnsRecordBuilder.build_from_snapshot(snapshot)
-    classifications = ClassificationBuilder.build_from_snapshot(snapshot)
+    scripts = await create_scripts(snapshot, insert_to_db=False)
+    snapshot.scripts = [script.to_model() for script in scripts]
+
+    records = await create_dns_records(snapshot, insert_to_db=False)
+    snapshot.dns_records = [record.to_model() for record in records]
+
+    classifications = await create_classifications(snapshot, insert_to_db=False)
+    snapshot.classifications = [
+        classification.to_model() for classification in classifications
+    ]
 
     matched = False
     matches = []
@@ -76,10 +81,5 @@ async def oneshot(payload: OneshotPayload) -> OneshotResponse:
         matched = True if len(matches) > 0 else False
 
     return OneshotResponse(
-        snapshot=snapshot.to_model(),
-        scripts=scripts,
-        dnsRecords=records,
-        classifications=classifications,
-        matched=matched,
-        matches=matches,
+        snapshot=snapshot.to_model(), matched=matched, matches=matches,
     )

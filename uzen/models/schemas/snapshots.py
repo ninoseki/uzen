@@ -1,10 +1,10 @@
 from pydantic import AnyHttpUrl, BaseModel, IPvAnyAddress, Field
-from typing import Optional, List
+from typing import Optional, List, Union
 import datetime
 
-from uzen.models.schemas.classifications import Classification
-from uzen.models.schemas.dns_records import DnsRecord
-from uzen.models.schemas.scripts import Script
+from uzen.models.schemas.classifications import Classification, BaseClassification
+from uzen.models.schemas.dns_records import DnsRecord, BaseDnsRecord
+from uzen.models.schemas.scripts import Script, BaseScript
 
 
 class BaseSnapshot(BaseModel):
@@ -30,6 +30,10 @@ class BaseSnapshot(BaseModel):
     certificate: Optional[str]
     request: dict
 
+    scripts: List[Union[Script, BaseScript]]
+    dns_records: List[Union[DnsRecord, BaseDnsRecord]]
+    classifications: List[Union[Classification, BaseClassification]]
+
     class Config:
         orm_mode = True
 
@@ -41,9 +45,6 @@ class Snapshot(BaseSnapshot):
 
     id: int
     created_at: datetime.datetime
-    scripts: List[Script]
-    classifications: List[Classification]
-    dns_records: List[DnsRecord]
 
 
 class SearchResult(BaseModel):

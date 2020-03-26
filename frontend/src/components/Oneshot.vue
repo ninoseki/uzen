@@ -28,9 +28,6 @@
         v-if="hasSnapshot()"
         v-bind:snapshot="oneshot.snapshot"
         v-bind:yaraResult="yaraResult()"
-        v-bind:propScripts="oneshot.scripts"
-        v-bind:propDnsRecords="oneshot.dnsRecords"
-        v-bind:propClassifications="oneshot.classifications"
       />
     </div>
   </div>
@@ -78,6 +75,7 @@ export default class OneshotView extends Vue {
       });
 
       this.oneshot = response.data;
+
       loadingComponent.close();
 
       this.$forceUpdate();

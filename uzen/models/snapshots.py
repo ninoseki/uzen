@@ -1,11 +1,11 @@
 from tortoise import fields
 from tortoise.exceptions import NoValuesFetched
 from tortoise.models import Model
-from typing import Union, List
+from typing import Union, List, Any, Optional
 
-from uzen.models.schemas.classifications import Classification
-from uzen.models.schemas.dns_records import DnsRecord
-from uzen.models.schemas.scripts import Script
+from uzen.models.schemas.classifications import Classification, BaseClassification
+from uzen.models.schemas.dns_records import DnsRecord, BaseDnsRecord
+from uzen.models.schemas.scripts import Script, BaseScript
 from uzen.models.schemas.snapshots import BaseSnapshot, Snapshot as SnapshotModel
 
 
@@ -35,28 +35,60 @@ class Snapshot(Model):
     _dns_records: fields.ReverseRelation["DnsRecord"]
     _classifications: fields.ReverseRelation["Classification"]
 
+    def __init__(self, **kwargs: Any) -> None:
+        super().__init__(**kwargs)
+
+        self.scripts_: Optional[List[Union[Script, BaseScript]]] = None
+        self.dns_records_: Optional[List[Union[DnsRecord, BaseDnsRecord]]] = None
+        self.classifications_: Optional[
+            List[Union[Classification, BaseClassification]]
+        ] = None
+
     @property
-    def scripts(self) -> List[Script]:
+    def scripts(self) -> List[Union[Script, BaseScript]]:
+        if hasattr(self, "scripts_") and self.scripts_ is not None:
+            return self.scripts_
+
         try:
             return [script.to_model() for script in self._scripts]
         except NoValuesFetched:
             return []
 
+    @scripts.setter
+    def scripts(self, scripts: List[Union[Script, BaseScript]]):
+        self.scripts_ = scripts
+
     @property
-    def dns_records(self) -> List[DnsRecord]:
+    def dns_records(self) -> List[Union[DnsRecord, BaseDnsRecord]]:
+        if hasattr(self, "dns_records_") and self.dns_records_ is not None:
+            return self.dns_records_
+
         try:
             return [record.to_model() for record in self._dns_records]
         except NoValuesFetched:
             return []
 
+    @dns_records.setter
+    def dns_records(self, dns_records: List[Union[DnsRecord, BaseDnsRecord]]):
+        self.dns_records_ = dns_records
+
     @property
-    def classifications(self) -> List[Classification]:
+    def classifications(self) -> List[Union[Classification, BaseClassification]]:
+        if hasattr(self, "classifications_") and self.classifications_ is not None:
+            return self.classifications_
+
         try:
             return [
                 classification.to_model() for classification in self._classifications
             ]
         except NoValuesFetched:
             return []
+
+    @classifications.setter
+    def classifications(
+        self, classifications: List[Union[Classification, BaseClassification]]
+    ):
+        self.classifications_ = classifications
 
     def to_model(self) -> Union[BaseSnapshot, SnapshotModel]:
         if self.id is not None:

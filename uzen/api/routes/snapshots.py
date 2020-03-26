@@ -7,17 +7,12 @@ from tortoise.exceptions import DoesNotExist
 import requests
 
 from uzen.api.dependencies.snapshots import search_filters
-from uzen.models.classifications import Classification
-from uzen.models.dns_records import DnsRecord
+from uzen.api.jobs import create_classifications, create_dns_records, create_scripts
 from uzen.models.schemas.snapshots import CountResponse, CreateSnapshotPayload
 from uzen.models.schemas.snapshots import SearchResult, Snapshot as SnapshotModel
-from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot
 from uzen.services.browser import Browser
-from uzen.services.classifications import ClassificationBuilder
-from uzen.services.dns_records import DnsRecordBuilder
 from uzen.services.fake_browser import FakeBrowser
-from uzen.services.scripts import ScriptBuilder
 from uzen.services.snapshot_search import SnapshotSearcher
 
 router = APIRouter()
@@ -82,36 +77,6 @@ async def list(size: int = 100, offset: int = 0) -> List[SearchResult]:
     snapshots = await SnapshotSearcher.search({}, size=size, offset=offset)
     snapshots = cast(List[SearchResult], snapshots)
     return snapshots
-
-
-async def create_scripts(snapshot: Snapshot):
-    try:
-        scripts = ScriptBuilder.build_from_snapshot(snapshot)
-        await Script.bulk_create(scripts)
-    except Exception as e:
-        logger.error(
-            f"Failed to process create_scrpts job. URL: {snapshot.url} / Error: {e}"
-        )
-
-
-async def create_dns_records(snapshot: Snapshot):
-    try:
-        records = DnsRecordBuilder.build_from_snapshot(snapshot)
-        await DnsRecord.bulk_create(records)
-    except Exception as e:
-        logger.error(
-            f"Failed to process create_dns_records job. URL: {snapshot.url} / Error: {e}"
-        )
-
-
-async def create_classifications(snapshot: Snapshot):
-    try:
-        classifications = ClassificationBuilder.build_from_snapshot(snapshot)
-        await Classification.bulk_create(classifications)
-    except Exception as e:
-        logger.error(
-            f"Failed to process create_classifications job. URL: {snapshot.url} / Error: {e}"
-        )
 
 
 @router.post(
