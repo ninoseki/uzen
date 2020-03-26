@@ -20,6 +20,10 @@ export interface Snapshot {
   whois: string | undefined;
   certificate: string | undefined;
   created_at: string | undefined;
+
+  scripts: Script[];
+  dns_records: DnsRecord[];
+  classifications: Classification[];
 }
 
 export interface SnapshotCount {

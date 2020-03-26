@@ -126,15 +126,15 @@
       </b-tab-item>
 
       <b-tab-item label="Scripts">
-        <Scripts v-bind:scripts="scripts" />
+        <Scripts v-bind:scripts="snapshot.scripts" />
       </b-tab-item>
 
       <b-tab-item label="DNS records">
-        <DnsRecords v-bind:dnsRecords="dnsRecords" />
+        <DnsRecords v-bind:dnsRecords="snapshot.dns_records" />
       </b-tab-item>
 
       <b-tab-item label="Classifications">
-        <Classifications v-bind:classifications="classifications" />
+        <Classifications v-bind:classifications="snapshot.classifications" />
       </b-tab-item>
 
       <b-tab-item v-if="hasYaraResult()" label="YARA matches">
@@ -178,78 +178,9 @@ declare const PR: any;
 export default class SnapshotComponent extends Vue {
   @Prop() private snapshot!: Snapshot;
   @Prop() private yaraResult!: YaraResult;
-  @Prop() private propScripts!: Script[];
-  @Prop() private propDnsRecords!: DnsRecord[];
-  @Prop() private propClassifications!: Classification[];
-
-  private scripts: Script[] = [];
-  private dnsRecords: DnsRecord[] = [];
-  private classifications: Classification[] = [];
 
   public imageData(): string {
     return `data:Image/png;base64,${this.snapshot.screenshot}`;
-  }
-
-  async loadScripts() {
-    try {
-      const response = await axios.get<Script[]>("/api/scripts/search", {
-        params: { snapshot_id: this.snapshot.id }
-      });
-
-      this.scripts = response.data;
-
-      this.$forceUpdate();
-    } catch (error) {
-      const data = error.response.data as ErrorData;
-      alert(data.detail);
-    }
-  }
-
-  async loadDnsRecords() {
-    try {
-      const response = await axios.get<DnsRecord[]>("/api/dns_records/search", {
-        params: { snapshot_id: this.snapshot.id }
-      });
-
-      this.dnsRecords = response.data;
-
-      this.$forceUpdate();
-    } catch (error) {
-      const data = error.response.data as ErrorData;
-      alert(data.detail);
-    }
-  }
-
-  async loadClassifications() {
-    try {
-      const response = await axios.get<Classification[]>(
-        "/api/classifications/search",
-        {
-          params: { snapshot_id: this.snapshot.id }
-        }
-      );
-
-      this.classifications = response.data;
-
-      this.$forceUpdate();
-    } catch (error) {
-      const data = error.response.data as ErrorData;
-      alert(data.detail);
-    }
-  }
-
-  created() {
-    if (this.propScripts !== undefined) {
-      // oneshot scan returns a snapshot with scripts (as propScripts)
-      this.scripts = this.propScripts;
-      this.dnsRecords = this.propDnsRecords;
-      this.classifications = this.propClassifications;
-    } else if (this.snapshot.id !== undefined) {
-      // load scripts if a snapshot has the ID
-      this.loadScripts();
-      this.loadDnsRecords();
-      this.loadClassifications();
-    }
   }
 
   mounted() {

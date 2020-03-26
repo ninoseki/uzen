@@ -125,5 +125,41 @@ async def test_snapshot_post(client, monkeypatch):
     assert snapshot.get("body") == "foo bar"
 
     snapshot = await Snapshot.get(id=snapshot.get("id"))
-    await snapshot.fetch_related("scripts")
+    await snapshot.fetch_related("_scripts")
     assert len(snapshot.scripts) == 0
+
+
+@pytest.mark.asyncio
+@pytest.mark.usefixtures("dns_records_setup")
+async def test_snapshot_get_with_dns_records(client):
+    response = await client.get("/api/snapshots/1")
+    assert response.status_code == 200
+
+    snapshot = response.json()
+    assert len(snapshot.get("dns_records")) == 1
+    assert len(snapshot.get("scripts")) == 0
+    assert len(snapshot.get("classifications")) == 0
+
+
+@pytest.mark.asyncio
+@pytest.mark.usefixtures("classifications_setup")
+async def test_snapshot_get_with_classifications(client):
+    response = await client.get("/api/snapshots/1")
+    assert response.status_code == 200
+
+    snapshot = response.json()
+    assert len(snapshot.get("classifications")) == 1
+    assert len(snapshot.get("dns_records")) == 0
+    assert len(snapshot.get("scripts")) == 0
+
+
+@pytest.mark.asyncio
+@pytest.mark.usefixtures("scripts_setup")
+async def test_snapshot_get_with_scripts(client):
+    response = await client.get("/api/snapshots/1")
+    assert response.status_code == 200
+
+    snapshot = response.json()
+    assert len(snapshot.get("scripts")) == 1
+    assert len(snapshot.get("classifications")) == 0
+    assert len(snapshot.get("dns_records")) == 0
