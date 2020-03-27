@@ -1,4 +1,7 @@
 from typing import List, Optional
+import asyncio
+import itertools
+import dataclasses
 
 import httpx
 from requests_html import HTML
@@ -27,12 +30,18 @@ def get_script_sources(url: str, body: str) -> List[str]:
     return list(set(sources))
 
 
-async def get_script_content(source: str) -> Optional[str]:
+@dataclasses.dataclass
+class Result:
+    source: str
+    content: str
+
+
+async def get_script_content(source: str) -> Optional[Result]:
     try:
         client = httpx.AsyncClient()
         res = await client.get(source)
         res.raise_for_status()
-        return res.text
+        return Result(source=source, content=res.text)
     except httpx.HTTPError:
         return None
 
@@ -42,15 +51,21 @@ class ScriptBuilder:
     async def build_from_snapshot(snapshot: Snapshot) -> List[Script]:
         sources = get_script_sources(url=snapshot.url, body=snapshot.body)
         scripts = []
-        for source in sources:
-            content = await get_script_content(source)
-            if content is None:
+
+        tasks = [get_script_content(source) for source in sources]
+        if len(tasks) <= 0:
+            return []
+
+        completed, pending = await asyncio.wait(tasks)
+        results = [t.result() for t in completed]
+        for result in results:
+            if result is None:
                 continue
 
             script = Script(
-                url=source,
-                content=content,
-                sha256=calculate_sha256(content),
+                url=result.source,
+                content=result.content,
+                sha256=calculate_sha256(result.content),
                 # insert a dummy ID if a snapshot doesn't have ID
                 snapshot_id=snapshot.id or -1,
             )
