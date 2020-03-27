@@ -41,8 +41,8 @@ import SnapshotTable from "@/components/snapshots/Table.vue";
   components: {
     Counter,
     SnapshotSearch,
-    SnapshotTable
-  }
+    SnapshotTable,
+  },
 })
 export default class Snapshots extends Vue {
   DEFAULT_PAGE_SIZE = 10;
@@ -62,7 +62,7 @@ export default class Snapshots extends Vue {
 
   async search(additonalLoading = false) {
     const loadingComponent = this.$buefy.loading.open({
-      container: this.$refs.element
+      container: this.$refs.element,
     });
 
     if (!additonalLoading) {
@@ -75,7 +75,7 @@ export default class Snapshots extends Vue {
 
     try {
       const response = await axios.get<Snapshot[]>("/api/snapshots/search", {
-        params: params
+        params: params,
       });
 
       loadingComponent.close();
@@ -99,7 +99,7 @@ export default class Snapshots extends Vue {
       const params = (this.$refs.search as SnapshotSearch).filtersParams();
 
       const response = await axios.get<SnapshotCount>("/api/snapshots/count", {
-        params: params
+        params: params,
       });
       const data = response.data;
       this.totalCount = data.count;

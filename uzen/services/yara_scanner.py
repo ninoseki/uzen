@@ -1,13 +1,14 @@
-from typing import List, Optional, cast
 import asyncio
 import itertools
+from typing import List, Optional, cast
+
 import yara
 
-from uzen.models.snapshots import Snapshot
+from uzen.models.schemas.yara import ScanResult, YaraMatch, YaraResult
 from uzen.models.scripts import Script
-from uzen.services.snapshot_search import SnapshotSearcher
+from uzen.models.snapshots import Snapshot
 from uzen.services.matches_converter import MatchesConverter
-from uzen.models.schemas.yara import YaraMatch, YaraResult, ScanResult
+from uzen.services.snapshot_search import SnapshotSearcher
 
 CHUNK_SIZE = 100
 PARALLEL_LIMIT = 10

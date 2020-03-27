@@ -1,10 +1,11 @@
-from pydantic import AnyHttpUrl, BaseModel, IPvAnyAddress, Field
-from typing import Optional, List, Union
 import datetime
+from typing import List, Optional, Union
 
-from uzen.models.schemas.classifications import Classification, BaseClassification
-from uzen.models.schemas.dns_records import DnsRecord, BaseDnsRecord
-from uzen.models.schemas.scripts import Script, BaseScript
+from pydantic import AnyHttpUrl, BaseModel, Field, IPvAnyAddress
+
+from uzen.models.schemas.classifications import BaseClassification, Classification
+from uzen.models.schemas.dns_records import BaseDnsRecord, DnsRecord
+from uzen.models.schemas.scripts import BaseScript, Script
 
 
 class BaseSnapshot(BaseModel):

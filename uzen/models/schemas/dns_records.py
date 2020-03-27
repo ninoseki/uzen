@@ -1,5 +1,6 @@
-from pydantic import BaseModel
 import datetime
+
+from pydantic import BaseModel
 
 
 class BaseDnsRecord(BaseModel):

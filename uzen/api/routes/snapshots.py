@@ -1,15 +1,19 @@
 from typing import List, Optional, cast
 
+import httpx
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from loguru import logger
 from pyppeteer.errors import PyppeteerError
 from tortoise.exceptions import DoesNotExist
-import httpx
 
 from uzen.api.dependencies.snapshots import search_filters
 from uzen.api.jobs import run_all_jobs
-from uzen.models.schemas.snapshots import CountResponse, CreateSnapshotPayload
-from uzen.models.schemas.snapshots import SearchResult, Snapshot as SnapshotModel
+from uzen.models.schemas.snapshots import (
+    CountResponse,
+    CreateSnapshotPayload,
+    SearchResult,
+)
+from uzen.models.schemas.snapshots import Snapshot as SnapshotModel
 from uzen.models.snapshots import Snapshot
 from uzen.services.browser import Browser
 from uzen.services.fake_browser import FakeBrowser

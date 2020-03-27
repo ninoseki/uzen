@@ -13,5 +13,5 @@ export const Links = [
   new Shodan(),
   new Spyse(),
   new Urlscan(),
-  new VirusTotal()
+  new VirusTotal(),
 ];

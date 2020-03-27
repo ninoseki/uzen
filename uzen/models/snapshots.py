@@ -1,12 +1,14 @@
+from typing import Any, List, Optional, Union
+
 from tortoise import fields
 from tortoise.exceptions import NoValuesFetched
 from tortoise.models import Model
-from typing import Union, List, Any, Optional
 
-from uzen.models.schemas.classifications import Classification, BaseClassification
-from uzen.models.schemas.dns_records import DnsRecord, BaseDnsRecord
-from uzen.models.schemas.scripts import Script, BaseScript
-from uzen.models.schemas.snapshots import BaseSnapshot, Snapshot as SnapshotModel
+from uzen.models.schemas.classifications import BaseClassification, Classification
+from uzen.models.schemas.dns_records import BaseDnsRecord, DnsRecord
+from uzen.models.schemas.scripts import BaseScript, Script
+from uzen.models.schemas.snapshots import BaseSnapshot
+from uzen.models.schemas.snapshots import Snapshot as SnapshotModel
 
 
 class Snapshot(Model):

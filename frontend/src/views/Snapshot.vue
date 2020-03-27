@@ -16,8 +16,8 @@ import SnapshotComponebnt from "@/components/snapshots/Snapshot.vue";
 
 @Component({
   components: {
-    SnapshotComponebnt
-  }
+    SnapshotComponebnt,
+  },
 })
 export default class SnapshotView extends Vue {
   @Prop() private yaraResult!: YaraResult;

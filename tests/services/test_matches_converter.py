@@ -1,4 +1,5 @@
 import yara
+
 from uzen.services.matches_converter import MatchesConverter
 
 

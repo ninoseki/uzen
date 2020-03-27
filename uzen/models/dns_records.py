@@ -1,8 +1,10 @@
 from typing import Union
+
 from tortoise import fields
 from tortoise.models import Model
 
-from uzen.models.schemas.dns_records import DnsRecord as DnsRecordModel, BaseDnsRecord
+from uzen.models.schemas.dns_records import BaseDnsRecord
+from uzen.models.schemas.dns_records import DnsRecord as DnsRecordModel
 
 
 class DnsRecord(Model):

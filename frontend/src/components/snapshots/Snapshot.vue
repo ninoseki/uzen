@@ -27,7 +27,7 @@
                         <router-link
                           :to="{
                             name: 'Snapshots',
-                            query: { hostname: snapshot.hostname }
+                            query: { hostname: snapshot.hostname },
                           }"
                           >{{ snapshot.hostname }}
                         </router-link>
@@ -40,7 +40,7 @@
                         <router-link
                           :to="{
                             name: 'Snapshots',
-                            query: { ip_address: snapshot.ip_address }
+                            query: { ip_address: snapshot.ip_address },
                           }"
                           >{{ snapshot.ip_address }}
                         </router-link>
@@ -53,7 +53,7 @@
                         <router-link
                           :to="{
                             name: 'Snapshots',
-                            query: { asn: snapshot.asn }
+                            query: { asn: snapshot.asn },
                           }"
                           >{{ snapshot.asn }}
                         </router-link>
@@ -66,7 +66,7 @@
                         <router-link
                           :to="{
                             name: 'Snapshots',
-                            query: { server: snapshot.server }
+                            query: { server: snapshot.server },
                           }"
                           >{{ snapshot.server }}
                         </router-link>
@@ -79,7 +79,7 @@
                         <router-link
                           :to="{
                             name: 'Snapshots',
-                            query: { content_type: snapshot.content_type }
+                            query: { content_type: snapshot.content_type },
                           }"
                           >{{ snapshot.content_type }}
                         </router-link>
@@ -155,7 +155,7 @@ import {
   DnsRecord,
   YaraResult,
   SnapshotWithYaraResult,
-  Classification
+  Classification,
 } from "@/types";
 import Links from "@/components/links/Links.vue";
 import Scripts from "@/components/scripts/Scripts.vue";
@@ -172,8 +172,8 @@ declare const PR: any;
     Scripts,
     DnsRecords,
     YaraResultComponent,
-    Classifications
-  }
+    Classifications,
+  },
 })
 export default class SnapshotComponent extends Vue {
   @Prop() private snapshot!: Snapshot;

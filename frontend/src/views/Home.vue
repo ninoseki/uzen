@@ -11,8 +11,8 @@ import SnapshotForm from "@/components/snapshots/Form.vue";
 
 @Component({
   components: {
-    SnapshotForm
-  }
+    SnapshotForm,
+  },
 })
 export default class Home extends Vue {}
 </script>

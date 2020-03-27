@@ -14,38 +14,38 @@ const routes = [
   {
     path: "/",
     name: "Home",
-    component: Home
+    component: Home,
   },
   {
     path: "/snapshots",
     name: "Snapshots",
-    component: Snapshots
+    component: Snapshots,
   },
   {
     path: "/yara",
     name: "Yara",
-    component: Yara
+    component: Yara,
   },
   {
     path: "/import",
     name: "Import",
-    component: Import
+    component: Import,
   },
   {
     path: "/oneshot",
     name: "Oneshot",
-    component: Oneshot
+    component: Oneshot,
   },
   {
     path: "/snapshots/:id",
     name: "Snapshot",
     component: Snapshot,
-    props: true
-  }
+    props: true,
+  },
 ];
 
 const router = new VueRouter({
-  routes
+  routes,
 });
 
 export default router;

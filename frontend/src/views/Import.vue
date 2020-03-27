@@ -35,8 +35,8 @@ import SnapshotComponebnt from "@/components/snapshots/Snapshot.vue";
 
 @Component({
   components: {
-    SnapshotComponebnt
-  }
+    SnapshotComponebnt,
+  },
 })
 export default class SnapshotForm extends Vue {
   private uuid: string = "";
@@ -44,7 +44,7 @@ export default class SnapshotForm extends Vue {
 
   async import_from_urlscan() {
     const loadingComponent = this.$buefy.loading.open({
-      container: this.$refs.element
+      container: this.$refs.element,
     });
 
     try {

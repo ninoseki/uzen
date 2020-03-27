@@ -1,4 +1,5 @@
 from typing import List
+
 import yara
 
 from uzen.models.schemas.yara import YaraMatch

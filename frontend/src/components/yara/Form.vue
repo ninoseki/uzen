@@ -27,7 +27,7 @@ import {
   Snapshot,
   SearchFilters,
   TargetTypes,
-  SnapshotWithYaraResult
+  SnapshotWithYaraResult,
 } from "@/types";
 
 import BasicForm from "@/components/yara/BasicForm.vue";
@@ -40,8 +40,8 @@ import SnapshotTable from "@/components/snapshots/Table.vue";
     BasicForm,
     Counter,
     SnapshotSearch,
-    SnapshotTable
-  }
+    SnapshotTable,
+  },
 })
 export default class YaraForm extends Vue {
   private source: string = "";
@@ -54,7 +54,7 @@ export default class YaraForm extends Vue {
     this.count = undefined;
 
     const loadingComponent = this.$buefy.loading.open({
-      container: this.$refs.element
+      container: this.$refs.element,
     });
 
     const params = (this.$refs.search as SnapshotSearch).filtersParams();
@@ -64,7 +64,7 @@ export default class YaraForm extends Vue {
         "/api/yara/scan",
         {
           source: this.source,
-          target: this.target
+          target: this.target,
         },
         { params: params }
       );

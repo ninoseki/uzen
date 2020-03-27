@@ -1,12 +1,12 @@
+import json
+from typing import List, Optional
+
 from pysafebrowsing import SafeBrowsing
 from pysafebrowsing.api import SafeBrowsingInvalidApiKey, SafeBrowsingWeirdError
 
-from typing import Optional, List
-import json
-
+from uzen.core import settings
 from uzen.models.classifications import Classification
 from uzen.models.snapshots import Snapshot
-from uzen.core import settings
 
 
 def google_safe_brwosing_lookup(url: str) -> Optional[dict]:
