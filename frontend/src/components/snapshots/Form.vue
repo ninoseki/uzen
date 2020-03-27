@@ -52,10 +52,6 @@
         </b-field>
       </div>
     </div>
-
-    <div>
-      <SnapshotComponent v-if="hasSnapshot()" v-bind:snapshot="snapshot" />
-    </div>
   </div>
 </template>
 
@@ -64,14 +60,9 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 
 import { ErrorData, Snapshot } from "@/types";
-import SnapshotComponent from "@/components/snapshots/Snapshot.vue";
 import { languages } from "@/languages";
 
-@Component({
-  components: {
-    SnapshotComponent
-  }
-})
+@Component
 export default class Form extends Vue {
   private url = "";
   private showOptions = false;
@@ -97,22 +88,18 @@ export default class Form extends Vue {
         timeout: this.timeout,
         ignore_https_errors: this.ignoreHTTPSErrors
       });
+      const snapshot = response.data;
 
       loadingComponent.close();
 
-      this.snapshot = response.data;
-
-      this.$forceUpdate();
+      // redirect to the details page
+      this.$router.push({ path: `/snapshots/${snapshot.id}` });
     } catch (error) {
       loadingComponent.close();
 
       const data = error.response.data as ErrorData;
       alert(data.detail);
     }
-  }
-
-  hasSnapshot(): boolean {
-    return this.snapshot !== undefined;
   }
 }
 </script>
