@@ -1,5 +1,6 @@
-from pydantic import AnyHttpUrl, BaseModel
 import datetime
+
+from pydantic import AnyHttpUrl, BaseModel
 
 
 class BaseScript(BaseModel):

@@ -1,4 +1,5 @@
 from typing import Optional, cast
+
 import httpx
 
 from uzen.models.snapshots import Snapshot

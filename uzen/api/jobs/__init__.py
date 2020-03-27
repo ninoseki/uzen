@@ -1,8 +1,9 @@
-from loguru import logger
-from typing import List
 import asyncio
-import itertools
 import dataclasses
+import itertools
+from typing import List
+
+from loguru import logger
 
 from uzen.models.classifications import Classification
 from uzen.models.dns_records import DnsRecord

@@ -1,7 +1,7 @@
-from typing import List, Optional
 import asyncio
-import itertools
 import dataclasses
+import itertools
+from typing import List, Optional
 
 import httpx
 from requests_html import HTML

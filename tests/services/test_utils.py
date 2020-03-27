@@ -1,11 +1,12 @@
 import socket
+
 import pytest
 import respx
 
 from uzen.services.utils import (
+    get_asn_by_ip_address,
     get_hostname_from_url,
     get_ip_address_by_hostname,
-    get_asn_by_ip_address,
 )
 
 

@@ -1,7 +1,8 @@
 import datetime
+import pathlib
+
 import pytest
 import respx
-import pathlib
 
 from uzen.services.urlscan import URLScan
 

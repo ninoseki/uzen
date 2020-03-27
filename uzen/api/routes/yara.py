@@ -1,9 +1,10 @@
 from typing import List
+
 import yara
 from fastapi import APIRouter, Depends, HTTPException
 
 from uzen.api.dependencies.snapshots import search_filters
-from uzen.api.jobs import run_all_jobs, Results
+from uzen.api.jobs import run_all_jobs
 from uzen.models.schemas.yara import (
     OneshotPayload,
     OneshotResponse,

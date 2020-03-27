@@ -1,6 +1,7 @@
+from typing import Optional, cast
+
 from pyppeteer import launch
 from pyppeteer.errors import PyppeteerError
-from typing import Optional, cast
 
 from uzen.models.snapshots import Snapshot
 from uzen.services.certificate import Certificate

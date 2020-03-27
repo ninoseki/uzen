@@ -1,4 +1,5 @@
-from typing import List, Union, Optional
+from typing import List, Optional, Union
+
 from pydantic import AnyHttpUrl, BaseModel, Field
 
 from uzen.models.schemas.snapshots import BaseSnapshot, SearchResult

@@ -1,5 +1,6 @@
 import base64
 import datetime
+
 import httpx
 
 from uzen.models.snapshots import Snapshot

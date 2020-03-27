@@ -8,9 +8,6 @@ from tortoise import Tortoise
 from tortoise.backends.base.config_generator import generate_config
 from tortoise.exceptions import DBConnectionError
 
-# This line would raise an error if we use it after 'settings' has been imported.
-environ["TESTING"] = "TRUE"  # noqa
-
 from uzen import create_app
 from uzen.core import settings
 from uzen.models.classifications import Classification

@@ -1,11 +1,10 @@
 from typing import Union
+
 from tortoise import fields
 from tortoise.models import Model
 
-from uzen.models.schemas.classifications import (
-    Classification as ClassificationModel,
-    BaseClassification,
-)
+from uzen.models.schemas.classifications import BaseClassification
+from uzen.models.schemas.classifications import Classification as ClassificationModel
 
 
 class Classification(Model):

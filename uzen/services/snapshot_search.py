@@ -1,9 +1,10 @@
 import datetime
 from typing import List, Union
+
 from tortoise.query_utils import Q
 
-from uzen.models.snapshots import Snapshot
 from uzen.models.schemas.snapshots import SearchResult
+from uzen.models.snapshots import Snapshot
 
 
 def convert_to_datetime(s: str) -> datetime.datetime:
