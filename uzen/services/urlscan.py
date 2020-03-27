@@ -1,7 +1,6 @@
 import base64
 import datetime
-
-import requests
+import httpx
 
 from uzen.models.snapshots import Snapshot
 
@@ -11,29 +10,29 @@ class URLScan:
     BASE_URL = f"https://{HOST}"
 
     def __init__(self, uuid: str):
-        self.session = requests.Session()
+        self.client = httpx.AsyncClient()
         self.uuid = uuid
 
-    def body(self) -> str:
+    async def body(self) -> str:
         url = f"{self.BASE_URL}/dom/{self.uuid}/"
-        r = self.session.get(url)
+        r = await self.client.get(url)
         r.raise_for_status()
         return r.text
 
-    def screenshot(self) -> str:
+    async def screenshot(self) -> str:
         url = f"{self.BASE_URL}/screenshots/{self.uuid}.png"
-        r = self.session.get(url)
+        r = await self.client.get(url)
         r.raise_for_status()
         return str(base64.b64encode(r.content), "utf-8")
 
-    def result(self) -> dict:
+    async def result(self) -> dict:
         url = f"{self.BASE_URL}/api/v1/result/{self.uuid}/"
-        r = self.session.get(url)
+        r = await self.client.get(url)
         r.raise_for_status()
         return r.json()
 
     @classmethod
-    def import_as_snapshot(cls, uuid: str) -> Snapshot:
+    async def import_as_snapshot(cls, uuid: str) -> Snapshot:
         """Import urlscan.io scan as a snapshot
 
         Arguments:
@@ -43,7 +42,7 @@ class URLScan:
             Snapshot -- Snapshot ORM instance
         """
         instance = cls(uuid)
-        result = instance.result()
+        result = await instance.result()
 
         requests = result.get("data", {}).get("requests", [])
         response = {}
@@ -65,9 +64,9 @@ class URLScan:
         content_type = headers.get("Content-Type") or headers.get("content-type")
         content_length = headers.get("Content-Length") or headers.get("content-length")
 
-        body = instance.body()
+        body = await instance.body()
         sha256 = result.get("lists", {}).get("hashes", [])[0]
-        screenshot = instance.screenshot()
+        screenshot = await instance.screenshot()
         time = result.get("task", {}).get("time")
         created_at = datetime.datetime.strptime(time, "%Y-%m-%dT%H:%M:%S.%fZ")
 

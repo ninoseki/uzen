@@ -1,5 +1,4 @@
 import pytest
-import pyppeteer
 from pyppeteer.errors import PyppeteerError
 
 from uzen.services.browser import Browser
@@ -8,7 +7,7 @@ from uzen.services.utils import IPInfo
 from uzen.services.whois import Whois
 
 
-def mock_get_basic(ip_address: str):
+async def mock_get_basic(ip_address: str):
     return {"org": "AS15133 MCI Communications Services, Inc. d/b/a Verizon Business"}
 
 
@@ -76,4 +75,3 @@ async def test_take_snapshot_with_bad_ssl(monkeypatch):
         "https://expired.badssl.com", ignore_https_errors=True
     )
     assert snapshot.url == "https://expired.badssl.com/"
-

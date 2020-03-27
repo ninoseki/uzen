@@ -1,10 +1,9 @@
 """Helper utilities and decorators."""
-import hashlib
-import socket
 from typing import Optional
 from urllib.parse import urlparse
-
-import requests
+import hashlib
+import httpx
+import socket
 
 
 class IPInfo:
@@ -12,29 +11,31 @@ class IPInfo:
     BASE_URL = "https://{}".format(HOST)
 
     def __init__(self):
-        self.session = requests.Session()
+        self.client = httpx.AsyncClient()
 
-    def basic(self, ip_address: str) -> dict:
-        url = "{}/{}/".format(self.BASE_URL, ip_address)
-        r = self.session.get(url)
+    async def basic(self, ip_address: str) -> dict:
+        url = "{}/{}/json".format(self.BASE_URL, ip_address)
+        print(url)
+        r = await self.client.get(url)
+        print(r.text)
         r.raise_for_status()
         return r.json()
 
-    def geo(self, ip_address: str) -> dict:
+    async def geo(self, ip_address: str) -> dict:
         url = "{}/{}/geo".format(self.BASE_URL, ip_address)
-        r = self.session.get(url)
+        r = await self.client.get(url)
         r.raise_for_status()
         return r.json()
 
     @classmethod
-    def get_geo(cls, ip_address: str) -> dict:
+    async def get_geo(cls, ip_address: str) -> dict:
         instance = cls()
-        return instance.geo(ip_address)
+        return await instance.geo(ip_address)
 
     @classmethod
-    def get_basic(cls, ip_address: str) -> dict:
+    async def get_basic(cls, ip_address: str) -> dict:
         instance = cls()
-        return instance.basic(ip_address)
+        return await instance.basic(ip_address)
 
 
 def get_hostname_from_url(url: str) -> Optional[str]:
@@ -67,15 +68,7 @@ def get_ip_address_by_hostname(hostname: str) -> Optional[str]:
         return None
 
 
-def get_country_code_by_ip_address(ip_address: str) -> Optional[str]:
-    try:
-        json = IPInfo.get_geo(ip_address)
-        return json.get("country")
-    except Exception:
-        return None
-
-
-def get_asn_by_ip_address(ip_address: str) -> Optional[str]:
+async def get_asn_by_ip_address(ip_address: str) -> Optional[str]:
     """Get ASN by an IP address
 
     Arguments:
@@ -85,9 +78,10 @@ def get_asn_by_ip_address(ip_address: str) -> Optional[str]:
         Optional[str] -- ASN as a string, returns None if an error occurs
     """
     try:
-        json = IPInfo.get_basic(ip_address)
+        json = await IPInfo.get_basic(ip_address)
         return json.get("org")
-    except Exception:
+    except Exception as e:
+        print(e)
         return None
 
 

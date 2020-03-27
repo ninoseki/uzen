@@ -1,5 +1,3 @@
-import vcr
-
 from tests.utils import make_snapshot
 from uzen.services.dns_records import DnsRecordBuilder
 

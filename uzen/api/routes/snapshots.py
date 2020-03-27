@@ -4,7 +4,7 @@ from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from loguru import logger
 from pyppeteer.errors import PyppeteerError
 from tortoise.exceptions import DoesNotExist
-import requests
+import httpx
 
 from uzen.api.dependencies.snapshots import search_filters
 from uzen.api.jobs import run_all_jobs
@@ -110,9 +110,9 @@ async def create(
         logger.debug(f"Failed to take a snapshot by pyppeteer: {e}")
         error = e
 
-    # fallback to fake browser (requests)
+    # fallback to fake browser (httpx)
     if snapshot is None:
-        logger.debug("Fallback to requests")
+        logger.debug("Fallback to httpx")
         try:
             snapshot = await FakeBrowser.take_snapshot(
                 url,
@@ -121,8 +121,8 @@ async def create(
                 timeout=timeout,
                 ignore_https_errors=ignore_https_errors,
             )
-        except requests.RequestException as e:
-            logger.debug(f"Failed to take a snapshot by requests: {e}")
+        except httpx.HTTPError as e:
+            logger.debug(f"Failed to take a snapshot by httpx: {e}")
             error = e
 
     if snapshot is None or error is not None:

@@ -16,7 +16,7 @@ from uzen.services.scripts import ScriptBuilder
 async def create_scripts(snapshot: Snapshot, insert_to_db=True) -> List[Script]:
     logger.debug(f"Fetch scripts from {snapshot.url}")
     try:
-        scripts = ScriptBuilder.build_from_snapshot(snapshot)
+        scripts = await ScriptBuilder.build_from_snapshot(snapshot)
         if insert_to_db:
             await Script.bulk_create(scripts)
     except Exception as e:

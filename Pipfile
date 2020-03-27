@@ -17,11 +17,11 @@ coveralls = "*"
 autoflake = "*"
 isort = {extras = ["pipfile"],version = "*"}
 mypy = "*"
+respx = "*"
 
 [packages]
 aiofiles = "*"
 aiosqlite = "*"
-requests = "*"
 tortoise-orm = "*"
 uvicorn = "*"
 yara-python = "*"

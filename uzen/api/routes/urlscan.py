@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from typing import cast
-import requests
+import httpx
 
 from uzen.models.schemas.snapshots import Snapshot
 from uzen.services.urlscan import URLScan
@@ -18,8 +18,8 @@ router = APIRouter()
 )
 async def import_from_urlscan(uuid: str) -> Snapshot:
     try:
-        snapshot = URLScan.import_as_snapshot(uuid)
-    except requests.exceptions.HTTPError:
+        snapshot = await URLScan.import_as_snapshot(uuid)
+    except httpx.HTTPError:
         raise HTTPException(status_code=404, detail=f"{uuid} is not found")
 
     await snapshot.save()
