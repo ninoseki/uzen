@@ -1,5 +1,8 @@
-from typing import List
 from loguru import logger
+from typing import List
+import asyncio
+import itertools
+import dataclasses
 
 from uzen.models.classifications import Classification
 from uzen.models.dns_records import DnsRecord
@@ -11,6 +14,7 @@ from uzen.services.scripts import ScriptBuilder
 
 
 async def create_scripts(snapshot: Snapshot, insert_to_db=True) -> List[Script]:
+    logger.debug(f"Fetch scripts from {snapshot.url}")
     try:
         scripts = ScriptBuilder.build_from_snapshot(snapshot)
         if insert_to_db:
@@ -24,6 +28,7 @@ async def create_scripts(snapshot: Snapshot, insert_to_db=True) -> List[Script]:
 
 
 async def create_dns_records(snapshot: Snapshot, insert_to_db=True) -> List[DnsRecord]:
+    logger.debug(f"Fetch DNS records from {snapshot.hostname}")
     try:
         records = DnsRecordBuilder.build_from_snapshot(snapshot)
         if insert_to_db:
@@ -39,6 +44,7 @@ async def create_dns_records(snapshot: Snapshot, insert_to_db=True) -> List[DnsR
 async def create_classifications(
     snapshot: Snapshot, insert_to_db=True
 ) -> List[Classification]:
+    logger.debug(f"Fetch classifications of {snapshot.url}")
     try:
         classifications = ClassificationBuilder.build_from_snapshot(snapshot)
         if insert_to_db:
@@ -49,3 +55,35 @@ async def create_classifications(
         )
 
     return classifications
+
+
+@dataclasses.dataclass
+class Results:
+    classifications: List[Classification]
+    dns_records: List[DnsRecord]
+    scripts: List[Script]
+
+
+async def run_all_jobs(snapshot, insert_to_db=True) -> Results:
+    jobs = [
+        create_classifications(snapshot, insert_to_db),
+        create_dns_records(snapshot, insert_to_db),
+        create_scripts(snapshot, insert_to_db),
+    ]
+    completed, pending = await asyncio.wait(jobs)
+    results = list(itertools.chain(*[t.result() for t in completed]))
+
+    scripts = []
+    classifications = []
+    dns_records = []
+    for result in results:
+        if isinstance(result, Classification):
+            classifications.append(result)
+        elif isinstance(result, DnsRecord):
+            dns_records.append(result)
+        elif isinstance(result, Script):
+            scripts.append(result)
+
+    return Results(
+        classifications=classifications, dns_records=dns_records, scripts=scripts
+    )

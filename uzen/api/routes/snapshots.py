@@ -7,7 +7,7 @@ from tortoise.exceptions import DoesNotExist
 import requests
 
 from uzen.api.dependencies.snapshots import search_filters
-from uzen.api.jobs import create_classifications, create_dns_records, create_scripts
+from uzen.api.jobs import run_all_jobs
 from uzen.models.schemas.snapshots import CountResponse, CreateSnapshotPayload
 from uzen.models.schemas.snapshots import SearchResult, Snapshot as SnapshotModel
 from uzen.models.snapshots import Snapshot
@@ -130,9 +130,7 @@ async def create(
 
     await snapshot.save()
 
-    background_tasks.add_task(create_scripts, snapshot)
-    background_tasks.add_task(create_dns_records, snapshot)
-    background_tasks.add_task(create_classifications, snapshot)
+    background_tasks.add_task(run_all_jobs, snapshot)
 
     model = cast(SnapshotModel, snapshot.to_model())
     return model
