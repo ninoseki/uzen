@@ -19,8 +19,8 @@ import { Snapshot } from "@/types";
 
 @Component({
   components: {
-    Link
-  }
+    Link,
+  },
 })
 export default class LinksComponent extends Vue {
   @Prop() private snapshot!: Snapshot;

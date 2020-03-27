@@ -95,7 +95,7 @@ export default class Search extends Vue {
     content_type: this.content_type,
     sha256: this.sha256,
     from_at: undefined,
-    to_at: undefined
+    to_at: undefined,
   };
 
   dateFormatter(dt) {

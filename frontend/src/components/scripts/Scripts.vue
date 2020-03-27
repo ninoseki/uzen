@@ -27,8 +27,8 @@ import { Script } from "@/types";
 
 @Component({
   components: {
-    ScriptView
-  }
+    ScriptView,
+  },
 })
 export default class ScriptsView extends Vue {
   @Prop() private scripts!: Script[];
@@ -36,7 +36,7 @@ export default class ScriptsView extends Vue {
   private selectedScript: Script | undefined = undefined;
 
   showSelectedScript() {
-    const script = this.scripts.find(elem => elem.id === this.selectedID);
+    const script = this.scripts.find((elem) => elem.id === this.selectedID);
     this.selectedScript = script;
   }
 

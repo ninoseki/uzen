@@ -151,5 +151,5 @@ export const languages = {
   "zh-MO": "Chinese (Macau)",
   "zh-SG": "Chinese (Singapore)",
   "zh-TW": "Chinese (T)",
-  "zu-ZA": "Zulu (South Africa)"
+  "zu-ZA": "Zulu (South Africa)",
 };

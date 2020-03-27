@@ -76,7 +76,7 @@ export default class Form extends Vue {
 
   async take() {
     const loadingComponent = this.$buefy.loading.open({
-      container: this.$refs.element
+      container: this.$refs.element,
     });
 
     try {
@@ -86,7 +86,7 @@ export default class Form extends Vue {
         accept_language:
           this.acceptLanguage === "" ? undefined : this.acceptLanguage,
         timeout: this.timeout,
-        ignore_https_errors: this.ignoreHTTPSErrors
+        ignore_https_errors: this.ignoreHTTPSErrors,
       });
       const snapshot = response.data;
 

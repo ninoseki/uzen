@@ -11,8 +11,8 @@ import Oneshot from "@/components/Oneshot.vue";
 
 @Component({
   components: {
-    Oneshot
-  }
+    Oneshot,
+  },
 })
 export default class OneshotView extends Vue {}
 </script>

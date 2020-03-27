@@ -11,7 +11,7 @@
           <router-link
             :to="{
               name: 'Snapshot',
-              params: { id: props.row.id, yaraResult: props.row.yara_result }
+              params: { id: props.row.id, yaraResult: props.row.yara_result },
             }"
           >
             {{ props.row.url }}

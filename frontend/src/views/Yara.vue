@@ -11,8 +11,8 @@ import YaraForm from "@/components/yara/Form.vue";
 
 @Component({
   components: {
-    YaraForm
-  }
+    YaraForm,
+  },
 })
 export default class Yara extends Vue {}
 </script>

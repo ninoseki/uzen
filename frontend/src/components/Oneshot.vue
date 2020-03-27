@@ -44,7 +44,7 @@ import {
   TargetTypes,
   Script,
   DnsRecord,
-  YaraResult
+  YaraResult,
 } from "@/types";
 
 import SnapshotComponent from "@/components/snapshots/Snapshot.vue";
@@ -53,8 +53,8 @@ import BasicYaraForm from "@/components/yara/BasicForm.vue";
 @Component({
   components: {
     BasicYaraForm,
-    SnapshotComponent
-  }
+    SnapshotComponent,
+  },
 })
 export default class OneshotView extends Vue {
   private source: string = "";
@@ -64,14 +64,14 @@ export default class OneshotView extends Vue {
 
   async scan() {
     const loadingComponent = this.$buefy.loading.open({
-      container: this.$refs.element
+      container: this.$refs.element,
     });
 
     try {
       const response = await axios.post<Oneshot>("/api/yara/oneshot", {
         source: this.source,
         url: this.url,
-        target: this.target
+        target: this.target,
       });
 
       this.oneshot = response.data;
@@ -118,7 +118,7 @@ export default class OneshotView extends Vue {
         snapshot_id: -1,
         script_id: undefined,
         target: this.target,
-        matches: this.oneshot.matches
+        matches: this.oneshot.matches,
       };
       return result;
     }
