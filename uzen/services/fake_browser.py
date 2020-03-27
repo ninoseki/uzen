@@ -1,5 +1,5 @@
 from typing import Optional, cast
-import requests
+import httpx
 
 from uzen.models.snapshots import Snapshot
 from uzen.services.certificate import Certificate
@@ -17,14 +17,14 @@ DEFAULT_AL = "en-US"
 
 class FakeBrowser:
     @staticmethod
-    def take_snapshot(
+    async def take_snapshot(
         url: str,
         user_agent: Optional[str] = None,
         timeout: Optional[int] = None,
         ignore_https_errors: bool = False,
         accept_language: Optional[str] = None,
     ) -> Snapshot:
-        """Take a snapshot of a website by requests
+        """Take a snapshot of a website by httpx
 
         Arguments:
             url {str} -- A URL of a website
@@ -42,7 +42,8 @@ class FakeBrowser:
         try:
             # default timeout = 30 seconds
             timeout = int(timeout / 1000) if timeout is not None else 30
-            res = requests.get(
+            client = httpx.AsyncClient()
+            res = await client.get(
                 url,
                 headers={
                     "user-agent": user_agent or DEFAULT_UA,
@@ -53,20 +54,20 @@ class FakeBrowser:
             )
 
             request = {
-                "browser": "requests",
+                "browser": "httpx",
                 "ignore_https_errors": ignore_https_errors,
                 "timeout": timeout,
                 "user_agent": user_agent or DEFAULT_UA,
                 "accept_language": accept_language,
             }
 
-            url = res.url
+            url = str(res.url)
             status = res.status_code
             screenshot = ""
             body = res.text
             sha256 = calculate_sha256(body)
             headers = {k.lower(): v for (k, v) in res.headers.items()}
-        except requests.HTTPError as e:
+        except httpx.HTTPError as e:
             raise (e)
 
         server = headers.get("server")
@@ -76,7 +77,7 @@ class FakeBrowser:
         hostname = cast(str, get_hostname_from_url(url))
         certificate = Certificate.load_and_dump_from_url(url)
         ip_address = cast(str, get_ip_address_by_hostname(hostname))
-        asn = get_asn_by_ip_address(ip_address)
+        asn = await get_asn_by_ip_address(ip_address)
         whois = Whois.whois(hostname)
 
         snapshot = Snapshot(

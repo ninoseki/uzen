@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-import requests
+import httpx
 from requests_html import HTML
 
 from uzen.models.scripts import Script
@@ -27,23 +27,23 @@ def get_script_sources(url: str, body: str) -> List[str]:
     return list(set(sources))
 
 
-def get_script_content(source: str) -> Optional[str]:
+async def get_script_content(source: str) -> Optional[str]:
     try:
-        session = requests.Session()
-        res = session.get(source)
+        client = httpx.AsyncClient()
+        res = await client.get(source)
         res.raise_for_status()
         return res.text
-    except requests.exceptions.HTTPError:
+    except httpx.HTTPError:
         return None
 
 
 class ScriptBuilder:
     @staticmethod
-    def build_from_snapshot(snapshot: Snapshot) -> List[Script]:
+    async def build_from_snapshot(snapshot: Snapshot) -> List[Script]:
         sources = get_script_sources(url=snapshot.url, body=snapshot.body)
         scripts = []
         for source in sources:
-            content = get_script_content(source)
+            content = await get_script_content(source)
             if content is None:
                 continue
 

@@ -1,16 +1,13 @@
-from pyppeteer.errors import PyppeteerError
-import pyppeteer
 import pytest
-import vcr
+import respx
 
-from uzen.services.browser import Browser
 from uzen.services.certificate import Certificate
 from uzen.services.fake_browser import FakeBrowser
 from uzen.services.utils import IPInfo
 from uzen.services.whois import Whois
 
 
-def mock_get_basic(ip_address: str):
+async def mock_get_basic(ip_address: str):
     return {"org": "AS15133 MCI Communications Services, Inc. d/b/a Verizon Business"}
 
 
@@ -22,16 +19,20 @@ def mock_load_and_dump_from_url(url: str):
     return "Certificate:"
 
 
-@vcr.use_cassette("tests/fixtures/vcr_cassettes/fake_browser.yaml")
-def test_take_snapshot(monkeypatch):
+@pytest.mark.asyncio
+@respx.mock
+async def test_take_snapshot(monkeypatch):
     monkeypatch.setattr(IPInfo, "get_basic", mock_get_basic)
     monkeypatch.setattr(Whois, "whois", mock_whois)
     monkeypatch.setattr(
         Certificate, "load_and_dump_from_url", mock_load_and_dump_from_url
     )
+    respx.get(
+        "http://example.com", content="foo", headers={"Content-Type": "text/html"}
+    )
 
-    snapshot = FakeBrowser.take_snapshot("http://example.com")
-    assert snapshot.url == "http://example.com/"
+    snapshot = await FakeBrowser.take_snapshot("http://example.com")
+    assert snapshot.url == "http://example.com"
     assert snapshot.submitted_url == "http://example.com"
 
     assert snapshot.hostname == "example.com"

@@ -1,7 +1,6 @@
 import json
-
 import pytest
-import vcr
+import respx
 
 from uzen.models.snapshots import Snapshot
 from uzen.services.browser import Browser
@@ -125,15 +124,21 @@ async def test_yara_oneshot(client, monkeypatch):
 
 
 @pytest.mark.asyncio
-@vcr.use_cassette("tests/fixtures/vcr_cassettes/yara_oneshot_with_script.yaml")
+@respx.mock
 async def test_yara_oneshot_with_script(client, monkeypatch):
     monkeypatch.setattr(Browser, "take_snapshot", mock_take_snapshot)
     monkeypatch.setattr(
         ClassificationBuilder, "build_from_snapshot", mock_build_from_snapshot
     )
+    respx.get(
+        "https://www.w3.org/2008/site/js/main",
+        content='<html><body><script type="text/javascript" src="https://www.w3.org/2008/site/js/main"></body></html>',
+    )
+    respx.get("https://www.w3.org/2008/site/js/main", content="foo")
+    respx.get("http://testserver/*", pass_through=True)
 
     payload = {
-        "source": 'rule foo: bar {strings: $a = "W3C" condition: $a}',
+        "source": 'rule foo: bar {strings: $a = "foo" condition: $a}',
         "url": "https://www.w3.org",
         "target": "script",
     }
