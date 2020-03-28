@@ -52,7 +52,7 @@ async def test_yara_scan_with_invalid_input(client):
     assert response.status_code == 500
 
 
-def mock_take_snapshot(url: str):
+def mock_take_snapshot(*args, **kwargs):
     return Snapshot(
         url="https://www.w3.org/",
         submitted_url="https://www.w3.org",
@@ -72,7 +72,7 @@ def mock_take_snapshot(url: str):
     )
 
 
-def mock_take_snapshot_without_script(url: str):
+def mock_take_snapshot_without_script(*args, **kwargs):
     return Snapshot(
         url="https://www.w3.org/",
         submitted_url="https://www.w3.org",

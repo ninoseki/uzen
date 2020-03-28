@@ -11,7 +11,7 @@ from uzen.models.schemas.yara import (
     ScanPayload,
     ScanResult,
 )
-from uzen.services.browser import Browser
+from uzen.services.snapshot import TakeSnapshotError, take_snapshot
 from uzen.services.yara_scanner import YaraScanner
 
 router = APIRouter()
@@ -48,7 +48,6 @@ async def scan(
 )
 async def oneshot(payload: OneshotPayload) -> OneshotResponse:
     source = payload.source
-    url = payload.url
     target = payload.target
 
     try:
@@ -56,7 +55,16 @@ async def oneshot(payload: OneshotPayload) -> OneshotResponse:
     except yara.Error as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-    snapshot = await Browser.take_snapshot(url)
+    try:
+        snapshot = await take_snapshot(
+            url=payload.url,
+            user_agent=payload.user_agent,
+            accept_language=payload.accept_language,
+            timeout=payload.timeout,
+            ignore_https_errors=payload.ignore_https_errors,
+        )
+    except TakeSnapshotError as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
     results = await run_all_jobs(snapshot, insert_to_db=False)
     snapshot.scripts = [script.to_model() for script in results.scripts]

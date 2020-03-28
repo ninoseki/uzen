@@ -1,22 +1,16 @@
 from typing import List, Optional, cast
 
-import httpx
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
-from loguru import logger
-from pyppeteer.errors import PyppeteerError
 from tortoise.exceptions import DoesNotExist
 
 from uzen.api.dependencies.snapshots import search_filters
 from uzen.api.jobs import run_all_jobs
-from uzen.models.schemas.snapshots import (
-    CountResponse,
-    CreateSnapshotPayload,
-    SearchResult,
-)
+from uzen.core.exceptions import TakeSnapshotError
+from uzen.models.schemas.snapshots import (CountResponse,
+                                           CreateSnapshotPayload, SearchResult)
 from uzen.models.schemas.snapshots import Snapshot as SnapshotModel
 from uzen.models.snapshots import Snapshot
-from uzen.services.browser import Browser
-from uzen.services.fake_browser import FakeBrowser
+from uzen.services.snapshot import take_snapshot
 from uzen.services.snapshot_search import SnapshotSearcher
 
 router = APIRouter()
@@ -94,43 +88,16 @@ async def list(size: int = 100, offset: int = 0) -> List[SearchResult]:
 async def create(
     payload: CreateSnapshotPayload, background_tasks: BackgroundTasks
 ) -> SnapshotModel:
-    url = payload.url
-    user_agent = payload.user_agent
-    accept_language = payload.accept_language
-    timeout = payload.timeout or 30000
-    ignore_https_errors = payload.ignore_https_errors or False
-
-    snapshot = None
-    error = None
     try:
-        snapshot = await Browser.take_snapshot(
-            url,
-            user_agent=user_agent,
-            accept_language=accept_language,
-            timeout=timeout,
-            ignore_https_errors=ignore_https_errors,
+        snapshot = await take_snapshot(
+            url=payload.url,
+            user_agent=payload.user_agent,
+            accept_language=payload.accept_language,
+            timeout=payload.timeout,
+            ignore_https_errors=payload.ignore_https_errors,
         )
-    except PyppeteerError as e:
-        logger.debug(f"Failed to take a snapshot by pyppeteer: {e}")
-        error = e
-
-    # fallback to fake browser (httpx)
-    if snapshot is None:
-        logger.debug("Fallback to httpx")
-        try:
-            snapshot = await FakeBrowser.take_snapshot(
-                url,
-                user_agent=user_agent,
-                accept_language=accept_language,
-                timeout=timeout,
-                ignore_https_errors=ignore_https_errors,
-            )
-        except httpx.HTTPError as e:
-            logger.debug(f"Failed to take a snapshot by httpx: {e}")
-            error = e
-
-    if snapshot is None or error is not None:
-        raise HTTPException(status_code=500, detail=str(error))
+    except TakeSnapshotError as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
     await snapshot.save()
 
