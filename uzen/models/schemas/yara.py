@@ -1,8 +1,12 @@
 from typing import List, Optional, Union
 
-from pydantic import AnyHttpUrl, BaseModel, Field
+from pydantic import BaseModel, Field
 
-from uzen.models.schemas.snapshots import BaseSnapshot, SearchResult
+from uzen.models.schemas.snapshots import (
+    BaseSnapshot,
+    CreateSnapshotPayload,
+    SearchResult,
+)
 
 
 class ScanPayload(BaseModel):
@@ -16,8 +20,8 @@ class ScanPayload(BaseModel):
     )
 
 
-class OneshotPayload(ScanPayload):
-    url: AnyHttpUrl
+class OneshotPayload(CreateSnapshotPayload, ScanPayload):
+    pass
 
 
 class YaraMatch(BaseModel):
