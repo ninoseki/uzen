@@ -24,6 +24,12 @@ class OneshotPayload(CreateSnapshotPayload, ScanPayload):
     pass
 
 
+class YaraMatchString(BaseModel):
+    offset: int
+    string_identifier: str
+    string_data: str
+
+
 class YaraMatch(BaseModel):
     rule: str = Field(None, title="Rule", description="Name of the matching rule")
     namespace: str = Field(
@@ -39,7 +45,7 @@ class YaraMatch(BaseModel):
         title="Meta",
         description="Dictionary containing metadata associated to the matching rule",
     )
-    strings: List[dict] = Field(
+    strings: List[YaraMatchString] = Field(
         [],
         title="Strings",
         description="List of tuples containing information about the matching strings",
