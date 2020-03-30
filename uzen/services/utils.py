@@ -16,9 +16,7 @@ class IPInfo:
 
     async def basic(self, ip_address: str) -> dict:
         url = "{}/{}/json".format(self.BASE_URL, ip_address)
-        print(url)
         r = await self.client.get(url)
-        print(r.text)
         r.raise_for_status()
         return r.json()
 
