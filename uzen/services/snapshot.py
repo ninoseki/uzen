@@ -31,7 +31,7 @@ async def take_snapshot(
             timeout=timeout,
             ignore_https_errors=ignore_https_errors,
         )
-    except PyppeteerError as e:
+    except (PyppeteerError, UnboundLocalError) as e:
         message = f"Failed to take a snapshot by pyppeteer: {e}."
         logger.debug(message)
         errors.append(message)
