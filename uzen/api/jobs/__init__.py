@@ -16,6 +16,7 @@ from uzen.services.scripts import ScriptBuilder
 
 async def create_scripts(snapshot: Snapshot, insert_to_db=True) -> List[Script]:
     logger.debug(f"Fetch scripts from {snapshot.url}")
+    scripts = []
     try:
         scripts = await ScriptBuilder.build_from_snapshot(snapshot)
         if insert_to_db:
@@ -30,6 +31,7 @@ async def create_scripts(snapshot: Snapshot, insert_to_db=True) -> List[Script]:
 
 async def create_dns_records(snapshot: Snapshot, insert_to_db=True) -> List[DnsRecord]:
     logger.debug(f"Fetch DNS records from {snapshot.hostname}")
+    records = []
     try:
         records = DnsRecordBuilder.build_from_snapshot(snapshot)
         if insert_to_db:
@@ -46,6 +48,7 @@ async def create_classifications(
     snapshot: Snapshot, insert_to_db=True
 ) -> List[Classification]:
     logger.debug(f"Fetch classifications of {snapshot.url}")
+    classifications = []
     try:
         classifications = ClassificationBuilder.build_from_snapshot(snapshot)
         if insert_to_db:
