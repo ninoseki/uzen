@@ -1,4 +1,4 @@
-from typing import List, Optional, Union
+from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -39,7 +39,7 @@ class YaraMatch(BaseModel):
         title="Meta",
         description="Dictionary containing metadata associated to the matching rule",
     )
-    strings: List[List[Union[str, int]]] = Field(
+    strings: List[dict] = Field(
         [],
         title="Strings",
         description="List of tuples containing information about the matching strings",

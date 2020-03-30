@@ -64,7 +64,7 @@ class YaraScanner:
                         snapshot_id=snapshot_id,
                         script_id=None,
                         target=target,
-                        matches=MatchesConverter.convert(matches),
+                        matches=matches,
                     )
                     matched_results.append(result)
 
