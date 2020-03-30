@@ -2,24 +2,26 @@ from typing import List
 
 import yara
 
-from uzen.models.schemas.yara import YaraMatch
+from uzen.models.schemas.yara import YaraMatch, YaraMatchString
 
 
-def convert_strings_to_dict_items(strings) -> List[dict]:
+def convert_strings(strings) -> List[YaraMatchString]:
     # strintgs is a list of tuple
     # (<offset>, <string identifier>, <string data>)
     # e.g. (81L, '$a', 'abc'),
-    dict_items = []
+    models = []
     for tuple_ in strings:
         items = list(tuple_)
         offset = int(items[0])
         identifier = items[1]
         data = items[2].decode()
-        dict_items.append(
-            {"offset": offset, "string_identifier": identifier, "string_data": data}
+        models.append(
+            YaraMatchString(
+                offset=offset, string_identifier=identifier, string_data=data
+            )
         )
 
-    return dict_items
+    return models
 
 
 class MatchesConverter:
@@ -33,7 +35,7 @@ class MatchesConverter:
                     namespace=match.namespace,
                     tags=match.tags,
                     meta=match.meta,
-                    strings=convert_strings_to_dict_items(match.strings),
+                    strings=convert_strings(match.strings),
                 )
             )
         return _matches

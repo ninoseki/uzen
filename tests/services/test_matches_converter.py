@@ -15,6 +15,10 @@ def test_convert():
     assert first.namespace == "default"
     assert first.tags == ["bar"]
     assert first.meta == {}
-    assert first.strings == [
-        {"offset": 10, "string_identifier": "$a", "string_data": "lmn"}
-    ]
+
+    assert len(first.strings) == 1
+
+    first_string = first.strings[0]
+    assert first_string.offset == 10
+    assert first_string.string_identifier == "$a"
+    assert first_string.string_data == "lmn"
