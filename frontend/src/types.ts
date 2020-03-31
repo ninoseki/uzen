@@ -75,11 +75,17 @@ export interface Classification {
   created_at: string | undefined;
 }
 
+export interface YaraMatchString {
+  offset: number;
+  string_identifier: string;
+  string_data: string;
+}
+
 export interface YaraMatch {
   meta: Dict;
   namespace: string;
   rule: string;
-  strings: (string | number)[];
+  strings: YaraMatchString[];
   tags: string[];
 }
 
