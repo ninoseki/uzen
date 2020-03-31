@@ -12,6 +12,10 @@ from uzen.services.utils import (
     get_ip_address_by_hostname,
 )
 from uzen.services.whois import Whois
+from uzen.utils.patch_pyppeteer import patch_pyppeteer
+
+# apply a patch to download chromium
+patch_pyppeteer()
 
 
 class Browser:

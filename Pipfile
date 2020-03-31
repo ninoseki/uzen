@@ -37,6 +37,7 @@ requests-html = "*"
 pydig = "*"
 pysafebrowsing = "*"
 pyppeteer2 = "*"
+certifi = "*"
 
 [requires]
 python_version = "3.8"
