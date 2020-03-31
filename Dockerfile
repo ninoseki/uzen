@@ -18,7 +18,7 @@ RUN apt-get update \
   libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 \
   libxi6 libxrandr2 libxrender1 libxss1 libxtst6 \
   ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release \
-  xdg-utils wget \
+  xdg-utils wget dnsutils \
   && apt-get clean  \
   && rm -rf /var/lib/apt/lists/*
 
