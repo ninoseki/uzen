@@ -39,11 +39,12 @@ class FakeBrowser:
             Snapshot -- Snapshot ORM instance
         """
         submitted_url: str = url
+        verify = not ignore_https_errors
 
         try:
             # default timeout = 30 seconds
             timeout = int(timeout / 1000) if timeout is not None else 30
-            client = httpx.AsyncClient()
+            client = httpx.AsyncClient(verify=verify)
             res = await client.get(
                 url,
                 headers={
