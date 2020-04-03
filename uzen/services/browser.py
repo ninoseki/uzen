@@ -78,9 +78,6 @@ class Browser:
             raise (e)
         else:
             await browser.close()
-        finally:
-            if browser is not None:
-                await browser.close()
 
         server = headers.get("server")
         content_type = headers.get("content-type")
