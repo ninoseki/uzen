@@ -42,8 +42,11 @@ COPY .env.sample /app/.env
 COPY uzen /app/uzen
 COPY --from=build /frontend /app/frontend
 
-RUN pipenv install --deploy --system \
-  && pyppeteer-install
+RUN pipenv install --deploy --system
+
+ENV PYPPETEER_HOME /app/pyppeteer
+
+RUN mkdir -p /app/pyppeteer && pyppeteer-install
 
 ENV PORT 8000
 
