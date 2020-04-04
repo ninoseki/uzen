@@ -14,16 +14,18 @@ from uzen.services.whois import Whois
 
 DEFAULT_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
 DEFAULT_AL = "en-US"
+DEFAULT_REFERER = ""
 
 
 class FakeBrowser:
     @staticmethod
     async def take_snapshot(
         url: str,
-        user_agent: Optional[str] = None,
-        timeout: Optional[int] = None,
-        ignore_https_errors: bool = False,
         accept_language: Optional[str] = None,
+        ignore_https_errors: bool = False,
+        referer: Optional[str] = None,
+        timeout: Optional[int] = None,
+        user_agent: Optional[str] = None,
     ) -> Snapshot:
         """Take a snapshot of a website by httpx
 
@@ -44,23 +46,29 @@ class FakeBrowser:
         try:
             # default timeout = 30 seconds
             timeout = int(timeout / 1000) if timeout is not None else 30
+            user_agent = user_agent or DEFAULT_UA
+            accept_language = accept_language or DEFAULT_AL
+            referer = referer or DEFAULT_REFERER
+
             client = httpx.AsyncClient(verify=verify)
             res = await client.get(
                 url,
                 headers={
-                    "user-agent": user_agent or DEFAULT_UA,
-                    "accept-language": accept_language or DEFAULT_AL,
+                    "user-agent": user_agent,
+                    "accept-language": accept_language,
+                    "referer": referer,
                 },
                 timeout=timeout,
                 allow_redirects=True,
             )
 
             request = {
+                "accept_language": accept_language,
                 "browser": "httpx",
                 "ignore_https_errors": ignore_https_errors,
+                "referer": referer,
                 "timeout": timeout,
-                "user_agent": user_agent or DEFAULT_UA,
-                "accept_language": accept_language,
+                "user_agent": user_agent,
             }
 
             url = str(res.url)

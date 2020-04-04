@@ -21,6 +21,7 @@
         v-if="showOptions"
         v-bind:acceptLanguage.sync="acceptLanguage"
         v-bind:ignoreHTTPSErrors.sync="ignoreHTTPSErrors"
+        v-bind:referer.sync="referer"
         v-bind:timeout.sync="timeout"
         v-bind:userAgent.sync="userAgent"
       />
@@ -40,25 +41,27 @@ import Options from "@/components/snapshots/Options.vue";
 export default class Form extends Vue {
   private url = "";
   private showOptions = false;
-  private userAgent = "";
   private acceptLanguage = "";
-  private timeout = 30000;
   private ignoreHTTPSErrors = false;
+  private referer = "";
+  private timeout = 30000;
+  private userAgent = "";
   private snapshot: Snapshot | undefined = undefined;
 
   async take() {
     const loadingComponent = this.$buefy.loading.open({
-      container: this.$refs.element
+      container: this.$refs.element,
     });
 
     try {
       const response = await axios.post<Snapshot>("/api/snapshots/", {
         url: this.url,
-        user_agent: this.userAgent === "" ? undefined : this.userAgent,
         accept_language:
           this.acceptLanguage === "" ? undefined : this.acceptLanguage,
+        ignore_https_errors: this.ignoreHTTPSErrors,
+        referer: this.referer === "" ? undefined : this.referer,
         timeout: this.timeout,
-        ignore_https_errors: this.ignoreHTTPSErrors
+        user_agent: this.userAgent === "" ? undefined : this.userAgent,
       });
       const snapshot = response.data;
 

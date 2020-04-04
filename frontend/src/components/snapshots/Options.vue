@@ -1,10 +1,11 @@
 <template>
   <div>
     <b-field label="User Agent">
-      <b-input
-        placeholder="Specific user agent to use"
-        v-model="_userAgent"
-      ></b-input>
+      <b-input placeholder="User agent" v-model="_userAgent"></b-input>
+    </b-field>
+
+    <b-field label="Referer">
+      <b-input placeholder="Referer" v-model="_referer"></b-input>
     </b-field>
 
     <b-field label="Accept Language">
@@ -39,10 +40,12 @@ import { languages } from "@/languages";
 
 @Component
 export default class Options extends Vue {
-  private userAgent = "";
   private acceptLanguage = "";
-  private timeout = 30000;
   private ignoreHTTPSErrors = false;
+  private referer = "";
+  private timeout = 30000;
+  private userAgent = "";
+
   private languages = languages;
   private languagKeys = Object.keys(languages);
 
@@ -52,6 +55,14 @@ export default class Options extends Vue {
 
   set _userAgent(value) {
     this.$emit("update:userAgent", value);
+  }
+
+  get _referer() {
+    return this.referer;
+  }
+
+  set _referer(value) {
+    this.$emit("update:referer", value);
   }
 
   get _acceptLanguage() {

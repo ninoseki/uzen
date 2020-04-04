@@ -100,13 +100,7 @@ async def test_snapshot_post_with_invalid_url(client):
     assert response.status_code == 422
 
 
-def mock_take_snapshot(
-    url: str,
-    user_agent: None,
-    accept_language: None,
-    timeout: None,
-    ignore_https_errors: False,
-):
+def mock_take_snapshot(*args, **kwargs):
     return make_snapshot()
 
 

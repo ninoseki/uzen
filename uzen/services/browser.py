@@ -22,10 +22,11 @@ class Browser:
     @staticmethod
     async def take_snapshot(
         url: str,
-        user_agent: Optional[str] = None,
-        timeout: Optional[int] = None,
-        ignore_https_errors: bool = False,
         accept_language: Optional[str] = None,
+        ignore_https_errors: bool = False,
+        referer: Optional[str] = None,
+        timeout: Optional[int] = None,
+        user_agent: Optional[str] = None,
     ) -> Snapshot:
         """Take a snapshot of a website by puppeteer
 
@@ -52,19 +53,23 @@ class Browser:
             if user_agent is not None:
                 await page.setUserAgent(user_agent)
 
+            referer = referer or ""
+            headers = {"Referer": referer}
             if accept_language is not None:
-                await page.setExtraHTTPHeaders({"Accept-Language": accept_language})
+                headers["Accept-Language"] = accept_language
+            await page.setExtraHTTPHeaders(headers)
 
             # default timeout = 30 seconds
-            timeout = timeout if timeout is not None else 30 * 1000
+            timeout = timeout or 30 * 1000
             res = await page.goto(url, timeout=timeout)
 
             request = {
+                "accept_language": accept_language,
                 "browser": await browser.version(),
                 "ignore_https_errors": ignore_https_errors,
+                "referer": referer,
                 "timeout": timeout,
                 "user_agent": user_agent or await browser.userAgent(),
-                "accept_language": accept_language,
             }
 
             url = page.url

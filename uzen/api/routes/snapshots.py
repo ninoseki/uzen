@@ -6,8 +6,11 @@ from tortoise.exceptions import DoesNotExist
 from uzen.api.dependencies.snapshots import search_filters
 from uzen.api.jobs import run_all_jobs
 from uzen.core.exceptions import TakeSnapshotError
-from uzen.models.schemas.snapshots import (CountResponse,
-                                           CreateSnapshotPayload, SearchResult)
+from uzen.models.schemas.snapshots import (
+    CountResponse,
+    CreateSnapshotPayload,
+    SearchResult,
+)
 from uzen.models.schemas.snapshots import Snapshot as SnapshotModel
 from uzen.models.snapshots import Snapshot
 from uzen.services.snapshot import take_snapshot
@@ -91,10 +94,11 @@ async def create(
     try:
         snapshot = await take_snapshot(
             url=payload.url,
-            user_agent=payload.user_agent,
             accept_language=payload.accept_language,
-            timeout=payload.timeout,
             ignore_https_errors=payload.ignore_https_errors,
+            referer=payload.referer,
+            timeout=payload.timeout,
+            user_agent=payload.user_agent,
         )
     except TakeSnapshotError as e:
         raise HTTPException(status_code=500, detail=str(e))
