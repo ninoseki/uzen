@@ -12,10 +12,11 @@ from uzen.services.fake_browser import FakeBrowser
 
 async def take_snapshot(
     url: str,
-    user_agent: Optional[str],
     accept_language: Optional[str],
-    timeout: Optional[int],
     ignore_https_errors: Optional[bool],
+    referer: Optional[str],
+    timeout: Optional[int],
+    user_agent: Optional[str],
 ) -> Snapshot:
 
     timeout = timeout or 30000
@@ -26,10 +27,11 @@ async def take_snapshot(
     try:
         snapshot = await Browser.take_snapshot(
             url,
-            user_agent=user_agent,
             accept_language=accept_language,
-            timeout=timeout,
             ignore_https_errors=ignore_https_errors,
+            referer=referer,
+            timeout=timeout,
+            user_agent=user_agent,
         )
     except (PyppeteerError, UnboundLocalError) as e:
         message = f"Failed to take a snapshot by pyppeteer: {e}."
@@ -45,10 +47,11 @@ async def take_snapshot(
         try:
             snapshot = await FakeBrowser.take_snapshot(
                 url,
-                user_agent=user_agent,
                 accept_language=accept_language,
-                timeout=timeout,
                 ignore_https_errors=ignore_https_errors,
+                referer=referer,
+                timeout=timeout,
+                user_agent=user_agent,
             )
         except httpx.HTTPError as e:
             message = f"Failed to take a snapshot by httpx: {e}."

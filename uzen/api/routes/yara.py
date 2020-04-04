@@ -58,10 +58,11 @@ async def oneshot(payload: OneshotPayload) -> OneshotResponse:
     try:
         snapshot = await take_snapshot(
             url=payload.url,
-            user_agent=payload.user_agent,
             accept_language=payload.accept_language,
-            timeout=payload.timeout,
             ignore_https_errors=payload.ignore_https_errors,
+            referer=payload.referer,
+            timeout=payload.timeout,
+            user_agent=payload.user_agent,
         )
     except TakeSnapshotError as e:
         raise HTTPException(status_code=500, detail=str(e))

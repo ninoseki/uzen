@@ -28,6 +28,7 @@
         v-if="showOptions"
         v-bind:acceptLanguage.sync="acceptLanguage"
         v-bind:ignoreHTTPSErrors.sync="ignoreHTTPSErrors"
+        v-bind:referer.sync="referer"
         v-bind:timeout.sync="timeout"
         v-bind:userAgent.sync="userAgent"
       />
@@ -59,7 +60,7 @@ import {
   TargetTypes,
   Script,
   DnsRecord,
-  YaraResult
+  YaraResult,
 } from "@/types";
 
 import SnapshotComponent from "@/components/snapshots/Snapshot.vue";
@@ -70,8 +71,8 @@ import Options from "@/components/snapshots/Options.vue";
   components: {
     BasicYaraForm,
     SnapshotComponent,
-    Options
-  }
+    Options,
+  },
 })
 export default class OneshotView extends Vue {
   private source: string = "";
@@ -80,14 +81,15 @@ export default class OneshotView extends Vue {
   private oneshot: Oneshot | undefined = undefined;
 
   private showOptions = false;
-  private userAgent = "";
   private acceptLanguage = "";
-  private timeout = 30000;
   private ignoreHTTPSErrors = false;
+  private referer = "";
+  private timeout = 30000;
+  private userAgent = "";
 
   async scan() {
     const loadingComponent = this.$buefy.loading.open({
-      container: this.$refs.element
+      container: this.$refs.element,
     });
 
     try {
@@ -95,11 +97,12 @@ export default class OneshotView extends Vue {
         source: this.source,
         url: this.url,
         target: this.target,
-        user_agent: this.userAgent === "" ? undefined : this.userAgent,
         accept_language:
           this.acceptLanguage === "" ? undefined : this.acceptLanguage,
+        ignore_https_errors: this.ignoreHTTPSErrors,
+        referer: this.referer === "" ? undefined : this.referer,
         timeout: this.timeout,
-        ignore_https_errors: this.ignoreHTTPSErrors
+        user_agent: this.userAgent === "" ? undefined : this.userAgent,
       });
 
       this.oneshot = response.data;
@@ -146,7 +149,7 @@ export default class OneshotView extends Vue {
         snapshot_id: -1,
         script_id: undefined,
         target: this.target,
-        matches: this.oneshot.matches
+        matches: this.oneshot.matches,
       };
       return result;
     }
