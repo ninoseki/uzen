@@ -28,7 +28,7 @@ RUN apt-get update \
   # Ref. https://yara.readthedocs.io/en/latest/gettingstarted.html
   automake libtool make gcc pkg-config \
   # Install dependencies for Uzen
-  dnsutils \
+  dnsutils procps \
   && apt-get clean  \
   && rm -rf /var/lib/apt/lists/*
 
