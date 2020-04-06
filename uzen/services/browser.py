@@ -1,8 +1,10 @@
 from typing import Optional, cast
 
-from pyppeteer import launch
+from pyppeteer import launch, connect
 from pyppeteer.errors import PyppeteerError
+import pyppeteer
 
+from uzen.core import settings
 from uzen.models.snapshots import Snapshot
 from uzen.services.certificate import Certificate
 from uzen.services.utils import (
@@ -16,6 +18,22 @@ from uzen.utils.patch_pyppeteer import patch_pyppeteer
 
 # apply a patch to download chromium
 patch_pyppeteer()
+
+
+async def launch_browser(
+    ignore_https_errors: bool = False,
+) -> pyppeteer.browser.Browser:
+    if settings.BROWSER_WS_ENDPOINT != "":
+        return await connect(
+            browserWSEndpoint=settings.BROWSER_WS_ENDPOINT,
+            headless=True,
+            ignoreHTTPSErrors=ignore_https_errors,
+            args=["--no-sandbox"],
+        )
+
+    return await launch(
+        headless=True, ignoreHTTPSErrors=ignore_https_errors, args=["--no-sandbox"],
+    )
 
 
 class Browser:
@@ -43,11 +61,7 @@ class Browser:
         """
         submitted_url: str = url
         try:
-            browser = await launch(
-                headless=True,
-                ignoreHTTPSErrors=ignore_https_errors,
-                args=["--no-sandbox"],
-            )
+            browser = await launch_browser(ignore_https_errors)
             page = await browser.newPage()
 
             if user_agent is not None:

@@ -1,7 +1,9 @@
-import pytest
 from pyppeteer.errors import PyppeteerError
+import pyppeteer
+import pytest
 
-from uzen.services.browser import Browser
+from uzen.core import settings
+from uzen.services.browser import Browser, launch_browser
 from uzen.services.certificate import Certificate
 from uzen.services.utils import IPInfo
 from uzen.services.whois import Whois
@@ -75,3 +77,19 @@ async def test_take_snapshot_with_bad_ssl(monkeypatch):
         "https://expired.badssl.com", ignore_https_errors=True
     )
     assert snapshot.url == "https://expired.badssl.com/"
+
+
+@pytest.mark.asyncio
+async def test_launch_browser(monkeypatch):
+    monkeypatch.setattr(
+        "uzen.core.settings.BROWSER_WS_ENDPOINT", "wss://chrome.browserless.io"
+    )
+    assert settings.BROWSER_WS_ENDPOINT == "wss://chrome.browserless.io"
+
+    try:
+        browser = await launch_browser()
+        assert isinstance(browser, pyppeteer.browser.Browser)
+        assert browser.wsEndpoint == "wss://chrome.browserless.io"
+        await browser.close()
+    except Exception:
+        await browser.close()
