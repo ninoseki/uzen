@@ -5,22 +5,24 @@ from starlette.datastructures import CommaSeparatedStrings, Secret
 
 config = Config(".env")
 
-PROJECT_NAME = config("PROJECT_NAME", default="uzen")
+PROJECT_NAME: str = config("PROJECT_NAME", default="uzen")
 
-DEBUG = config("DEBUG", cast=bool, default=False)
-TESTING = config("TESTING", cast=bool, default=False)
+DEBUG: bool = config("DEBUG", cast=bool, default=False)
+TESTING: bool = config("TESTING", cast=bool, default=False)
 
 LOG_FILE = config("LOG_FILE", default=sys.stderr)
-LOG_LEVEL = config("LOG_LEVEL", cast=str, default="DEBUG")
-LOG_BACKTRACE = config("LOG_BACKTRACE", cast=bool, default=True)
+LOG_LEVEL: str = config("LOG_LEVEL", cast=str, default="DEBUG")
+LOG_BACKTRACE: bool = config("LOG_BACKTRACE", cast=bool, default=True)
 
-DATABASE_URL = config("DATABASE_URL", cast=str, default="sqlite://:memory:")
+DATABASE_URL: str = config("DATABASE_URL", cast=str, default="sqlite://:memory:")
 APP_MODELS = config(
     "APP_MODELS",
     cast=CommaSeparatedStrings,
     default="uzen.models.snapshots,uzen.models.scripts,uzen.models.dns_records,uzen.models.classifications",
 )
 
-GOOGLE_SAFE_BROWSING_API_KEY = config(
+GOOGLE_SAFE_BROWSING_API_KEY: str = config(
     "GOOGLE_SAFE_BROWSING_API_KEY", cast=Secret, default=""
 )
+
+BROWSER_WS_ENDPOINT: str = config("BROWSER_WS_ENDPOINT", cast=str, default="")
