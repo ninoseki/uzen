@@ -32,17 +32,15 @@ RUN apt-get update \
   && apt-get clean  \
   && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install pipenv
-
 WORKDIR /app
 
-COPY Pipfile /app
-COPY Pipfile.lock /app
+COPY pyproject.toml /app
+COPY poetry.lock /app
 COPY .env.sample /app/.env
 COPY uzen /app/uzen
 COPY --from=build /frontend /app/frontend
 
-RUN pipenv install --deploy --system
+RUN pip3 install poetry && poetry config virtualenvs.create false && poetry install --no-dev
 
 ENV PYPPETEER_HOME /app/pyppeteer
 
