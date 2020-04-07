@@ -4,8 +4,9 @@ language: python
 python:
   - 3.8
 install:
-  - pip install pipenv
-  - pipenv install --dev
+  - pip install poetry
+  - poetry config virtualenvs.create false
+  - poetry install
   - pyppeteer-install
   - nvm install 12
   - nvm use 12
