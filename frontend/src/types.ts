@@ -26,12 +26,18 @@ export interface Snapshot {
   classifications: Classification[];
 }
 
-export interface SnapshotCount {
+export interface Count {
   count: number;
 }
 
+export interface ValidationError {
+  loc: string[];
+  msg: string;
+  type: string;
+}
+
 export interface ErrorData {
-  detail: string;
+  detail: string | ValidationError[];
 }
 
 export interface SearchFilters {
@@ -107,3 +113,17 @@ export interface Oneshot {
 }
 
 export type TargetTypes = "body" | "whois" | "certificate" | "script";
+
+export interface Rule {
+  id: number;
+  name: string;
+  target: TargetTypes;
+  source: string;
+  created_at: string;
+}
+
+export interface RuleFilters {
+  name: string | undefined;
+  target: TargetTypes | undefined;
+  source: string | undefined;
+}

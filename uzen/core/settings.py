@@ -15,11 +15,7 @@ LOG_LEVEL: str = config("LOG_LEVEL", cast=str, default="DEBUG")
 LOG_BACKTRACE: bool = config("LOG_BACKTRACE", cast=bool, default=True)
 
 DATABASE_URL: str = config("DATABASE_URL", cast=str, default="sqlite://:memory:")
-APP_MODELS = config(
-    "APP_MODELS",
-    cast=CommaSeparatedStrings,
-    default="uzen.models.snapshots,uzen.models.scripts,uzen.models.dns_records,uzen.models.classifications",
-)
+APP_MODELS = config("APP_MODELS", cast=CommaSeparatedStrings, default="uzen.models",)
 
 GOOGLE_SAFE_BROWSING_API_KEY: str = config(
     "GOOGLE_SAFE_BROWSING_API_KEY", cast=Secret, default=""

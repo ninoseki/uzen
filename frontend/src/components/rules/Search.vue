@@ -1,14 +1,11 @@
 <template>
   <div>
     <div class="box">
-      <SnapshotSearch
-        ref="search"
-        v-bind:sha256="$route.query.sha256"
-        v-bind:asn="$route.query.asn"
-        v-bind:content_type="$route.query.content_type"
-        v-bind:hostname="$route.query.hostname"
-        v-bind:ip_address="$route.query.ip_address"
-        v-bind:server="$route.query.server"
+      <Form
+        ref="form"
+        v-bind:name="$route.query.name"
+        v-bind:type="$route.query.type"
+        v-bind:source="$route.query.source"
       />
       <br />
 
@@ -19,7 +16,7 @@
 
     <h2 v-if="hasCount()">Search results ({{ count }} / {{ totalCount }})</h2>
 
-    <SnapshotTable v-bind:snapshots="snapshots" />
+    <Table v-bind:rules="rules" />
 
     <b-button v-if="hasLoadMore()" type="is-dark" @click="loadMore"
       >Load more...</b-button
@@ -31,31 +28,31 @@
 import { Component, Vue, Prop } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 
-import { Count, Snapshot, ErrorData } from "@/types";
+import { Rule, RuleFilters, Count, ErrorData } from "@/types";
 
 import Counter from "@/components/ui/Counter.vue";
-import SnapshotSearch from "@/components/snapshots/Search.vue";
-import SnapshotTable from "@/components/snapshots/Table.vue";
+import Form from "@/components/rules/Form.vue";
+import Table from "@/components/rules/Table.vue";
 
 @Component({
   components: {
     Counter,
-    SnapshotSearch,
-    SnapshotTable,
+    Form,
+    Table,
   },
 })
-export default class Snapshots extends Vue {
+export default class Search extends Vue {
   DEFAULT_PAGE_SIZE = 10;
   DEFAULT_OFFSET = 0;
 
-  private snapshots: Snapshot[] = [];
+  private rules: Rule[] = [];
   private count: number | undefined = undefined;
   private totalCount: number = 0;
   private size = this.DEFAULT_PAGE_SIZE;
   private offset = this.DEFAULT_OFFSET;
 
   resetPagination() {
-    this.snapshots = [];
+    this.rules = [];
     this.size = this.DEFAULT_PAGE_SIZE;
     this.offset = this.DEFAULT_OFFSET;
   }
@@ -69,19 +66,19 @@ export default class Snapshots extends Vue {
       this.resetPagination();
     }
 
-    const params = (this.$refs.search as SnapshotSearch).filtersParams();
+    const params = (this.$refs.form as Form).filtersParams();
     params["size"] = this.size;
     params["offset"] = this.offset;
 
     try {
-      const response = await axios.get<Snapshot[]>("/api/snapshots/search", {
+      const response = await axios.get<Rule[]>("/api/rules/search", {
         params: params,
       });
 
       loadingComponent.close();
 
-      this.snapshots = this.snapshots.concat(response.data);
-      this.count = this.snapshots.length;
+      this.rules = this.rules.concat(response.data);
+      this.count = this.rules.length;
     } catch (error) {
       loadingComponent.close();
 
@@ -96,9 +93,9 @@ export default class Snapshots extends Vue {
 
   async getTotalCount() {
     try {
-      const params = (this.$refs.search as SnapshotSearch).filtersParams();
+      const params = (this.$refs.form as Form).filtersParams();
 
-      const response = await axios.get<Count>("/api/snapshots/count", {
+      const response = await axios.get<Count>("/api/rules/count", {
         params: params,
       });
       const data = response.data;
