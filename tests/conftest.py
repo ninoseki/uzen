@@ -12,6 +12,7 @@ from uzen import create_app
 from uzen.core import settings
 from uzen.models.classifications import Classification
 from uzen.models.dns_records import DnsRecord
+from uzen.models.rules import Rule
 from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot
 
@@ -112,6 +113,19 @@ async def classifications_setup(client, snapshots_setup):
             created_at=datetime.datetime.now(),
         )
         await classification.save()
+
+
+@pytest.fixture
+async def rules_setup(client):
+    for i in range(0, 5):
+        rule = Rule(
+            id=i,
+            name=f"test{i}",
+            target="body",
+            source='rule foo: bar {strings: $a = "lmn" condition: $a}',
+            created_at=datetime.datetime.now(),
+        )
+        await rule.save()
 
 
 @pytest.fixture

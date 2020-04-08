@@ -6,8 +6,8 @@ from tortoise.exceptions import DoesNotExist
 from uzen.api.dependencies.snapshots import search_filters
 from uzen.api.jobs import run_all_jobs
 from uzen.core.exceptions import TakeSnapshotError
+from uzen.models.schemas.common import CountResponse
 from uzen.models.schemas.snapshots import (
-    CountResponse,
     CreateSnapshotPayload,
     SearchResult,
 )

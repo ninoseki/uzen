@@ -4,6 +4,8 @@ import VueRouter from "vue-router";
 import Home from "@/views/Home.vue";
 import Import from "@/views/Import.vue";
 import Oneshot from "@/views/Oneshot.vue";
+import Rule from "@/views/Rule.vue";
+import Rules from "@/views/Rules.vue";
 import Snapshot from "@/views/Snapshot.vue";
 import Snapshots from "@/views/Snapshots.vue";
 import Yara from "@/views/Yara.vue";
@@ -22,6 +24,12 @@ const routes = [
     component: Snapshots,
   },
   {
+    path: "/snapshots/:id",
+    name: "Snapshot",
+    component: Snapshot,
+    props: true,
+  },
+  {
     path: "/yara",
     name: "Yara",
     component: Yara,
@@ -37,10 +45,14 @@ const routes = [
     component: Oneshot,
   },
   {
-    path: "/snapshots/:id",
-    name: "Snapshot",
-    component: Snapshot,
-    props: true,
+    path: "/rules",
+    name: "Rules",
+    component: Rules,
+  },
+  {
+    path: "/rules/:id",
+    name: "Rule",
+    component: Rule,
   },
 ];
 

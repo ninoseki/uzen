@@ -6,7 +6,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 
-import { SnapshotCount } from "@/types";
+import { Count } from "@/types";
 
 @Component
 export default class Counter extends Vue {
@@ -14,7 +14,7 @@ export default class Counter extends Vue {
 
   async load() {
     try {
-      const response = await axios.get<SnapshotCount>("/api/snapshots/count");
+      const response = await axios.get<Count>("/api/snapshots/count");
       const data = response.data;
       this.count = data.count;
     } catch (error) {
