@@ -26,11 +26,9 @@ class Rule(BaseRule):
 
 
 class CreateRulePayload(BaseModel):
-    name: str = Field(
-        None, title="Name of YARA rule", description="Name of a YARA rule"
-    )
+    name: str = Field(..., title="Name of YARA rule", description="Name of a YARA rule")
     source: str = Field(
-        None, title="YARA rule", description="String containing the rules code"
+        ..., title="YARA rule", description="String containing the rules code",
     )
     target: str = Field(
         "body",

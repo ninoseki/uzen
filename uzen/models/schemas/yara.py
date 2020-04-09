@@ -11,7 +11,7 @@ from uzen.models.schemas.snapshots import (
 
 class ScanPayload(BaseModel):
     source: str = Field(
-        None, title="YARA rule", description="String containing the rules code"
+        ..., title="YARA rule", description="String containing the rules code"
     )
     target: str = Field(
         "body",
@@ -31,9 +31,9 @@ class YaraMatchString(BaseModel):
 
 
 class YaraMatch(BaseModel):
-    rule: str = Field(None, title="Rule", description="Name of the matching rule")
+    rule: str = Field(..., title="Rule", description="Name of the matching rule")
     namespace: str = Field(
-        None, title="Namespace", description="Namespace associated to the matching rule"
+        ..., title="Namespace", description="Namespace associated to the matching rule"
     )
     tags: List[str] = Field(
         [],
@@ -54,12 +54,12 @@ class YaraMatch(BaseModel):
 
 class YaraResult(BaseModel):
     snapshot_id: int = Field(
-        None, title="Snapshot ID", description="The ID of a snapshot"
+        ..., title="Snapshot ID", description="The ID of a snapshot"
     )
     script_id: Optional[int] = Field(
-        None, title="Script ID", description="The ID of a script"
+        ..., title="Script ID", description="The ID of a script"
     )
-    target: str = Field(None, title="Target", description="The target to scan")
+    target: str = Field(..., title="Target", description="The target to scan")
     matches: List[YaraMatch] = Field(
         [], title="YARA matches", description="List of YARA match"
     )
@@ -67,12 +67,12 @@ class YaraResult(BaseModel):
 
 class OneshotResponse(BaseModel):
     snapshot: BaseSnapshot = Field(
-        None,
+        ...,
         title="Snapshot model",
         description="Snapshot model without id & created_at fields",
     )
     matched: bool = Field(
-        None, title="whether matched or not", description="whether matched or not"
+        ..., title="whether matched or not", description="whether matched or not"
     )
     matches: List[YaraMatch] = Field(
         [], title="YARA matches", description="YARA matches"
