@@ -11,6 +11,8 @@ class Rule(Model):
     source = fields.TextField()
     created_at = fields.DatetimeField(auto_now_add=True)
 
+    snapshots: fields.ManyToManyRelation["Snapshot"]
+
     def to_model(self) -> RuleModel:
         return RuleModel.from_orm(self)
 

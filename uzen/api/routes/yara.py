@@ -4,7 +4,7 @@ import yara
 from fastapi import APIRouter, Depends, HTTPException
 
 from uzen.api.dependencies.snapshots import search_filters
-from uzen.api.jobs import run_all_jobs
+from uzen.api.jobs import run_enrhichment_jobs
 from uzen.models.schemas.yara import (
     OneshotPayload,
     OneshotResponse,
@@ -67,7 +67,7 @@ async def oneshot(payload: OneshotPayload) -> OneshotResponse:
     except TakeSnapshotError as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-    results = await run_all_jobs(snapshot, insert_to_db=False)
+    results = await run_enrhichment_jobs(snapshot, insert_to_db=False)
     snapshot.scripts = [script.to_model() for script in results.scripts]
     snapshot.dns_records = [record.to_model() for record in results.dns_records]
     snapshot.classifications = [

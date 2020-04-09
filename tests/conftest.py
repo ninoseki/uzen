@@ -12,6 +12,7 @@ from uzen import create_app
 from uzen.core import settings
 from uzen.models.classifications import Classification
 from uzen.models.dns_records import DnsRecord
+from uzen.models.matches import Match
 from uzen.models.rules import Rule
 from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot
@@ -91,7 +92,7 @@ async def scripts_setup(client, snapshots_setup):
 
 @pytest.fixture
 async def dns_records_setup(client, snapshots_setup):
-    for i in range(0, 5):
+    for i in range(1, 6):
         record = DnsRecord(
             id=i,
             snapshot_id=i,
@@ -104,7 +105,7 @@ async def dns_records_setup(client, snapshots_setup):
 
 @pytest.fixture
 async def classifications_setup(client, snapshots_setup):
-    for i in range(0, 5):
+    for i in range(1, 6):
         classification = Classification(
             id=i,
             snapshot_id=i,
@@ -117,7 +118,7 @@ async def classifications_setup(client, snapshots_setup):
 
 @pytest.fixture
 async def rules_setup(client):
-    for i in range(0, 5):
+    for i in range(1, 6):
         rule = Rule(
             id=i,
             name=f"test{i}",
@@ -126,6 +127,19 @@ async def rules_setup(client):
             created_at=datetime.datetime.now(),
         )
         await rule.save()
+
+
+@pytest.fixture
+async def matches_setup(client, snapshots_setup, rules_setup):
+    for i in range(1, 6):
+        match = Match(
+            id=i,
+            snapshot_id=i,
+            rule_id=i,
+            matches="[]",
+            created_at=datetime.datetime.now(),
+        )
+        await match.save()
 
 
 @pytest.fixture

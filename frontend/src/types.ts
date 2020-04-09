@@ -24,6 +24,7 @@ export interface Snapshot {
   scripts: Script[];
   dns_records: DnsRecord[];
   classifications: Classification[];
+  rules: Rule[];
 }
 
 export interface Count {
@@ -126,4 +127,11 @@ export interface RuleFilters {
   name: string | undefined;
   target: TargetTypes | undefined;
   source: string | undefined;
+}
+
+export interface Match {
+  id: number;
+  snapshot: Snapshot;
+  rule: Rule;
+  created_at: string;
 }

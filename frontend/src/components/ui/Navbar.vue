@@ -13,6 +13,9 @@
       <b-navbar-item tag="router-link" :to="{ path: '/rules' }"
         >Rules</b-navbar-item
       >
+      <b-navbar-item tag="router-link" :to="{ path: '/matches' }"
+        >Matches</b-navbar-item
+      >
       <b-navbar-item tag="router-link" :to="{ path: '/yara' }"
         >YARA scan</b-navbar-item
       >
