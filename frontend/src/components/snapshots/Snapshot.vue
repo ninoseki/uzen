@@ -107,6 +107,11 @@
             </router-link>
           </div>
           <div class="column">
+            <h2 class="is-size-5 has-text-weight-bold middle">Matched rules</h2>
+            <Rules v-bind:rules="snapshot.rules" />
+          </div>
+
+          <div class="column">
             <h2 class="is-size-5 has-text-weight-bold middle">Links</h2>
             <Links v-bind:snapshot="snapshot" />
           </div>
@@ -157,10 +162,12 @@ import {
   SnapshotWithYaraResult,
   Classification,
 } from "@/types";
+
+import Rules from "@/components/rules/Buttons.vue";
+import Classifications from "@/components/classifications/Classifications.vue";
+import DnsRecords from "@/components/dns_records/DnsRecords.vue";
 import Links from "@/components/links/Links.vue";
 import Scripts from "@/components/scripts/Scripts.vue";
-import DnsRecords from "@/components/dns_records/DnsRecords.vue";
-import Classifications from "@/components/classifications/Classifications.vue";
 import YaraResultComponent from "@/components/yara/Result.vue";
 
 // Google code prettifier
@@ -168,11 +175,12 @@ declare const PR: any;
 
 @Component({
   components: {
-    Links,
-    Scripts,
-    DnsRecords,
-    YaraResultComponent,
     Classifications,
+    DnsRecords,
+    Links,
+    Rules,
+    Scripts,
+    YaraResultComponent,
   },
 })
 export default class SnapshotComponent extends Vue {

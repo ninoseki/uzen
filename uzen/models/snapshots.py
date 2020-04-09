@@ -6,6 +6,7 @@ from tortoise.models import Model
 
 from uzen.models.schemas.classifications import BaseClassification, Classification
 from uzen.models.schemas.dns_records import BaseDnsRecord, DnsRecord
+from uzen.models.schemas.rules import Rule
 from uzen.models.schemas.scripts import BaseScript, Script
 from uzen.models.schemas.snapshots import BaseSnapshot
 from uzen.models.schemas.snapshots import Snapshot as SnapshotModel
@@ -37,6 +38,14 @@ class Snapshot(Model):
     _dns_records: fields.ReverseRelation["DnsRecord"]
     _classifications: fields.ReverseRelation["Classification"]
 
+    _rules: fields.ManyToManyRelation["Rule"] = fields.ManyToManyField(
+        "models.Rule",
+        related_name="snapshots",
+        through="matches",
+        forward_key="rule_id",
+        backward_key="snapshot_id",
+    )
+
     def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
 
@@ -45,6 +54,21 @@ class Snapshot(Model):
         self.classifications_: Optional[
             List[Union[Classification, BaseClassification]]
         ] = None
+        self.rules_: Optional[List[Rule]] = None
+
+    @property
+    def rules(self) -> List[Rule]:
+        if hasattr(self, "rules_") and self.rules_ is not None:
+            return self.rules_
+
+        try:
+            return [rule.to_model() for rule in self._rules]
+        except NoValuesFetched:
+            return []
+
+    @rules.setter
+    def rules(self, rules: List[Rule]):
+        self.rules_ = rules
 
     @property
     def scripts(self) -> List[Union[Script, BaseScript]]:

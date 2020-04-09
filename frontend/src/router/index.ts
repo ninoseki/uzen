@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 
 import Home from "@/views/Home.vue";
 import Import from "@/views/Import.vue";
+import Matches from "@/views/Matches.vue";
 import Oneshot from "@/views/Oneshot.vue";
 import Rule from "@/views/Rule.vue";
 import Rules from "@/views/Rules.vue";
@@ -53,6 +54,11 @@ const routes = [
     path: "/rules/:id",
     name: "Rule",
     component: Rule,
+  },
+  {
+    path: "/matches",
+    name: "Matches",
+    component: Matches,
   },
 ];
 

@@ -4,7 +4,7 @@ from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from tortoise.exceptions import DoesNotExist
 
 from uzen.api.dependencies.snapshots import search_filters
-from uzen.api.jobs import run_all_jobs
+from uzen.api.jobs import run_enrhichment_jobs, run_matching_job
 from uzen.core.exceptions import TakeSnapshotError
 from uzen.models.schemas.common import CountResponse
 from uzen.models.schemas.snapshots import (
@@ -58,10 +58,13 @@ async def count(filters: dict = Depends(search_filters)) -> CountResponse:
 async def get(snapshot_id: int) -> SnapshotModel:
     try:
         snapshot: Snapshot = await Snapshot.get(id=snapshot_id).prefetch_related(
-            "_scripts", "_dns_records", "_classifications"
+            "_scripts", "_dns_records", "_classifications", "_rules"
         )
     except DoesNotExist:
         raise HTTPException(status_code=404, detail=f"Snapshot:{id} is not found")
+
+    print(snapshot._rules)
+    print(len(snapshot._rules))
 
     model = cast(SnapshotModel, snapshot.to_model())
     return model
@@ -105,7 +108,8 @@ async def create(
 
     await snapshot.save()
 
-    background_tasks.add_task(run_all_jobs, snapshot)
+    background_tasks.add_task(run_enrhichment_jobs, snapshot)
+    background_tasks.add_task(run_matching_job, snapshot)
 
     model = cast(SnapshotModel, snapshot.to_model())
     return model

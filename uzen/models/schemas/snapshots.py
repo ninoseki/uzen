@@ -5,6 +5,7 @@ from pydantic import AnyHttpUrl, BaseModel, Field, IPvAnyAddress
 
 from uzen.models.schemas.classifications import BaseClassification, Classification
 from uzen.models.schemas.dns_records import BaseDnsRecord, DnsRecord
+from uzen.models.schemas.rules import Rule
 from uzen.models.schemas.scripts import BaseScript, Script
 
 
@@ -34,6 +35,7 @@ class BaseSnapshot(BaseModel):
     scripts: List[Union[Script, BaseScript]]
     dns_records: List[Union[DnsRecord, BaseDnsRecord]]
     classifications: List[Union[Classification, BaseClassification]]
+    rules: List[Rule]
 
     class Config:
         orm_mode = True

@@ -7,10 +7,13 @@ from loguru import logger
 
 from uzen.models.classifications import Classification
 from uzen.models.dns_records import DnsRecord
+from uzen.models.matches import Match
+from uzen.models.schemas.matches import MatchResult
 from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot
 from uzen.services.classifications import ClassificationBuilder
 from uzen.services.dns_records import DnsRecordBuilder
+from uzen.services.rule_matcher import RuleMatcher
 from uzen.services.scripts import ScriptBuilder
 
 
@@ -68,7 +71,7 @@ class Results:
     scripts: List[Script]
 
 
-async def run_all_jobs(snapshot, insert_to_db=True) -> Results:
+async def run_enrhichment_jobs(snapshot, insert_to_db=True) -> Results:
     jobs = [
         create_classifications(snapshot, insert_to_db),
         create_dns_records(snapshot, insert_to_db),
@@ -91,3 +94,24 @@ async def run_all_jobs(snapshot, insert_to_db=True) -> Results:
     return Results(
         classifications=classifications, dns_records=dns_records, scripts=scripts
     )
+
+
+async def run_matching_job(snapshot):
+    logger.debug("Starting matching job...")
+
+    snapshot_ = await Snapshot.get(id=snapshot.id)
+    matcher = RuleMatcher(snapshot_)
+    results: List[MatchResult] = await matcher.scan()
+
+    matches = [
+        Match(
+            snapshot_id=snapshot.id,
+            rule_id=result.rule_id,
+            matches=[match.dict() for match in result.matches],
+        )
+        for result in results
+    ]
+    await Match.bulk_create(matches)
+
+    logger.debug(f"Snapshot {snapshot.id} matches with {len(matches)} rule(s)")
+    logger.debug("Matching job is finished")
