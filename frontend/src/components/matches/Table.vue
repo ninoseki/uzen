@@ -1,5 +1,5 @@
 <template>
-  <div class="box" v-if="hasMatches()">
+  <div class="box table-container" v-if="hasMatches()">
     <b-table :data="matches">
       <template slot-scope="props">
         <b-table-column field="id" label="ID" width="40" numeric>
