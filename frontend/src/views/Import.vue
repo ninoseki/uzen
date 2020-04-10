@@ -26,19 +26,24 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Mixin, Mixins } from "vue-mixin-decorator";
+import { Prop } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 
 import { ErrorData, Snapshot } from "@/types";
 
 import SnapshotComponebnt from "@/components/snapshots/Snapshot.vue";
 
+import { ErrorDialogMixin } from "@/components/mixins";
+
 @Component({
   components: {
     SnapshotComponebnt,
   },
 })
-export default class SnapshotForm extends Vue {
+export default class SnapshotForm extends Mixins<ErrorDialogMixin>(
+  ErrorDialogMixin
+) {
   private uuid: string = "";
   private snapshot: Snapshot | undefined = undefined;
 
@@ -59,7 +64,7 @@ export default class SnapshotForm extends Vue {
       loadingComponent.close();
 
       const data = error.response.data as ErrorData;
-      alert(data.detail);
+      this.alertError(data);
     }
   }
 

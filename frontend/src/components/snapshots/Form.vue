@@ -30,15 +30,18 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Mixin, Mixins } from "vue-mixin-decorator";
+import { Prop } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 
 import { ErrorData, Snapshot } from "@/types";
 
 import Options from "@/components/snapshots/Options.vue";
 
+import { ErrorDialogMixin } from "@/components/mixins";
+
 @Component({ components: { Options } })
-export default class Form extends Vue {
+export default class Form extends Mixins<ErrorDialogMixin>(ErrorDialogMixin) {
   private url = "";
   private showOptions = false;
   private acceptLanguage = "";
@@ -73,7 +76,7 @@ export default class Form extends Vue {
       loadingComponent.close();
 
       const data = error.response.data as ErrorData;
-      alert(data.detail);
+      this.alertError(data);
     }
   }
 }

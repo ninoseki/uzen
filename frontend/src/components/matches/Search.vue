@@ -11,7 +11,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Mixin, Mixins } from "vue-mixin-decorator";
+import { Prop } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 
 import { Match, Count, ErrorData } from "@/types";
@@ -19,21 +20,23 @@ import { Match, Count, ErrorData } from "@/types";
 import Counter from "@/components/ui/Counter.vue";
 import Table from "@/components/matches/Table.vue";
 
+import {
+  SearchFormMixin,
+  ErrorDialogMixin,
+  SearchFormComponentMixin,
+} from "@/components/mixins";
+
 @Component({
   components: {
     Counter,
     Table,
   },
 })
-export default class Search extends Vue {
-  DEFAULT_PAGE_SIZE = 10;
-  DEFAULT_OFFSET = 0;
-
+export default class Search extends Mixins<SearchFormComponentMixin>(
+  ErrorDialogMixin,
+  SearchFormMixin
+) {
   private matches: Match[] = [];
-  private count: number | undefined = undefined;
-  private totalCount: number = 0;
-  private size = this.DEFAULT_PAGE_SIZE;
-  private offset = this.DEFAULT_OFFSET;
 
   resetPagination() {
     this.matches = [];
@@ -68,12 +71,8 @@ export default class Search extends Vue {
       loadingComponent.close();
 
       const data = error.response.data as ErrorData;
-      alert(data.detail);
+      this.alertError(data);
     }
-  }
-
-  hasCount(): boolean {
-    return this.count !== undefined;
   }
 
   async getTotalCount() {
@@ -85,13 +84,6 @@ export default class Search extends Vue {
     } catch (error) {
       this.totalCount = 0;
     }
-  }
-
-  hasLoadMore() {
-    const count = this.count || 0;
-    const total = this.totalCount || 0;
-
-    return count < total;
   }
 
   loadMore() {

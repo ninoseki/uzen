@@ -7,19 +7,24 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Mixin, Mixins } from "vue-mixin-decorator";
+import { Prop } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 
 import { Snapshot, ErrorData, YaraResult } from "@/types";
 
 import SnapshotComponebnt from "@/components/snapshots/Snapshot.vue";
 
+import { ErrorDialogMixin } from "@/components/mixins";
+
 @Component({
   components: {
     SnapshotComponebnt,
   },
 })
-export default class SnapshotView extends Vue {
+export default class SnapshotView extends Mixins<ErrorDialogMixin>(
+  ErrorDialogMixin
+) {
   @Prop() private yaraResult!: YaraResult;
   @Prop() private test!: string;
   private snapshot: Snapshot | undefined = undefined;
@@ -33,7 +38,7 @@ export default class SnapshotView extends Vue {
       this.$forceUpdate();
     } catch (error) {
       const data = error.response.data as ErrorData;
-      alert(data.detail);
+      this.alertError(data);
     }
   }
 
