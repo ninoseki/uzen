@@ -1,7 +1,7 @@
 import Vue from "vue";
 import { Mixin } from "vue-mixin-decorator";
 
-import { ErrorData, SearchableTypes } from "@/types";
+import { ErrorData } from "@/types";
 
 @Mixin
 export class ErrorDialogMixin extends Vue {
