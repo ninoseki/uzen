@@ -1,5 +1,5 @@
 <template>
-  <div class="box" v-if="hasSnapshots()">
+  <div class="box table-container" v-if="hasSnapshots()">
     <b-table :data="snapshots">
       <template slot-scope="props">
         <b-table-column field="id" label="ID" width="40" numeric>

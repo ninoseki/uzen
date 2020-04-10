@@ -1,15 +1,17 @@
 <template>
-  <b-table :data="classifications">
-    <template slot-scope="props">
-      <b-table-column field="name" label="Name">
-        {{ props.row.name }}
-      </b-table-column>
+  <div class="table-container">
+    <b-table :data="classifications">
+      <template slot-scope="props">
+        <b-table-column field="name" label="Name">
+          {{ props.row.name }}
+        </b-table-column>
 
-      <b-table-column field="malicious" label="Malicious">
-        {{ props.row.malicious }}
-      </b-table-column>
-    </template>
-  </b-table>
+        <b-table-column field="malicious" label="Malicious">
+          {{ props.row.malicious }}
+        </b-table-column>
+      </template>
+    </b-table>
+  </div>
 </template>
 
 <script lang="ts">

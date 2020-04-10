@@ -1,5 +1,5 @@
 <template>
-  <div class="box" v-if="hasRules()">
+  <div class="box table-container" v-if="hasRules()">
     <b-table :data="rules">
       <template slot-scope="props">
         <b-table-column field="id" label="ID" width="40" numeric>
