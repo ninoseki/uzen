@@ -63,9 +63,6 @@ async def get(snapshot_id: int) -> SnapshotModel:
     except DoesNotExist:
         raise HTTPException(status_code=404, detail=f"Snapshot:{id} is not found")
 
-    print(snapshot._rules)
-    print(len(snapshot._rules))
-
     model = cast(SnapshotModel, snapshot.to_model())
     return model
 
