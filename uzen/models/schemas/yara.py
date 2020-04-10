@@ -2,6 +2,7 @@ from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
+from uzen.models.schemas.common import Source, Target
 from uzen.models.schemas.snapshots import (
     BaseSnapshot,
     CreateSnapshotPayload,
@@ -9,15 +10,8 @@ from uzen.models.schemas.snapshots import (
 )
 
 
-class ScanPayload(BaseModel):
-    source: str = Field(
-        ..., title="YARA rule", description="String containing the rules code"
-    )
-    target: str = Field(
-        "body",
-        title="Target to scan",
-        description="Target field to scan (body, whois or certificate)",
-    )
+class ScanPayload(Source, Target):
+    pass
 
 
 class OneshotPayload(CreateSnapshotPayload, ScanPayload):

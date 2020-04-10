@@ -49,7 +49,7 @@ async def test_yara_scan_with_target(client):
 async def test_yara_scan_with_invalid_input(client):
     payload = {"source": "boo"}
     response = await client.post("/api/yara/scan", data=json.dumps(payload))
-    assert response.status_code == 500
+    assert response.status_code == 422
 
 
 def mock_take_snapshot(*args, **kwargs):

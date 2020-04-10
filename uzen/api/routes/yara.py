@@ -27,15 +27,8 @@ router = APIRouter()
 async def scan(
     payload: ScanPayload, filters: dict = Depends(search_filters)
 ) -> List[ScanResult]:
-    source = payload.source
-    target = payload.target
-
-    try:
-        yara_scanner = YaraScanner(source)
-    except yara.Error as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-    results = await yara_scanner.scan_snapshots(target, filters)
+    yara_scanner = YaraScanner(payload.source)
+    results = await yara_scanner.scan_snapshots(payload.target, filters)
     return results
 
 
@@ -47,14 +40,7 @@ async def scan(
     description="Perform oneshot YARA scan against a website",
 )
 async def oneshot(payload: OneshotPayload) -> OneshotResponse:
-    source = payload.source
-    target = payload.target
-
-    try:
-        yara_scanner = YaraScanner(source)
-    except yara.Error as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
+    yara_scanner = YaraScanner(payload.source)
     try:
         snapshot = await take_snapshot(
             url=payload.url,
@@ -76,14 +62,14 @@ async def oneshot(payload: OneshotPayload) -> OneshotResponse:
 
     matched = False
     matches = []
-    if target == "script":
+    if payload.target == "script":
         for script in results.scripts:
             matches = yara_scanner.match(script.content)
             if len(matches) > 0:
                 matched = True
                 break
     else:
-        data = snapshot.to_dict().get(target, "")
+        data = snapshot.to_dict().get(payload.target, "")
         matches = yara_scanner.match(data)
         matched = True if len(matches) > 0 else False
 
