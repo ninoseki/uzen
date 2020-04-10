@@ -79,8 +79,7 @@ async def get_asn_by_ip_address(ip_address: str) -> Optional[str]:
     try:
         json = await IPInfo.get_basic(ip_address)
         return json.get("org")
-    except Exception as e:
-        print(e)
+    except Exception:
         return None
 
 
