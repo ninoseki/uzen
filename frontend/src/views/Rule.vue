@@ -3,19 +3,24 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Mixin, Mixins } from "vue-mixin-decorator";
+import { Prop } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 
 import { Rule, ErrorData } from "@/types";
 
 import RuleComponebnt from "@/components/rules/Rule.vue";
 
+import { ErrorDialogMixin } from "@/components/mixins";
+
 @Component({
   components: {
     RuleComponebnt,
   },
 })
-export default class RuleView extends Vue {
+export default class RuleView extends Mixins<ErrorDialogMixin>(
+  ErrorDialogMixin
+) {
   private rule: Rule | undefined = undefined;
 
   async load() {
@@ -27,7 +32,7 @@ export default class RuleView extends Vue {
       this.$forceUpdate();
     } catch (error) {
       const data = error.response.data as ErrorData;
-      alert(data.detail);
+      this.alertError(data);
     }
   }
 

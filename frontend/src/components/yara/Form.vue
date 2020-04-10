@@ -19,7 +19,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Mixin, Mixins } from "vue-mixin-decorator";
+import { Prop } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 
 import {
@@ -35,6 +36,8 @@ import Counter from "@/components/ui/Counter.vue";
 import SnapshotSearch from "@/components/snapshots/Search.vue";
 import SnapshotTable from "@/components/snapshots/Table.vue";
 
+import { ErrorDialogMixin } from "@/components/mixins";
+
 @Component({
   components: {
     BasicForm,
@@ -43,7 +46,9 @@ import SnapshotTable from "@/components/snapshots/Table.vue";
     SnapshotTable,
   },
 })
-export default class YaraForm extends Vue {
+export default class YaraForm extends Mixins<ErrorDialogMixin>(
+  ErrorDialogMixin
+) {
   private source: string = "";
   private target: TargetTypes = "body";
   private count: number | undefined = undefined;
@@ -77,12 +82,8 @@ export default class YaraForm extends Vue {
       loadingComponent.close();
 
       const data = error.response.data as ErrorData;
-      alert(data.detail);
+      this.alertError(data);
     }
-  }
-
-  hasCount(): boolean {
-    return this.count !== undefined;
   }
 }
 </script>
