@@ -132,7 +132,7 @@ async def test_yara_oneshot_with_script(client, monkeypatch):
         ClassificationBuilder, "build_from_snapshot", mock_build_from_snapshot
     )
     respx.get(
-        "https://www.w3.org/2008/site/js/main",
+        "https://www.w3.org",
         content='<html><body><script type="text/javascript" src="https://www.w3.org/2008/site/js/main"></body></html>',
     )
     respx.get("https://www.w3.org/2008/site/js/main", content="foo")
