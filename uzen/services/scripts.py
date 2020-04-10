@@ -1,7 +1,7 @@
+from typing import List, Optional
+from urllib.parse import urlparse
 import asyncio
 import dataclasses
-import itertools
-from typing import List, Optional
 
 import httpx
 from requests_html import HTML
@@ -11,11 +11,23 @@ from uzen.models.snapshots import Snapshot
 from uzen.services.utils import calculate_sha256
 
 
+def extract_base_path(path: str) -> str:
+    parts = path.split("/")
+    return "/".join(parts[:-1])
+
+
 def normalize_source(url: str, source: str) -> str:
     if source.startswith("http://") or source.startswith("https://"):
         return source
 
-    return f"{url}{source}"
+    parsed = urlparse(url)
+    base_path = extract_base_path(parsed.path)
+    base_url = f"{parsed.scheme}://{parsed.netloc}{base_path}"
+
+    if source.startswith("/"):
+        return f"{base_url}{source}"
+
+    return f"{base_url}/{source}"
 
 
 def get_script_sources(url: str, body: str) -> List[str]:
