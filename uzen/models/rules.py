@@ -18,3 +18,4 @@ class Rule(Model):
 
     class Meta:
         table = "rules"
+        ordering = ["-id"]

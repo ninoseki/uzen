@@ -13,8 +13,8 @@ from uzen.models.schemas.snapshots import (
 )
 from uzen.models.schemas.snapshots import Snapshot as SnapshotModel
 from uzen.models.snapshots import Snapshot
+from uzen.services.searchers.snapshots import SnapshotSearcher
 from uzen.services.snapshot import take_snapshot
-from uzen.services.snapshot_search import SnapshotSearcher
 
 router = APIRouter()
 

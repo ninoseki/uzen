@@ -8,7 +8,7 @@ from uzen.models.rules import Rule
 from uzen.models.schemas.common import CountResponse
 from uzen.models.schemas.rules import CreateRulePayload
 from uzen.models.schemas.rules import Rule as RuleModel
-from uzen.services.rule_search import RuleSearcher
+from uzen.services.searchers.rules import RuleSearcher
 
 router = APIRouter()
 

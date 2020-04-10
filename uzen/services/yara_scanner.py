@@ -8,7 +8,7 @@ from uzen.models.schemas.yara import ScanResult, YaraMatch, YaraResult
 from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot
 from uzen.services.matches_converter import MatchesConverter
-from uzen.services.snapshot_search import SnapshotSearcher
+from uzen.services.searchers.snapshots import SnapshotSearcher
 
 CHUNK_SIZE = 100
 PARALLEL_LIMIT = 10
