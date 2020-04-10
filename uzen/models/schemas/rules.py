@@ -1,7 +1,8 @@
 import datetime
 
 from pydantic import BaseModel, Field, validator
-import yara
+
+from uzen.models.schemas.common import Source, Target
 
 
 class BaseRule(BaseModel):
@@ -25,27 +26,5 @@ class Rule(BaseRule):
     created_at: datetime.datetime
 
 
-class CreateRulePayload(BaseModel):
+class CreateRulePayload(Source, Target):
     name: str = Field(..., title="Name of YARA rule", description="Name of a YARA rule")
-    source: str = Field(
-        ..., title="YARA rule", description="String containing the rules code",
-    )
-    target: str = Field(
-        "body",
-        title="Target to scan",
-        description="Target field to scan (body, whois or certificate)",
-    )
-
-    @validator("target")
-    def target_types(cls, v):
-        if v not in ["body", "certificate", "script", "whois"]:
-            raise ValueError("must be any of body, certificate, script or whois")
-        return v
-
-    @validator("source")
-    def source_compilable(cls, v):
-        try:
-            yara.compile(source=v)
-        except yara.Error as e:
-            raise ValueError(str(e))
-        return v
