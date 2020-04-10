@@ -128,3 +128,4 @@ class Snapshot(Model):
 
     class Meta:
         table = "snapshots"
+        ordering = ["-id"]

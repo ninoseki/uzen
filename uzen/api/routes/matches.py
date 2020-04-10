@@ -5,7 +5,7 @@ from fastapi import APIRouter
 from uzen.models.matches import Match
 from uzen.models.schemas.common import CountResponse
 from uzen.models.schemas.matches import Match as MatchModel
-from uzen.services.match_search import MatchSearcher
+from uzen.services.searchers.matches import MatchSearcher
 
 router = APIRouter()
 
