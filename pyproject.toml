@@ -45,6 +45,7 @@ seed-isort-config = "^2.1.0"
 
 [tool.isort]
 multi_line_output=3
+known_third_party = ["OpenSSL", "alembic", "certifi", "fastapi", "httpx", "loguru", "pydantic", "pydig", "pyppeteer", "pysafebrowsing", "pytest", "requests", "requests_html", "respx", "sqlalchemy", "starlette", "tortoise", "tqdm", "urllib3", "vcr", "whois", "yara"]
 
 [build-system]
 requires = ["poetry-core>=1.0.0a5"]
