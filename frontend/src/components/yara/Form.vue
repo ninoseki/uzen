@@ -85,5 +85,9 @@ export default class YaraForm extends Mixins<ErrorDialogMixin>(
       this.alertError(data);
     }
   }
+
+  hasCount(): boolean {
+    return this.count !== undefined;
+  }
 }
 </script>
