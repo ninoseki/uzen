@@ -4,9 +4,9 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
-sys.path = ["", ".."] + sys.path[1:]  # noqa
+sys.path = ["", ".."] + sys.path[1:]  # noqa # isort:skip
 
-from uzen import settings  # noqa
+from uzen import settings  # noqa # isort:skip
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

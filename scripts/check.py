@@ -1,16 +1,13 @@
 """A script for checking general settings"""
+import sqlite3
 import sys
 
-import sqlite3
 from pyppeteer import __chromium_revision__, __pyppeteer_home__
-from pyppeteer.chromium_downloader import (
-    check_chromium,
-    chromium_executable,
-)
+from pyppeteer.chromium_downloader import check_chromium, chromium_executable
 
-sys.path = ["", ".."] + sys.path[1:]  # noqa
+sys.path = ["", ".."] + sys.path[1:]  # noqa # isort:skip
 
-from uzen.core import settings
+from uzen.core import settings  # noqa # isort:skip
 
 
 def check():
