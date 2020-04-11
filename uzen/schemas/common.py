@@ -13,8 +13,8 @@ class CountResponse(BaseModel):
 class Target(BaseModel):
     target: str = Field(
         "body",
-        title="Target to scan",
-        description="Target field to scan (body, whois or certificate)",
+        title="Target",
+        description="A target field to scan (body, certificate, script or whois)",
     )
 
     @validator("target")

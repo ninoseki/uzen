@@ -1,19 +1,17 @@
 import datetime
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field
 
 from uzen.schemas.common import Source, Target
 
 
-class BaseRule(BaseModel):
+class BaseRule(Source, Target):
     """Base Pydantic model for Rule
 
     Note that this model doesn't have "id" and "created_at" fields.
     """
 
-    name: str
-    target: str
-    source: str
+    name: str = Field(..., title="Name", description="A name of the YARA rule")
 
     class Config:
         orm_mode = True
@@ -26,5 +24,6 @@ class Rule(BaseRule):
     created_at: datetime.datetime
 
 
-class CreateRulePayload(Source, Target):
-    name: str = Field(..., title="Name of YARA rule", description="Name of a YARA rule")
+class CreateRulePayload(BaseRule):
+    class Config:
+        orm_mode = False
