@@ -5,14 +5,14 @@
 import uzen.utils.patch_pyppeteer
 from pyppeteer import launch
 """
-from io import BytesIO
 import os
+from io import BytesIO
 
+import certifi
+import urllib3
 from loguru import logger
 from pyppeteer.chromium_downloader import *
 from tqdm import tqdm
-import certifi
-import urllib3
 
 NO_PROGRESS_BAR = os.environ.get("PYPPETEER_NO_PROGRESS_BAR", "")
 

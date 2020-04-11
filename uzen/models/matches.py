@@ -1,7 +1,7 @@
 from tortoise import fields
 from tortoise.models import Model
 
-from uzen.models.schemas.matches import Match as MatchModel
+from uzen.schemas.matches import Match as MatchModel
 
 
 class Match(Model):

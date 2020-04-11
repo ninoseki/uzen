@@ -3,8 +3,8 @@ from typing import Union
 from tortoise import fields
 from tortoise.models import Model
 
-from uzen.models.schemas.scripts import BaseScript
-from uzen.models.schemas.scripts import Script as ScriptModel
+from uzen.schemas.scripts import BaseScript
+from uzen.schemas.scripts import Script as ScriptModel
 
 
 class Script(Model):

@@ -6,13 +6,10 @@ from tortoise.exceptions import DoesNotExist
 from uzen.api.dependencies.snapshots import search_filters
 from uzen.api.jobs import run_enrhichment_jobs, run_matching_job
 from uzen.core.exceptions import TakeSnapshotError
-from uzen.models.schemas.common import CountResponse
-from uzen.models.schemas.snapshots import (
-    CreateSnapshotPayload,
-    SearchResult,
-)
-from uzen.models.schemas.snapshots import Snapshot as SnapshotModel
 from uzen.models.snapshots import Snapshot
+from uzen.schemas.common import CountResponse
+from uzen.schemas.snapshots import CreateSnapshotPayload, SearchResult
+from uzen.schemas.snapshots import Snapshot as SnapshotModel
 from uzen.services.searchers.snapshots import SnapshotSearcher
 from uzen.services.snapshot import take_snapshot
 

@@ -1,11 +1,11 @@
-from typing import List
 import datetime
+from typing import List
 
 from pydantic import BaseModel
 
-from uzen.models.schemas.rules import Rule
-from uzen.models.schemas.snapshots import Snapshot
-from uzen.models.schemas.yara import YaraMatch
+from uzen.schemas.rules import Rule
+from uzen.schemas.snapshots import Snapshot
+from uzen.schemas.yara import YaraMatch
 
 
 class BaseMatch(BaseModel):

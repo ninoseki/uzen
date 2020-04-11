@@ -1,7 +1,7 @@
-from typing import List, Optional
-from urllib.parse import urlparse
 import asyncio
 import dataclasses
+from typing import List, Optional
+from urllib.parse import urlparse
 
 import httpx
 from requests_html import HTML

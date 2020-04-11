@@ -2,7 +2,7 @@ import datetime
 
 from pydantic import BaseModel, Field, validator
 
-from uzen.models.schemas.common import Source, Target
+from uzen.schemas.common import Source, Target
 
 
 class BaseRule(BaseModel):

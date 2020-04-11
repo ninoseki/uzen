@@ -1,8 +1,8 @@
 from typing import Optional, cast
 
-from pyppeteer import launch, connect
-from pyppeteer.errors import PyppeteerError
 import pyppeteer
+from pyppeteer import connect, launch
+from pyppeteer.errors import PyppeteerError
 
 from uzen.core import settings
 from uzen.models.snapshots import Snapshot

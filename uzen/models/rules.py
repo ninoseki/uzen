@@ -1,7 +1,7 @@
 from tortoise import fields
 from tortoise.models import Model
 
-from uzen.models.schemas.rules import Rule as RuleModel
+from uzen.schemas.rules import Rule as RuleModel
 
 
 class Rule(Model):

@@ -1,8 +1,8 @@
 import pytest
 
 from uzen.api.jobs import run_matching_job
-from uzen.models.rules import Rule
 from uzen.models.matches import Match
+from uzen.models.rules import Rule
 from uzen.models.snapshots import Snapshot
 
 

@@ -2,7 +2,7 @@ from typing import List
 
 import yara
 
-from uzen.models.schemas.yara import YaraMatch, YaraMatchString
+from uzen.schemas.yara import YaraMatch, YaraMatchString
 
 
 def convert_strings(strings) -> List[YaraMatchString]:

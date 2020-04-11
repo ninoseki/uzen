@@ -8,9 +8,9 @@ from loguru import logger
 from uzen.models.classifications import Classification
 from uzen.models.dns_records import DnsRecord
 from uzen.models.matches import Match
-from uzen.models.schemas.matches import MatchResult
 from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot
+from uzen.schemas.matches import MatchResult
 from uzen.services.classifications import ClassificationBuilder
 from uzen.services.dns_records import DnsRecordBuilder
 from uzen.services.rule_matcher import RuleMatcher

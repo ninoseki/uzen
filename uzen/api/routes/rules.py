@@ -5,9 +5,9 @@ from tortoise.exceptions import DoesNotExist
 
 from uzen.api.dependencies.rules import search_filters
 from uzen.models.rules import Rule
-from uzen.models.schemas.common import CountResponse
-from uzen.models.schemas.rules import CreateRulePayload
-from uzen.models.schemas.rules import Rule as RuleModel
+from uzen.schemas.common import CountResponse
+from uzen.schemas.rules import CreateRulePayload
+from uzen.schemas.rules import Rule as RuleModel
 from uzen.services.searchers.rules import RuleSearcher
 
 router = APIRouter()
