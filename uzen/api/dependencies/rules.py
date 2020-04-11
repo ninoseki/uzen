@@ -1,23 +1,23 @@
 from typing import Optional
 
+from fastapi import Query
 
-async def search_filters(
-    name: Optional[str] = None,
-    target: Optional[str] = None,
-    source: Optional[str] = None,
-) -> dict:
-    """Filters for snapshot search
 
-    Keyword Arguments:
-        name {Optional[str]} -- Name (default: {None})
-        target {Optional[str]} -- Target (default: {None})
-        source {Optional[str]} -- Source (default: {None})
-
-    Returns:
-        dict -- filters as a dict
-    """
-    return {
-        "name": name,
-        "target": target,
-        "source": source,
-    }
+class SearchFilters:
+    def __init__(
+        self,
+        name: Optional[str] = Query(
+            None, title="Name", description="A name of the rule"
+        ),
+        target: Optional[str] = Query(
+            None,
+            title="Target",
+            description="A target of the rule (body, certificate, script or whois)",
+        ),
+        source: Optional[str] = Query(
+            None, title="Source", description="A source of the rule"
+        ),
+    ):
+        self.name = name
+        self.target = target
+        self.source = source

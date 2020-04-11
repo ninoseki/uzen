@@ -1,6 +1,6 @@
 import datetime
 
-from pydantic import AnyHttpUrl, BaseModel
+from pydantic import AnyHttpUrl, BaseModel, Field
 
 
 class BaseScript(BaseModel):
@@ -9,9 +9,9 @@ class BaseScript(BaseModel):
     Note that this model doesn't have "id" and "created_at" fields.
     """
 
-    url: AnyHttpUrl
-    content: str
-    sha256: str
+    url: AnyHttpUrl = Field(..., title="URL", description="A URL of the script")
+    content: str = Field(..., title="Content", description="A content of the script")
+    sha256: str = Field(..., title="SHA256", description="A SHA256 hash of the script")
 
     class Config:
         orm_mode = True

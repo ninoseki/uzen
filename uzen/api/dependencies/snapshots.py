@@ -1,38 +1,29 @@
 from typing import Optional
 
+from fastapi import Query
 
-async def search_filters(
-    hostname: Optional[str] = None,
-    ip_address: Optional[str] = None,
-    asn: Optional[str] = None,
-    server: Optional[str] = None,
-    content_type: Optional[str] = None,
-    sha256: Optional[str] = None,
-    from_at: Optional[str] = None,
-    to_at: Optional[str] = None,
-) -> dict:
-    """Filters for snapshot search
 
-    Keyword Arguments:
-        hostname {Optional[str]} -- Hostname (default: {None})
-        ip_address {Optional[str]} -- IP address (default: {None})
-        asn {Optional[str]} -- ASN (default: {None})
-        server {Optional[str]} -- Server (default: {None})
-        content_type {Optional[str]} -- Content type (default: {None})
-        sha256 {Optional[str]} -- SHA256 (default: {None})
-        from_at {Optional[str]} -- From at (default: {None})
-        to_at {Optional[str]} -- To at (default: {None})
-
-    Returns:
-        dict -- filters as a dict
-    """
-    return {
-        "hostname": hostname,
-        "ip_address": ip_address,
-        "asn": asn,
-        "server": server,
-        "content_type": content_type,
-        "sha256": sha256,
-        "from_at": from_at,
-        "to_at": to_at,
-    }
+class SearchFilters:
+    def __init__(
+        self,
+        hostname: Optional[str] = Query(None, title="Hostname"),
+        ip_address: Optional[str] = Query(None, title="IP address"),
+        asn: Optional[str] = Query(None, title="AS number"),
+        server: Optional[str] = Query(None, title="Server"),
+        content_type: Optional[str] = Query(None, title="Content type"),
+        sha256: Optional[str] = Query(None, title="SHA256"),
+        from_at: Optional[str] = Query(
+            None, title="From at", description="A datetime format with %Y-%m-%d"
+        ),
+        to_at: Optional[str] = Query(
+            None, title="To at", description="A datetime format with %Y-%m-%d"
+        ),
+    ):
+        self.hostname = hostname
+        self.ip_address = ip_address
+        self.asn = asn
+        self.server = server
+        self.content_type = content_type
+        self.sha256 = sha256
+        self.from_at = from_at
+        self.to_at = to_at

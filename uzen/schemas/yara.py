@@ -21,51 +21,53 @@ class YaraMatchString(BaseModel):
 
 
 class YaraMatch(BaseModel):
-    rule: str = Field(..., title="Rule", description="Name of the matching rule")
+    rule: str = Field(..., title="Rule", description="A name of the rule")
     namespace: str = Field(
-        ..., title="Namespace", description="Namespace associated to the matching rule"
+        ...,
+        title="Namespace",
+        description="A namespace associated to the matching rule",
     )
     tags: List[str] = Field(
         [],
         title="Tags",
-        description="Array of strings containig the tags associated to the matching rule",
+        description="An array of strings containig the tags associated to the matching rule",
     )
     meta: dict = Field(
         {},
         title="Meta",
-        description="Dictionary containing metadata associated to the matching rule",
+        description="A dictionary containing metadata associated to the matching rule",
     )
     strings: List[YaraMatchString] = Field(
         [],
         title="Strings",
-        description="List of tuples containing information about the matching strings",
+        description="A list of tuples containing information about the matching strings",
     )
 
 
 class YaraResult(BaseModel):
     snapshot_id: int = Field(
-        ..., title="Snapshot ID", description="The ID of a snapshot"
+        ..., title="Snapshot ID", description="An ID of the snapshot"
     )
     script_id: Optional[int] = Field(
-        ..., title="Script ID", description="The ID of a script"
+        ..., title="Script ID", description="An ID of the script"
     )
     target: str = Field(..., title="Target", description="The target to scan")
     matches: List[YaraMatch] = Field(
-        [], title="YARA matches", description="List of YARA match"
+        [], title="YARA matches", description="A list of YARA matches"
     )
 
 
 class OneshotResponse(BaseModel):
     snapshot: BaseSnapshot = Field(
         ...,
-        title="Snapshot model",
-        description="Snapshot model without id & created_at fields",
+        title="Snapshot",
+        description="A snapshot model without id & created_at fields",
     )
     matched: bool = Field(
         ..., title="whether matched or not", description="whether matched or not"
     )
     matches: List[YaraMatch] = Field(
-        [], title="YARA matches", description="YARA matches"
+        [], title="YARA matches", description="A list of YARA matches"
     )
 
 

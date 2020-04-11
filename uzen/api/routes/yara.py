@@ -3,7 +3,7 @@ from typing import List
 import yara
 from fastapi import APIRouter, Depends, HTTPException
 
-from uzen.api.dependencies.snapshots import search_filters
+from uzen.api.dependencies.snapshots import SearchFilters
 from uzen.api.jobs import run_enrhichment_jobs
 from uzen.schemas.yara import OneshotPayload, OneshotResponse, ScanPayload, ScanResult
 from uzen.services.snapshot import TakeSnapshotError, take_snapshot
@@ -20,10 +20,10 @@ router = APIRouter()
     description="Perform YARA scans against snapshtos (which can be narrowed down by filters)",
 )
 async def scan(
-    payload: ScanPayload, filters: dict = Depends(search_filters)
+    payload: ScanPayload, filters: SearchFilters = Depends()
 ) -> List[ScanResult]:
     yara_scanner = YaraScanner(payload.source)
-    results = await yara_scanner.scan_snapshots(payload.target, filters)
+    results = await yara_scanner.scan_snapshots(payload.target, vars(filters))
     return results
 
 

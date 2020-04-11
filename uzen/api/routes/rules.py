@@ -3,7 +3,7 @@ from typing import List, Optional, cast
 from fastapi import APIRouter, Depends, HTTPException
 from tortoise.exceptions import DoesNotExist
 
-from uzen.api.dependencies.rules import search_filters
+from uzen.api.dependencies.rules import SearchFilters
 from uzen.models.rules import Rule
 from uzen.schemas.common import CountResponse
 from uzen.schemas.rules import CreateRulePayload
@@ -23,9 +23,9 @@ router = APIRouter()
 async def search(
     size: Optional[int] = None,
     offset: Optional[int] = None,
-    filters: dict = Depends(search_filters),
+    filters: SearchFilters = Depends(),
 ) -> List[RuleModel]:
-    rules = await RuleSearcher.search(filters, size=size, offset=offset)
+    rules = await RuleSearcher.search(vars(filters), size=size, offset=offset)
     rules = cast(List[Rule], rules)
 
     return [rule.to_model() for rule in rules]
@@ -38,8 +38,8 @@ async def search(
     summary="Count rules",
     description="Count a number of rules matched with filters",
 )
-async def count(filters: dict = Depends(search_filters)) -> CountResponse:
-    count = await RuleSearcher.search(filters, count_only=True)
+async def count(filters: SearchFilters = Depends(),) -> CountResponse:
+    count = await RuleSearcher.search(vars(filters), count_only=True)
     return CountResponse(count=count)
 
 

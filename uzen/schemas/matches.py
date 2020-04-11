@@ -1,7 +1,7 @@
 import datetime
 from typing import List
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from uzen.schemas.rules import Rule
 from uzen.schemas.snapshots import Snapshot
@@ -14,9 +14,15 @@ class BaseMatch(BaseModel):
     Note that this model doesn't have "id" and "created_at" fields.
     """
 
-    matches: List[YaraMatch]
-    snapshot: Snapshot
-    rule: Rule
+    matches: List[YaraMatch] = Field(
+        ..., title="Matches", description="A list of YARA mastches",
+    )
+    snapshot: Snapshot = Field(
+        ..., title="Snapshot", description="A matched snapshot",
+    )
+    rule: Rule = Field(
+        ..., title="Rule", description="A matched rule",
+    )
 
     class Config:
         orm_mode = True
@@ -30,5 +36,9 @@ class Match(BaseMatch):
 
 
 class MatchResult(BaseModel):
-    rule_id: int
-    matches: List[YaraMatch]
+    rule_id: int = Field(
+        ..., title="Matches", description="An ID of the rule",
+    )
+    matches: List[YaraMatch] = Field(
+        ..., title="Matches", description="A list of YARA mastches",
+    )

@@ -3,7 +3,7 @@ from typing import List, Optional, cast
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from tortoise.exceptions import DoesNotExist
 
-from uzen.api.dependencies.snapshots import search_filters
+from uzen.api.dependencies.snapshots import SearchFilters
 from uzen.api.jobs import run_enrhichment_jobs, run_matching_job
 from uzen.core.exceptions import TakeSnapshotError
 from uzen.models.snapshots import Snapshot
@@ -26,9 +26,9 @@ router = APIRouter()
 async def search(
     size: Optional[int] = None,
     offset: Optional[int] = None,
-    filters: dict = Depends(search_filters),
+    filters: SearchFilters = Depends(),
 ) -> List[SearchResult]:
-    snapshots = await SnapshotSearcher.search(filters, size=size, offset=offset)
+    snapshots = await SnapshotSearcher.search(vars(filters), size=size, offset=offset)
     snapshots = cast(List[SearchResult], snapshots)
     return snapshots
 
@@ -40,8 +40,8 @@ async def search(
     summary="Count snapshots",
     description="Count a number of snapshot matched with filters",
 )
-async def count(filters: dict = Depends(search_filters)) -> CountResponse:
-    count = await SnapshotSearcher.search(filters, count_only=True)
+async def count(filters: SearchFilters = Depends()) -> CountResponse:
+    count = await SnapshotSearcher.search(vars(filters), count_only=True)
     return CountResponse(count=count)
 
 

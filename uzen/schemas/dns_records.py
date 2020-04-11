@@ -1,6 +1,6 @@
 import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class BaseDnsRecord(BaseModel):
@@ -9,8 +9,12 @@ class BaseDnsRecord(BaseModel):
     Note that this model doesn't have "id" and "created_at" fields.
     """
 
-    type: str
-    value: str
+    type: str = Field(
+        ..., title="Type", description="A type of the DNS record",
+    )
+    value: str = Field(
+        ..., title="Value", description="A value of the DNS record",
+    )
 
     class Config:
         orm_mode = True
