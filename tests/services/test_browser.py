@@ -1,6 +1,6 @@
-from pyppeteer.errors import PyppeteerError
 import pyppeteer
 import pytest
+from pyppeteer.errors import PyppeteerError
 
 from uzen.core import settings
 from uzen.services.browser import Browser, launch_browser

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Union, Optional, Type
+from typing import List, Optional, Type, Union
 
 from tortoise.models import Model
 from tortoise.query_utils import Q

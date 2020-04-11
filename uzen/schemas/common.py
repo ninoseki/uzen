@@ -1,5 +1,5 @@
-from pydantic import BaseModel, Field, validator
 import yara
+from pydantic import BaseModel, Field, validator
 
 
 class CountResponse(BaseModel):

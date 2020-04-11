@@ -3,11 +3,7 @@ from typing import List, Optional
 from pydantic import BaseModel, Field
 
 from uzen.schemas.common import Source, Target
-from uzen.schemas.snapshots import (
-    BaseSnapshot,
-    CreateSnapshotPayload,
-    SearchResult,
-)
+from uzen.schemas.snapshots import BaseSnapshot, CreateSnapshotPayload, SearchResult
 
 
 class ScanPayload(Source, Target):
