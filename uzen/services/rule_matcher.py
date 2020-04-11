@@ -3,7 +3,7 @@ import asyncio
 import itertools
 
 from uzen.models.rules import Rule
-from uzen.models.schemas.matches import MatchResult
+from uzen.schemas.matches import MatchResult
 from uzen.models.snapshots import Snapshot
 from uzen.services.searchers.rules import RuleSearcher
 from uzen.services.yara_scanner import YaraScanner

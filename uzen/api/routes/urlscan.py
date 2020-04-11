@@ -3,7 +3,7 @@ from typing import cast
 import httpx
 from fastapi import APIRouter, HTTPException
 
-from uzen.models.schemas.snapshots import Snapshot
+from uzen.schemas.snapshots import Snapshot
 from uzen.services.urlscan import URLScan
 
 router = APIRouter()

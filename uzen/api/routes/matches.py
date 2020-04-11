@@ -3,8 +3,8 @@ from typing import List, Optional, cast
 from fastapi import APIRouter
 
 from uzen.models.matches import Match
-from uzen.models.schemas.common import CountResponse
-from uzen.models.schemas.matches import Match as MatchModel
+from uzen.schemas.common import CountResponse
+from uzen.schemas.matches import Match as MatchModel
 from uzen.services.searchers.matches import MatchSearcher
 
 router = APIRouter()

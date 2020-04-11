@@ -4,12 +4,12 @@ from tortoise import fields
 from tortoise.exceptions import NoValuesFetched
 from tortoise.models import Model
 
-from uzen.models.schemas.classifications import BaseClassification, Classification
-from uzen.models.schemas.dns_records import BaseDnsRecord, DnsRecord
-from uzen.models.schemas.rules import Rule
-from uzen.models.schemas.scripts import BaseScript, Script
-from uzen.models.schemas.snapshots import BaseSnapshot
-from uzen.models.schemas.snapshots import Snapshot as SnapshotModel
+from uzen.schemas.classifications import BaseClassification, Classification
+from uzen.schemas.dns_records import BaseDnsRecord, DnsRecord
+from uzen.schemas.rules import Rule
+from uzen.schemas.scripts import BaseScript, Script
+from uzen.schemas.snapshots import BaseSnapshot
+from uzen.schemas.snapshots import Snapshot as SnapshotModel
 
 
 class Snapshot(Model):

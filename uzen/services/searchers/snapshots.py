@@ -3,7 +3,7 @@ from typing import List, Union, cast
 
 from tortoise.query_utils import Q
 
-from uzen.models.schemas.snapshots import SearchResult
+from uzen.schemas.snapshots import SearchResult
 from uzen.models.snapshots import Snapshot
 from uzen.services.searchers import AbstractSearcher
 

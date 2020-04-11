@@ -3,7 +3,7 @@ from typing import List
 import pydig
 
 from uzen.models.dns_records import DnsRecord
-from uzen.models.schemas.dns_records import BaseDnsRecord
+from uzen.schemas.dns_records import BaseDnsRecord
 from uzen.models.snapshots import Snapshot
 
 TYPES: List[str] = ["A", "AAAA", "CNAME", "MX", "NS", "PTR", "TXT"]

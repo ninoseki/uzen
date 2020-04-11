@@ -4,7 +4,7 @@ from typing import List, Optional, cast
 
 import yara
 
-from uzen.models.schemas.yara import ScanResult, YaraMatch, YaraResult
+from uzen.schemas.yara import ScanResult, YaraMatch, YaraResult
 from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot
 from uzen.services.matches_converter import MatchesConverter

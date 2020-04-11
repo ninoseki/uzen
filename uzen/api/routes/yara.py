@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from uzen.api.dependencies.snapshots import search_filters
 from uzen.api.jobs import run_enrhichment_jobs
-from uzen.models.schemas.yara import (
+from uzen.schemas.yara import (
     OneshotPayload,
     OneshotResponse,
     ScanPayload,
