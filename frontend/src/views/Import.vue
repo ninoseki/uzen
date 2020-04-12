@@ -1,5 +1,9 @@
 <template>
   <div>
+    <b-message type="is-warning">
+      Importing data from urlscan.io might be lossy
+    </b-message>
+
     <div class="box">
       <b-field>
         <b-input
@@ -14,10 +18,6 @@
         </p>
       </b-field>
     </div>
-
-    <b-message type="is-warning">
-      Importing data from urlscan.io might be lossy
-    </b-message>
   </div>
 </template>
 

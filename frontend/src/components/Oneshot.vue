@@ -1,5 +1,9 @@
 <template>
   <div>
+    <b-message type="is-warning">
+      Perform oneshot analysis. The analysis results are not persistent.
+    </b-message>
+
     <div class="box">
       <b-field label="URL">
         <b-input
