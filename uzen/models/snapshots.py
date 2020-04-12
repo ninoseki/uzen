@@ -77,17 +77,10 @@ class Snapshot(Model):
 
     @property
     def rules(self) -> List[Rule]:
-        if hasattr(self, "rules_") and self.rules_ is not None:
-            return self.rules_
-
         try:
             return [rule.to_model() for rule in self._rules]
         except NoValuesFetched:
             return []
-
-    @rules.setter
-    def rules(self, rules: List[Rule]):
-        self.rules_ = rules
 
     @property
     def scripts(self) -> List[Union[Script, BaseScript]]:
