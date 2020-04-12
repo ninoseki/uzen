@@ -1,3 +1,4 @@
+import socket
 from typing import Optional
 
 import whois
@@ -16,7 +17,7 @@ class Whois:
         """
         try:
             w = whois.whois(hostname)
-        except whois.parser.PywhoisError:
+        except (whois.parser.PywhoisError, socket.timeout):
             return None
 
         return w.text
