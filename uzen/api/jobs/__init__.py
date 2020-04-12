@@ -99,7 +99,7 @@ async def run_enrhichment_jobs(snapshot, insert_to_db=True) -> Results:
 async def run_matching_job(snapshot):
     logger.debug("Starting matching job...")
 
-    snapshot_ = await Snapshot.get(id=snapshot.id)
+    snapshot_ = await Snapshot.get(id=snapshot.id).prefetch_related("_scripts")
     matcher = RuleMatcher(snapshot_)
     results: List[MatchResult] = await matcher.scan()
 
@@ -107,6 +107,7 @@ async def run_matching_job(snapshot):
         Match(
             snapshot_id=snapshot.id,
             rule_id=result.rule_id,
+            script_id=result.script_id,
             matches=[match.dict() for match in result.matches],
         )
         for result in results

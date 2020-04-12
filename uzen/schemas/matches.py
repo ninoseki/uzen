@@ -1,9 +1,10 @@
 import datetime
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
 from uzen.schemas.rules import Rule
+from uzen.schemas.scripts import Script
 from uzen.schemas.snapshots import Snapshot
 from uzen.schemas.yara import YaraMatch
 
@@ -23,6 +24,9 @@ class BaseMatch(BaseModel):
     rule: Rule = Field(
         ..., title="Rule", description="A matched rule",
     )
+    script: Optional[Script] = Field(
+        None, title="Script", description="A matched script",
+    )
 
     class Config:
         orm_mode = True
@@ -38,6 +42,9 @@ class Match(BaseMatch):
 class MatchResult(BaseModel):
     rule_id: int = Field(
         ..., title="Matches", description="An ID of the rule",
+    )
+    script_id: Optional[int] = Field(
+        None, title="Matches", description="An ID of the script",
     )
     matches: List[YaraMatch] = Field(
         ..., title="Matches", description="A list of YARA mastches",

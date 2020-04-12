@@ -15,6 +15,7 @@
           >
             {{ props.row.snapshot.url }}
           </router-link>
+          <p v-if="props.row.script">({{ props.row.script.url }})</p>
         </b-table-column>
 
         <b-table-column field="rule" label="Matched rule">

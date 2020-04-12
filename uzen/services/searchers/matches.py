@@ -29,7 +29,9 @@ class MatchSearcher(AbstractSearcher):
         query = Q(*queries)
 
         # Run search
-        instance = cls(model=Match, query=query, prefetch_related=["snapshot", "rule"])
+        instance = cls(
+            model=Match, query=query, prefetch_related=["snapshot", "rule", "script"]
+        )
         results = await instance._search(
             size=size, offset=offset, id_only=id_only, count_only=count_only
         )
