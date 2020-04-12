@@ -72,12 +72,12 @@ class Results:
 
 
 async def run_enrhichment_jobs(snapshot, insert_to_db=True) -> Results:
-    jobs = [
-        create_classifications(snapshot, insert_to_db),
-        create_dns_records(snapshot, insert_to_db),
-        create_scripts(snapshot, insert_to_db),
+    tasks = [
+        asyncio.create_task(create_classifications(snapshot, insert_to_db)),
+        asyncio.create_task(create_dns_records(snapshot, insert_to_db)),
+        asyncio.create_task(create_scripts(snapshot, insert_to_db)),
     ]
-    completed, pending = await asyncio.wait(jobs)
+    completed, pending = await asyncio.wait(tasks)
     results = list(itertools.chain(*[t.result() for t in completed]))
 
     scripts = []
