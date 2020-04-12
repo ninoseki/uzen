@@ -1,6 +1,6 @@
 import asyncio
 import itertools
-from typing import List, Optional, cast
+from typing import Dict, List, Optional, cast
 
 import yara
 
@@ -21,7 +21,7 @@ class YaraScanner:
 
     async def partial_scan_for_scripts(self, ids: List[int]) -> List[YaraResult]:
         scripts = await Script.filter(snapshot_id__in=ids).values(
-            "snapshot_id", "content"
+            "id", "snapshot_id", "content"
         )
         matched_results = []
         for script in scripts:
@@ -31,9 +31,9 @@ class YaraScanner:
             if len(matches) > 0:
                 result = YaraResult(
                     snapshot_id=snapshot_id,
-                    script_id=script.id,
+                    script_id=script.get("id"),
                     target="script",
-                    matches=MatchesConverter.convert(matches),
+                    matches=matches,
                 )
                 matched_results.append(result)
 
@@ -100,16 +100,23 @@ class YaraScanner:
 
         matched_ids = [result.snapshot_id for result in results]
         snapshots: List[dict] = (
-            await Snapshot.filter(id__in=matched_ids)
-            .order_by("-id")
-            .values(*ScanResult.field_keys())
+            await Snapshot.filter(id__in=matched_ids).values(*ScanResult.field_keys())
         )
-        for idx in range(len(results)):
-            result = results[idx]
-            snapshot = snapshots[idx]
-            snapshot["yara_result"] = result
+
+        table = self._build_snapshot_table(snapshots)
+        for result in results:
+            snapshot = table.get(result.snapshot_id)
+            if snapshot is not None:
+                snapshot["yara_result"] = result
 
         return [ScanResult(**snapshot) for snapshot in snapshots]
+
+    def _build_snapshot_table(self, snapshots: List[dict]) -> Dict[int, dict]:
+        table = {}
+        for snapshot in snapshots:
+            id_ = int(str(snapshot.get("id")))
+            table[id_] = snapshot
+        return table
 
     def match(self, data: Optional[str]) -> List[YaraMatch]:
         """Scan a data with a YARA rule
