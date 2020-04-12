@@ -36,7 +36,7 @@ import { ErrorData, Rule, TargetTypes } from "@/types";
 @Component
 export default class Register extends Vue {
   private name = "";
-  private target = "";
+  private target: TargetTypes = "body";
   private targets: TargetTypes[] = ["body", "whois", "certificate", "script"];
   private source = "";
 

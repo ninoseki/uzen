@@ -1,5 +1,9 @@
 <template>
   <div>
+    <b-message type="is-warning">
+      Importing data from urlscan.io might be lossy
+    </b-message>
+
     <div class="box">
       <b-field>
         <b-input
@@ -14,14 +18,6 @@
         </p>
       </b-field>
     </div>
-
-    <b-message type="is-warning">
-      Importing data from urlscan.io might be lossy
-    </b-message>
-
-    <div>
-      <SnapshotComponebnt v-if="hasSnapshot()" v-bind:snapshot="snapshot" />
-    </div>
   </div>
 </template>
 
@@ -32,20 +28,11 @@ import axios, { AxiosError } from "axios";
 
 import { ErrorData, Snapshot } from "@/types";
 
-import SnapshotComponebnt from "@/components/snapshots/Snapshot.vue";
-
 import { ErrorDialogMixin } from "@/components/mixins";
 
-@Component({
-  components: {
-    SnapshotComponebnt,
-  },
-})
-export default class SnapshotForm extends Mixins<ErrorDialogMixin>(
-  ErrorDialogMixin
-) {
+@Component
+export default class Import extends Mixins<ErrorDialogMixin>(ErrorDialogMixin) {
   private uuid: string = "";
-  private snapshot: Snapshot | undefined = undefined;
 
   async import_from_urlscan() {
     const loadingComponent = this.$buefy.loading.open({
@@ -57,19 +44,16 @@ export default class SnapshotForm extends Mixins<ErrorDialogMixin>(
 
       loadingComponent.close();
 
-      this.snapshot = response.data;
+      const snapshot = response.data;
 
-      this.$forceUpdate();
+      // redirect to the details page
+      this.$router.push({ path: `/snapshots/${snapshot.id}` });
     } catch (error) {
       loadingComponent.close();
 
       const data = error.response.data as ErrorData;
       this.alertError(data);
     }
-  }
-
-  hasSnapshot(): boolean {
-    return this.snapshot !== undefined;
   }
 }
 </script>
