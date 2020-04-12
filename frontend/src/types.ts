@@ -126,6 +126,7 @@ export interface Rule {
   name: string;
   target: TargetTypes;
   source: string;
+  snapshots: Snapshot[];
   created_at: string;
 }
 

@@ -52,7 +52,7 @@ async def count(filters: SearchFilters = Depends(),) -> CountResponse:
 )
 async def get(rule_id: int) -> RuleModel:
     try:
-        rule = await Rule.get(id=rule_id)
+        rule = await Rule.get(id=rule_id).prefetch_related("_snapshots")
     except DoesNotExist:
         raise HTTPException(status_code=404, detail=f"Rule:{id} is not found")
 

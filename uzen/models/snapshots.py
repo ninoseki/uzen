@@ -42,7 +42,7 @@ class Snapshot(Model):
 
     _rules: fields.ManyToManyRelation["Rule"] = fields.ManyToManyField(
         "models.Rule",
-        related_name="snapshots",
+        related_name="_snapshots",
         through="matches",
         forward_key="rule_id",
         backward_key="snapshot_id",
