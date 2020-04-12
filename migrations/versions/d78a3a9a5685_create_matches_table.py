@@ -24,6 +24,7 @@ def upgrade():
             "snapshot_id", sa.Integer, sa.ForeignKey("snapshots.id", ondelete="CASCADE")
         ),
         sa.Column("rule_id", sa.Integer, sa.ForeignKey("rules.id", ondelete="CASCADE")),
+        sa.Column("script_id", sa.Integer, sa.ForeignKey("scripts.id"), nullable=True),
         sa.Column("created_at", sa.DateTime, nullable=False),
     )
 

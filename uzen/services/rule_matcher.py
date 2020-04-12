@@ -17,7 +17,7 @@ class RuleMatcher:
     def __init__(self, snapshot: Snapshot):
         self.snapshot = snapshot
 
-    def _extract_data_from_snapshot(self, target: str = "body"):
+    def _extract_data_from_snapshot(self, target: str = "body") -> str:
         if target == "body":
             return self.snapshot.body
 
@@ -29,6 +29,19 @@ class RuleMatcher:
 
         return ""
 
+    def _partial_scan_for_script(
+        self, rule: Rule, scanner: YaraScanner
+    ) -> List[MatchResult]:
+        results = []
+        for script in self.snapshot.scripts:
+            data = script.content
+            matches = scanner.match(data)
+            if len(matches) > 0:
+                results.append(
+                    MatchResult(rule_id=rule.id, script_id=script.id, matches=matches)
+                )
+        return results
+
     async def partial_scan(self, ids: List[int]) -> List[MatchResult]:
         async with sem:
             results: List[MatchResult] = []
@@ -36,10 +49,15 @@ class RuleMatcher:
             for rule in rules:
                 scanner = YaraScanner(rule.source)
 
-                data = self._extract_data_from_snapshot(rule.target)
-                matches = scanner.match(data)
-                if len(matches) > 0:
-                    results.append(MatchResult(rule_id=rule.id, matches=matches))
+                if rule.target == "script":
+                    results.extend(
+                        self._partial_scan_for_script(scanner=scanner, rule=rule)
+                    )
+                else:
+                    data = self._extract_data_from_snapshot(rule.target)
+                    matches = scanner.match(data)
+                    if len(matches) > 0:
+                        results.append(MatchResult(rule_id=rule.id, matches=matches))
 
             return results
 

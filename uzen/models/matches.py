@@ -13,6 +13,9 @@ class Match(Model):
         "models.Snapshot"
     )
     rule: fields.ForeignKeyRelation["Rule"] = fields.ForeignKeyField("models.Rule")
+    script: fields.ForeignKeyNullableRelation["Script"] = fields.ForeignKeyField(
+        "models.Script", null=True
+    )
 
     def to_model(self) -> MatchModel:
         return MatchModel.from_orm(self)

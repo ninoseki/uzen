@@ -140,5 +140,6 @@ export interface Match {
   id: number;
   snapshot: Snapshot;
   rule: Rule;
+  script: Script | undefined;
   created_at: string;
 }
