@@ -857,6 +857,17 @@ pytest = ">=3.6"
 testing = ["fields", "hunter", "process-tests (2.0.2)", "six", "virtualenv"]
 
 [[package]]
+category = "dev"
+description = "py.test plugin to abort hanging tests"
+name = "pytest-timeout"
+optional = false
+python-versions = "*"
+version = "1.3.4"
+
+[package.dependencies]
+pytest = ">=3.6.0"
+
+[[package]]
 category = "main"
 description = "Extensions to the standard Python datetime module"
 name = "python-dateutil"
@@ -1220,7 +1231,7 @@ idna = ">=2.0"
 multidict = ">=4.0"
 
 [metadata]
-content-hash = "58481ea9b2138de44c3439056eeed55cb7e27e7d0bd4fa8501bc2cb5b450612d"
+content-hash = "fbaee46fb03bbb2fc915482558b6c389a2526aa392c6baa09797696cd6ab924a"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -1699,6 +1710,10 @@ pytest-black = [
 pytest-cov = [
     {file = "pytest-cov-2.8.1.tar.gz", hash = "sha256:cc6742d8bac45070217169f5f72ceee1e0e55b0221f54bcf24845972d3a47f2b"},
     {file = "pytest_cov-2.8.1-py2.py3-none-any.whl", hash = "sha256:cdbdef4f870408ebdbfeb44e63e07eb18bb4619fae852f6e760645fa36172626"},
+]
+pytest-timeout = [
+    {file = "pytest-timeout-1.3.4.tar.gz", hash = "sha256:80faa19cd245a42b87a51699d640c00d937c02b749052bfca6bae8bdbe12c48e"},
+    {file = "pytest_timeout-1.3.4-py2.py3-none-any.whl", hash = "sha256:95ca727d4a1dace6ec5f0534d2940b8417ff8b782f7eef0ea09240bdd94d95c2"},
 ]
 python-dateutil = [
     {file = "python-dateutil-2.8.1.tar.gz", hash = "sha256:73ebfe9dbf22e832286dafa60473e4cd239f8592f699aa5adaf10050e6e1823c"},
