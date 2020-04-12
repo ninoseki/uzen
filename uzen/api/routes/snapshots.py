@@ -2,7 +2,6 @@ from typing import List, Optional, cast
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from tortoise.exceptions import DoesNotExist
-from tortoise.transactions import in_transaction
 
 from uzen.api.dependencies.snapshots import SearchFilters
 from uzen.api.jobs import run_enrhichment_jobs, run_matching_job
