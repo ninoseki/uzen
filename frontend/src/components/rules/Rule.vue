@@ -32,6 +32,12 @@
           <pre>{{ rule.source || "N/A" }}</pre>
         </div>
       </div>
+      <div class="column">
+        <h2 class="is-size-5 has-text-weight-bold middle">
+          Matched snapshots
+        </h2>
+        <Snapshots v-bind:snapshots="rule.snapshots" />
+      </div>
     </div>
   </div>
 </template>
@@ -42,7 +48,13 @@ import axios, { AxiosError } from "axios";
 
 import { Rule, ErrorData } from "@/types";
 
-@Component
+import Snapshots from "@/components/snapshots/Buttons.vue";
+
+@Component({
+  components: {
+    Snapshots,
+  },
+})
 export default class RuleComponent extends Vue {
   @Prop() private rule!: Rule;
 }

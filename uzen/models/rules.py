@@ -1,7 +1,13 @@
+from typing import TYPE_CHECKING, List
+
 from tortoise import fields
+from tortoise.exceptions import NoValuesFetched
 from tortoise.models import Model
 
 from uzen.schemas.rules import Rule as RuleModel
+
+if TYPE_CHECKING:
+    from uzen.schemas.snapshots import Snapshot  # noqa
 
 
 class Rule(Model):
@@ -11,7 +17,14 @@ class Rule(Model):
     source = fields.TextField()
     created_at = fields.DatetimeField(auto_now_add=True)
 
-    snapshots: fields.ManyToManyRelation["Snapshot"]
+    _snapshots: fields.ManyToManyRelation["Snapshot"]
+
+    @property
+    def snapshots(self) -> List["Snapshot"]:
+        try:
+            return [snapshot.to_model() for snapshot in self._snapshots]
+        except NoValuesFetched:
+            return []
 
     def to_model(self) -> RuleModel:
         return RuleModel.from_orm(self)

@@ -4,10 +4,32 @@ from typing import List, Optional, Union
 from pydantic import AnyHttpUrl, BaseModel, Field, IPvAnyAddress
 
 from uzen.schemas.classifications import BaseClassification, Classification
+from uzen.schemas.common import Source, Target
 from uzen.schemas.dns_records import BaseDnsRecord, DnsRecord
-from uzen.schemas.rules import Rule
 from uzen.schemas.screenshots import BaseScreenshot, Screenshot
 from uzen.schemas.scripts import BaseScript, Script
+
+# Declare rules related schemas here to prevent circular reference
+
+
+class BaseRule(Source, Target):
+    """Base Pydantic model for Rule
+
+    Note that this model doesn't have "id" and "created_at" fields.
+    """
+
+    name: str = Field(..., title="Name", description="A name of the YARA rule")
+
+    class Config:
+        orm_mode = True
+
+
+class Rule(BaseRule):
+    """Full Pydantic model for Rule"""
+
+    id: int
+    created_at: datetime.datetime
+    snapshots: List["Snapshot"]
 
 
 class BasicAttributes(BaseModel):
@@ -109,3 +131,7 @@ class CreateSnapshotPayload(BaseModel):
     referer: Optional[str] = Field(
         None, title="Referer", description="Referer HTTP header"
     )
+
+
+# Update foward references
+Rule.update_forward_refs()
