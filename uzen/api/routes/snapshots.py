@@ -2,6 +2,7 @@ from typing import List, Optional, cast
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from tortoise.exceptions import DoesNotExist
+from tortoise.transactions import in_transaction
 
 from uzen.api.dependencies.snapshots import SearchFilters
 from uzen.api.jobs import run_enrhichment_jobs, run_matching_job
@@ -11,7 +12,7 @@ from uzen.schemas.common import CountResponse
 from uzen.schemas.snapshots import CreateSnapshotPayload, SearchResult
 from uzen.schemas.snapshots import Snapshot as SnapshotModel
 from uzen.services.searchers.snapshots import SnapshotSearcher
-from uzen.services.snapshot import take_snapshot
+from uzen.services.snapshot import save_snapshot, take_snapshot
 
 router = APIRouter()
 
@@ -55,7 +56,7 @@ async def count(filters: SearchFilters = Depends()) -> CountResponse:
 async def get(snapshot_id: int) -> SnapshotModel:
     try:
         snapshot: Snapshot = await Snapshot.get(id=snapshot_id).prefetch_related(
-            "_scripts", "_dns_records", "_classifications", "_rules"
+            "_screenshot", "_scripts", "_dns_records", "_classifications", "_rules"
         )
     except DoesNotExist:
         raise HTTPException(status_code=404, detail=f"Snapshot:{id} is not found")
@@ -89,7 +90,7 @@ async def create(
     payload: CreateSnapshotPayload, background_tasks: BackgroundTasks
 ) -> SnapshotModel:
     try:
-        snapshot = await take_snapshot(
+        result = await take_snapshot(
             url=payload.url,
             accept_language=payload.accept_language,
             ignore_https_errors=payload.ignore_https_errors,
@@ -100,7 +101,7 @@ async def create(
     except TakeSnapshotError as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-    await snapshot.save()
+    snapshot = await save_snapshot(result)
 
     background_tasks.add_task(run_enrhichment_jobs, snapshot)
     background_tasks.add_task(run_matching_job, snapshot)

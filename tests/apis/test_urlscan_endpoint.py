@@ -1,11 +1,11 @@
 import pytest
 
-from tests.utils import make_snapshot
+from tests.utils import make_snapshot_result
 from uzen.services.urlscan import URLScan
 
 
 def mock_import_as_snapshot(url: str):
-    return make_snapshot()
+    return make_snapshot_result()
 
 
 @pytest.mark.asyncio

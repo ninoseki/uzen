@@ -3,7 +3,9 @@ import json
 import pytest
 import respx
 
+from uzen.models.screenshots import Screenshot
 from uzen.models.snapshots import Snapshot
+from uzen.schemas.utils import SnapshotResult
 from uzen.services.browser import Browser
 from uzen.services.classifications import ClassificationBuilder
 
@@ -52,43 +54,49 @@ async def test_yara_scan_with_invalid_input(client):
     assert response.status_code == 422
 
 
-def mock_take_snapshot(*args, **kwargs):
-    return Snapshot(
-        url="https://www.w3.org/",
-        submitted_url="https://www.w3.org",
-        status=200,
-        hostname="example.com",
-        ip_address="1.1.1.1",
-        asn="AS15133 MCI Communications Services, Inc. d/b/a Verizon Business",
-        server="ECS (sjc/4E5D)",
-        content_type="text/html; charset=UTF-8",
-        content_length=1256,
-        headers={},
-        body='<html><body><script type="text/javascript" src="/2008/site/js/main"></body></html>',
-        sha256="fbc1a9f858ea9e177916964bd88c3d37b91a1e84412765e29950777f265c4b75",
-        screenshot="yoyo",
-        whois="foo",
-        request={},
+async def mock_take_snapshot(*args, **kwargs):
+    return SnapshotResult(
+        snapshot=Snapshot(
+            url="https://www.w3.org/",
+            submitted_url="https://www.w3.org",
+            status=200,
+            hostname="example.com",
+            ip_address="1.1.1.1",
+            asn="AS15133 MCI Communications Services, Inc. d/b/a Verizon Business",
+            server="ECS (sjc/4E5D)",
+            content_type="text/html; charset=UTF-8",
+            content_length=1256,
+            headers={},
+            body='<html><body><script type="text/javascript" src="/2008/site/js/main"></body></html>',
+            sha256="fbc1a9f858ea9e177916964bd88c3d37b91a1e84412765e29950777f265c4b75",
+            screenshot=Screenshot(data=""),
+            whois="foo",
+            request={},
+        ),
+        screenshot=Screenshot(data=""),
     )
 
 
-def mock_take_snapshot_without_script(*args, **kwargs):
-    return Snapshot(
-        url="https://www.w3.org/",
-        submitted_url="https://www.w3.org",
-        status=200,
-        hostname="example.com",
-        ip_address="1.1.1.1",
-        asn="AS15133 MCI Communications Services, Inc. d/b/a Verizon Business",
-        server="ECS (sjc/4E5D)",
-        content_type="text/html; charset=UTF-8",
-        content_length=1256,
-        headers={},
-        body="<html><body></body></html>",
-        sha256="fbc1a9f858ea9e177916964bd88c3d37b91a1e84412765e29950777f265c4b75",
-        screenshot="yoyo",
-        whois="foo",
-        request={},
+async def mock_take_snapshot_without_script(*args, **kwargs):
+    return SnapshotResult(
+        snapshot=Snapshot(
+            url="https://www.w3.org/",
+            submitted_url="https://www.w3.org",
+            status=200,
+            hostname="example.com",
+            ip_address="1.1.1.1",
+            asn="AS15133 MCI Communications Services, Inc. d/b/a Verizon Business",
+            server="ECS (sjc/4E5D)",
+            content_type="text/html; charset=UTF-8",
+            content_length=1256,
+            headers={},
+            body="<html><body></body></html>",
+            sha256="fbc1a9f858ea9e177916964bd88c3d37b91a1e84412765e29950777f265c4b75",
+            screenshot=Screenshot(data=""),
+            whois="foo",
+            request={},
+        ),
+        screenshot=Screenshot(data=""),
     )
 
 

@@ -3,9 +3,11 @@ from typing import Optional
 import httpx
 from loguru import logger
 from pyppeteer.errors import PyppeteerError
+from tortoise.transactions import in_transaction
 
 from uzen.core.exceptions import TakeSnapshotError
 from uzen.models.snapshots import Snapshot
+from uzen.schemas.utils import SnapshotResult
 from uzen.services.browser import Browser
 from uzen.services.fake_browser import FakeBrowser
 
@@ -17,15 +19,15 @@ async def take_snapshot(
     referer: Optional[str],
     timeout: Optional[int],
     user_agent: Optional[str],
-) -> Snapshot:
+) -> SnapshotResult:
 
     timeout = timeout or 30000
     ignore_https_errors = ignore_https_errors or False
 
-    snapshot = None
+    result = None
     errors = []
     try:
-        snapshot = await Browser.take_snapshot(
+        result = await Browser.take_snapshot(
             url,
             accept_language=accept_language,
             ignore_https_errors=ignore_https_errors,
@@ -38,14 +40,14 @@ async def take_snapshot(
         logger.debug(message)
         errors.append(message)
 
-    if snapshot is not None:
-        return snapshot
+    if result is not None:
+        return result
 
     # fallback to fake browser (httpx)
-    if snapshot is None:
+    if result is None:
         logger.debug("Fallback to httpx")
         try:
-            snapshot = await FakeBrowser.take_snapshot(
+            result = await FakeBrowser.take_snapshot(
                 url,
                 accept_language=accept_language,
                 ignore_https_errors=ignore_https_errors,
@@ -58,7 +60,20 @@ async def take_snapshot(
             logger.debug(message)
             errors.append(message)
 
-    if snapshot is not None:
-        return snapshot
+    if result is not None:
+        return result
 
     raise TakeSnapshotError("\n".join(errors))
+
+
+async def save_snapshot(result: SnapshotResult) -> Snapshot:
+    async with in_transaction():
+        snapshot = result.snapshot
+        screenshot = result.screenshot
+
+        await snapshot.save()
+        screenshot.snapshot_id = snapshot.id
+        await screenshot.save()
+
+        snapshot.screenshot = screenshot
+        return snapshot

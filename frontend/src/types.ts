@@ -2,6 +2,11 @@ export interface Dict {
   [key: string]: string | number;
 }
 
+export interface Screenshot {
+  id: number | undefined;
+  data: string;
+}
+
 export interface Snapshot {
   id: number | undefined;
   url: string;
@@ -16,10 +21,11 @@ export interface Snapshot {
   body: string;
   sha256: string;
   headers: Dict;
-  screenshot: string;
   whois: string | undefined;
   certificate: string | undefined;
   created_at: string | undefined;
+
+  screenshot: Screenshot;
 
   scripts: Script[];
   dns_records: DnsRecord[];

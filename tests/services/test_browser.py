@@ -29,7 +29,8 @@ async def test_take_snapshot(monkeypatch):
         Certificate, "load_and_dump_from_url", mock_load_and_dump_from_url
     )
 
-    snapshot = await Browser.take_snapshot("http://example.com")
+    result = await Browser.take_snapshot("http://example.com")
+    snapshot = result.snapshot
     assert snapshot.url == "http://example.com/"
     assert snapshot.submitted_url == "http://example.com"
 
@@ -48,20 +49,22 @@ async def test_take_snapshot_with_options(monkeypatch):
     monkeypatch.setattr(IPInfo, "get_basic", mock_get_basic)
     monkeypatch.setattr(Whois, "whois", mock_whois)
 
-    snapshot = await Browser.take_snapshot("http://example.com", timeout=10000)
+    result = await Browser.take_snapshot("http://example.com", timeout=10000)
+    snapshot = result.snapshot
     assert snapshot.url == "http://example.com/"
 
-    snapshot = await Browser.take_snapshot("http://example.com", user_agent="foo")
+    result = await Browser.take_snapshot("http://example.com", user_agent="foo")
+    snapshot = result.snapshot
     assert snapshot.url == "http://example.com/"
 
-    snapshot = await Browser.take_snapshot(
-        "http://example.com", accept_language="ja-JP"
-    )
+    result = await Browser.take_snapshot("http://example.com", accept_language="ja-JP")
+    snapshot = result.snapshot
     assert snapshot.url == "http://example.com/"
 
-    snapshot = await Browser.take_snapshot(
+    result = await Browser.take_snapshot(
         "http://example.com", timeout=10000, user_agent="foo"
     )
+    snapshot = result.snapshot
     assert snapshot.url == "http://example.com/"
 
 
@@ -71,11 +74,12 @@ async def test_take_snapshot_with_bad_ssl(monkeypatch):
     monkeypatch.setattr(Whois, "whois", mock_whois)
 
     with pytest.raises(PyppeteerError):
-        snapshot = await Browser.take_snapshot("https://expired.badssl.com")
+        result = await Browser.take_snapshot("https://expired.badssl.com")
 
-    snapshot = await Browser.take_snapshot(
+    result = await Browser.take_snapshot(
         "https://expired.badssl.com", ignore_https_errors=True
     )
+    snapshot = result.snapshot
     assert snapshot.url == "https://expired.badssl.com/"
 
 

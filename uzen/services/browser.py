@@ -5,7 +5,9 @@ from pyppeteer import connect, launch
 from pyppeteer.errors import PyppeteerError
 
 from uzen.core import settings
+from uzen.models.screenshots import Screenshot
 from uzen.models.snapshots import Snapshot
+from uzen.schemas.utils import SnapshotResult
 from uzen.services.certificate import Certificate
 from uzen.services.utils import (
     calculate_sha256,
@@ -45,7 +47,7 @@ class Browser:
         referer: Optional[str] = None,
         timeout: Optional[int] = None,
         user_agent: Optional[str] = None,
-    ) -> Snapshot:
+    ) -> SnapshotResult:
         """Take a snapshot of a website by puppeteer
 
         Arguments:
@@ -88,7 +90,7 @@ class Browser:
 
             url = page.url
             status = res.status
-            screenshot = await page.screenshot(encoding="base64")
+            screenshot_data = await page.screenshot(encoding="base64")
             body = await page.content()
             sha256 = calculate_sha256(body)
             headers = res.headers
@@ -124,7 +126,7 @@ class Browser:
             whois=whois,
             certificate=certificate,
             request=request,
-            screenshot=screenshot,
         )
+        screenshot = Screenshot(data=screenshot_data)
 
-        return snapshot
+        return SnapshotResult(screenshot=screenshot, snapshot=snapshot)

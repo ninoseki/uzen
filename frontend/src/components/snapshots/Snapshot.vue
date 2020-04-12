@@ -188,7 +188,7 @@ export default class SnapshotComponent extends Vue {
   @Prop() private yaraResult!: YaraResult;
 
   public imageData(): string {
-    return `data:Image/png;base64,${this.snapshot.screenshot}`;
+    return `data:Image/png;base64,${this.snapshot.screenshot.data}`;
   }
 
   mounted() {

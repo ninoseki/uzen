@@ -17,6 +17,18 @@ class RuleMatcher:
     def __init__(self, snapshot: Snapshot):
         self.snapshot = snapshot
 
+    def _extract_data_from_snapshot(self, target: str = "body"):
+        if target == "body":
+            return self.snapshot.body
+
+        if target == "whois":
+            return self.snapshot.whois
+
+        if target == "certificate":
+            return self.snapshot.certificate
+
+        return ""
+
     async def partial_scan(self, ids: List[int]) -> List[MatchResult]:
         async with sem:
             results: List[MatchResult] = []
@@ -24,7 +36,7 @@ class RuleMatcher:
             for rule in rules:
                 scanner = YaraScanner(rule.source)
 
-                data = self.snapshot.to_dict().get(rule.target, "")
+                data = self._extract_data_from_snapshot(rule.target)
                 matches = scanner.match(data)
                 if len(matches) > 0:
                     results.append(MatchResult(rule_id=rule.id, matches=matches))
