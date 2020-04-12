@@ -1,6 +1,5 @@
 from typing import List
 
-import yara
 from fastapi import APIRouter, Depends, HTTPException
 
 from uzen.api.dependencies.snapshots import SearchFilters
@@ -37,7 +36,7 @@ async def scan(
 async def oneshot(payload: OneshotPayload) -> OneshotResponse:
     yara_scanner = YaraScanner(payload.source)
     try:
-        snapshot = await take_snapshot(
+        result = await take_snapshot(
             url=payload.url,
             accept_language=payload.accept_language,
             ignore_https_errors=payload.ignore_https_errors,
@@ -47,6 +46,10 @@ async def oneshot(payload: OneshotPayload) -> OneshotResponse:
         )
     except TakeSnapshotError as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+    snapshot = result.snapshot
+    screenshot = result.screenshot
+    snapshot.screenshot = screenshot
 
     results = await run_enrhichment_jobs(snapshot, insert_to_db=False)
     snapshot.scripts = [script.to_model() for script in results.scripts]

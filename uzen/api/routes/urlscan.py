@@ -2,8 +2,10 @@ from typing import cast
 
 import httpx
 from fastapi import APIRouter, HTTPException
+from tortoise.transactions import in_transaction
 
 from uzen.schemas.snapshots import Snapshot
+from uzen.services.snapshot import save_snapshot
 from uzen.services.urlscan import URLScan
 
 router = APIRouter()
@@ -19,11 +21,11 @@ router = APIRouter()
 )
 async def import_from_urlscan(uuid: str) -> Snapshot:
     try:
-        snapshot = await URLScan.import_as_snapshot(uuid)
+        result = await URLScan.import_as_snapshot(uuid)
     except httpx.HTTPError:
         raise HTTPException(status_code=404, detail=f"{uuid} is not found")
 
-    await snapshot.save()
+    snapshot = await save_snapshot(result)
 
     model = cast(Snapshot, snapshot.to_model())
     return model

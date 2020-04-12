@@ -25,7 +25,8 @@ async def test_urlscan_import():
         content="foo",
     )
 
-    snapshot = await URLScan.import_as_snapshot("e6d69372-b402-487a-9825-7e25cc15ce41")
+    result = await URLScan.import_as_snapshot("e6d69372-b402-487a-9825-7e25cc15ce41")
+    snapshot = result.snapshot
     assert snapshot.url == "https://nnpub.org/"
     assert snapshot.ip_address == "162.215.240.128"
     assert (

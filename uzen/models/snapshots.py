@@ -7,6 +7,7 @@ from tortoise.models import Model
 from uzen.schemas.classifications import BaseClassification, Classification
 from uzen.schemas.dns_records import BaseDnsRecord, DnsRecord
 from uzen.schemas.rules import Rule
+from uzen.schemas.screenshots import BaseScreenshot, Screenshot
 from uzen.schemas.scripts import BaseScript, Script
 from uzen.schemas.snapshots import BaseSnapshot
 from uzen.schemas.snapshots import Snapshot as SnapshotModel
@@ -28,11 +29,12 @@ class Snapshot(Model):
     body = fields.TextField()
     sha256 = fields.CharField(max_length=64)
     headers = fields.JSONField()
-    screenshot = fields.TextField()
     whois = fields.TextField(null=True)
     certificate = fields.TextField(null=True)
     request = fields.JSONField()
     created_at = fields.DatetimeField(auto_now_add=True)
+
+    _screenshot: fields.OneToOneRelation["Screenshot"]
 
     _scripts: fields.ReverseRelation["Script"]
     _dns_records: fields.ReverseRelation["DnsRecord"]
@@ -49,12 +51,29 @@ class Snapshot(Model):
     def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
 
+        self.screnshot_: Optional[Screenshot] = None
+
         self.scripts_: Optional[List[Union[Script, BaseScript]]] = None
         self.dns_records_: Optional[List[Union[DnsRecord, BaseDnsRecord]]] = None
         self.classifications_: Optional[
             List[Union[Classification, BaseClassification]]
         ] = None
+
         self.rules_: Optional[List[Rule]] = None
+
+    @property
+    def screenshot(self) -> Optional[Union[BaseScreenshot, Screenshot]]:
+        if hasattr(self, "screenshot_") and self.screenshot_ is not None:
+            return self.screenshot_
+
+        if self._screenshot is not None:
+            return self._screenshot.to_model()
+
+        return None
+
+    @screenshot.setter
+    def screenshot(self, screenshot: Union[BaseScreenshot, Screenshot]):
+        self.screenshot_ = screenshot
 
     @property
     def rules(self) -> List[Rule]:

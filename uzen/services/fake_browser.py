@@ -2,7 +2,9 @@ from typing import Optional, cast
 
 import httpx
 
+from uzen.models.screenshots import Screenshot
 from uzen.models.snapshots import Snapshot
+from uzen.schemas.utils import SnapshotResult
 from uzen.services.certificate import Certificate
 from uzen.services.utils import (
     calculate_sha256,
@@ -26,7 +28,7 @@ class FakeBrowser:
         referer: Optional[str] = None,
         timeout: Optional[int] = None,
         user_agent: Optional[str] = None,
-    ) -> Snapshot:
+    ) -> SnapshotResult:
         """Take a snapshot of a website by httpx
 
         Arguments:
@@ -73,7 +75,6 @@ class FakeBrowser:
 
             url = str(res.url)
             status = res.status_code
-            screenshot = ""
             body = res.text
             sha256 = calculate_sha256(body)
             headers = {k.lower(): v for (k, v) in res.headers.items()}
@@ -106,7 +107,7 @@ class FakeBrowser:
             whois=whois,
             certificate=certificate,
             request=request,
-            screenshot=screenshot,
         )
+        screenshot = Screenshot(data="")
 
-        return snapshot
+        return SnapshotResult(screenshot=screenshot, snapshot=snapshot)

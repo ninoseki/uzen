@@ -31,7 +31,8 @@ async def test_take_snapshot(monkeypatch):
         "http://example.com", content="foo", headers={"Content-Type": "text/html"}
     )
 
-    snapshot = await FakeBrowser.take_snapshot("http://example.com")
+    result = await FakeBrowser.take_snapshot("http://example.com")
+    snapshot = result.snapshot
     assert snapshot.url == "http://example.com"
     assert snapshot.submitted_url == "http://example.com"
 

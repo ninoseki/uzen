@@ -3,7 +3,9 @@ import datetime
 
 import httpx
 
+from uzen.models.screenshots import Screenshot
 from uzen.models.snapshots import Snapshot
+from uzen.schemas.utils import SnapshotResult
 
 
 class URLScan:
@@ -33,7 +35,7 @@ class URLScan:
         return r.json()
 
     @classmethod
-    async def import_as_snapshot(cls, uuid: str) -> Snapshot:
+    async def import_as_snapshot(cls, uuid: str) -> SnapshotResult:
         """Import urlscan.io scan as a snapshot
 
         Arguments:
@@ -67,11 +69,10 @@ class URLScan:
 
         body = await instance.body()
         sha256 = result.get("lists", {}).get("hashes", [])[0]
-        screenshot = await instance.screenshot()
         time = result.get("task", {}).get("time")
         created_at = datetime.datetime.strptime(time, "%Y-%m-%dT%H:%M:%S.%fZ")
 
-        return Snapshot(
+        snapshot = Snapshot(
             url=url,
             submitted_url=submitted_url,
             status=200,
@@ -84,6 +85,11 @@ class URLScan:
             headers=headers,
             body=body,
             sha256=sha256,
-            screenshot=screenshot,
             created_at=created_at,
+            request={"urlscan.io": uuid},
         )
+
+        data = await instance.screenshot()
+        screenshot = Screenshot(data=data)
+
+        return SnapshotResult(screenshot=screenshot, snapshot=snapshot)

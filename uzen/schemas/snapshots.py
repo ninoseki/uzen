@@ -6,6 +6,7 @@ from pydantic import AnyHttpUrl, BaseModel, Field, IPvAnyAddress
 from uzen.schemas.classifications import BaseClassification, Classification
 from uzen.schemas.dns_records import BaseDnsRecord, DnsRecord
 from uzen.schemas.rules import Rule
+from uzen.schemas.screenshots import BaseScreenshot, Screenshot
 from uzen.schemas.scripts import BaseScript, Script
 
 
@@ -38,9 +39,6 @@ class BaseSnapshot(BasicAttributes):
         ..., title="SHA256", description="SHA256 hash of HTTP response body"
     )
     headers: dict = Field(..., title="Headers", description="HTTP response headers")
-    screenshot: str = Field(
-        ..., title="Screenshot", description="Screenshot (base64 encoded png image)"
-    )
     whois: Optional[str] = Field(None, title="Whois", description="Whois record")
     certificate: Optional[str] = Field(
         None, title="Certiricate", description="Certificate record"
@@ -57,6 +55,10 @@ class BaseSnapshot(BasicAttributes):
         ..., title="Classifications", description="A list of classifications"
     )
     rules: List[Rule] = Field(..., title="Rules", description="A list of matched rules")
+
+    screenshot: Optional[Union[BaseScreenshot, Screenshot]] = Field(
+        None, title="Screenshot", description="Screenshot"
+    )
 
     class Config:
         orm_mode = True

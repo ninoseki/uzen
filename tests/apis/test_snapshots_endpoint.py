@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from tests.utils import make_snapshot
+from tests.utils import make_snapshot_result
 from uzen.models.snapshots import Snapshot
 from uzen.services.browser import Browser
 
@@ -101,7 +101,7 @@ async def test_snapshot_post_with_invalid_url(client):
 
 
 def mock_take_snapshot(*args, **kwargs):
-    return make_snapshot()
+    return make_snapshot_result()
 
 
 @pytest.mark.asyncio
