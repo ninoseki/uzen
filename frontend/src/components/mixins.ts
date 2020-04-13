@@ -1,6 +1,13 @@
 import Vue from "vue";
 import { Mixin } from "vue-mixin-decorator";
 
+import hljs from "highlight.js/lib/highlight.js";
+import json from "highlight.js/lib/languages/json";
+import xml from "highlight.js/lib/languages/xml";
+// register highlight languages
+hljs.registerLanguage("json", json);
+hljs.registerLanguage("xml", xml);
+
 import { ErrorData } from "@/types";
 
 @Mixin
@@ -54,3 +61,17 @@ export class SearchFormMixin extends Vue {
 export interface SearchFormComponentMixin
   extends SearchFormMixin,
     ErrorDialogMixin {}
+
+@Mixin
+export class HighlightMixin extends Vue {
+  highlightCodeBlocks() {
+    if (this.$el.textContent === "") {
+      // do nothing when $el is empty
+      return;
+    }
+
+    this.$el.querySelectorAll("pre code").forEach((block) => {
+      hljs.highlightBlock(block);
+    });
+  }
+}

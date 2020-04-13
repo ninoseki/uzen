@@ -30,7 +30,7 @@
         </b-table-column>
 
         <b-table-column field="matches" label="Matches">
-          <pre>{{ props.row.matches }}</pre>
+          <pre><code class="json">{{ props.row.matches }}</code></pre>
         </b-table-column>
 
         <b-table-column field="created_at" label="Created on">
@@ -42,17 +42,23 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import axios, { AxiosError } from "axios";
+import { Component, Mixin, Mixins } from "vue-mixin-decorator";
+import { Prop } from "vue-property-decorator";
 
 import { Match } from "@/types";
 
+import { HighlightMixin } from "@/components/mixins";
+
 @Component
-export default class Table extends Vue {
+export default class Table extends Mixins<HighlightMixin>(HighlightMixin) {
   @Prop() private matches!: Match[];
 
   hasMatches(): boolean {
     return this.matches.length > 0;
+  }
+
+  updated() {
+    this.highlightCodeBlocks();
   }
 }
 </script>
