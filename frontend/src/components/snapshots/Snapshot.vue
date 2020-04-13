@@ -119,7 +119,7 @@
       </b-tab-item>
 
       <b-tab-item label="Body">
-        <pre class="prettyprint lang-html"> {{ snapshot.body }} </pre>
+        <pre><code class="html">{{ snapshot.body }}</code></pre>
       </b-tab-item>
 
       <b-tab-item label="Whois">
@@ -153,6 +153,10 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 
+import hljs from "highlight.js/lib/highlight.js";
+import xml from "highlight.js/lib/languages/xml";
+hljs.registerLanguage("xml", xml);
+
 import {
   Snapshot,
   Script,
@@ -169,9 +173,6 @@ import DnsRecords from "@/components/dns_records/DnsRecords.vue";
 import Links from "@/components/links/Links.vue";
 import Scripts from "@/components/scripts/Scripts.vue";
 import YaraResultComponent from "@/components/yara/Result.vue";
-
-// Google code prettifier
-declare const PR: any;
 
 @Component({
   components: {
@@ -192,7 +193,9 @@ export default class SnapshotComponent extends Vue {
   }
 
   mounted() {
-    PR.prettyPrint();
+    this.$el.querySelectorAll("pre code").forEach((block) => {
+      hljs.highlightBlock(block);
+    });
   }
 
   hasYaraResult(): boolean {
