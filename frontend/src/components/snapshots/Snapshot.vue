@@ -150,12 +150,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Mixin, Mixins } from "vue-mixin-decorator";
+import { Prop } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
-
-import hljs from "highlight.js/lib/highlight.js";
-import xml from "highlight.js/lib/languages/xml";
-hljs.registerLanguage("xml", xml);
 
 import {
   Snapshot,
@@ -174,6 +171,8 @@ import Links from "@/components/links/Links.vue";
 import Scripts from "@/components/scripts/Scripts.vue";
 import YaraResultComponent from "@/components/yara/Result.vue";
 
+import { HighlightMixin } from "@/components/mixins";
+
 @Component({
   components: {
     Classifications,
@@ -184,7 +183,9 @@ import YaraResultComponent from "@/components/yara/Result.vue";
     YaraResultComponent,
   },
 })
-export default class SnapshotComponent extends Vue {
+export default class SnapshotComponent extends Mixins<HighlightMixin>(
+  HighlightMixin
+) {
   @Prop() private snapshot!: Snapshot;
   @Prop() private yaraResult!: YaraResult;
 
@@ -193,9 +194,7 @@ export default class SnapshotComponent extends Vue {
   }
 
   mounted() {
-    this.$el.querySelectorAll("pre code").forEach((block) => {
-      hljs.highlightBlock(block);
-    });
+    this.highlightCodeBlocks();
   }
 
   hasYaraResult(): boolean {

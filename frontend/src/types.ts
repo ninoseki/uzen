@@ -141,5 +141,6 @@ export interface Match {
   snapshot: Snapshot;
   rule: Rule;
   script: Script | undefined;
+  matches: YaraMatch[];
   created_at: string;
 }
