@@ -12,6 +12,8 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 
+import "highlight.js/styles/default.css";
+
 import Navbar from "@/components/ui/Navbar.vue";
 
 @Component({
@@ -43,5 +45,9 @@ h2.middle {
 
 pre {
   word-break: normal;
+}
+pre code.hljs {
+  background-color: whitesmoke;
+  color: #4a4a4a;
 }
 </style>
