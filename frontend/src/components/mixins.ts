@@ -17,10 +17,13 @@ export class ErrorDialogMixin extends Vue {
       return error.detail;
     }
 
-    if (error.detail.length > 0) {
-      return error.detail[0].msg;
+    const messages: string[] = [];
+    for (const detail of error.detail) {
+      const attr = detail.loc[detail.loc.length - 1];
+      const message = `${attr} ${detail.msg}`;
+      messages.push(message);
     }
-    return "";
+    return messages.join("<br />");
   }
 
   alertError(error: ErrorData) {
