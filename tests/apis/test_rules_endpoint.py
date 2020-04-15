@@ -72,3 +72,27 @@ async def test_rules_count(client):
     count = data.get("count")
     assert isinstance(count, int)
     assert count == 5
+
+
+@pytest.mark.asyncio
+@pytest.mark.usefixtures("rules_setup")
+async def test_update(client):
+    payload = {"name": "woweee"}
+    response = await client.put("/api/rules/1", data=json.dumps(payload))
+    assert response.status_code == 200
+
+    rule = await Rule.get(id=1)
+    assert rule.name == "woweee"
+
+    payload = {
+        "name": "test",
+        "target": "script",
+        "source": 'rule foo: bar {strings: $a = "html" condition: $a}',
+    }
+    response = await client.put("/api/rules/1", data=json.dumps(payload))
+    assert response.status_code == 200
+
+    rule = await Rule.get(id=1)
+    assert rule.name == "test"
+    assert rule.target == "script"
+    assert rule.source == 'rule foo: bar {strings: $a = "html" condition: $a}'

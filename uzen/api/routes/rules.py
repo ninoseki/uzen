@@ -8,6 +8,7 @@ from uzen.models.rules import Rule
 from uzen.schemas.common import CountResponse
 from uzen.schemas.rules import CreateRulePayload
 from uzen.schemas.rules import Rule as RuleModel
+from uzen.schemas.rules import UpdateRulePayload
 from uzen.services.searchers.rules import RuleSearcher
 
 router = APIRouter()
@@ -53,6 +54,29 @@ async def count(filters: SearchFilters = Depends(),) -> CountResponse:
 async def get(rule_id: int) -> RuleModel:
     try:
         rule = await Rule.get(id=rule_id).prefetch_related("_snapshots")
+    except DoesNotExist:
+        raise HTTPException(status_code=404, detail=f"Rule:{id} is not found")
+
+    return rule.to_model()
+
+
+@router.put(
+    "/{rule_id}",
+    response_model=RuleModel,
+    response_description="Returns a rule",
+    summary="Update a rule",
+    description="Update a rule which has a given id",
+)
+async def put(rule_id: int, payload: UpdateRulePayload) -> RuleModel:
+    try:
+        rule = await Rule.get(id=rule_id)
+        if payload.name is not None:
+            rule.name = payload.name
+        if payload.target is not None:
+            rule.target = payload.target
+        if payload.source is not None:
+            rule.source = payload.source
+        await rule.save()
     except DoesNotExist:
         raise HTTPException(status_code=404, detail=f"Rule:{id} is not found")
 
