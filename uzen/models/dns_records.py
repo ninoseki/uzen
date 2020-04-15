@@ -14,7 +14,10 @@ class DnsRecord(Model):
     created_at = fields.DatetimeField(auto_now_add=True)
 
     snapshot: fields.ForeignKeyRelation["Snapshot"] = fields.ForeignKeyField(
-        "models.Snapshot", related_name="_dns_records", to_field="id"
+        "models.Snapshot",
+        related_name="_dns_records",
+        to_field="id",
+        on_delete=fields.CASCADE,
     )
 
     def to_model(self) -> Union[DnsRecordModel, BaseDnsRecord]:

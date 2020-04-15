@@ -157,3 +157,12 @@ async def test_snapshot_get_with_scripts(client):
     assert len(snapshot.get("scripts")) == 1
     assert len(snapshot.get("classifications")) == 0
     assert len(snapshot.get("dns_records")) == 0
+
+
+@pytest.mark.asyncio
+@pytest.mark.usefixtures("matches_setup")
+async def test_delete_with_matches(client):
+    response = await client.delete("/api/snapshots/1")
+    assert response.status_code == 204
+
+    assert await Snapshot.all().count() == 4
