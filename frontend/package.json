@@ -22,12 +22,12 @@
   },
   "homepage": "https://github.com/ninoseki/uzen#readme",
   "dependencies": {
-    "@types/highlightjs": "^9.12.0",
     "axios": "^0.19.2",
     "boxicons": "^2.0.5",
     "buefy": "^0.8.13",
     "core-js": "^3.6.4",
     "crypto-js": "^4.0.0",
+    "highlight.js": "^9.18.1",
     "qs": "^6.9.3",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.3",
@@ -37,6 +37,7 @@
   },
   "devDependencies": {
     "@types/crypto-js": "^3.1.43",
+    "@types/highlight.js": "^9.12.3",
     "@types/jest": "^25.1.4",
     "@types/qs": "^6.9.1",
     "@typescript-eslint/eslint-plugin": "^2.25.0",
