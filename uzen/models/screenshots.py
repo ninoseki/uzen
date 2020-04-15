@@ -11,7 +11,7 @@ class Screenshot(Model):
     data = fields.TextField()
 
     snapshot: fields.OneToOneRelation["Snapshot"] = fields.OneToOneField(
-        "models.Snapshot", related_name="_screenshot"
+        "models.Snapshot", related_name="_screenshot", on_delete=fields.CASCADE
     )
 
     def to_model(self) -> Union[ScreenshotModel, BaseScreenshot]:

@@ -10,11 +10,13 @@ class Match(Model):
     created_at = fields.DatetimeField(auto_now_add=True)
 
     snapshot: fields.ForeignKeyRelation["Snapshot"] = fields.ForeignKeyField(
-        "models.Snapshot"
+        "models.Snapshot", on_delete=fields.CASCADE
     )
-    rule: fields.ForeignKeyRelation["Rule"] = fields.ForeignKeyField("models.Rule")
+    rule: fields.ForeignKeyRelation["Rule"] = fields.ForeignKeyField(
+        "models.Rule", on_delete=fields.CASCADE
+    )
     script: fields.ForeignKeyNullableRelation["Script"] = fields.ForeignKeyField(
-        "models.Script", null=True
+        "models.Script", null=True, on_delete=fields.CASCADE
     )
 
     def to_model(self) -> MatchModel:
