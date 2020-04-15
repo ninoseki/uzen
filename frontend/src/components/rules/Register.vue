@@ -28,13 +28,17 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Mixin, Mixins } from "vue-mixin-decorator";
 import axios, { AxiosError } from "axios";
 
 import { ErrorData, Rule, TargetTypes } from "@/types";
 
+import { ErrorDialogMixin } from "@/components/mixins";
+
 @Component
-export default class Register extends Vue {
+export default class Register extends Mixins<ErrorDialogMixin>(
+  ErrorDialogMixin
+) {
   private name = "";
   private target: TargetTypes = "body";
   private targets: TargetTypes[] = ["body", "whois", "certificate", "script"];
@@ -47,9 +51,9 @@ export default class Register extends Vue {
 
     try {
       const response = await axios.post<Rule>("/api/rules/", {
-        name: this.name,
+        name: this.name === "" ? undefined : this.name,
         target: this.target,
-        source: this.source,
+        source: this.source === "" ? undefined : this.source,
       });
       const rule = response.data;
 
@@ -61,11 +65,7 @@ export default class Register extends Vue {
       loadingComponent.close();
 
       const data = error.response.data as ErrorData;
-      if (typeof data.detail === "string") {
-        alert(data.detail);
-      } else {
-        alert(data.detail[0].msg);
-      }
+      this.alertError(data);
     }
   }
 }
