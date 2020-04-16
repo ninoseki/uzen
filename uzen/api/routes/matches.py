@@ -1,7 +1,8 @@
 from typing import List, Optional, cast
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
+from uzen.api.dependencies.matches import SearchFilters
 from uzen.models.matches import Match
 from uzen.schemas.common import CountResponse
 from uzen.schemas.matches import Match as MatchModel
@@ -18,9 +19,11 @@ router = APIRouter()
     description="Searcn matches with filters",
 )
 async def search(
-    size: Optional[int] = None, offset: Optional[int] = None, filters: dict = {}
+    size: Optional[int] = None,
+    offset: Optional[int] = None,
+    filters: SearchFilters = Depends(),
 ) -> List[MatchModel]:
-    matches = await MatchSearcher.search(filters, size=size, offset=offset)
+    matches = await MatchSearcher.search(vars(filters), size=size, offset=offset)
     matches = cast(List[Match], matches)
 
     return [match.to_model() for match in matches]
@@ -33,6 +36,6 @@ async def search(
     summary="Count rules",
     description="Count a number of matches matched with filters",
 )
-async def count(filters: dict = {}) -> CountResponse:
-    count = await MatchSearcher.search(filters, count_only=True)
+async def count(filters: SearchFilters = Depends()) -> CountResponse:
+    count = await MatchSearcher.search(vars(filters), count_only=True)
     return CountResponse(count=count)
