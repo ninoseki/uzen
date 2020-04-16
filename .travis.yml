@@ -3,6 +3,20 @@ dist: bionic
 language: python
 python:
   - 3.8
+services:
+  - mysql
+env:
+  global:
+    - TESTING=True
+    - GOOGLE_SAFE_BROWSING_API_KEY=foo
+matrix:
+  include:
+    # sqlite
+    - env: TORTOISE_TEST_DB="sqlite://:memory:"
+    # mysql
+    - env: TORTOISE_TEST_DB=mysql://root@127.0.0.1:3306/uzen
+before_install:
+  - mysql -e 'CREATE DATABASE uzen;'
 install:
   - pip install poetry
   - poetry config virtualenvs.create false
@@ -13,7 +27,6 @@ install:
   - cd frontend && npm install
   - cd ..
 before_script:
-  - cp .env.test .env
   - cd frontend && npm run build
   - cd ..
 script: pytest -v --cov=uzen --cov-report=term-missing

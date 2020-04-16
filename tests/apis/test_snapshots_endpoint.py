@@ -58,7 +58,7 @@ async def test_snapshot_list_with_size(client):
     snapshots = response.json()
     assert len(snapshots) == 1
     first = snapshots[0]
-    assert first.get("url") == "http://example9.com/"
+    assert first.get("url") == "http://example10.com/"
 
 
 @pytest.mark.asyncio
@@ -76,14 +76,14 @@ async def test_snapshot_list_with_offset_and_size(client):
     snapshots = response.json()
     assert len(snapshots) == 10
     first = snapshots[0]
-    assert first.get("url") == "http://example9.com/"
+    assert first.get("url") == "http://example10.com/"
 
     payload = {"offset": 5, "size": 100}
     response = await client.get("/api/snapshots/", params=payload)
     snapshots = response.json()
     assert len(snapshots) == 5
     first = snapshots[0]
-    assert first.get("url") == "http://example4.com/"
+    assert first.get("url") == "http://example5.com/"
 
 
 @pytest.mark.asyncio

@@ -24,6 +24,7 @@ pydig = "^0.2.0"
 pysafebrowsing = "^0.1.1"
 pyppeteer2 = "^0.2.2"
 certifi = "^2020.4.5"
+aiomysql = "^0.0.20"
 
 [tool.poetry.dev-dependencies]
 autopep8 = "^1.5.1"
