@@ -29,7 +29,7 @@
         </div>
         <div class="column is-half">
           <h2 class="is-size-5 has-text-weight-bold middle">Source</h2>
-          <pre>{{ rule.source || "N/A" }}</pre>
+          <pre><code class="yara">{{ rule.source || "N/A" }}</code></pre>
         </div>
       </div>
       <div class="column">
@@ -43,19 +43,28 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Mixin, Mixins } from "vue-mixin-decorator";
+import { Prop } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 
 import { Rule, ErrorData } from "@/types";
 
 import Snapshots from "@/components/snapshots/Buttons.vue";
 
+import { HighlightMixin } from "@/components/mixins";
+
 @Component({
   components: {
     Snapshots,
   },
 })
-export default class RuleComponent extends Vue {
+export default class RuleComponent extends Mixins<HighlightMixin>(
+  HighlightMixin
+) {
   @Prop() private rule!: Rule;
+
+  mounted() {
+    this.highlightCodeBlocks();
+  }
 }
 </script>
