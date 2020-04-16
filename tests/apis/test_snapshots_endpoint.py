@@ -29,20 +29,22 @@ async def test_snapshot_count(client):
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("snapshots_setup")
 async def test_snapshot_search(client):
+    count = await Snapshot.all().count()
     response = await client.get("/api/snapshots/search")
     assert response.status_code == 200
 
     snapshots = response.json()
-    assert len(snapshots) == 10
+    assert len(snapshots) == count
 
     response = await client.get("/api/snapshots/search", params={"hostname": "example"})
     snapshots = response.json()
-    assert len(snapshots) == 10
+    assert len(snapshots) == count
 
     response = await client.get("/api/snapshots/search", params={"server": "ECS"})
     snapshots = response.json()
-    assert len(snapshots) == 10
+    assert len(snapshots) == count
 
+    # it doesn't match any snapshot
     response = await client.get("/api/snapshots/search", params={"server": "Tomcat"})
     snapshots = response.json()
     assert len(snapshots) == 0
@@ -71,19 +73,23 @@ async def test_snapshot_list_with_offset_and_size(client):
     snapshots = response.json()
     assert len(snapshots) == 1
 
-    payload = {"offset": 0, "size": 10}
+    offset = 0
+    size = 10
+    payload = {"offset": offset, "size": size}
     response = await client.get("/api/snapshots/", params=payload)
     snapshots = response.json()
-    assert len(snapshots) == 10
+    assert len(snapshots) == size - offset
     first = snapshots[0]
-    assert first.get("url") == "http://example10.com/"
+    assert first.get("url") == f"http://example{size - offset}.com/"
 
-    payload = {"offset": 5, "size": 100}
+    offset = 5
+    size = 100000
+    payload = {"offset": offset, "size": size}
     response = await client.get("/api/snapshots/", params=payload)
     snapshots = response.json()
-    assert len(snapshots) == 5
+    assert len(snapshots) == await Snapshot.all().count() - offset
     first = snapshots[0]
-    assert first.get("url") == "http://example5.com/"
+    assert first.get("url") == f"http://example{offset}.com/"
 
 
 @pytest.mark.asyncio

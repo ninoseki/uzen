@@ -29,8 +29,8 @@ async def test_create_rule(client):
     response = await client.post("/api/rules/", data=json.dumps(payload))
     assert response.status_code == 201
 
-    rules = await Rule.all()
-    assert len(rules) == 1
+    count = await Rule.all().count()
+    assert count == 1
 
 
 @pytest.mark.asyncio
@@ -43,23 +43,28 @@ async def test_delete_rule(client):
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("rules_setup")
 async def test_rules_search(client):
+    count = await Rule.all().count()
+
     response = await client.get("/api/rules/search")
     assert response.status_code == 200
 
     rules = response.json()
-    assert len(rules) == 5
+    assert len(rules) == count
 
+    # it matches with a rule
     response = await client.get("/api/rules/search", params={"name": "test1"})
     rules = response.json()
     assert len(rules) == 1
 
+    # it matches with the all rules
     response = await client.get("/api/rules/search", params={"target": "body"})
     rules = response.json()
-    assert len(rules) == 5
+    assert len(rules) == count
 
+    # it matches with the all rules
     response = await client.get("/api/rules/search", params={"source": "lmn"})
     rules = response.json()
-    assert len(rules) == 5
+    assert len(rules) == count
 
 
 @pytest.mark.asyncio
@@ -71,7 +76,7 @@ async def test_rules_count(client):
     data = response.json()
     count = data.get("count")
     assert isinstance(count, int)
-    assert count == 5
+    assert count == await Rule.all().count()
 
 
 @pytest.mark.asyncio
