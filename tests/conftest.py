@@ -38,14 +38,12 @@ def getDBConfig(app_label: str, db_url: str, modules: List[str]) -> dict:
 async def tortoise_db():
     db_url = environ.get("TORTOISE_TEST_DB", "sqlite://:memory:")
     config = getDBConfig(app_label="models", db_url=db_url, modules=settings.APP_MODELS)
-    try:
-        await Tortoise.init(config)
-        await Tortoise._drop_databases()
-    except DBConnectionError:
-        pass
 
     await Tortoise.init(config)
     await Tortoise.generate_schemas()
+
+    await Snapshot.all().delete()
+    await Rule.all().delete()
 
     yield
 
