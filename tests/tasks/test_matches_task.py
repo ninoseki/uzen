@@ -18,13 +18,11 @@ async def test_matching_taskl(client):
 
     snapshot = await Snapshot.get(id=1)
 
-    matches = await Match.all()
-    assert len(matches) == 0
+    assert await Match.all().count() == 0
 
     await MatchinbgTask.process(snapshot)
 
-    matches = await Match.all()
-    assert len(matches) == 1
+    assert await Match.all().count() == 1
 
 
 @pytest.mark.asyncio
@@ -39,10 +37,8 @@ async def test_matching_task_with_zero_matches(client):
 
     snapshot = await Snapshot.get(id=1)
 
-    matches = await Match.all()
-    assert len(matches) == 0
+    assert await Match.all().count() == 0
 
     await MatchinbgTask.process(snapshot)
 
-    matches = await Match.all()
-    assert len(matches) == 0
+    assert await Match.all().count() == 0
