@@ -4,7 +4,7 @@ language: python
 python:
   - 3.8
 services:
-  - mysql
+  - docker
 env:
   global:
     - TESTING=True
@@ -14,9 +14,10 @@ matrix:
     # sqlite
     - env: TORTOISE_TEST_DB="sqlite://:memory:" DATABASE_URL="sqlite://:memory:"
     # mysql
-    - env: TORTOISE_TEST_DB=mysql://travis@localhost/uzen DATABASE_URL=mysql://travis@localhost/uzen
+    - env: TORTOISE_TEST_DB=mysql://root@127.0.0.1:3306/uzen DATABASE_URL=mysql://root@127.0.0.1:3306/uzen
 before_install:
-  - mysql -h localhost -u travis -e 'CREATE DATABASE uzen;'
+  - docker build -t mysql-test mysql/
+  - docker run -i -p 3306:3306 -d mysql-test
 install:
   - pip install poetry
   - poetry config virtualenvs.create false
