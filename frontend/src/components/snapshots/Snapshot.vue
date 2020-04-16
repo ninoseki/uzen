@@ -1,5 +1,5 @@
 <template>
-  <div class="box">
+  <div>
     <b-message v-if="snapshot.processing" type="is-warning">
       <p><strong>Background tasks in progress...</strong></p>
       <p>
@@ -7,153 +7,158 @@
         while.
       </p>
     </b-message>
+    <div class="box">
+      <b-tabs type="is-boxed">
+        <b-tab-item label="Summary">
+          <div class="column is-full">
+            <div class="columns">
+              <div class="column is-half">
+                <h2 class="is-size-5 has-text-weight-bold middle">Info</h2>
+                <div class="table-container">
+                  <table class="table">
+                    <tbody>
+                      <tr>
+                        <th>ID</th>
+                        <td>{{ snapshot.id || "N/A" }}</td>
+                      </tr>
+                      <tr>
+                        <th>URL</th>
+                        <td>{{ snapshot.url }}</td>
+                      </tr>
+                      <tr>
+                        <th>Submitted URL</th>
+                        <td>{{ snapshot.submitted_url }}</td>
+                      </tr>
+                      <tr>
+                        <th>Hostname</th>
+                        <td>
+                          <router-link
+                            :to="{
+                              name: 'Snapshots',
+                              query: { hostname: snapshot.hostname },
+                            }"
+                            >{{ snapshot.hostname }}
+                          </router-link>
+                        </td>
+                      </tr>
 
-    <b-tabs type="is-boxed">
-      <b-tab-item label="Summary">
-        <div class="column is-full">
-          <div class="columns">
-            <div class="column is-half">
-              <h2 class="is-size-5 has-text-weight-bold middle">Info</h2>
-              <div class="table-container">
-                <table class="table">
-                  <tbody>
-                    <tr>
-                      <th>ID</th>
-                      <td>{{ snapshot.id || "N/A" }}</td>
-                    </tr>
-                    <tr>
-                      <th>URL</th>
-                      <td>{{ snapshot.url }}</td>
-                    </tr>
-                    <tr>
-                      <th>Submitted URL</th>
-                      <td>{{ snapshot.submitted_url }}</td>
-                    </tr>
-                    <tr>
-                      <th>Hostname</th>
-                      <td>
-                        <router-link
-                          :to="{
-                            name: 'Snapshots',
-                            query: { hostname: snapshot.hostname },
-                          }"
-                          >{{ snapshot.hostname }}
-                        </router-link>
-                      </td>
-                    </tr>
+                      <tr>
+                        <th>IP address</th>
+                        <td>
+                          <router-link
+                            :to="{
+                              name: 'Snapshots',
+                              query: { ip_address: snapshot.ip_address },
+                            }"
+                            >{{ snapshot.ip_address }}
+                          </router-link>
+                        </td>
+                      </tr>
 
-                    <tr>
-                      <th>IP address</th>
-                      <td>
-                        <router-link
-                          :to="{
-                            name: 'Snapshots',
-                            query: { ip_address: snapshot.ip_address },
-                          }"
-                          >{{ snapshot.ip_address }}
-                        </router-link>
-                      </td>
-                    </tr>
+                      <tr>
+                        <th>ASN</th>
+                        <td>
+                          <router-link
+                            :to="{
+                              name: 'Snapshots',
+                              query: { asn: snapshot.asn },
+                            }"
+                            >{{ snapshot.asn }}
+                          </router-link>
+                        </td>
+                      </tr>
 
-                    <tr>
-                      <th>ASN</th>
-                      <td>
-                        <router-link
-                          :to="{
-                            name: 'Snapshots',
-                            query: { asn: snapshot.asn },
-                          }"
-                          >{{ snapshot.asn }}
-                        </router-link>
-                      </td>
-                    </tr>
+                      <tr>
+                        <th>Server</th>
+                        <td>
+                          <router-link
+                            :to="{
+                              name: 'Snapshots',
+                              query: { server: snapshot.server },
+                            }"
+                            >{{ snapshot.server }}
+                          </router-link>
+                        </td>
+                      </tr>
 
-                    <tr>
-                      <th>Server</th>
-                      <td>
-                        <router-link
-                          :to="{
-                            name: 'Snapshots',
-                            query: { server: snapshot.server },
-                          }"
-                          >{{ snapshot.server }}
-                        </router-link>
-                      </td>
-                    </tr>
+                      <tr>
+                        <th>Content-Type</th>
+                        <td>
+                          <router-link
+                            :to="{
+                              name: 'Snapshots',
+                              query: { content_type: snapshot.content_type },
+                            }"
+                            >{{ snapshot.content_type }}
+                          </router-link>
+                        </td>
+                      </tr>
 
-                    <tr>
-                      <th>Content-Type</th>
-                      <td>
-                        <router-link
-                          :to="{
-                            name: 'Snapshots',
-                            query: { content_type: snapshot.content_type },
-                          }"
-                          >{{ snapshot.content_type }}
-                        </router-link>
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <th>Created at</th>
-                      <td>{{ snapshot.created_at || "N/A" }}</td>
-                    </tr>
-                  </tbody>
-                </table>
+                      <tr>
+                        <th>Created at</th>
+                        <td>{{ snapshot.created_at || "N/A" }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="column is-half">
+                <h2 class="is-size-5 has-text-weight-bold middle">
+                  Screenshot
+                </h2>
+                <img :src="this.imageData()" alt="screenshot" />
               </div>
             </div>
-            <div class="column is-half">
-              <h2 class="is-size-5 has-text-weight-bold middle">Screenshot</h2>
-              <img :src="this.imageData()" alt="screenshot" />
+            <div class="column">
+              <h2 class="is-size-5 has-text-weight-bold middle">SHA256</h2>
+              <router-link
+                :to="{ name: 'Snapshots', query: { sha256: snapshot.sha256 } }"
+                >{{ snapshot.sha256 }}
+              </router-link>
+            </div>
+            <div class="column">
+              <h2 class="is-size-5 has-text-weight-bold middle">
+                Matched rules
+              </h2>
+              <Rules v-bind:rules="snapshot.rules" />
+            </div>
+
+            <div class="column">
+              <h2 class="is-size-5 has-text-weight-bold middle">Links</h2>
+              <Links v-bind:snapshot="snapshot" />
             </div>
           </div>
-          <div class="column">
-            <h2 class="is-size-5 has-text-weight-bold middle">SHA256</h2>
-            <router-link
-              :to="{ name: 'Snapshots', query: { sha256: snapshot.sha256 } }"
-              >{{ snapshot.sha256 }}
-            </router-link>
-          </div>
-          <div class="column">
-            <h2 class="is-size-5 has-text-weight-bold middle">Matched rules</h2>
-            <Rules v-bind:rules="snapshot.rules" />
-          </div>
+        </b-tab-item>
 
-          <div class="column">
-            <h2 class="is-size-5 has-text-weight-bold middle">Links</h2>
-            <Links v-bind:snapshot="snapshot" />
-          </div>
-        </div>
-      </b-tab-item>
+        <b-tab-item label="Body">
+          <pre><code class="html">{{ snapshot.body }}</code></pre>
+        </b-tab-item>
 
-      <b-tab-item label="Body">
-        <pre><code class="html">{{ snapshot.body }}</code></pre>
-      </b-tab-item>
+        <b-tab-item label="Whois">
+          <pre>{{ snapshot.whois || "N/A" }}</pre>
+        </b-tab-item>
 
-      <b-tab-item label="Whois">
-        <pre>{{ snapshot.whois || "N/A" }}</pre>
-      </b-tab-item>
+        <b-tab-item label="Certificate">
+          <pre>{{ snapshot.certificate || "N/A" }}</pre>
+        </b-tab-item>
 
-      <b-tab-item label="Certificate">
-        <pre>{{ snapshot.certificate || "N/A" }}</pre>
-      </b-tab-item>
+        <b-tab-item label="Scripts">
+          <Scripts v-bind:scripts="snapshot.scripts" />
+        </b-tab-item>
 
-      <b-tab-item label="Scripts">
-        <Scripts v-bind:scripts="snapshot.scripts" />
-      </b-tab-item>
+        <b-tab-item label="DNS records">
+          <DnsRecords v-bind:dnsRecords="snapshot.dns_records" />
+        </b-tab-item>
 
-      <b-tab-item label="DNS records">
-        <DnsRecords v-bind:dnsRecords="snapshot.dns_records" />
-      </b-tab-item>
+        <b-tab-item label="Classifications">
+          <Classifications v-bind:classifications="snapshot.classifications" />
+        </b-tab-item>
 
-      <b-tab-item label="Classifications">
-        <Classifications v-bind:classifications="snapshot.classifications" />
-      </b-tab-item>
-
-      <b-tab-item v-if="hasYaraResult()" label="YARA matches">
-        <YaraResultComponent v-bind:yaraResult="yaraResult" />
-      </b-tab-item>
-    </b-tabs>
+        <b-tab-item v-if="hasYaraResult()" label="YARA matches">
+          <YaraResultComponent v-bind:yaraResult="yaraResult" />
+        </b-tab-item>
+      </b-tabs>
+    </div>
   </div>
 </template>
 

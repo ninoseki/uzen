@@ -4,9 +4,11 @@ import { Mixin } from "vue-mixin-decorator";
 import hljs from "highlight.js/lib/highlight.js";
 import json from "highlight.js/lib/languages/json";
 import xml from "highlight.js/lib/languages/xml";
+import yara from "@/hljs/yara";
 // register highlight languages
 hljs.registerLanguage("json", json);
 hljs.registerLanguage("xml", xml);
+hljs.registerLanguage("yara", yara);
 
 import { ErrorData } from "@/types";
 
