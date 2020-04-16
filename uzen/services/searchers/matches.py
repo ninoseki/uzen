@@ -26,6 +26,15 @@ class MatchSearcher(AbstractSearcher):
             Union[List[Match], List[int], int] -- A list of matches or count of the list
         """
         queries: List[Q] = []
+
+        rule_id = filters.get("rule_id")
+        if rule_id is not None:
+            queries.append(Q(rule_id=rule_id))
+
+        snapshot_id = filters.get("snapshot_id")
+        if snapshot_id is not None:
+            queries.append(Q(snapshot_id=snapshot_id))
+
         query = Q(*queries)
 
         # Run search
