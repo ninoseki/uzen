@@ -1,14 +1,14 @@
 import pytest
 
-from uzen.api.jobs import run_matching_job
 from uzen.models.matches import Match
 from uzen.models.rules import Rule
 from uzen.models.snapshots import Snapshot
+from uzen.tasks.matches import MatchinbgTask
 
 
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("snapshots_setup")
-async def test_matching_job(client):
+async def test_matching_taskl(client):
     rule = Rule(
         name="test",
         target="body",
@@ -21,7 +21,7 @@ async def test_matching_job(client):
     matches = await Match.all()
     assert len(matches) == 0
 
-    await run_matching_job(snapshot)
+    await MatchinbgTask.process(snapshot)
 
     matches = await Match.all()
     assert len(matches) == 1
@@ -29,7 +29,7 @@ async def test_matching_job(client):
 
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("snapshots_setup")
-async def test_matching_job_with_zero_matches(client):
+async def test_matching_task_with_zero_matches(client):
     rule = Rule(
         name="test",
         target="whois",
@@ -42,7 +42,7 @@ async def test_matching_job_with_zero_matches(client):
     matches = await Match.all()
     assert len(matches) == 0
 
-    await run_matching_job(snapshot)
+    await MatchinbgTask.process(snapshot)
 
     matches = await Match.all()
     assert len(matches) == 0

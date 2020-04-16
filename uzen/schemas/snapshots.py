@@ -66,6 +66,11 @@ class BaseSnapshot(BasicAttributes):
         None, title="Certiricate", description="Certificate record"
     )
     request: dict = Field(..., title="Request", description="Meta data of HTTP request")
+    processing: bool = Field(
+        ...,
+        title="Processing",
+        description="A boolean flag to show a status of background tasks",
+    )
 
     scripts: List[Union[Script, BaseScript]] = Field(
         ..., title="Scripts", description="A list of scripts"

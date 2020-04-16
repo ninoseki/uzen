@@ -32,6 +32,7 @@ class Snapshot(Model):
     whois = fields.TextField(null=True)
     certificate = fields.TextField(null=True)
     request = fields.JSONField()
+    processing = fields.BooleanField(default=True)
     created_at = fields.DatetimeField(auto_now_add=True)
 
     _screenshot: fields.OneToOneRelation["Screenshot"]
