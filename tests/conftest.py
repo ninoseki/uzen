@@ -37,13 +37,17 @@ def getDBConfig(app_label: str, db_url: str, modules: List[str]) -> dict:
 @pytest.fixture(autouse=True)
 async def tortoise_db():
     db_url = environ.get("TORTOISE_TEST_DB", "sqlite://:memory:")
-    config = getDBConfig(app_label="models", db_url=db_url, modules=settings.APP_MODELS)
+    config = getDBConfig(
+        app_label="models", db_url=db_url, modules=settings.APP_MODELS,
+    )
+    try:
+        await Tortoise.init(config)
+        await Tortoise._drop_databases()
+    except DBConnectionError:
+        pass
 
-    await Tortoise.init(config)
+    await Tortoise.init(config, _create_db=True)
     await Tortoise.generate_schemas()
-
-    await Snapshot.all().delete()
-    await Rule.all().delete()
 
     yield
 
@@ -52,7 +56,7 @@ async def tortoise_db():
 
 @pytest.fixture
 async def snapshots_setup(client):
-    for i in range(0, 10):
+    for i in range(1, 11):
         snapshot = Snapshot(
             id=i,
             url=f"http://example{i}.com/",
@@ -80,7 +84,7 @@ async def snapshots_setup(client):
 
 @pytest.fixture
 async def scripts_setup(client, snapshots_setup):
-    for i in range(0, 10):
+    for i in range(1, 11):
         script = Script(
             id=i,
             snapshot_id=i,
