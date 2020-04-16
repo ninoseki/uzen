@@ -23,6 +23,7 @@ export interface Snapshot {
   headers: Dict;
   whois: string | undefined;
   certificate: string | undefined;
+  processing: boolean;
   created_at: string | undefined;
 
   screenshot: Screenshot;

@@ -4,7 +4,6 @@ from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from tortoise.exceptions import DoesNotExist
 
 from uzen.api.dependencies.snapshots import SearchFilters
-from uzen.api.jobs import run_enrhichment_jobs, run_matching_job
 from uzen.core.exceptions import TakeSnapshotError
 from uzen.models.snapshots import Snapshot
 from uzen.schemas.common import CountResponse
@@ -12,6 +11,9 @@ from uzen.schemas.snapshots import CreateSnapshotPayload, SearchResult
 from uzen.schemas.snapshots import Snapshot as SnapshotModel
 from uzen.services.searchers.snapshots import SnapshotSearcher
 from uzen.services.snapshot import save_snapshot, take_snapshot
+from uzen.tasks.enrichment import EnrichmentTask
+from uzen.tasks.matches import MatchinbgTask
+from uzen.tasks.snapshots import UpdateProcessingTask
 
 router = APIRouter()
 
@@ -102,8 +104,9 @@ async def create(
 
     snapshot = await save_snapshot(result)
 
-    background_tasks.add_task(run_enrhichment_jobs, snapshot)
-    background_tasks.add_task(run_matching_job, snapshot)
+    background_tasks.add_task(EnrichmentTask.process, snapshot)
+    background_tasks.add_task(MatchinbgTask.process, snapshot)
+    background_tasks.add_task(UpdateProcessingTask.process, snapshot)
 
     model = cast(SnapshotModel, snapshot.to_model())
     return model

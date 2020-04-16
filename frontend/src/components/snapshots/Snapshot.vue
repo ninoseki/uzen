@@ -1,5 +1,13 @@
 <template>
   <div class="box">
+    <b-message v-if="snapshot.processing" type="is-warning">
+      <p><strong>Background tasks in progress...</strong></p>
+      <p>
+        The information below may be incomplete. Please reload this page after a
+        while.
+      </p>
+    </b-message>
+
     <b-tabs type="is-boxed">
       <b-tab-item label="Summary">
         <div class="column is-full">

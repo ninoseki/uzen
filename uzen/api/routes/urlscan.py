@@ -3,10 +3,10 @@ from typing import cast
 import httpx
 from fastapi import APIRouter, BackgroundTasks, HTTPException
 
-from uzen.api.jobs import run_matching_job
 from uzen.schemas.snapshots import Snapshot
 from uzen.services.snapshot import save_snapshot
 from uzen.services.urlscan import URLScan
+from uzen.tasks.matches import MatchinbgTask
 
 router = APIRouter()
 
@@ -27,7 +27,7 @@ async def import_from_urlscan(uuid: str, background_tasks: BackgroundTasks) -> S
 
     snapshot = await save_snapshot(result)
 
-    background_tasks.add_task(run_matching_job, snapshot)
+    background_tasks.add_task(MatchinbgTask.process, snapshot)
 
     model = cast(Snapshot, snapshot.to_model())
     return model

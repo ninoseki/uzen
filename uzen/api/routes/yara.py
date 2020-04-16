@@ -3,10 +3,10 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 
 from uzen.api.dependencies.snapshots import SearchFilters
-from uzen.api.jobs import run_enrhichment_jobs
 from uzen.schemas.yara import OneshotPayload, OneshotResponse, ScanPayload, ScanResult
 from uzen.services.snapshot import TakeSnapshotError, take_snapshot
 from uzen.services.yara_scanner import YaraScanner
+from uzen.tasks.enrichment import EnrichmentTask
 
 router = APIRouter()
 
@@ -51,12 +51,15 @@ async def oneshot(payload: OneshotPayload) -> OneshotResponse:
     screenshot = result.screenshot
     snapshot.screenshot = screenshot
 
-    results = await run_enrhichment_jobs(snapshot, insert_to_db=False)
+    # Process enrichment tasks
+    results = await EnrichmentTask.process(snapshot, insert_to_db=False)
     snapshot.scripts = [script.to_model() for script in results.scripts]
     snapshot.dns_records = [record.to_model() for record in results.dns_records]
     snapshot.classifications = [
         classification.to_model() for classification in results.classifications
     ]
+    # Update processing status
+    snapshot.processing = False
 
     matched = False
     matches = []
