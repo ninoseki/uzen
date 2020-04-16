@@ -16,7 +16,9 @@ class AbstractTask:
         try:
             return await self._process()
         except Exception as e:
-            logger.error(e)
+            logger.error(
+                f"Failed to process {self.__class__.__name__} task. Error: {e}"
+            )
 
 
 class EnrichmentTask(AbstractTask):
@@ -35,7 +37,9 @@ class EnrichmentTask(AbstractTask):
         try:
             return await self._process()
         except Exception as e:
-            f"Failed to process {self.__class__.__name__} task. URL: {self.snapshot.url} / Error: {e}"
+            logger.error(
+                f"Failed to process {self.__class__.__name__} task. URL: {self.snapshot.url} / Error: {e}"
+            )
 
         return []
 
