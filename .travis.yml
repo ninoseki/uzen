@@ -14,7 +14,7 @@ matrix:
     # sqlite
     - env: TORTOISE_TEST_DB="sqlite://:memory:" DATABASE_URL="sqlite://:memory:"
     # mysql
-    - env: TORTOISE_TEST_DB=mysql://travis:@127.0.0.1:3306/uzen DATABASE_URL=mysql://travis:@127.0.0.1:3306/uzen
+    - env: TORTOISE_TEST_DB=mysql://travis:@localhost/uzen DATABASE_URL=mysql://travis:@localhost/uzen
 before_install:
   - mysql -e 'CREATE DATABASE uzen;'
 install:
