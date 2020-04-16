@@ -16,7 +16,7 @@ matrix:
     # mysql
     - env: TORTOISE_TEST_DB=mysql://travis:@localhost/uzen DATABASE_URL=mysql://travis:@localhost/uzen
 before_install:
-  - mysql -e 'CREATE DATABASE uzen;'
+  - mysql -h localhost -u travis -e 'CREATE DATABASE uzen;'
 install:
   - pip install poetry
   - poetry config virtualenvs.create false
