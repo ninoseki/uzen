@@ -1,5 +1,15 @@
 <template>
   <div>
+    <div class="box">
+      <Form ref="form" />
+
+      <br />
+
+      <div class="has-text-centered">
+        <b-button type="is-light" @click="initSearch()">Search</b-button>
+      </div>
+    </div>
+
     <h2 v-if="hasCount()">Search results ({{ count }} / {{ totalCount }})</h2>
 
     <Table v-bind:matches="matches" />
@@ -19,6 +29,7 @@ import { Match, Count, ErrorData } from "@/types";
 
 import Counter from "@/components/ui/Counter.vue";
 import Table from "@/components/matches/Table.vue";
+import Form from "@/components/matches/Form.vue";
 
 import {
   SearchFormMixin,
@@ -28,6 +39,7 @@ import {
 
 @Component({
   components: {
+    Form,
     Counter,
     Table,
   },
@@ -53,10 +65,9 @@ export default class Search extends Mixins<SearchFormComponentMixin>(
       this.resetPagination();
     }
 
-    const params = {
-      size: this.size,
-      offset: this.offset,
-    };
+    const params = (this.$refs.form as Form).filtersParams();
+    params["size"] = this.size;
+    params["offset"] = this.offset;
 
     try {
       const response = await axios.get<Match[]>("/api/matches/search", {
@@ -77,7 +88,11 @@ export default class Search extends Mixins<SearchFormComponentMixin>(
 
   async getTotalCount() {
     try {
-      const response = await axios.get<Count>("/api/matches/count");
+      const params = (this.$refs.form as Form).filtersParams();
+
+      const response = await axios.get<Count>("/api/matches/count", {
+        params: params,
+      });
       const data = response.data;
       this.totalCount = data.count;
       this.$forceUpdate();
