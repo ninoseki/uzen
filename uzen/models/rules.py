@@ -16,6 +16,7 @@ class Rule(Model):
     target = fields.CharField(max_length=255)
     source = fields.TextField()
     created_at = fields.DatetimeField(auto_now_add=True)
+    updated_at = fields.DatetimeField(auto_now=True)
 
     _snapshots: fields.ManyToManyRelation["Snapshot"]
 

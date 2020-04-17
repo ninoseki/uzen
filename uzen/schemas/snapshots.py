@@ -29,6 +29,7 @@ class Rule(BaseRule):
 
     id: int
     created_at: datetime.datetime
+    updated_at: datetime.datetime
     snapshots: List["Snapshot"]
 
 

@@ -88,6 +88,7 @@ async def test_update(client):
 
     rule = await Rule.get(id=1)
     assert rule.name == "woweee"
+    old_updated_at = rule.updated_at
 
     payload = {
         "name": "test",
@@ -101,3 +102,5 @@ async def test_update(client):
     assert rule.name == "test"
     assert rule.target == "script"
     assert rule.source == 'rule foo: bar {strings: $a = "html" condition: $a}'
+    # should update updated_at field
+    assert old_updated_at < rule.updated_at
