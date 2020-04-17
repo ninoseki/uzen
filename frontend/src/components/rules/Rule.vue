@@ -23,6 +23,10 @@
                   <th>Created at</th>
                   <td>{{ rule.created_at || "N/A" }}</td>
                 </tr>
+                <tr>
+                  <th>Updated at</th>
+                  <td>{{ rule.updated_at || "N/A" }}</td>
+                </tr>
               </tbody>
             </table>
           </div>
