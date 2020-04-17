@@ -74,12 +74,22 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Mixin, Mixins } from "vue-mixin-decorator";
+import { Prop } from "vue-property-decorator";
 
 import { SnapshotFilters } from "@/types";
 
+import {
+  SearchFormMixin,
+  ErrorDialogMixin,
+  SearchFormComponentMixin,
+} from "@/components/mixins";
+
 @Component
-export default class Search extends Vue {
+export default class Search extends Mixins<SearchFormComponentMixin>(
+  ErrorDialogMixin,
+  SearchFormMixin
+) {
   @Prop() private asn: string | undefined;
   @Prop() private content_type: string | undefined;
   @Prop() private hostname: string | undefined;
@@ -98,21 +108,13 @@ export default class Search extends Vue {
     to_at: undefined,
   };
 
-  dateFormatter(dt) {
-    return dt.toISOString().split("T")[0];
-  }
-
   filtersParams() {
     const obj: { [k: string]: any } = {};
 
     for (const key in this.filters) {
       if (this.filters[key] !== undefined) {
         const value = this.filters[key];
-        if (value instanceof Date) {
-          obj[key] = this.filters[key].toISOString().split("T")[0];
-        } else {
-          obj[key] = this.filters[key];
-        }
+        obj[key] = this.normalizeFilterValue(value);
       }
     }
     return obj;

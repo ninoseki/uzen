@@ -38,12 +38,22 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Mixin, Mixins } from "vue-mixin-decorator";
+import { Prop } from "vue-property-decorator";
 
 import { MatchFilters } from "@/types";
 
+import {
+  SearchFormMixin,
+  ErrorDialogMixin,
+  SearchFormComponentMixin,
+} from "@/components/mixins";
+
 @Component
-export default class SearchForm extends Vue {
+export default class SearchForm extends Mixins<SearchFormComponentMixin>(
+  ErrorDialogMixin,
+  SearchFormMixin
+) {
   private filters: MatchFilters = {
     rule_id: undefined,
     snapshot_id: undefined,
@@ -51,21 +61,13 @@ export default class SearchForm extends Vue {
     to_at: undefined,
   };
 
-  dateFormatter(dt) {
-    return dt.toISOString().split("T")[0];
-  }
-
   filtersParams() {
     const obj: { [k: string]: any } = {};
 
     for (const key in this.filters) {
       if (this.filters[key] !== undefined) {
         const value = this.filters[key];
-        if (value instanceof Date) {
-          obj[key] = this.filters[key].toISOString().split("T")[0];
-        } else {
-          obj[key] = this.filters[key];
-        }
+        obj[key] = this.normalizeFilterValue(value);
       }
     }
     return obj;
