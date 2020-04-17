@@ -48,7 +48,7 @@ export interface ErrorData {
   detail: string | ValidationError[];
 }
 
-export interface SearchFilters {
+export interface SnapshotFilters {
   hostname: string | undefined;
   ip_address: string | undefined;
   asn: string | undefined;

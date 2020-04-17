@@ -76,7 +76,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 
-import { SearchFilters } from "@/types";
+import { SnapshotFilters } from "@/types";
 
 @Component
 export default class Search extends Vue {
@@ -87,7 +87,7 @@ export default class Search extends Vue {
   @Prop() private server: string | undefined;
   @Prop() private sha256: string | undefined;
 
-  private filters: SearchFilters = {
+  private filters: SnapshotFilters = {
     hostname: this.hostname,
     ip_address: this.ip_address,
     asn: this.asn,
