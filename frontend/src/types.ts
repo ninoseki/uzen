@@ -146,3 +146,10 @@ export interface Match {
   matches: YaraMatch[];
   created_at: string;
 }
+
+export interface MatchFilters {
+  snapshot_id: number | undefined;
+  rule_id: number | undefined;
+  from_at: Date | undefined;
+  to_at: Date | undefined;
+}
