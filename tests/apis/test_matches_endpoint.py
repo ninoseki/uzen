@@ -38,3 +38,17 @@ async def test_matches_search_with_filters(client):
     assert response.status_code == 200
     matches = response.json()
     assert len(matches) == 1
+
+
+@pytest.mark.asyncio
+@pytest.mark.usefixtures("matches_setup")
+async def test_matches_search_with_daterange(client):
+    response = await client.get("/api/matches/search", params={"from_at": "1970-01-01"})
+    assert response.status_code == 200
+    matches = response.json()
+    assert len(matches) == await Match.all().count()
+
+    response = await client.get("/api/matches/search", params={"to_at": "1970-01-01"})
+    assert response.status_code == 200
+    matches = response.json()
+    assert len(matches) == 0
