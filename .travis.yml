@@ -20,13 +20,10 @@ matrix:
         - poetry config virtualenvs.create false
         - poetry install
         - pyppeteer-install
-        - nvm install 12
-        - nvm use 12
-        - cd frontend && npm install
-        - cd ..
       before_script:
-        - cd frontend && npm run build
-        - cd ..
+        # create dummy directories & file
+        - mkdir -p frontend/dist/static
+        - touch frontend/dist/index.html
       script: pytest -v --cov=uzen --cov-report=term-missing
 
     # python with mysql
@@ -39,13 +36,9 @@ matrix:
         - poetry config virtualenvs.create false
         - poetry install
         - pyppeteer-install
-        - nvm install 12
-        - nvm use 12
-        - cd frontend && npm install
-        - cd ..
       before_script:
-        - cd frontend && npm run build
-        - cd ..
+        - mkdir -p frontend/dist/static
+        - touch frontend/dist/index.html
       script: pytest -v --cov=uzen --cov-report=term-missing
       after_success:
         - COVERALLS_REPO_TOKEN=78xcfkSWMOYAFjJla5nmgJ2PzpI0s0YJm coveralls
