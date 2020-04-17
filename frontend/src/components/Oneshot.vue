@@ -54,7 +54,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Mixin, Mixins } from "vue-mixin-decorator";
+import { Prop } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 
 import {
@@ -71,6 +72,8 @@ import SnapshotComponent from "@/components/snapshots/Snapshot.vue";
 import BasicYaraForm from "@/components/yara/BasicForm.vue";
 import Options from "@/components/snapshots/Options.vue";
 
+import { ErrorDialogMixin } from "@/components/mixins";
+
 @Component({
   components: {
     BasicYaraForm,
@@ -78,7 +81,9 @@ import Options from "@/components/snapshots/Options.vue";
     Options,
   },
 })
-export default class OneshotView extends Vue {
+export default class OneshotView extends Mixins<ErrorDialogMixin>(
+  ErrorDialogMixin
+) {
   private source: string = "";
   private target: TargetTypes = "body";
   private url: string = "";
@@ -118,7 +123,7 @@ export default class OneshotView extends Vue {
       loadingComponent.close();
 
       const data = error.response.data as ErrorData;
-      alert(data.detail);
+      this.alertError(data);
     }
   }
 

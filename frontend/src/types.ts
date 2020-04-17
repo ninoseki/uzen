@@ -48,7 +48,7 @@ export interface ErrorData {
   detail: string | ValidationError[];
 }
 
-export interface SearchFilters {
+export interface SnapshotFilters {
   hostname: string | undefined;
   ip_address: string | undefined;
   asn: string | undefined;
@@ -145,4 +145,11 @@ export interface Match {
   script: Script | undefined;
   matches: YaraMatch[];
   created_at: string;
+}
+
+export interface MatchFilters {
+  snapshot_id: number | undefined;
+  rule_id: number | undefined;
+  from_at: Date | undefined;
+  to_at: Date | undefined;
 }

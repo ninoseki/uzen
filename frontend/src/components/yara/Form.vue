@@ -26,7 +26,6 @@ import axios, { AxiosError } from "axios";
 import {
   ErrorData,
   Snapshot,
-  SearchFilters,
   TargetTypes,
   SnapshotWithYaraResult,
 } from "@/types";
