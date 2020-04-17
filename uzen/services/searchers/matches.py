@@ -4,6 +4,7 @@ from tortoise.query_utils import Q
 
 from uzen.models.matches import Match
 from uzen.services.searchers import AbstractSearcher
+from uzen.services.searchers.utils import convert_to_datetime
 
 
 class MatchSearcher(AbstractSearcher):
@@ -34,6 +35,16 @@ class MatchSearcher(AbstractSearcher):
         snapshot_id = filters.get("snapshot_id")
         if snapshot_id is not None:
             queries.append(Q(snapshot_id=snapshot_id))
+
+        from_at = filters.get("from_at")
+        if from_at is not None:
+            from_at = convert_to_datetime(from_at)
+            queries.append(Q(created_at__gte=from_at))
+
+        to_at = filters.get("to_at")
+        if to_at is not None:
+            to_at = convert_to_datetime(to_at)
+            queries.append(Q(created_at__lte=to_at))
 
         query = Q(*queries)
 

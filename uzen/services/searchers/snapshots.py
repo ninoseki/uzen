@@ -1,4 +1,3 @@
-import datetime
 from typing import List, Union, cast
 
 from tortoise.query_utils import Q
@@ -6,10 +5,7 @@ from tortoise.query_utils import Q
 from uzen.models.snapshots import Snapshot
 from uzen.schemas.snapshots import SearchResult
 from uzen.services.searchers import AbstractSearcher
-
-
-def convert_to_datetime(s: str) -> datetime.datetime:
-    return datetime.datetime.strptime(s, "%Y-%m-%d")
+from uzen.services.searchers.utils import convert_to_datetime
 
 
 def convert_to_simple_snapshot_models(snapshots: List[dict]):

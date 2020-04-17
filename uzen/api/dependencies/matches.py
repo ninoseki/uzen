@@ -12,6 +12,14 @@ class SearchFilters:
         snapshot_id: Optional[int] = Query(
             None, title="Snapshot ID", description="An ID of the snapshot"
         ),
+        from_at: Optional[str] = Query(
+            None, title="From at", description="A datetime (from)"
+        ),
+        to_at: Optional[str] = Query(
+            None, title="To at", description="A datetime (to)"
+        ),
     ):
         self.rule_id = rule_id
         self.snapshot_id = snapshot_id
+        self.from_at = from_at
+        self.to_at = to_at
