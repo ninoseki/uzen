@@ -1,34 +1,41 @@
 # Config file for automatic testing at travis-ci.org
 dist: bionic
-language: python
-python:
-  - 3.8
+
 services:
   - mysql
+
 env:
   global:
     - TESTING=True
     - GOOGLE_SAFE_BROWSING_API_KEY=foo
+
 matrix:
   include:
-    # sqlite
-    - env: TORTOISE_TEST_DB="sqlite://:memory:"
-    # mysql
-    - env: TORTOISE_TEST_DB=mysql://root@127.0.0.1:3306/uzen
-before_install:
-  - mysql -e 'CREATE DATABASE uzen;'
-install:
-  - pip install poetry
-  - poetry config virtualenvs.create false
-  - poetry install
-  - pyppeteer-install
-  - nvm install 12
-  - nvm use 12
-  - cd frontend && npm install
-  - cd ..
-before_script:
-  - cd frontend && npm run build
-  - cd ..
-script: pytest -v --cov=uzen --cov-report=term-missing
-after_success:
-  - COVERALLS_REPO_TOKEN=78xcfkSWMOYAFjJla5nmgJ2PzpI0s0YJm coveralls
+    - language: python
+      python: 3.8
+      env:
+        # sqlite
+        - TORTOISE_TEST_DB="sqlite://:memory:"
+        # mysql
+        - TORTOISE_TEST_DB=mysql://root@127.0.0.1:3306/uzen
+      before_install:
+        - mysql -e 'CREATE DATABASE uzen;'
+      install:
+        - pip install poetry
+        - poetry config virtualenvs.create false
+        - poetry install
+        - pyppeteer-install
+        - nvm install 12
+        - nvm use 12
+        - cd frontend && npm install
+        - cd ..
+      before_script:
+        - cd frontend && npm run build
+        - cd ..
+      script: pytest -v --cov=uzen --cov-report=term-missing
+      after_success:
+        - COVERALLS_REPO_TOKEN=78xcfkSWMOYAFjJla5nmgJ2PzpI0s0YJm coveralls
+
+    - language: node_js
+      node_js: 13
+      before_script: cd frontend
