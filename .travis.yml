@@ -15,6 +15,10 @@ matrix:
     - language: python
       python: 3.8
       env: TORTOISE_TEST_DB="sqlite://:memory:"
+      cache:
+        pip: true
+        directories:
+          - "$HOME/.cache/pypoetry"
       install:
         - pip install poetry
         - poetry config virtualenvs.create false
@@ -30,6 +34,10 @@ matrix:
     - language: python
       python: 3.8
       env: TORTOISE_TEST_DB=mysql://root@127.0.0.1:3306/uzen
+      cache:
+        pip: true
+        directories:
+          - "$HOME/.cache/pypoetry"
       before_install: mysql -e 'CREATE DATABASE uzen;'
       install:
         - pip install poetry
