@@ -1,18 +1,17 @@
 from typing import Union
 
 from tortoise import fields
-from tortoise.models import Model
 
+from uzen.models.base import AbstractBaseModel
+from uzen.models.mixins import TimestampMixin
 from uzen.schemas.scripts import BaseScript
 from uzen.schemas.scripts import Script as ScriptModel
 
 
-class Script(Model):
-    id = fields.IntField(pk=True)
+class Script(TimestampMixin, AbstractBaseModel):
     url = fields.TextField()
     content = fields.TextField()
     sha256 = fields.CharField(max_length=64)
-    created_at = fields.DatetimeField(auto_now_add=True)
 
     snapshot: fields.ForeignKeyRelation["Snapshot"] = fields.ForeignKeyField(
         "models.Snapshot",

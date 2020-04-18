@@ -1,9 +1,12 @@
+from __future__ import annotations
+
 from typing import Any, List, Optional, Union
 
 from tortoise import fields
 from tortoise.exceptions import NoValuesFetched
-from tortoise.models import Model
 
+from uzen.models.base import AbstractBaseModel
+from uzen.models.mixins import TimestampMixin
 from uzen.schemas.classifications import BaseClassification, Classification
 from uzen.schemas.dns_records import BaseDnsRecord, DnsRecord
 from uzen.schemas.rules import Rule
@@ -13,10 +16,9 @@ from uzen.schemas.snapshots import BaseSnapshot
 from uzen.schemas.snapshots import Snapshot as SnapshotModel
 
 
-class Snapshot(Model):
+class Snapshot(TimestampMixin, AbstractBaseModel):
     """An ORM class for snapshots table"""
 
-    id = fields.IntField(pk=True)
     url = fields.TextField()
     submitted_url = fields.TextField()
     status = fields.IntField()
@@ -33,7 +35,6 @@ class Snapshot(Model):
     certificate = fields.TextField(null=True)
     request = fields.JSONField()
     processing = fields.BooleanField(default=True)
-    created_at = fields.DatetimeField(auto_now_add=True)
 
     _screenshot: fields.OneToOneRelation["Screenshot"]
 
@@ -138,6 +139,12 @@ class Snapshot(Model):
     def to_dict(self) -> dict:
         model = self.to_model()
         return model.dict()
+
+    @classmethod
+    async def get_by_id(cls, id_: int) -> Snapshot:
+        return await cls.get(id=id_).prefetch_related(
+            "_screenshot", "_scripts", "_dns_records", "_classifications", "_rules"
+        )
 
     class Meta:
         table = "snapshots"

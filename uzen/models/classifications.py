@@ -1,18 +1,17 @@
 from typing import Union
 
 from tortoise import fields
-from tortoise.models import Model
 
+from uzen.models.base import AbstractBaseModel
+from uzen.models.mixins import TimestampMixin
 from uzen.schemas.classifications import BaseClassification
 from uzen.schemas.classifications import Classification as ClassificationModel
 
 
-class Classification(Model):
-    id = fields.IntField(pk=True)
+class Classification(TimestampMixin, AbstractBaseModel):
     name = fields.CharField(max_length=100)
     malicious = fields.BooleanField()
     note = fields.TextField(null=True)
-    created_at = fields.DatetimeField(auto_now_add=True)
 
     snapshot: fields.ForeignKeyRelation["Snapshot"] = fields.ForeignKeyField(
         "models.Snapshot",

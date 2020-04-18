@@ -53,7 +53,7 @@ async def count(filters: SearchFilters = Depends(),) -> CountResponse:
 )
 async def get(rule_id: int) -> RuleModel:
     try:
-        rule = await Rule.get(id=rule_id).prefetch_related("_snapshots")
+        rule = await Rule.get_by_id(rule_id)
     except DoesNotExist:
         raise HTTPException(status_code=404, detail=f"Rule:{rule_id} is not found")
 
@@ -106,9 +106,8 @@ async def create(payload: CreateRulePayload) -> RuleModel:
 )
 async def delete(rule_id: int) -> dict:
     try:
-        rule = await Rule.get(id=rule_id)
+        await Rule.delete_by_id(rule_id)
     except DoesNotExist:
         raise HTTPException(status_code=404, detail=f"Rule:{rule_id} is not found")
 
-    await rule.delete()
     return {}
