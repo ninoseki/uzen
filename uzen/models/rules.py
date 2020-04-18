@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, List
 
 from tortoise import fields
@@ -28,6 +30,10 @@ class Rule(TimestampMixin, AbstractBaseModel):
 
     def to_model(self) -> RuleModel:
         return RuleModel.from_orm(self)
+
+    @classmethod
+    async def get_by_id(cls, id: int) -> Rule:
+        return await cls.get(id=id).prefetch_related("_snapshots")
 
     class Meta:
         table = "rules"

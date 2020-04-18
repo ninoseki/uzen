@@ -56,9 +56,7 @@ async def count(filters: SearchFilters = Depends()) -> CountResponse:
 )
 async def get(snapshot_id: int) -> SnapshotModel:
     try:
-        snapshot: Snapshot = await Snapshot.get(id=snapshot_id).prefetch_related(
-            "_screenshot", "_scripts", "_dns_records", "_classifications", "_rules"
-        )
+        snapshot: Snapshot = await Snapshot.get_by_id(snapshot_id)
     except DoesNotExist:
         raise HTTPException(
             status_code=404, detail=f"Snapshot:{snapshot_id} is not found"
@@ -123,11 +121,10 @@ async def create(
 )
 async def delete(snapshot_id: int) -> dict:
     try:
-        snapshot = await Snapshot.get(id=snapshot_id)
+        await Snapshot.delete_by_id(snapshot_id)
     except DoesNotExist:
         raise HTTPException(
             status_code=404, detail=f"Snapshot:{snapshot_id} is not found"
         )
 
-    await snapshot.delete()
     return {}

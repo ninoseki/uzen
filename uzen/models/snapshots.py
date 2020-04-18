@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Any, List, Optional, Union
 
 from tortoise import fields
@@ -137,6 +139,12 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
     def to_dict(self) -> dict:
         model = self.to_model()
         return model.dict()
+
+    @classmethod
+    async def get_by_id(cls, id: int) -> Snapshot:
+        return await cls.get(id=id).prefetch_related(
+            "_screenshot", "_scripts", "_dns_records", "_classifications", "_rules"
+        )
 
     class Meta:
         table = "snapshots"
