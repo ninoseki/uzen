@@ -55,7 +55,7 @@ async def get(rule_id: int) -> RuleModel:
     try:
         rule = await Rule.get(id=rule_id).prefetch_related("_snapshots")
     except DoesNotExist:
-        raise HTTPException(status_code=404, detail=f"Rule:{id} is not found")
+        raise HTTPException(status_code=404, detail=f"Rule:{rule_id} is not found")
 
     return rule.to_model()
 
@@ -78,7 +78,7 @@ async def put(rule_id: int, payload: UpdateRulePayload) -> RuleModel:
             rule.source = payload.source
         await rule.save()
     except DoesNotExist:
-        raise HTTPException(status_code=404, detail=f"Rule:{id} is not found")
+        raise HTTPException(status_code=404, detail=f"Rule:{rule_id} is not found")
 
     return rule.to_model()
 
@@ -108,7 +108,7 @@ async def delete(rule_id: int) -> dict:
     try:
         rule = await Rule.get(id=rule_id)
     except DoesNotExist:
-        raise HTTPException(status_code=404, detail=f"Rule:{id} is not found")
+        raise HTTPException(status_code=404, detail=f"Rule:{rule_id} is not found")
 
     await rule.delete()
     return {}
