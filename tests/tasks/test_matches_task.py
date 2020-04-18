@@ -1,5 +1,6 @@
 import pytest
 
+from tests.utils import first_snapshot_id
 from uzen.models.matches import Match
 from uzen.models.rules import Rule
 from uzen.models.snapshots import Snapshot
@@ -16,7 +17,8 @@ async def test_matching_taskl(client):
     )
     await rule.save()
 
-    snapshot = await Snapshot.get(id=1)
+    id_ = await first_snapshot_id()
+    snapshot = await Snapshot.get(id=id_)
 
     assert await Match.all().count() == 0
 
@@ -35,7 +37,8 @@ async def test_matching_task_with_zero_matches(client):
     )
     await rule.save()
 
-    snapshot = await Snapshot.get(id=1)
+    id_ = await first_snapshot_id()
+    snapshot = await Snapshot.get(id=id_)
 
     assert await Match.all().count() == 0
 

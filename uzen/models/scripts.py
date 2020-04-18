@@ -21,7 +21,7 @@ class Script(TimestampMixin, AbstractBaseModel):
     )
 
     def to_model(self) -> Union[ScriptModel, BaseScript]:
-        if self.id is not None:
+        if self.created_at is not None:
             return ScriptModel.from_orm(self)
 
         return BaseScript.from_orm(self)

@@ -2,10 +2,6 @@
   <div class="box table-container" v-if="hasMatches()">
     <b-table :data="matches">
       <template slot-scope="props">
-        <b-table-column field="id" label="ID" width="40" numeric>
-          {{ props.row.id }}
-        </b-table-column>
-
         <b-table-column field="snapshot" label="Snapshot">
           <router-link
             :to="{

@@ -1,5 +1,6 @@
 import pytest
 
+from tests.utils import first_rule_id, first_snapshot_id
 from uzen.models.matches import Match
 
 
@@ -22,18 +23,22 @@ async def test_matches_search(client):
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("matches_setup")
 async def test_matches_search_with_filters(client):
-    response = await client.get("/api/matches/search", params={"snapshot_id": 1})
+    snapshot_id = await first_snapshot_id()
+    response = await client.get(
+        "/api/matches/search", params={"snapshot_id": snapshot_id}
+    )
     assert response.status_code == 200
     matches = response.json()
     assert len(matches) == 1
 
-    response = await client.get("/api/matches/search", params={"rule_id": 1})
+    rule_id = await first_rule_id()
+    response = await client.get("/api/matches/search", params={"rule_id": rule_id})
     assert response.status_code == 200
     matches = response.json()
     assert len(matches) == 1
 
     response = await client.get(
-        "/api/matches/search", params={"rule_id": 1, "snapshot_id": 1}
+        "/api/matches/search", params={"rule_id": rule_id, "snapshot_id": snapshot_id}
     )
     assert response.status_code == 200
     matches = response.json()

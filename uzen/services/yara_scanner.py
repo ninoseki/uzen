@@ -1,6 +1,7 @@
 import asyncio
 import itertools
 from typing import Dict, List, Optional, cast
+from uuid import UUID
 
 import yara
 
@@ -19,7 +20,7 @@ class YaraScanner:
     def __init__(self, source: str):
         self.rule: yara.Rules = yara.compile(source=source)
 
-    async def partial_scan_for_scripts(self, ids: List[int]) -> List[YaraResult]:
+    async def partial_scan_for_scripts(self, ids: List[UUID]) -> List[YaraResult]:
         scripts = await Script.filter(snapshot_id__in=ids).values(
             "id", "snapshot_id", "content"
         )
@@ -39,7 +40,7 @@ class YaraScanner:
 
         return matched_results
 
-    async def partial_scan(self, target: str, ids: List[int]) -> List[YaraResult]:
+    async def partial_scan(self, target: str, ids: List[UUID]) -> List[YaraResult]:
         """Scan a list of snapshots with a YARA rule
 
         Arguments:
@@ -84,7 +85,7 @@ class YaraScanner:
         """
         # get snapshots ids based on filters
         snapshot_ids: object = await SnapshotSearcher.search(filters, id_only=True)
-        snapshot_ids = cast(List[int], snapshot_ids)
+        snapshot_ids = cast(List[UUID], snapshot_ids)
         if len(snapshot_ids) == 0:
             return []
 
@@ -105,16 +106,16 @@ class YaraScanner:
 
         table = self._build_snapshot_table(snapshots)
         for result in results:
-            snapshot = table.get(result.snapshot_id)
+            snapshot = table.get(str(result.snapshot_id))
             if snapshot is not None:
                 snapshot["yara_result"] = result
 
         return [ScanResult(**snapshot) for snapshot in snapshots]
 
-    def _build_snapshot_table(self, snapshots: List[dict]) -> Dict[int, dict]:
+    def _build_snapshot_table(self, snapshots: List[dict]) -> Dict[str, dict]:
         table = {}
         for snapshot in snapshots:
-            id_ = int(str(snapshot.get("id")))
+            id_ = str(snapshot.get("id"))
             table[id_] = snapshot
         return table
 

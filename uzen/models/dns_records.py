@@ -20,7 +20,7 @@ class DnsRecord(TimestampMixin, AbstractBaseModel):
     )
 
     def to_model(self) -> Union[DnsRecordModel, BaseDnsRecord]:
-        if self.id is not None:
+        if self.created_at is not None:
             return DnsRecordModel.from_orm(self)
 
         return BaseDnsRecord.from_orm(self)

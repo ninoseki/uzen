@@ -1,7 +1,9 @@
-import datetime
 from typing import Optional
 
 from pydantic import BaseModel, Field
+
+from uzen.schemas.base import AbstractBaseModel
+from uzen.schemas.mixins import TimestampMixin
 
 
 class BaseClassification(BaseModel):
@@ -24,10 +26,5 @@ class BaseClassification(BaseModel):
         orm_mode = True
 
 
-class Classification(BaseClassification):
-    """Full Pydantic model for Classification
-
-    """
-
-    id: int
-    created_at: datetime.datetime
+class Classification(BaseClassification, AbstractBaseModel, TimestampMixin):
+    """Full Pydantic model for Classification"""

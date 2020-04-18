@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import List, Optional, Type, Union
+from uuid import UUID
 
 from tortoise.models import Model
 from tortoise.query_utils import Q
@@ -24,7 +25,7 @@ class AbstractSearcher:
 
     async def search_all(
         self, id_only=False
-    ) -> Union[List[Type[Model]], List[dict], List[int]]:
+    ) -> Union[List[Type[Model]], List[dict], List[UUID]]:
         if id_only:
             return await self.model.filter(self.query).values_list("id", flat=True)
 
@@ -37,7 +38,7 @@ class AbstractSearcher:
 
     async def search_with_size(
         self, size=100, id_only=False
-    ) -> Union[List[Type[Model]], List[dict], List[int]]:
+    ) -> Union[List[Type[Model]], List[dict], List[UUID]]:
         if id_only:
             return (
                 await self.model.filter(self.query)
@@ -56,7 +57,7 @@ class AbstractSearcher:
 
     async def search_with_size_and_offset(
         self, offset=0, size=100, id_only=False
-    ) -> Union[List[Type[Model]], List[dict], List[int]]:
+    ) -> Union[List[Type[Model]], List[dict], List[UUID]]:
         if id_only:
             return (
                 await self.model.filter(self.query)
@@ -82,7 +83,7 @@ class AbstractSearcher:
 
     async def _search(
         self, size=None, offset=None, id_only=False, count_only=False,
-    ) -> Union[List[Type[Model]], List[dict], List[int], int]:
+    ) -> Union[List[Type[Model]], List[dict], List[UUID], int]:
         if count_only:
             return await self.count()
 

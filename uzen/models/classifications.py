@@ -21,7 +21,7 @@ class Classification(TimestampMixin, AbstractBaseModel):
     )
 
     def to_model(self) -> Union[ClassificationModel, BaseClassification]:
-        if self.id is not None:
+        if self.created_at is not None:
             return ClassificationModel.from_orm(self)
 
         return BaseClassification.from_orm(self)

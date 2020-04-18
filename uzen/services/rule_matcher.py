@@ -1,6 +1,7 @@
 import asyncio
 import itertools
 from typing import List, cast
+from uuid import UUID
 
 from uzen.models.rules import Rule
 from uzen.models.snapshots import Snapshot
@@ -42,7 +43,7 @@ class RuleMatcher:
                 )
         return results
 
-    async def partial_scan(self, ids: List[int]) -> List[MatchResult]:
+    async def partial_scan(self, ids: List[UUID]) -> List[MatchResult]:
         async with sem:
             results: List[MatchResult] = []
             rules: List[Rule] = await Rule.filter(id__in=ids)
@@ -62,7 +63,7 @@ class RuleMatcher:
             return results
 
     async def scan(self) -> List[MatchResult]:
-        rule_ids = cast(List[int], await RuleSearcher.search({}, id_only=True))
+        rule_ids = cast(List[UUID], await RuleSearcher.search({}, id_only=True))
         if len(rule_ids) == 0:
             return []
 

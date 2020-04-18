@@ -37,4 +37,4 @@ class MatchinbgTask(AbstractTask):
     @classmethod
     async def process(cls, snapshot: Snapshot):
         instance = cls(snapshot)
-        return await instance.safe_process()
+        return await instance._process()

@@ -1,4 +1,5 @@
 from typing import List, Union, cast
+from uuid import UUID
 
 from tortoise.query_utils import Q
 
@@ -16,7 +17,7 @@ class SnapshotSearcher(AbstractSearcher):
     @classmethod
     async def search(
         cls, filters: dict, size=None, offset=None, id_only=False, count_only=False
-    ) -> Union[List[SearchResult], List[int], int]:
+    ) -> Union[List[SearchResult], List[UUID], int]:
         """Search snapshots
 
         Arguments:
@@ -29,7 +30,7 @@ class SnapshotSearcher(AbstractSearcher):
             count_only {bool} -- Whether to return only a count of results (default: {False})
 
         Returns:
-            Union[List[SearchResult], List[int], int] -- A list of simlified snapshot models or count of the list
+            Union[List[SearchResult], List[UUID], int] -- A list of simlified snapshot models or count of the list
         """
         queries = []
 
@@ -80,7 +81,7 @@ class SnapshotSearcher(AbstractSearcher):
         )
 
         if id_only:
-            return cast(List[int], results)
+            return cast(List[UUID], results)
 
         results = cast(List[dict], results)
         return [SearchResult(**result) for result in results]

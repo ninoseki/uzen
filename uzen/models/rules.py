@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, List
+from uuid import UUID
 
 from tortoise import fields
 from tortoise.exceptions import NoValuesFetched
@@ -32,9 +33,9 @@ class Rule(TimestampMixin, AbstractBaseModel):
         return RuleModel.from_orm(self)
 
     @classmethod
-    async def get_by_id(cls, id_: int) -> Rule:
+    async def get_by_id(cls, id_: UUID) -> Rule:
         return await cls.get(id=id_).prefetch_related("_snapshots")
 
     class Meta:
         table = "rules"
-        ordering = ["-id"]
+        ordering = ["-created_at"]

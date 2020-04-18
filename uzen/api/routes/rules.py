@@ -1,4 +1,5 @@
 from typing import List, Optional, cast
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
 from tortoise.exceptions import DoesNotExist
@@ -51,7 +52,7 @@ async def count(filters: SearchFilters = Depends(),) -> CountResponse:
     summary="Get a rule",
     description="Get a rule which has a given id",
 )
-async def get(rule_id: int) -> RuleModel:
+async def get(rule_id: UUID) -> RuleModel:
     try:
         rule = await Rule.get_by_id(rule_id)
     except DoesNotExist:
@@ -67,7 +68,7 @@ async def get(rule_id: int) -> RuleModel:
     summary="Update a rule",
     description="Update a rule which has a given id",
 )
-async def put(rule_id: int, payload: UpdateRulePayload) -> RuleModel:
+async def put(rule_id: UUID, payload: UpdateRulePayload) -> RuleModel:
     try:
         rule = await Rule.get(id=rule_id)
         if payload.name is not None:
@@ -104,7 +105,7 @@ async def create(payload: CreateRulePayload) -> RuleModel:
     description="Delete a rule which has a given ID",
     status_code=204,
 )
-async def delete(rule_id: int) -> dict:
+async def delete(rule_id: UUID) -> dict:
     try:
         await Rule.delete_by_id(rule_id)
     except DoesNotExist:

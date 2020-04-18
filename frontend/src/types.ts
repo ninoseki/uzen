@@ -3,12 +3,12 @@ export interface Dict {
 }
 
 export interface Screenshot {
-  id: number | undefined;
+  id: string | undefined;
   data: string;
 }
 
 export interface Snapshot {
-  id: number | undefined;
+  id: string | undefined;
   url: string;
   submitted_url: string;
   status: number;
@@ -67,7 +67,7 @@ export interface Link {
 }
 
 export interface Script {
-  id: number | undefined;
+  id: string | undefined;
   url: string;
   content: string;
   sha256: string;
@@ -75,14 +75,14 @@ export interface Script {
 }
 
 export interface DnsRecord {
-  id: number | undefined;
+  id: string | undefined;
   type: string;
   value: string;
   created_at: string | undefined;
 }
 
 export interface Classification {
-  id: number | undefined;
+  id: string | undefined;
   name: string;
   malicious: boolean;
   note: string | undefined;
@@ -104,8 +104,8 @@ export interface YaraMatch {
 }
 
 export interface YaraResult {
-  snapshot_id: number;
-  script_id: number | undefined;
+  snapshot_id: string;
+  script_id: string | undefined;
   target: string;
   matches: YaraMatch[];
 }
@@ -123,7 +123,7 @@ export interface Oneshot {
 export type TargetTypes = "body" | "whois" | "certificate" | "script";
 
 export interface Rule {
-  id: number;
+  id: string;
   name: string;
   target: TargetTypes;
   source: string;
@@ -139,7 +139,7 @@ export interface RuleFilters {
 }
 
 export interface Match {
-  id: number;
+  id: string;
   snapshot: Snapshot;
   rule: Rule;
   script: Script | undefined;
@@ -148,8 +148,8 @@ export interface Match {
 }
 
 export interface MatchFilters {
-  snapshot_id: number | undefined;
-  rule_id: number | undefined;
+  snapshot_id: string | undefined;
+  rule_id: string | undefined;
   from_at: Date | undefined;
   to_at: Date | undefined;
 }

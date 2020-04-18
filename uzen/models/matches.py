@@ -23,4 +23,4 @@ class Match(TimestampMixin, AbstractBaseModel):
 
     class Meta:
         table = "matches"
-        ordering = ["-id"]
+        ordering = ["-created_at"]
