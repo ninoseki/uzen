@@ -1,17 +1,16 @@
 from typing import Union
 
 from tortoise import fields
-from tortoise.models import Model
 
+from uzen.models.base import AbstractBaseModel
+from uzen.models.mixins import TimestampMixin
 from uzen.schemas.dns_records import BaseDnsRecord
 from uzen.schemas.dns_records import DnsRecord as DnsRecordModel
 
 
-class DnsRecord(Model):
-    id = fields.IntField(pk=True)
+class DnsRecord(TimestampMixin, AbstractBaseModel):
     type = fields.CharField(max_length=5)
     value = fields.TextField()
-    created_at = fields.DatetimeField(auto_now_add=True)
 
     snapshot: fields.ForeignKeyRelation["Snapshot"] = fields.ForeignKeyField(
         "models.Snapshot",

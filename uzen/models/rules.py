@@ -2,20 +2,19 @@ from typing import TYPE_CHECKING, List
 
 from tortoise import fields
 from tortoise.exceptions import NoValuesFetched
-from tortoise.models import Model
 
+from uzen.models.base import AbstractBaseModel
+from uzen.models.mixins import TimestampMixin
 from uzen.schemas.rules import Rule as RuleModel
 
 if TYPE_CHECKING:
     from uzen.schemas.snapshots import Snapshot  # noqa
 
 
-class Rule(Model):
-    id = fields.IntField(pk=True)
+class Rule(TimestampMixin, AbstractBaseModel):
     name = fields.CharField(max_length=255)
     target = fields.CharField(max_length=255)
     source = fields.TextField()
-    created_at = fields.DatetimeField(auto_now_add=True)
     updated_at = fields.DatetimeField(auto_now=True)
 
     _snapshots: fields.ManyToManyRelation["Snapshot"]

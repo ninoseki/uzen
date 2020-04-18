@@ -1,13 +1,12 @@
 from tortoise import fields
-from tortoise.models import Model
 
+from uzen.models.base import AbstractBaseModel
+from uzen.models.mixins import TimestampMixin
 from uzen.schemas.matches import Match as MatchModel
 
 
-class Match(Model):
-    id = fields.IntField(pk=True)
+class Match(TimestampMixin, AbstractBaseModel):
     matches = fields.JSONField()
-    created_at = fields.DatetimeField(auto_now_add=True)
 
     snapshot: fields.ForeignKeyRelation["Snapshot"] = fields.ForeignKeyField(
         "models.Snapshot", on_delete=fields.CASCADE
