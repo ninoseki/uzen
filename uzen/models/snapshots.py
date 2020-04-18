@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import Any, List, Optional, Union
+from uuid import UUID
 
 from tortoise import fields
 from tortoise.exceptions import NoValuesFetched
@@ -131,7 +132,7 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
         self.classifications_ = classifications
 
     def to_model(self) -> Union[BaseSnapshot, SnapshotModel]:
-        if self.id is not None:
+        if self.created_at is not None:
             return SnapshotModel.from_orm(self)
 
         return BaseSnapshot.from_orm(self)
@@ -141,11 +142,11 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
         return model.dict()
 
     @classmethod
-    async def get_by_id(cls, id_: int) -> Snapshot:
+    async def get_by_id(cls, id_: UUID) -> Snapshot:
         return await cls.get(id=id_).prefetch_related(
             "_screenshot", "_scripts", "_dns_records", "_classifications", "_rules"
         )
 
     class Meta:
         table = "snapshots"
-        ordering = ["-id"]
+        ordering = ["-created_at"]

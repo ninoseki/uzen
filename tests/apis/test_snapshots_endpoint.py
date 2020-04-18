@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from tests.utils import make_snapshot_result
+from tests.utils import first_snapshot_id, make_snapshot_result
 from uzen.models.snapshots import Snapshot
 from uzen.services.browser import Browser
 
@@ -132,7 +132,8 @@ async def test_snapshot_post(client, monkeypatch):
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("dns_records_setup")
 async def test_snapshot_get_with_dns_records(client):
-    response = await client.get("/api/snapshots/1")
+    id_ = await first_snapshot_id()
+    response = await client.get(f"/api/snapshots/{id_}")
     assert response.status_code == 200
 
     snapshot = response.json()
@@ -144,7 +145,8 @@ async def test_snapshot_get_with_dns_records(client):
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("classifications_setup")
 async def test_snapshot_get_with_classifications(client):
-    response = await client.get("/api/snapshots/1")
+    id_ = await first_snapshot_id()
+    response = await client.get(f"/api/snapshots/{id_}")
     assert response.status_code == 200
 
     snapshot = response.json()
@@ -156,7 +158,8 @@ async def test_snapshot_get_with_classifications(client):
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("scripts_setup")
 async def test_snapshot_get_with_scripts(client):
-    response = await client.get("/api/snapshots/1")
+    id_ = await first_snapshot_id()
+    response = await client.get(f"/api/snapshots/{id_}")
     assert response.status_code == 200
 
     snapshot = response.json()

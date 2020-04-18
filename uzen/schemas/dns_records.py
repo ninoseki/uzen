@@ -1,6 +1,7 @@
-import datetime
-
 from pydantic import BaseModel, Field
+
+from uzen.schemas.base import AbstractBaseModel
+from uzen.schemas.mixins import TimestampMixin
 
 
 class BaseDnsRecord(BaseModel):
@@ -20,10 +21,5 @@ class BaseDnsRecord(BaseModel):
         orm_mode = True
 
 
-class DnsRecord(BaseDnsRecord):
-    """Full Pydantic model for DnsRecord
-
-    """
-
-    id: int
-    created_at: datetime.datetime
+class DnsRecord(BaseDnsRecord, AbstractBaseModel, TimestampMixin):
+    """Full Pydantic model for DnsRecord"""

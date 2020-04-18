@@ -1,4 +1,5 @@
 from typing import Optional
+from uuid import UUID
 
 from fastapi import Query
 
@@ -6,10 +7,10 @@ from fastapi import Query
 class SearchFilters:
     def __init__(
         self,
-        rule_id: Optional[int] = Query(
+        rule_id: Optional[UUID] = Query(
             None, title="Rule ID", description="An ID of the rule"
         ),
-        snapshot_id: Optional[int] = Query(
+        snapshot_id: Optional[UUID] = Query(
             None, title="Snapshot ID", description="An ID of the snapshot"
         ),
         from_at: Optional[str] = Query(

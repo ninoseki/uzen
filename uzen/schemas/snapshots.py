@@ -3,9 +3,11 @@ from typing import List, Optional, Union
 
 from pydantic import AnyHttpUrl, BaseModel, Field, IPvAnyAddress
 
+from uzen.schemas.base import AbstractBaseModel
 from uzen.schemas.classifications import BaseClassification, Classification
 from uzen.schemas.common import Source, Target
 from uzen.schemas.dns_records import BaseDnsRecord, DnsRecord
+from uzen.schemas.mixins import TimestampMixin
 from uzen.schemas.screenshots import BaseScreenshot, Screenshot
 from uzen.schemas.scripts import BaseScript, Script
 
@@ -24,11 +26,9 @@ class BaseRule(Source, Target):
         orm_mode = True
 
 
-class Rule(BaseRule):
+class Rule(BaseRule, AbstractBaseModel, TimestampMixin):
     """Full Pydantic model for Rule"""
 
-    id: int
-    created_at: datetime.datetime
     updated_at: datetime.datetime
     snapshots: List["Snapshot"]
 
@@ -92,20 +92,12 @@ class BaseSnapshot(BasicAttributes):
         orm_mode = True
 
 
-class Snapshot(BaseSnapshot):
-    """Pydantic model of Snapshot
-
-    """
-
-    id: int
-    created_at: datetime.datetime
+class Snapshot(BaseSnapshot, AbstractBaseModel, TimestampMixin):
+    """Pydantic model of Snapshot"""
 
 
-class SearchResult(BasicAttributes):
+class SearchResult(BasicAttributes, AbstractBaseModel, TimestampMixin):
     """Simplified version of Pydantic model of Snapshot"""
-
-    id: int
-    created_at: datetime.datetime
 
     @classmethod
     def field_keys(cls) -> List[str]:

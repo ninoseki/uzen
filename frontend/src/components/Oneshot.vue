@@ -155,7 +155,7 @@ export default class OneshotView extends Mixins<ErrorDialogMixin>(
   yaraResult(): YaraResult | undefined {
     if (this.oneshot?.matches !== undefined) {
       const result: YaraResult = {
-        snapshot_id: -1,
+        snapshot_id: "",
         script_id: undefined,
         target: this.target,
         matches: this.oneshot.matches,

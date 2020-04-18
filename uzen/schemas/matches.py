@@ -1,8 +1,11 @@
 import datetime
 from typing import List, Optional
+from uuid import UUID
 
 from pydantic import BaseModel, Field
 
+from uzen.schemas.base import AbstractBaseModel
+from uzen.schemas.mixins import TimestampMixin
 from uzen.schemas.rules import Rule
 from uzen.schemas.scripts import Script
 from uzen.schemas.snapshots import Snapshot
@@ -32,18 +35,15 @@ class BaseMatch(BaseModel):
         orm_mode = True
 
 
-class Match(BaseMatch):
+class Match(BaseMatch, AbstractBaseModel, TimestampMixin):
     """Full Pydantic model for Match"""
-
-    id: int
-    created_at: datetime.datetime
 
 
 class MatchResult(BaseModel):
-    rule_id: int = Field(
+    rule_id: UUID = Field(
         ..., title="Matches", description="An ID of the rule",
     )
-    script_id: Optional[int] = Field(
+    script_id: Optional[UUID] = Field(
         None, title="Matches", description="An ID of the script",
     )
     matches: List[YaraMatch] = Field(

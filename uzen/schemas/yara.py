@@ -1,4 +1,5 @@
 from typing import List, Optional
+from uuid import UUID
 
 from pydantic import BaseModel, Field
 
@@ -45,10 +46,10 @@ class YaraMatch(BaseModel):
 
 
 class YaraResult(BaseModel):
-    snapshot_id: int = Field(
+    snapshot_id: UUID = Field(
         ..., title="Snapshot ID", description="An ID of the snapshot"
     )
-    script_id: Optional[int] = Field(
+    script_id: Optional[UUID] = Field(
         ..., title="Script ID", description="An ID of the script"
     )
     target: str = Field(..., title="Target", description="The target to scan")

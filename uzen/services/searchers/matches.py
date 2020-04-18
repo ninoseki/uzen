@@ -1,4 +1,5 @@
 from typing import List, Union, cast
+from uuid import UUID
 
 from tortoise.query_utils import Q
 
@@ -11,7 +12,7 @@ class MatchSearcher(AbstractSearcher):
     @classmethod
     async def search(
         cls, filters: dict, size=None, offset=None, id_only=False, count_only=False
-    ) -> Union[List[Match], List[int], int]:
+    ) -> Union[List[Match], List[UUID], int]:
         """Search matches
 
         Arguments:
@@ -24,7 +25,7 @@ class MatchSearcher(AbstractSearcher):
             count_only {bool} -- Whether to return only a count of results (default: {False})
 
         Returns:
-            Union[List[Match], List[int], int] -- A list of matches or count of the list
+            Union[List[Match], List[UUID], int] -- A list of matches or count of the list
         """
         queries: List[Q] = []
 

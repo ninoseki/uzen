@@ -1,5 +1,8 @@
 import datetime
+import uuid
+from uuid import UUID
 
+from uzen.models.rules import Rule
 from uzen.models.screenshots import Screenshot
 from uzen.models.snapshots import Snapshot
 from uzen.schemas.utils import SnapshotResult
@@ -7,7 +10,7 @@ from uzen.schemas.utils import SnapshotResult
 
 def make_snapshot() -> Snapshot:
     return Snapshot(
-        id=10000,
+        id=uuid.uuid4(),
         url=f"http://example.com/",
         submitted_url=f"http://example.com",
         status=200,
@@ -30,7 +33,7 @@ def make_snapshot() -> Snapshot:
 async def make_snapshot_result() -> SnapshotResult:
     return SnapshotResult(
         snapshot=Snapshot(
-            id=10000,
+            id=uuid.uuid4(),
             url=f"http://example.com/",
             submitted_url=f"http://example.com",
             status=200,
@@ -50,3 +53,13 @@ async def make_snapshot_result() -> SnapshotResult:
         ),
         screenshot=Screenshot(data=""),
     )
+
+
+async def first_rule_id() -> UUID:
+    rule = await Rule.all().first()
+    return rule.id
+
+
+async def first_snapshot_id() -> UUID:
+    snapshot = await Snapshot.all().first()
+    return snapshot.id

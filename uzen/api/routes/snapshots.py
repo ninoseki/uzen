@@ -1,4 +1,5 @@
 from typing import List, Optional, cast
+from uuid import UUID
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from tortoise.exceptions import DoesNotExist
@@ -54,7 +55,7 @@ async def count(filters: SearchFilters = Depends()) -> CountResponse:
     summary="Get a snapshot",
     description="Get a snapshot which has a given id",
 )
-async def get(snapshot_id: int) -> SnapshotModel:
+async def get(snapshot_id: UUID) -> SnapshotModel:
     try:
         snapshot: Snapshot = await Snapshot.get_by_id(snapshot_id)
     except DoesNotExist:
@@ -119,7 +120,7 @@ async def create(
     description="Delete a snapshot which has a given ID",
     status_code=204,
 )
-async def delete(snapshot_id: int) -> dict:
+async def delete(snapshot_id: UUID) -> dict:
     try:
         await Snapshot.delete_by_id(snapshot_id)
     except DoesNotExist:

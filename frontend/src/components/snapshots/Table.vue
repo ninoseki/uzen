@@ -2,10 +2,6 @@
   <div class="box table-container" v-if="hasSnapshots()">
     <b-table :data="snapshots">
       <template slot-scope="props">
-        <b-table-column field="id" label="ID" width="40" numeric>
-          {{ props.row.id }}
-        </b-table-column>
-
         <b-table-column field="url" label="URL">
           <strong>URL:</strong>
           <router-link

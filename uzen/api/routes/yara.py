@@ -53,6 +53,7 @@ async def oneshot(payload: OneshotPayload) -> OneshotResponse:
 
     # Process enrichment tasks
     results = await EnrichmentTask.process(snapshot, insert_to_db=False)
+
     snapshot.scripts = [script.to_model() for script in results.scripts]
     snapshot.dns_records = [record.to_model() for record in results.dns_records]
     snapshot.classifications = [

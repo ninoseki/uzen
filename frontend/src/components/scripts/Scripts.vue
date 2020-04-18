@@ -32,7 +32,7 @@ import { Script } from "@/types";
 })
 export default class ScriptsView extends Vue {
   @Prop() private scripts!: Script[];
-  private selectedID: number | null = null;
+  private selectedID: string | null = null;
   private selectedScript: Script | undefined = undefined;
 
   showSelectedScript() {

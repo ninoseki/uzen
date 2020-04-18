@@ -2,6 +2,7 @@ import json
 
 import pytest
 
+from tests.utils import first_rule_id
 from uzen.models.rules import Rule
 
 
@@ -36,7 +37,8 @@ async def test_create_rule(client):
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("rules_setup")
 async def test_delete_rule(client):
-    response = await client.delete("/api/rules/1")
+    id_ = await first_rule_id()
+    response = await client.delete(f"/api/rules/{id_}")
     assert response.status_code == 204
 
 
@@ -82,11 +84,13 @@ async def test_rules_count(client):
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("rules_setup")
 async def test_update(client):
+    id_ = await first_rule_id()
+
     payload = {"name": "woweee"}
-    response = await client.put("/api/rules/1", data=json.dumps(payload))
+    response = await client.put(f"/api/rules/{id_}", data=json.dumps(payload))
     assert response.status_code == 200
 
-    rule = await Rule.get(id=1)
+    rule = await Rule.get(id=id_)
     assert rule.name == "woweee"
     old_updated_at = rule.updated_at
 
@@ -95,10 +99,10 @@ async def test_update(client):
         "target": "script",
         "source": 'rule foo: bar {strings: $a = "html" condition: $a}',
     }
-    response = await client.put("/api/rules/1", data=json.dumps(payload))
+    response = await client.put(f"/api/rules/{id_}", data=json.dumps(payload))
     assert response.status_code == 200
 
-    rule = await Rule.get(id=1)
+    rule = await Rule.get(id=id_)
     assert rule.name == "test"
     assert rule.target == "script"
     assert rule.source == 'rule foo: bar {strings: $a = "html" condition: $a}'

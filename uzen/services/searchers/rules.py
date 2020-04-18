@@ -1,4 +1,5 @@
 from typing import List, Union, cast
+from uuid import UUID
 
 from tortoise.query_utils import Q
 
@@ -10,7 +11,7 @@ class RuleSearcher(AbstractSearcher):
     @classmethod
     async def search(
         cls, filters: dict, size=None, offset=None, id_only=False, count_only=False
-    ) -> Union[List[Rule], List[int], int]:
+    ) -> Union[List[Rule], List[UUID], int]:
         """Search rules.
 
         Arguments:
@@ -23,7 +24,7 @@ class RuleSearcher(AbstractSearcher):
             count_only {bool} -- Whether to return only a count of results (default: {False})
 
         Returns:
-            Union[List[Rule], List[int], int] -- A list of rules or count of the list
+            Union[List[Rule], List[UUID], int] -- A list of rules or count of the list
         """
         # build queirs from filters
         queries = []
@@ -48,4 +49,4 @@ class RuleSearcher(AbstractSearcher):
             size=size, offset=offset, id_only=id_only, count_only=count_only
         )
 
-        return cast(Union[List[Rule], List[int], int], results)
+        return cast(Union[List[Rule], List[UUID], int], results)

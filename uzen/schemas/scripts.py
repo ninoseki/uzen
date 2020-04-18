@@ -1,6 +1,7 @@
-import datetime
-
 from pydantic import AnyHttpUrl, BaseModel, Field
+
+from uzen.schemas.base import AbstractBaseModel
+from uzen.schemas.mixins import TimestampMixin
 
 
 class BaseScript(BaseModel):
@@ -17,8 +18,5 @@ class BaseScript(BaseModel):
         orm_mode = True
 
 
-class Script(BaseScript):
+class Script(BaseScript, AbstractBaseModel, TimestampMixin):
     """Full Pydantic model for Snapshot"""
-
-    id: int
-    created_at: datetime.datetime

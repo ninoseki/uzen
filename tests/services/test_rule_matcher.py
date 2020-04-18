@@ -1,4 +1,5 @@
 import datetime
+import uuid
 
 import pytest
 
@@ -12,7 +13,7 @@ from uzen.services.rule_matcher import RuleMatcher
 @pytest.fixture
 async def rule_setup(client):
     rule = Rule(
-        id=1,
+        id=uuid.uuid4(),
         name=f"test",
         target="script",
         source='rule foo: bar {strings: $a = "foo" condition: $a}',
