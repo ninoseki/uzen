@@ -3,12 +3,12 @@
     <div class="columns">
       <div class="column is-half">
         <b-field label="Rule ID">
-          <b-input type="number" v-model="filters.rule_id"></b-input>
+          <b-input v-model="filters.rule_id"></b-input>
         </b-field>
       </div>
       <div class="column is-half">
         <b-field label="Snapshot ID">
-          <b-input type="number" v-model="filters.snapshot_id"></b-input>
+          <b-input v-model="filters.snapshot_id"></b-input>
         </b-field>
       </div>
     </div>
