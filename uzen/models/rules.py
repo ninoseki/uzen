@@ -32,8 +32,8 @@ class Rule(TimestampMixin, AbstractBaseModel):
         return RuleModel.from_orm(self)
 
     @classmethod
-    async def get_by_id(cls, id: int) -> Rule:
-        return await cls.get(id=id).prefetch_related("_snapshots")
+    async def get_by_id(cls, id_: int) -> Rule:
+        return await cls.get(id=id_).prefetch_related("_snapshots")
 
     class Meta:
         table = "rules"

@@ -141,8 +141,8 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
         return model.dict()
 
     @classmethod
-    async def get_by_id(cls, id: int) -> Snapshot:
-        return await cls.get(id=id).prefetch_related(
+    async def get_by_id(cls, id_: int) -> Snapshot:
+        return await cls.get(id=id_).prefetch_related(
             "_screenshot", "_scripts", "_dns_records", "_classifications", "_rules"
         )
 
