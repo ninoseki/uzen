@@ -60,7 +60,9 @@ async def get(snapshot_id: int) -> SnapshotModel:
             "_screenshot", "_scripts", "_dns_records", "_classifications", "_rules"
         )
     except DoesNotExist:
-        raise HTTPException(status_code=404, detail=f"Snapshot:{id} is not found")
+        raise HTTPException(
+            status_code=404, detail=f"Snapshot:{snapshot_id} is not found"
+        )
 
     model = cast(SnapshotModel, snapshot.to_model())
     return model
@@ -123,7 +125,9 @@ async def delete(snapshot_id: int) -> dict:
     try:
         snapshot = await Snapshot.get(id=snapshot_id)
     except DoesNotExist:
-        raise HTTPException(status_code=404, detail=f"Snapshot:{id} is not found")
+        raise HTTPException(
+            status_code=404, detail=f"Snapshot:{snapshot_id} is not found"
+        )
 
     await snapshot.delete()
     return {}
