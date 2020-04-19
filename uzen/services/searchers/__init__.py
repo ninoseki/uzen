@@ -36,25 +36,6 @@ class AbstractSearcher:
             *self.prefetch_related
         )
 
-    async def search_with_size(
-        self, size=100, id_only=False
-    ) -> Union[List[Type[Model]], List[dict], List[UUID]]:
-        if id_only:
-            return (
-                await self.model.filter(self.query)
-                .limit(size)
-                .values_list("id", flat=True)
-            )
-
-        if self.values is not None:
-            return await self.model.filter(self.query).limit(size).values(*self.values)
-
-        return (
-            await self.model.filter(self.query)
-            .limit(size)
-            .prefetch_related(*self.prefetch_related)
-        )
-
     async def search_with_size_and_offset(
         self, offset=0, size=100, id_only=False
     ) -> Union[List[Type[Model]], List[dict], List[UUID]]:
@@ -82,13 +63,16 @@ class AbstractSearcher:
         )
 
     async def _search(
-        self, size=None, offset=None, id_only=False, count_only=False,
+        self,
+        size: Optional[int] = None,
+        offset: Optional[int] = None,
+        id_only=False,
+        count_only=False,
     ) -> Union[List[Type[Model]], List[dict], List[UUID], int]:
         if count_only:
             return await self.count()
 
-        if size is not None and offset is None:
-            return await self.search_with_size(size=size, id_only=id_only)
+        offset = 0 if offset is None else offset
 
         size = 100 if size is None else size
         if offset is not None:
@@ -100,7 +84,12 @@ class AbstractSearcher:
 
     @classmethod
     async def search(
-        cls, filters: dict, size=None, offset=None, id_only=False, count_only=False
+        cls,
+        filters: dict,
+        size: Optional[int] = None,
+        offset: Optional[int] = None,
+        id_only=False,
+        count_only=False,
     ):
         """Search a table.
 
