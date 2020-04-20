@@ -1,7 +1,9 @@
-from typing import Optional
+from typing import List, Optional, Union
+from uuid import UUID
 
 from pydantic import BaseModel, Field, validator
 
+from uzen.schemas.search import BaseSearchResults
 from uzen.schemas.snapshots import BaseRule, Rule  # noqa: F401
 
 
@@ -31,3 +33,7 @@ class UpdateRulePayload(BaseModel):
 
     class Config:
         orm_mode = False
+
+
+class SearchResults(BaseSearchResults):
+    results: Union[List[Rule], List[UUID]]

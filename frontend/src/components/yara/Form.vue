@@ -9,10 +9,7 @@
         <b-button type="is-light" @click="scan">Scan</b-button>
       </div>
     </div>
-    <h2 v-if="hasCount()">
-      {{ count }} snapshots found
-      <Counter />
-    </h2>
+    <h2 v-if="hasCount()">{{ count }} snapshots found</h2>
 
     <SnapshotTable v-bind:snapshots="results" />
   </div>
@@ -31,7 +28,6 @@ import {
 } from "@/types";
 
 import BasicForm from "@/components/yara/BasicForm.vue";
-import Counter from "@/components/ui/Counter.vue";
 import SnapshotSearch from "@/components/snapshots/Search.vue";
 import SnapshotTable from "@/components/snapshots/Table.vue";
 
@@ -40,7 +36,6 @@ import { ErrorDialogMixin } from "@/components/mixins";
 @Component({
   components: {
     BasicForm,
-    Counter,
     SnapshotSearch,
     SnapshotTable,
   },

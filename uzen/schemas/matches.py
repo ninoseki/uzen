@@ -1,5 +1,4 @@
-import datetime
-from typing import List, Optional
+from typing import List, Optional, Union
 from uuid import UUID
 
 from pydantic import BaseModel, Field
@@ -8,6 +7,7 @@ from uzen.schemas.base import AbstractBaseModel
 from uzen.schemas.mixins import TimestampMixin
 from uzen.schemas.rules import Rule
 from uzen.schemas.scripts import Script
+from uzen.schemas.search import BaseSearchResults
 from uzen.schemas.snapshots import Snapshot
 from uzen.schemas.yara import YaraMatch
 
@@ -49,3 +49,7 @@ class MatchResult(BaseModel):
     matches: List[YaraMatch] = Field(
         ..., title="Matches", description="A list of YARA mastches",
     )
+
+
+class SearchResults(BaseSearchResults):
+    results: Union[List[Match], List[UUID]]

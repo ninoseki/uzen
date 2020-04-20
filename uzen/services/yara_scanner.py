@@ -84,8 +84,8 @@ class YaraScanner:
             List[SearchResultModel] -- A list of simlified snapshot models
         """
         # get snapshots ids based on filters
-        snapshot_ids: object = await SnapshotSearcher.search(filters, id_only=True)
-        snapshot_ids = cast(List[UUID], snapshot_ids)
+        search_results = await SnapshotSearcher.search(filters, id_only=True)
+        snapshot_ids = cast(List[UUID], search_results.results)
         if len(snapshot_ids) == 0:
             return []
 

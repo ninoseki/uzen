@@ -29,9 +29,8 @@ import { Component, Mixin, Mixins } from "vue-mixin-decorator";
 import { Prop } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 
-import { Rule, RuleFilters, Count, ErrorData } from "@/types";
+import { Rule, RuleFilters, ErrorData, RuleSearchResults } from "@/types";
 
-import Counter from "@/components/ui/Counter.vue";
 import Form from "@/components/rules/Form.vue";
 import Table from "@/components/rules/Table.vue";
 
@@ -43,7 +42,6 @@ import {
 
 @Component({
   components: {
-    Counter,
     Form,
     Table,
   },
@@ -74,34 +72,20 @@ export default class Search extends Mixins<SearchFormComponentMixin>(
     params["offset"] = this.offset;
 
     try {
-      const response = await axios.get<Rule[]>("/api/rules/search", {
+      const response = await axios.get<RuleSearchResults>("/api/rules/search", {
         params: params,
       });
 
       loadingComponent.close();
 
-      this.rules = this.rules.concat(response.data);
+      this.rules = this.rules.concat(response.data.results);
+      this.totalCount = response.data.total;
       this.count = this.rules.length;
     } catch (error) {
       loadingComponent.close();
 
       const data = error.response.data as ErrorData;
       this.alertError(data);
-    }
-  }
-
-  async getTotalCount() {
-    try {
-      const params = (this.$refs.form as Form).filtersParams();
-
-      const response = await axios.get<Count>("/api/rules/count", {
-        params: params,
-      });
-      const data = response.data;
-      this.totalCount = data.count;
-      this.$forceUpdate();
-    } catch (error) {
-      this.totalCount = 0;
     }
   }
 
@@ -112,7 +96,6 @@ export default class Search extends Mixins<SearchFormComponentMixin>(
 
   initSearch() {
     this.search();
-    this.getTotalCount();
   }
 
   mounted() {

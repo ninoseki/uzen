@@ -7,8 +7,7 @@ from tortoise.exceptions import DoesNotExist
 from uzen.api.dependencies.snapshots import SearchFilters
 from uzen.core.exceptions import TakeSnapshotError
 from uzen.models.snapshots import Snapshot
-from uzen.schemas.common import CountResponse
-from uzen.schemas.snapshots import CreateSnapshotPayload, SearchResult
+from uzen.schemas.snapshots import CreateSnapshotPayload, SearchResult, SearchResults
 from uzen.schemas.snapshots import Snapshot as SnapshotModel
 from uzen.services.searchers.snapshots import SnapshotSearcher
 from uzen.services.snapshot import save_snapshot, take_snapshot
@@ -21,7 +20,7 @@ router = APIRouter()
 
 @router.get(
     "/search",
-    response_model=List[SearchResult],
+    response_model=SearchResults,
     response_description="Returns a list of matched snapshots",
     summary="Search snapshots",
     description="Searcn snapshtos with filters",
@@ -30,22 +29,10 @@ async def search(
     size: Optional[int] = None,
     offset: Optional[int] = None,
     filters: SearchFilters = Depends(),
-) -> List[SearchResult]:
-    snapshots = await SnapshotSearcher.search(vars(filters), size=size, offset=offset)
-    snapshots = cast(List[SearchResult], snapshots)
-    return snapshots
-
-
-@router.get(
-    "/count",
-    response_model=CountResponse,
-    response_description="Returns a count matched snapshots",
-    summary="Count snapshots",
-    description="Count a number of snapshot matched with filters",
-)
-async def count(filters: SearchFilters = Depends()) -> CountResponse:
-    count = await SnapshotSearcher.search(vars(filters), count_only=True)
-    return CountResponse(count=count)
+) -> SearchResults:
+    results = await SnapshotSearcher.search(vars(filters), size=size, offset=offset)
+    snapshots = cast(List[SearchResult], results.results)
+    return SearchResults(results=snapshots, total=results.total)
 
 
 @router.get(
@@ -65,19 +52,6 @@ async def get(snapshot_id: UUID) -> SnapshotModel:
 
     model = cast(SnapshotModel, snapshot.to_model())
     return model
-
-
-@router.get(
-    "/",
-    response_model=List[SearchResult],
-    response_description="Returns a list of snapshots",
-    summary="List snapshtos",
-    description="Get a list of snapshots",
-)
-async def list(size: int = 100, offset: int = 0) -> List[SearchResult]:
-    snapshots = await SnapshotSearcher.search({}, size=size, offset=offset)
-    snapshots = cast(List[SearchResult], snapshots)
-    return snapshots
 
 
 @router.post(
