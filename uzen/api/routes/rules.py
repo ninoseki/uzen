@@ -1,4 +1,4 @@
-from typing import List, Optional, cast
+from typing import Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -6,10 +6,9 @@ from tortoise.exceptions import DoesNotExist
 
 from uzen.api.dependencies.rules import SearchFilters
 from uzen.models.rules import Rule
-from uzen.schemas.common import CountResponse
 from uzen.schemas.rules import CreateRulePayload
 from uzen.schemas.rules import Rule as RuleModel
-from uzen.schemas.rules import UpdateRulePayload
+from uzen.schemas.rules import SearchResults, UpdateRulePayload
 from uzen.services.searchers.rules import RuleSearcher
 
 router = APIRouter()
@@ -17,7 +16,7 @@ router = APIRouter()
 
 @router.get(
     "/search",
-    response_model=List[RuleModel],
+    response_model=SearchResults,
     response_description="Returns a list of matched rules",
     summary="Search rules",
     description="Searcn rules with filters",
@@ -26,23 +25,8 @@ async def search(
     size: Optional[int] = None,
     offset: Optional[int] = None,
     filters: SearchFilters = Depends(),
-) -> List[RuleModel]:
-    rules = await RuleSearcher.search(vars(filters), size=size, offset=offset)
-    rules = cast(List[Rule], rules)
-
-    return [rule.to_model() for rule in rules]
-
-
-@router.get(
-    "/count",
-    response_model=CountResponse,
-    response_description="Returns a count matched rules",
-    summary="Count rules",
-    description="Count a number of rules matched with filters",
-)
-async def count(filters: SearchFilters = Depends(),) -> CountResponse:
-    count = await RuleSearcher.search(vars(filters), count_only=True)
-    return CountResponse(count=count)
+) -> SearchResults:
+    return await RuleSearcher.search(vars(filters), size=size, offset=offset)
 
 
 @router.get(

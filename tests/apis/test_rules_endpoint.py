@@ -48,37 +48,27 @@ async def test_rules_search(client):
     count = await Rule.all().count()
 
     response = await client.get("/api/rules/search")
-    assert response.status_code == 200
-
-    rules = response.json()
+    json = response.json()
+    rules = json.get("results")
     assert len(rules) == count
 
     # it matches with a rule
     response = await client.get("/api/rules/search", params={"name": "test1"})
-    rules = response.json()
+    json = response.json()
+    rules = json.get("results")
     assert len(rules) == 1
 
     # it matches with the all rules
     response = await client.get("/api/rules/search", params={"target": "body"})
-    rules = response.json()
+    json = response.json()
+    rules = json.get("results")
     assert len(rules) == count
 
     # it matches with the all rules
     response = await client.get("/api/rules/search", params={"source": "lmn"})
-    rules = response.json()
+    json = response.json()
+    rules = json.get("results")
     assert len(rules) == count
-
-
-@pytest.mark.asyncio
-@pytest.mark.usefixtures("rules_setup")
-async def test_rules_count(client):
-    response = await client.get("/api/rules/count")
-    assert response.status_code == 200
-
-    data = response.json()
-    count = data.get("count")
-    assert isinstance(count, int)
-    assert count == await Rule.all().count()
 
 
 @pytest.mark.asyncio

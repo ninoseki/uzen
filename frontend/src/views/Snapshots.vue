@@ -32,9 +32,8 @@ import { Component, Mixin, Mixins } from "vue-mixin-decorator";
 import { Prop } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 
-import { Count, Snapshot, ErrorData } from "@/types";
+import { Snapshot, ErrorData, SnapshotSearchResults } from "@/types";
 
-import Counter from "@/components/ui/Counter.vue";
 import SnapshotSearch from "@/components/snapshots/Search.vue";
 import SnapshotTable from "@/components/snapshots/Table.vue";
 
@@ -46,7 +45,6 @@ import {
 
 @Component({
   components: {
-    Counter,
     SnapshotSearch,
     SnapshotTable,
   },
@@ -77,34 +75,23 @@ export default class Snapshots extends Mixins<SearchFormComponentMixin>(
     params["offset"] = this.offset;
 
     try {
-      const response = await axios.get<Snapshot[]>("/api/snapshots/search", {
-        params: params,
-      });
+      const response = await axios.get<SnapshotSearchResults>(
+        "/api/snapshots/search",
+        {
+          params: params,
+        }
+      );
 
       loadingComponent.close();
 
-      this.snapshots = this.snapshots.concat(response.data);
+      this.snapshots = this.snapshots.concat(response.data.results);
+      this.totalCount = response.data.total;
       this.count = this.snapshots.length;
     } catch (error) {
       loadingComponent.close();
 
       const data = error.response.data as ErrorData;
       this.alertError(data);
-    }
-  }
-
-  async getTotalCount() {
-    try {
-      const params = (this.$refs.search as SnapshotSearch).filtersParams();
-
-      const response = await axios.get<Count>("/api/snapshots/count", {
-        params: params,
-      });
-      const data = response.data;
-      this.totalCount = data.count;
-      this.$forceUpdate();
-    } catch (error) {
-      this.totalCount = 0;
     }
   }
 
@@ -115,7 +102,6 @@ export default class Snapshots extends Mixins<SearchFormComponentMixin>(
 
   initSearch() {
     this.search();
-    this.getTotalCount();
   }
 
   mounted() {

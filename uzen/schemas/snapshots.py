@@ -1,5 +1,6 @@
 import datetime
 from typing import List, Optional, Union
+from uuid import UUID
 
 from pydantic import AnyHttpUrl, BaseModel, Field, IPvAnyAddress
 
@@ -10,6 +11,7 @@ from uzen.schemas.dns_records import BaseDnsRecord, DnsRecord
 from uzen.schemas.mixins import TimestampMixin
 from uzen.schemas.screenshots import BaseScreenshot, Screenshot
 from uzen.schemas.scripts import BaseScript, Script
+from uzen.schemas.search import BaseSearchResults
 
 # Declare rules related schemas here to prevent circular reference
 
@@ -102,6 +104,10 @@ class SearchResult(BasicAttributes, AbstractBaseModel, TimestampMixin):
     @classmethod
     def field_keys(cls) -> List[str]:
         return list(cls.__fields__.keys())
+
+
+class SearchResults(BaseSearchResults):
+    results: Union[List[SearchResult], List[UUID]]
 
 
 class CountResponse(BaseModel):

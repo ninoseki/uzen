@@ -25,9 +25,8 @@ import { Component, Mixin, Mixins } from "vue-mixin-decorator";
 import { Prop } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 
-import { Match, Count, ErrorData } from "@/types";
+import { Match, ErrorData, MatchSearchResults } from "@/types";
 
-import Counter from "@/components/ui/Counter.vue";
 import Table from "@/components/matches/Table.vue";
 import Form from "@/components/matches/Form.vue";
 
@@ -40,7 +39,6 @@ import {
 @Component({
   components: {
     Form,
-    Counter,
     Table,
   },
 })
@@ -70,34 +68,23 @@ export default class Search extends Mixins<SearchFormComponentMixin>(
     params["offset"] = this.offset;
 
     try {
-      const response = await axios.get<Match[]>("/api/matches/search", {
-        params: params,
-      });
+      const response = await axios.get<MatchSearchResults>(
+        "/api/matches/search",
+        {
+          params: params,
+        }
+      );
 
       loadingComponent.close();
 
-      this.matches = this.matches.concat(response.data);
+      this.matches = this.matches.concat(response.data.results);
+      this.totalCount = response.data.total;
       this.count = this.matches.length;
     } catch (error) {
       loadingComponent.close();
 
       const data = error.response.data as ErrorData;
       this.alertError(data);
-    }
-  }
-
-  async getTotalCount() {
-    try {
-      const params = (this.$refs.form as Form).filtersParams();
-
-      const response = await axios.get<Count>("/api/matches/count", {
-        params: params,
-      });
-      const data = response.data;
-      this.totalCount = data.count;
-      this.$forceUpdate();
-    } catch (error) {
-      this.totalCount = 0;
     }
   }
 
@@ -108,7 +95,6 @@ export default class Search extends Mixins<SearchFormComponentMixin>(
 
   initSearch() {
     this.search();
-    this.getTotalCount();
   }
 
   mounted() {

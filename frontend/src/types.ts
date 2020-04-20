@@ -34,10 +34,6 @@ export interface Snapshot {
   rules: Rule[];
 }
 
-export interface Count {
-  count: number;
-}
-
 export interface ValidationError {
   loc: string[];
   msg: string;
@@ -152,4 +148,21 @@ export interface MatchFilters {
   rule_id: string | undefined;
   from_at: Date | undefined;
   to_at: Date | undefined;
+}
+
+// Search results
+interface SearchResults {
+  total: number;
+}
+
+export interface SnapshotSearchResults extends SearchResults {
+  results: Snapshot[];
+}
+
+export interface MatchSearchResults extends SearchResults {
+  results: Match[];
+}
+
+export interface RuleSearchResults extends SearchResults {
+  results: Rule[];
 }

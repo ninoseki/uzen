@@ -1,9 +1,11 @@
-from typing import List, Union, cast
+from typing import List, cast
 from uuid import UUID
 
 from tortoise.query_utils import Q
 
 from uzen.models.matches import Match
+from uzen.schemas.matches import Match as MatchModel
+from uzen.schemas.matches import SearchResults
 from uzen.services.searchers import AbstractSearcher
 from uzen.services.searchers.utils import convert_to_datetime
 
@@ -11,8 +13,8 @@ from uzen.services.searchers.utils import convert_to_datetime
 class MatchSearcher(AbstractSearcher):
     @classmethod
     async def search(
-        cls, filters: dict, size=None, offset=None, id_only=False, count_only=False
-    ) -> Union[List[Match], List[UUID], int]:
+        cls, filters: dict, size=None, offset=None, id_only=False
+    ) -> SearchResults:
         """Search matches
 
         Arguments:
@@ -22,10 +24,9 @@ class MatchSearcher(AbstractSearcher):
             size {[int]} -- Nmber of results returned (default: {None})
             offset {[int]} -- Offset of the first result for pagination (default: {None})
             id_only {bool} -- Whether to return only a list of ids (default: {False})
-            count_only {bool} -- Whether to return only a count of results (default: {False})
 
         Returns:
-            Union[List[Match], List[UUID], int] -- A list of matches or count of the list
+            SearchResults -- A list of matches and total count
         """
         queries: List[Q] = []
 
@@ -53,8 +54,14 @@ class MatchSearcher(AbstractSearcher):
         instance = cls(
             model=Match, query=query, prefetch_related=["snapshot", "rule", "script"]
         )
-        results = await instance._search(
-            size=size, offset=offset, id_only=id_only, count_only=count_only
-        )
+        results = await instance._search(size=size, offset=offset, id_only=id_only)
 
-        return cast(Union[List[Match], int], results)
+        if id_only:
+            return SearchResults(
+                results=cast(List[UUID], results.results), total=results.total
+            )
+
+        matches: List[MatchModel] = [
+            match.to_model() for match in cast(List[Match], results.results)
+        ]
+        return SearchResults(results=matches, total=results.total)

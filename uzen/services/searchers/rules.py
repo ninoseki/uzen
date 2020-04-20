@@ -1,17 +1,19 @@
-from typing import List, Union, cast
+from typing import List, cast
 from uuid import UUID
 
 from tortoise.query_utils import Q
 
 from uzen.models.rules import Rule
+from uzen.schemas.rules import Rule as RuleModel
+from uzen.schemas.rules import SearchResults
 from uzen.services.searchers import AbstractSearcher
 
 
 class RuleSearcher(AbstractSearcher):
     @classmethod
     async def search(
-        cls, filters: dict, size=None, offset=None, id_only=False, count_only=False
-    ) -> Union[List[Rule], List[UUID], int]:
+        cls, filters: dict, size=None, offset=None, id_only=False,
+    ) -> SearchResults:
         """Search rules.
 
         Arguments:
@@ -21,10 +23,9 @@ class RuleSearcher(AbstractSearcher):
             size {[int]} -- Nmber of results returned (default: {None})
             offset {[int]} -- Offset of the first result for pagination (default: {None})
             id_only {bool} -- Whether to return only a list of ids (default: {False})
-            count_only {bool} -- Whether to return only a count of results (default: {False})
 
         Returns:
-            Union[List[Rule], List[UUID], int] -- A list of rules or count of the list
+            SearchResults -- A list of rules and total count
         """
         # build queirs from filters
         queries = []
@@ -45,8 +46,14 @@ class RuleSearcher(AbstractSearcher):
 
         # Run search
         instance = cls(model=Rule, query=query)
-        results = await instance._search(
-            size=size, offset=offset, id_only=id_only, count_only=count_only
-        )
+        results = await instance._search(size=size, offset=offset, id_only=id_only)
 
-        return cast(Union[List[Rule], List[UUID], int], results)
+        if id_only:
+            return SearchResults(
+                results=cast(List[UUID], results.results), total=results.total
+            )
+
+        rules: List[RuleModel] = [
+            rule.to_model() for rule in cast(List[Rule], results.results)
+        ]
+        return SearchResults(results=rules, total=results.total)

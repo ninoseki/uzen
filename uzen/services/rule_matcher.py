@@ -63,7 +63,8 @@ class RuleMatcher:
             return results
 
     async def scan(self) -> List[MatchResult]:
-        rule_ids = cast(List[UUID], await RuleSearcher.search({}, id_only=True))
+        search_results = await RuleSearcher.search({}, id_only=True)
+        rule_ids = cast(List[UUID], search_results.results)
         if len(rule_ids) == 0:
             return []
 
