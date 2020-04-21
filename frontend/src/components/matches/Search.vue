@@ -96,9 +96,5 @@ export default class Search extends Mixins<SearchFormComponentMixin>(
   initSearch() {
     this.search();
   }
-
-  mounted() {
-    this.initSearch();
-  }
 }
 </script>
