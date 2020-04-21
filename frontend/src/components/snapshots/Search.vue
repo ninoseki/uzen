@@ -2,6 +2,25 @@
   <div>
     <div class="columns">
       <div class="column is-half">
+        <b-field label="URL">
+          <b-input
+            placeholder="http://example.com"
+            v-model="filters.url"
+          ></b-input>
+        </b-field>
+      </div>
+      <div class="column is-half">
+        <b-field label="Status">
+          <b-input
+            type="number"
+            placeholder="200"
+            v-model="filters.status"
+          ></b-input>
+        </b-field>
+      </div>
+    </div>
+    <div class="columns">
+      <div class="column is-half">
         <b-field label="Hostname">
           <b-input
             placeholder="example.com"
@@ -96,14 +115,18 @@ export default class Search extends Mixins<SearchFormComponentMixin>(
   @Prop() private ip_address: string | undefined;
   @Prop() private server: string | undefined;
   @Prop() private sha256: string | undefined;
+  @Prop() private status: number | undefined;
+  @Prop() private url: string | undefined;
 
   private filters: SnapshotFilters = {
+    asn: this.asn,
+    content_type: this.content_type,
     hostname: this.hostname,
     ip_address: this.ip_address,
-    asn: this.asn,
     server: this.server,
-    content_type: this.content_type,
     sha256: this.sha256,
+    status: this.status,
+    url: this.url,
     from_at: undefined,
     to_at: undefined,
   };

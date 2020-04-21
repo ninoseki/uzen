@@ -32,6 +32,12 @@ async def test_snapshot_search(client):
     snapshots = json.get("results")
     assert len(snapshots) == 0
 
+    # it doesn't match any snapshot
+    response = await client.get("/api/snapshots/search", params={"status": 404})
+    json = response.json()
+    snapshots = json.get("results")
+    assert len(snapshots) == 0
+
 
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("snapshots_setup")
