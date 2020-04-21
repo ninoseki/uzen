@@ -32,7 +32,11 @@ class Rule(BaseRule, AbstractBaseModel, TimestampMixin):
     """Full Pydantic model for Rule"""
 
     updated_at: datetime.datetime
-    snapshots: List["Snapshot"]
+    snapshots: List["Snapshot"] = Field(
+        ...,
+        title="Snapshots",
+        description="A list of matched snapshots. It contains only the latest 10 snapshots.",
+    )
 
 
 class BasicAttributes(BaseModel):
@@ -98,7 +102,7 @@ class Snapshot(BaseSnapshot, AbstractBaseModel, TimestampMixin):
     """Pydantic model of Snapshot"""
 
 
-class SearchResult(BasicAttributes, AbstractBaseModel, TimestampMixin):
+class SimplifiedSnapshot(BasicAttributes, AbstractBaseModel, TimestampMixin):
     """Simplified version of Pydantic model of Snapshot"""
 
     @classmethod
@@ -107,7 +111,7 @@ class SearchResult(BasicAttributes, AbstractBaseModel, TimestampMixin):
 
 
 class SearchResults(BaseSearchResults):
-    results: Union[List[SearchResult], List[UUID]]
+    results: Union[List[SimplifiedSnapshot], List[UUID]]
 
 
 class CountResponse(BaseModel):
