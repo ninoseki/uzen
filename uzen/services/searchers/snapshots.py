@@ -4,13 +4,9 @@ from uuid import UUID
 from tortoise.query_utils import Q
 
 from uzen.models.snapshots import Snapshot
-from uzen.schemas.snapshots import SearchResult, SearchResults
+from uzen.schemas.snapshots import SearchResults, SimplifiedSnapshot
 from uzen.services.searchers import AbstractSearcher
 from uzen.services.searchers.utils import convert_to_datetime
-
-
-def convert_to_simple_snapshot_models(snapshots: List[dict]):
-    return [SearchResult(**snapshot) for snapshot in snapshots]
 
 
 class SnapshotSearcher(AbstractSearcher):
@@ -70,7 +66,9 @@ class SnapshotSearcher(AbstractSearcher):
         query = Q(*queries)
 
         # Run search
-        instance = cls(model=Snapshot, query=query, values=SearchResult.field_keys())
+        instance = cls(
+            model=Snapshot, query=query, values=SimplifiedSnapshot.field_keys()
+        )
 
         results = await instance._search(size=size, offset=offset, id_only=id_only)
 
@@ -81,6 +79,6 @@ class SnapshotSearcher(AbstractSearcher):
 
         results_ = cast(List[dict], results.results)
         return SearchResults(
-            results=[SearchResult(**result) for result in results_],
+            results=[SimplifiedSnapshot(**result) for result in results_],
             total=results.total,
         )

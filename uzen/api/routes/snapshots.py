@@ -7,7 +7,11 @@ from tortoise.exceptions import DoesNotExist
 from uzen.api.dependencies.snapshots import SearchFilters
 from uzen.core.exceptions import TakeSnapshotError
 from uzen.models.snapshots import Snapshot
-from uzen.schemas.snapshots import CreateSnapshotPayload, SearchResult, SearchResults
+from uzen.schemas.snapshots import (
+    CreateSnapshotPayload,
+    SearchResults,
+    SimplifiedSnapshot,
+)
 from uzen.schemas.snapshots import Snapshot as SnapshotModel
 from uzen.services.searchers.snapshots import SnapshotSearcher
 from uzen.services.snapshot import save_snapshot, take_snapshot
@@ -31,7 +35,7 @@ async def search(
     filters: SearchFilters = Depends(),
 ) -> SearchResults:
     results = await SnapshotSearcher.search(vars(filters), size=size, offset=offset)
-    snapshots = cast(List[SearchResult], results.results)
+    snapshots = cast(List[SimplifiedSnapshot], results.results)
     return SearchResults(results=snapshots, total=results.total)
 
 

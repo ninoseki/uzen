@@ -4,7 +4,11 @@ from uuid import UUID
 from pydantic import BaseModel, Field
 
 from uzen.schemas.common import Source, Target
-from uzen.schemas.snapshots import BaseSnapshot, CreateSnapshotPayload, SearchResult
+from uzen.schemas.snapshots import (
+    BaseSnapshot,
+    CreateSnapshotPayload,
+    SimplifiedSnapshot,
+)
 
 
 class ScanPayload(Source, Target):
@@ -72,7 +76,7 @@ class OneshotResponse(BaseModel):
     )
 
 
-class ScanResult(SearchResult):
+class ScanResult(SimplifiedSnapshot):
     """Simplified version of Pydantic model of Snapshot"""
 
     yara_result: YaraResult

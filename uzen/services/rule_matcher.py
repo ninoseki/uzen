@@ -6,6 +6,7 @@ from uuid import UUID
 from uzen.models.rules import Rule
 from uzen.models.snapshots import Snapshot
 from uzen.schemas.matches import MatchResult
+from uzen.schemas.scripts import Script
 from uzen.services.searchers.rules import RuleSearcher
 from uzen.services.yara_scanner import YaraScanner
 
@@ -34,7 +35,7 @@ class RuleMatcher:
         self, rule: Rule, scanner: YaraScanner
     ) -> List[MatchResult]:
         results = []
-        for script in self.snapshot.scripts:
+        for script in cast(List[Script], self.snapshot.scripts):
             data = script.content
             matches = scanner.match(data)
             if len(matches) > 0:
