@@ -15,10 +15,6 @@
           <p>(<strong>Submitted URL:</strong> {{ props.row.submitted_url }})</p>
         </b-table-column>
 
-        <b-table-column field="hostname" label="Hostname">
-          {{ props.row.hostname }}
-        </b-table-column>
-
         <b-table-column field="ip_address" label="IP address">
           {{ props.row.ip_address }}
         </b-table-column>
