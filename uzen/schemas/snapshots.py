@@ -1,8 +1,8 @@
 import datetime
-from typing import List, Optional, Union
+from typing import List, Optional, Union, cast
 from uuid import UUID
 
-from pydantic import AnyHttpUrl, BaseModel, Field, IPvAnyAddress
+from pydantic import AnyHttpUrl, BaseModel, Field, IPvAnyAddress, validator
 
 from uzen.schemas.base import AbstractBaseModel
 from uzen.schemas.classifications import BaseClassification, Classification
@@ -12,6 +12,7 @@ from uzen.schemas.mixins import TimestampMixin
 from uzen.schemas.screenshots import BaseScreenshot, Screenshot
 from uzen.schemas.scripts import BaseScript, Script
 from uzen.schemas.search import BaseSearchResults
+from uzen.services.utils import get_hostname_from_url, get_ip_address_by_hostname
 
 # Declare rules related schemas here to prevent circular reference
 
@@ -139,6 +140,14 @@ class CreateSnapshotPayload(BaseModel):
     referer: Optional[str] = Field(
         None, title="Referer", description="Referer HTTP header"
     )
+
+    @validator("url")
+    def hostname_must_resolvable(cls, v):
+        hostname = cast(str, get_hostname_from_url(v))
+        ip_address = get_ip_address_by_hostname(hostname)
+        if ip_address is None:
+            raise ValueError(f"Cannot resolve hostname: {hostname}.")
+        return v
 
 
 # Update foward references
