@@ -13,8 +13,7 @@ export class ErrorDialogMixin extends Vue {
     const messages: string[] = [];
     for (const detail of error.detail) {
       const attr = detail.loc[detail.loc.length - 1];
-      const message = `${attr} ${detail.msg}`;
-      messages.push(message);
+      messages.push(`Validation error in ${attr} - ${detail.msg}`);
     }
     return messages.join("<br />");
   }
