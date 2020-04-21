@@ -38,7 +38,7 @@
       </div>
       <div class="column">
         <h2 class="is-size-5 has-text-weight-bold middle">
-          Matched snapshots
+          The latest matched snapshots (max = 20)
         </h2>
         <Snapshots v-bind:snapshots="rule.snapshots" />
       </div>

@@ -1,17 +1,15 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List
+from typing import Any, List, Optional, cast
 from uuid import UUID
 
 from tortoise import fields
-from tortoise.exceptions import NoValuesFetched
 
 from uzen.models.base import AbstractBaseModel
 from uzen.models.mixins import TimestampMixin
+from uzen.models.snapshots import Snapshot
 from uzen.schemas.rules import Rule as RuleModel
-
-if TYPE_CHECKING:
-    from uzen.schemas.snapshots import Snapshot  # noqa
+from uzen.schemas.snapshots import Snapshot as SnapshotModel
 
 
 class Rule(TimestampMixin, AbstractBaseModel):
@@ -20,21 +18,31 @@ class Rule(TimestampMixin, AbstractBaseModel):
     source = fields.TextField()
     updated_at = fields.DatetimeField(auto_now=True)
 
-    _snapshots: fields.ManyToManyRelation["Snapshot"]
+    _snapshots: fields.ManyToManyRelation[Snapshot]
+
+    def __init__(self, **kwargs: Any) -> None:
+        super().__init__(**kwargs)
+
+        self.snapshots_: Optional[List[Snapshot]] = None
 
     @property
-    def snapshots(self) -> List["Snapshot"]:
-        try:
-            return [snapshot.to_model() for snapshot in self._snapshots]
-        except NoValuesFetched:
-            return []
+    def snapshots(self) -> List[SnapshotModel]:
+        if hasattr(self, "snapshots_") and self.snapshots_ is not None:
+            return cast(
+                List[SnapshotModel],
+                [snapshot.to_model() for snapshot in self.snapshots_],
+            )
+
+        return []
 
     def to_model(self) -> RuleModel:
         return RuleModel.from_orm(self)
 
     @classmethod
     async def get_by_id(cls, id_: UUID) -> Rule:
-        return await cls.get(id=id_).prefetch_related("_snapshots")
+        rule = await cls.get(id=id_)
+        rule.snapshots_ = await rule._snapshots.all().limit(10)
+        return rule
 
     class Meta:
         table = "rules"
