@@ -15,6 +15,7 @@
         <b-input
           class="is-expanded"
           type="textarea"
+          rows="10"
           placeholder="rule foo: bar {strings: $a = 'lmn' condition: $a}"
           v-model="source"
         ></b-input>
