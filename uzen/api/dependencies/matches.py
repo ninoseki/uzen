@@ -1,4 +1,5 @@
-from typing import Optional
+from datetime import date, datetime
+from typing import Optional, Union
 from uuid import UUID
 
 from fastapi import Query
@@ -13,11 +14,11 @@ class SearchFilters:
         snapshot_id: Optional[UUID] = Query(
             None, title="Snapshot ID", description="An ID of the snapshot"
         ),
-        from_at: Optional[str] = Query(
-            None, title="From at", description="A datetime (from)"
+        from_at: Optional[Union[datetime, date]] = Query(
+            None, title="From at", description="Datetime or date in ISO 8601 format"
         ),
-        to_at: Optional[str] = Query(
-            None, title="To at", description="A datetime (to)"
+        to_at: Optional[Union[datetime, date]] = Query(
+            None, title="To at", description="Datetime or date in ISO 8601 format"
         ),
     ):
         self.rule_id = rule_id
