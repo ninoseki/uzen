@@ -22,13 +22,9 @@ export class SearchFormMixin extends Vue {
     return count < total;
   }
 
-  dateFormatter(dt: Date): string {
-    return dt.toISOString().split("T")[0];
-  }
-
   normalizeFilterValue(value: string | number | Date): string | number {
     if (value instanceof Date) {
-      return value.toISOString().split("T")[0];
+      return value.toISOString();
     }
     return value;
   }
