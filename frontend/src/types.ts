@@ -45,12 +45,14 @@ export interface ErrorData {
 }
 
 export interface SnapshotFilters {
+  asn: string | undefined;
+  content_type: string | undefined;
   hostname: string | undefined;
   ip_address: string | undefined;
-  asn: string | undefined;
   server: string | undefined;
-  content_type: string | undefined;
   sha256: string | undefined;
+  status: number | undefined;
+  url: string | undefined;
   from_at: Date | undefined;
   to_at: Date | undefined;
 }

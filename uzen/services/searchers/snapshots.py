@@ -29,6 +29,14 @@ class SnapshotSearcher(AbstractSearcher):
         """
         queries = []
 
+        url = filters.get("url")
+        if url is not None:
+            queries.append(Q(url__contains=url))
+
+        status = filters.get("status")
+        if status is not None:
+            queries.append(Q(status=status))
+
         hostname = filters.get("hostname")
         if hostname is not None:
             queries.append(Q(hostname__contains=hostname))
