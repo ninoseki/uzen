@@ -168,3 +168,7 @@ export interface MatchSearchResults extends SearchResults {
 export interface RuleSearchResults extends SearchResults {
   results: Rule[];
 }
+
+export interface CountResponse {
+  count: number;
+}

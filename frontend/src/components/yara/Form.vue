@@ -25,6 +25,7 @@ import {
   Snapshot,
   TargetTypes,
   SnapshotWithYaraResult,
+  CountResponse,
 } from "@/types";
 
 import BasicForm from "@/components/yara/BasicForm.vue";
@@ -57,6 +58,11 @@ export default class YaraForm extends Mixins<ErrorDialogMixin>(
     });
 
     const params = (this.$refs.search as SnapshotSearch).filtersParams();
+    // get total count of snapshots and set it as a size
+    const totalCount = await this.getTotalCount();
+    if (totalCount !== undefined) {
+      params["size"] = totalCount;
+    }
 
     try {
       const response = await axios.post<SnapshotWithYaraResult[]>(
@@ -82,6 +88,15 @@ export default class YaraForm extends Mixins<ErrorDialogMixin>(
 
   hasCount(): boolean {
     return this.count !== undefined;
+  }
+
+  async getTotalCount(): Promise<number | undefined> {
+    try {
+      const response = await axios.get<CountResponse>("/api/snapshots/count");
+      return response.data.count;
+    } catch (error) {
+      return undefined;
+    }
   }
 }
 </script>

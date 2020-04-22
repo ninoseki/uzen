@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import List, Type, Union
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from tortoise.models import Model
 
 from uzen.models.classifications import Classification
@@ -29,3 +29,9 @@ class EnrichmentResults:
 class SearchResults:
     results: Union[List[Type[Model]], List[Type[BaseModel]], List[dict], List[UUID]]
     total: int
+
+
+class CountResponse(BaseModel):
+    count: int = Field(
+        ..., title="Count", description="Total count of existing items",
+    )
