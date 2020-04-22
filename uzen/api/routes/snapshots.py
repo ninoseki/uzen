@@ -13,6 +13,7 @@ from uzen.schemas.snapshots import (
     SimplifiedSnapshot,
 )
 from uzen.schemas.snapshots import Snapshot as SnapshotModel
+from uzen.schemas.utils import CountResponse
 from uzen.services.searchers.snapshots import SnapshotSearcher
 from uzen.services.snapshot import save_snapshot, take_snapshot
 from uzen.tasks.enrichment import EnrichmentTask
@@ -20,6 +21,19 @@ from uzen.tasks.matches import MatchinbgTask
 from uzen.tasks.snapshots import UpdateProcessingTask
 
 router = APIRouter()
+
+
+@router.get(
+    "/count",
+    response_model=CountResponse,
+    response_description="Returns a count of snapshots",
+    summary="Count snapshots",
+    description="Get a count of snapshots",
+    status_code=200,
+)
+async def count() -> CountResponse:
+    count = await Snapshot.count()
+    return CountResponse(count=count)
 
 
 @router.get(

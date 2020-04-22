@@ -176,3 +176,16 @@ async def test_snapshot_get_with_scripts(client):
     assert len(snapshot.get("scripts")) == 1
     assert len(snapshot.get("classifications")) == 0
     assert len(snapshot.get("dns_records")) == 0
+
+
+@pytest.mark.asyncio
+@pytest.mark.usefixtures("snapshots_setup")
+async def test_count(client):
+    count = await Snapshot.all().count()
+
+    response = await client.get(f"/api/snapshots/count")
+    assert response.status_code == 200
+
+    json = response.json()
+    count_ = json.get("count")
+    assert count == count_
