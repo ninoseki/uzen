@@ -3,7 +3,7 @@ import pytest
 from uzen.schemas.snapshots import CreateSnapshotPayload
 
 
-async def test_create_snapsnot_payload():
+def test_create_snapsnot_payload():
     payload = CreateSnapshotPayload(url="http://example.com")
     assert payload.url == "http://example.com"
 
