@@ -11,6 +11,8 @@ from uzen.models.snapshots import Snapshot
 from uzen.schemas.rules import Rule as RuleModel
 from uzen.schemas.snapshots import Snapshot as SnapshotModel
 
+LIMIT_OF_PREFETCH = 20
+
 
 class Rule(TimestampMixin, AbstractBaseModel):
     name = fields.CharField(max_length=255)
@@ -41,7 +43,7 @@ class Rule(TimestampMixin, AbstractBaseModel):
     @classmethod
     async def get_by_id(cls, id_: UUID) -> Rule:
         rule = await cls.get(id=id_)
-        rule.snapshots_ = await rule._snapshots.all().limit(10)
+        rule.snapshots_ = await rule._snapshots.all().limit(LIMIT_OF_PREFETCH)
         return rule
 
     class Meta:
