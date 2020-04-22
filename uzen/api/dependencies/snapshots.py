@@ -1,4 +1,5 @@
-from typing import Optional
+from datetime import date, datetime
+from typing import Optional, Union
 
 from fastapi import Query
 
@@ -14,11 +15,11 @@ class SearchFilters:
         sha256: Optional[str] = Query(None, title="SHA256"),
         status: Optional[int] = Query(None, title="Status"),
         url: Optional[str] = Query(None, title="URL"),
-        from_at: Optional[str] = Query(
-            None, title="From at", description="A datetime format with %Y-%m-%d"
+        from_at: Optional[Union[datetime, date]] = Query(
+            None, title="From at", description="Datetime or date in ISO 8601 format"
         ),
-        to_at: Optional[str] = Query(
-            None, title="To at", description="A datetime format with %Y-%m-%d"
+        to_at: Optional[Union[datetime, date]] = Query(
+            None, title="To at", description="Datetime or date in ISO 8601 format"
         ),
     ):
         self.asn = asn
