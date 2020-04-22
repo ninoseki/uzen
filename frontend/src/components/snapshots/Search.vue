@@ -70,22 +70,20 @@
     <div class="columns">
       <div class="column is-half">
         <b-field label="From">
-          <b-datepicker
-            :date-formatter="dateFormatter"
+          <b-datetimepicker
             placeholder="Click to select..."
             icon="calendar-today"
             v-model="filters.from_at"
-          ></b-datepicker>
+          ></b-datetimepicker>
         </b-field>
       </div>
       <div class="column is-half">
         <b-field label="To">
-          <b-datepicker
-            :date-formatter="dateFormatter"
+          <b-datetimepicker
             placeholder="Click to select..."
             icon="calendar-today"
             v-model="filters.to_at"
-          ></b-datepicker>
+          ></b-datetimepicker>
         </b-field>
       </div>
     </div>
