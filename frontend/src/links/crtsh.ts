@@ -11,7 +11,7 @@ export class Crtsh implements Link {
     this.name = "crt.sh (Domain)";
   }
 
-  public href(hostname, _ip_address): string {
+  public href(hostname, _ipAddress): string {
     return this.baseURL + `/?q=${hostname}`;
   }
 }

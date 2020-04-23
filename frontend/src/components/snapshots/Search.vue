@@ -30,7 +30,7 @@
       </div>
       <div class="column is-half">
         <b-field label="IP address">
-          <b-input placeholder="1.1.1.1" v-model="filters.ip_address"></b-input>
+          <b-input placeholder="1.1.1.1" v-model="filters.ipAddress"></b-input>
         </b-field>
       </div>
     </div>
@@ -54,7 +54,7 @@
         <b-field label="Content-Type">
           <b-input
             placeholder="text/html"
-            v-model="filters.content_type"
+            v-model="filters.contentType"
           ></b-input>
         </b-field>
       </div>
@@ -73,7 +73,7 @@
           <b-datetimepicker
             placeholder="Click to select..."
             icon="calendar-today"
-            v-model="filters.from_at"
+            v-model="filters.fromAt"
           ></b-datetimepicker>
         </b-field>
       </div>
@@ -82,7 +82,7 @@
           <b-datetimepicker
             placeholder="Click to select..."
             icon="calendar-today"
-            v-model="filters.to_at"
+            v-model="filters.toAt"
           ></b-datetimepicker>
         </b-field>
       </div>
@@ -108,9 +108,9 @@ export default class Search extends Mixins<SearchFormComponentMixin>(
   SearchFormMixin
 ) {
   @Prop() private asn: string | undefined;
-  @Prop() private content_type: string | undefined;
+  @Prop() private contentType: string | undefined;
   @Prop() private hostname: string | undefined;
-  @Prop() private ip_address: string | undefined;
+  @Prop() private ipAddress: string | undefined;
   @Prop() private server: string | undefined;
   @Prop() private sha256: string | undefined;
   @Prop() private status: number | undefined;
@@ -118,15 +118,15 @@ export default class Search extends Mixins<SearchFormComponentMixin>(
 
   private filters: SnapshotFilters = {
     asn: this.asn,
-    content_type: this.content_type,
+    contentType: this.contentType,
     hostname: this.hostname,
-    ip_address: this.ip_address,
+    ipAddress: this.ipAddress,
     server: this.server,
     sha256: this.sha256,
     status: this.status,
     url: this.url,
-    from_at: undefined,
-    to_at: undefined,
+    fromAt: undefined,
+    toAt: undefined,
   };
 
   filtersParams() {

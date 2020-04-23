@@ -8,7 +8,7 @@
         :to="{ name: 'Snapshot', params: { id: snapshot.id } }"
         type="is-info"
       >
-        {{ snapshot.hostname }} ({{ snapshot.created_at.split("T")[0] }})
+        {{ snapshot.hostname }} ({{ snapshot.createdAt.split("T")[0] }})
       </b-button>
     </div>
     <div v-else>

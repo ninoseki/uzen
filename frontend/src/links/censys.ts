@@ -11,7 +11,7 @@ export class Censys implements Link {
     this.name = "Censys (IP)";
   }
 
-  public href(_hostname, ip_address): string {
-    return this.baseURL + `/ipv4/${ip_address}`;
+  public href(_hostname, ipAddress): string {
+    return this.baseURL + `/ipv4/${ipAddress}`;
   }
 }

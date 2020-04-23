@@ -1,9 +1,9 @@
 from uuid import UUID
 
-from pydantic import BaseModel
+from fastapi_utils.api_model import APIModel
 
 
-class AbstractBaseModel(BaseModel):
+class AbstractBaseModel(APIModel):
     """Full Pydantic model for Classification"""
 
     id: UUID

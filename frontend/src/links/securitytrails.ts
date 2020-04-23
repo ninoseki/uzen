@@ -12,7 +12,7 @@ export class SecurityTrails implements Link {
     this.name = "SecurityTrails (Domain)";
   }
 
-  public href(hostname, _ip_address): string {
+  public href(hostname, _ipAddress): string {
     return this.baseURL + `/domain/${hostname}/dns`;
   }
 }

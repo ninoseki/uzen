@@ -7,16 +7,16 @@
           <router-link
             :to="{
               name: 'Snapshot',
-              params: { id: props.row.id, yaraResult: props.row.yara_result },
+              params: { id: props.row.id, yaraResult: props.row.yaraResult },
             }"
           >
             {{ props.row.url }}
           </router-link>
-          <p>(<strong>Submitted URL:</strong> {{ props.row.submitted_url }})</p>
+          <p>(<strong>Submitted URL:</strong> {{ props.row.submittedUrl }})</p>
         </b-table-column>
 
-        <b-table-column field="ip_address" label="IP address">
-          {{ props.row.ip_address }}
+        <b-table-column field="ipAddress" label="IP address">
+          {{ props.row.ipAddress }}
         </b-table-column>
 
         <b-table-column field="asn" label="ASN">
@@ -27,8 +27,8 @@
           {{ props.row.server }}
         </b-table-column>
 
-        <b-table-column field="created_at" label="Created on">
-          {{ props.row.created_at.split("T")[0] }}
+        <b-table-column field="createdAt" label="Created on">
+          {{ props.row.createdAt.split("T")[0] }}
         </b-table-column>
       </template>
     </b-table>

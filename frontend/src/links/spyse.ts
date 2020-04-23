@@ -11,7 +11,7 @@ export class Spyse implements Link {
     this.name = "Spyse (IP)";
   }
 
-  public href(_hostname, ip_address): string {
-    return this.baseURL + `/target/ip/${ip_address}`;
+  public href(_hostname, ipAddress): string {
+    return this.baseURL + `/target/ip/${ipAddress}`;
   }
 }
