@@ -1,18 +1,18 @@
 from typing import List, Optional, Union
 from uuid import UUID
 
-from pydantic import BaseModel, Field, validator
+from fastapi_utils.api_model import APIModel
+from pydantic import Field, validator
 
 from uzen.schemas.search import BaseSearchResults
 from uzen.schemas.snapshots import BaseRule, Rule  # noqa: F401
 
 
 class CreateRulePayload(BaseRule):
-    class Config:
-        orm_mode = False
+    pass
 
 
-class UpdateRulePayload(BaseModel):
+class UpdateRulePayload(APIModel):
     name: Optional[str] = Field(
         None, title="Name", description="A name of the YARA rule"
     )

@@ -11,7 +11,7 @@ export class Shodan implements Link {
     this.name = "Shodan (IP)";
   }
 
-  public href(_hostname, ip_address): string {
-    return this.baseURL + `/host/${ip_address}`;
+  public href(_hostname, ipAddress): string {
+    return this.baseURL + `/host/${ipAddress}`;
   }
 }

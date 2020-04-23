@@ -27,7 +27,7 @@
                       </tr>
                       <tr>
                         <th>Submitted URL</th>
-                        <td>{{ snapshot.submitted_url }}</td>
+                        <td>{{ snapshot.submittedUrl }}</td>
                       </tr>
                       <tr>
                         <th>Hostname</th>
@@ -48,9 +48,9 @@
                           <router-link
                             :to="{
                               name: 'Snapshots',
-                              query: { ip_address: snapshot.ip_address },
+                              query: { ipAddress: snapshot.ipAddress },
                             }"
-                            >{{ snapshot.ip_address }}
+                            >{{ snapshot.ipAddress }}
                           </router-link>
                         </td>
                       </tr>
@@ -87,16 +87,16 @@
                           <router-link
                             :to="{
                               name: 'Snapshots',
-                              query: { content_type: snapshot.content_type },
+                              query: { contentType: snapshot.contentType },
                             }"
-                            >{{ snapshot.content_type }}
+                            >{{ snapshot.contentType }}
                           </router-link>
                         </td>
                       </tr>
 
                       <tr>
                         <th>Created at</th>
-                        <td>{{ snapshot.created_at || "N/A" }}</td>
+                        <td>{{ snapshot.createdAt || "N/A" }}</td>
                       </tr>
                     </tbody>
                   </table>

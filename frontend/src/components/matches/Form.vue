@@ -3,12 +3,12 @@
     <div class="columns">
       <div class="column is-half">
         <b-field label="Rule ID">
-          <b-input v-model="filters.rule_id"></b-input>
+          <b-input v-model="filters.ruleId"></b-input>
         </b-field>
       </div>
       <div class="column is-half">
         <b-field label="Snapshot ID">
-          <b-input v-model="filters.snapshot_id"></b-input>
+          <b-input v-model="filters.snapshotId"></b-input>
         </b-field>
       </div>
     </div>
@@ -18,7 +18,7 @@
           <b-datetimepicker
             placeholder="Click to select..."
             icon="calendar-today"
-            v-model="filters.from_at"
+            v-model="filters.fromAt"
           ></b-datetimepicker>
         </b-field>
       </div>
@@ -27,7 +27,7 @@
           <b-datetimepicker
             placeholder="Click to select..."
             icon="calendar-today"
-            v-model="filters.to_at"
+            v-model="filters.toAt"
           ></b-datetimepicker>
         </b-field>
       </div>
@@ -53,10 +53,10 @@ export default class SearchForm extends Mixins<SearchFormComponentMixin>(
   SearchFormMixin
 ) {
   private filters: MatchFilters = {
-    rule_id: undefined,
-    snapshot_id: undefined,
-    from_at: undefined,
-    to_at: undefined,
+    ruleId: undefined,
+    snapshotId: undefined,
+    fromAt: undefined,
+    toAt: undefined,
   };
 
   filtersParams() {

@@ -11,7 +11,7 @@ export class Urlscan implements Link {
     this.name = "urlscan.io (Domain)";
   }
 
-  public href(hostname, _ip_address): string {
+  public href(hostname, _ipAddress): string {
     return this.baseURL + `/domain/${hostname}`;
   }
 }

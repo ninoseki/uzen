@@ -2,6 +2,7 @@ import datetime
 from typing import List, Optional, Union, cast
 from uuid import UUID
 
+from fastapi_utils.api_model import APIModel
 from pydantic import AnyHttpUrl, BaseModel, Field, IPvAnyAddress, validator
 
 from uzen.schemas.base import AbstractBaseModel
@@ -25,9 +26,6 @@ class BaseRule(Source, Target):
 
     name: str = Field(..., title="Name", description="A name of the YARA rule")
 
-    class Config:
-        orm_mode = True
-
 
 class Rule(BaseRule, AbstractBaseModel, TimestampMixin):
     """Full Pydantic model for Rule"""
@@ -40,7 +38,7 @@ class Rule(BaseRule, AbstractBaseModel, TimestampMixin):
     )
 
 
-class BasicAttributes(BaseModel):
+class BasicAttributes(APIModel):
     url: AnyHttpUrl = Field(..., title="URL", description="A URL of the snapshot")
     submitted_url: AnyHttpUrl = Field(
         ..., title="Submitted URL", description="A submitted URL of the snapshot"
@@ -115,7 +113,7 @@ class SearchResults(BaseSearchResults):
     results: Union[List[SimplifiedSnapshot], List[UUID]]
 
 
-class CountResponse(BaseModel):
+class CountResponse(APIModel):
     count: int = Field(
         None,
         title="A number of snapshots",
@@ -123,7 +121,7 @@ class CountResponse(BaseModel):
     )
 
 
-class CreateSnapshotPayload(BaseModel):
+class CreateSnapshotPayload(APIModel):
     url: AnyHttpUrl = Field(..., title="URL", description="A URL to take a snapshot")
     user_agent: Optional[str] = Field(
         None, title="User agent", description="Specific user agent to use"

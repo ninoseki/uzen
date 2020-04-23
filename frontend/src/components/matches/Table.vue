@@ -29,8 +29,8 @@
           <pre><code class="json">{{ props.row.matches }}</code></pre>
         </b-table-column>
 
-        <b-table-column field="created_at" label="Created on">
-          {{ props.row.created_at.split("T")[0] }}
+        <b-table-column field="createdAt" label="Created on">
+          {{ props.row.createdAt.split("T")[0] }}
         </b-table-column>
       </template>
     </b-table>

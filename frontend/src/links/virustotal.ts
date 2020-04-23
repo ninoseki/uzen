@@ -11,7 +11,7 @@ export class VirusTotal implements Link {
     this.favicon = "https://www.google.com/s2/favicons?domain=virustotal.com";
   }
 
-  public href(hostname, _ip_address): string {
+  public href(hostname, _ipAddress): string {
     return this.baseURL + `/gui/domain/${hostname}/detection`;
   }
 }

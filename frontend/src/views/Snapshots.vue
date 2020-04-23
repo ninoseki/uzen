@@ -5,9 +5,9 @@
         ref="search"
         v-bind:sha256="$route.query.sha256"
         v-bind:asn="$route.query.asn"
-        v-bind:content_type="$route.query.content_type"
+        v-bind:contentType="$route.query.contentType"
         v-bind:hostname="$route.query.hostname"
-        v-bind:ip_address="$route.query.ip_address"
+        v-bind:ipAddress="$route.query.ipAddress"
         v-bind:server="$route.query.server"
       />
       <br />

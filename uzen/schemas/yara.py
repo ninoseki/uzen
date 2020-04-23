@@ -1,7 +1,8 @@
 from typing import List, Optional
 from uuid import UUID
 
-from pydantic import BaseModel, Field
+from fastapi_utils.api_model import APIModel
+from pydantic import Field
 
 from uzen.schemas.common import Source, Target
 from uzen.schemas.snapshots import (
@@ -11,7 +12,7 @@ from uzen.schemas.snapshots import (
 )
 
 
-class ScanPayload(Source, Target):
+class ScanPayload(Source, Target, APIModel):
     pass
 
 
@@ -19,13 +20,13 @@ class OneshotPayload(CreateSnapshotPayload, ScanPayload):
     pass
 
 
-class YaraMatchString(BaseModel):
+class YaraMatchString(APIModel):
     offset: int
     string_identifier: str
     string_data: str
 
 
-class YaraMatch(BaseModel):
+class YaraMatch(APIModel):
     rule: str = Field(..., title="Rule", description="A name of the rule")
     namespace: str = Field(
         ...,
@@ -49,7 +50,7 @@ class YaraMatch(BaseModel):
     )
 
 
-class YaraResult(BaseModel):
+class YaraResult(APIModel):
     snapshot_id: UUID = Field(
         ..., title="Snapshot ID", description="An ID of the snapshot"
     )
@@ -62,7 +63,7 @@ class YaraResult(BaseModel):
     )
 
 
-class OneshotResponse(BaseModel):
+class OneshotResponse(APIModel):
     snapshot: BaseSnapshot = Field(
         ...,
         title="Snapshot",

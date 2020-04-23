@@ -1,8 +1,9 @@
 import yara
-from pydantic import BaseModel, Field, validator
+from fastapi_utils.api_model import APIModel
+from pydantic import Field, validator
 
 
-class CountResponse(BaseModel):
+class CountResponse(APIModel):
     count: int = Field(
         ...,
         title="A number of matched items",
@@ -10,7 +11,7 @@ class CountResponse(BaseModel):
     )
 
 
-class Target(BaseModel):
+class Target(APIModel):
     target: str = Field(
         "body",
         title="Target",
@@ -24,7 +25,7 @@ class Target(BaseModel):
         return v
 
 
-class Source(BaseModel):
+class Source(APIModel):
     source: str = Field(
         ..., title="YARA rule", description="String containing the rules code",
     )

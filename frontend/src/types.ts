@@ -10,21 +10,21 @@ export interface Screenshot {
 export interface Snapshot {
   id: string | undefined;
   url: string;
-  submitted_url: string;
+  submittedUrl: string;
   status: number;
   hostname: string;
-  ip_address: string;
+  ipAddress: string;
   asn: string;
   server: string;
-  content_type: string;
-  content_lenth: number;
+  contentType: string;
+  contentLength: number;
   body: string;
   sha256: string;
   headers: Dict;
   whois: string | undefined;
   certificate: string | undefined;
   processing: boolean;
-  created_at: string | undefined;
+  createdAt: string | undefined;
 
   screenshot: Screenshot;
 
@@ -46,22 +46,22 @@ export interface ErrorData {
 
 export interface SnapshotFilters {
   asn: string | undefined;
-  content_type: string | undefined;
+  contentType: string | undefined;
   hostname: string | undefined;
-  ip_address: string | undefined;
+  ipAddress: string | undefined;
   server: string | undefined;
   sha256: string | undefined;
   status: number | undefined;
   url: string | undefined;
-  from_at: Date | undefined;
-  to_at: Date | undefined;
+  fromAt: Date | undefined;
+  toAt: Date | undefined;
 }
 
 export interface Link {
   name: string;
   baseURL: string;
   favicon: string;
-  href(hostname: string | undefined, ip_address: string | undefined): string;
+  href(hostname: string | undefined, ipAddress: string | undefined): string;
 }
 
 export interface Script {
@@ -69,14 +69,14 @@ export interface Script {
   url: string;
   content: string;
   sha256: string;
-  created_at: string | undefined;
+  createdAt: string | undefined;
 }
 
 export interface DnsRecord {
   id: string | undefined;
   type: string;
   value: string;
-  created_at: string | undefined;
+  createdAt: string | undefined;
 }
 
 export interface Classification {
@@ -84,13 +84,13 @@ export interface Classification {
   name: string;
   malicious: boolean;
   note: string | undefined;
-  created_at: string | undefined;
+  createdAt: string | undefined;
 }
 
 export interface YaraMatchString {
   offset: number;
-  string_identifier: string;
-  string_data: string;
+  stringIdentifier: string;
+  stringData: string;
 }
 
 export interface YaraMatch {
@@ -102,14 +102,14 @@ export interface YaraMatch {
 }
 
 export interface YaraResult {
-  snapshot_id: string;
-  script_id: string | undefined;
+  snapshotId: string;
+  scriptId: string | undefined;
   target: string;
   matches: YaraMatch[];
 }
 
 export interface SnapshotWithYaraResult extends Snapshot {
-  yara_result: YaraResult | undefined;
+  yaraResult: YaraResult | undefined;
 }
 
 export interface Oneshot {
@@ -126,8 +126,8 @@ export interface Rule {
   target: TargetTypes;
   source: string;
   snapshots: Snapshot[];
-  created_at: string;
-  updated_at: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface RuleFilters {
@@ -142,14 +142,14 @@ export interface Match {
   rule: Rule;
   script: Script | undefined;
   matches: YaraMatch[];
-  created_at: string;
+  createdAt: string;
 }
 
 export interface MatchFilters {
-  snapshot_id: string | undefined;
-  rule_id: string | undefined;
-  from_at: Date | undefined;
-  to_at: Date | undefined;
+  snapshotId: string | undefined;
+  ruleId: string | undefined;
+  fromAt: Date | undefined;
+  toAt: Date | undefined;
 }
 
 // Search results

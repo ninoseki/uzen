@@ -147,7 +147,7 @@ async def test_snapshot_get_with_dns_records(client):
     assert response.status_code == 200
 
     snapshot = response.json()
-    assert len(snapshot.get("dns_records")) == 1
+    assert len(snapshot.get("dnsRecords")) == 1
     assert len(snapshot.get("scripts")) == 0
     assert len(snapshot.get("classifications")) == 0
 
@@ -161,7 +161,7 @@ async def test_snapshot_get_with_classifications(client):
 
     snapshot = response.json()
     assert len(snapshot.get("classifications")) == 1
-    assert len(snapshot.get("dns_records")) == 0
+    assert len(snapshot.get("dnsRecords")) == 0
     assert len(snapshot.get("scripts")) == 0
 
 
@@ -175,7 +175,7 @@ async def test_snapshot_get_with_scripts(client):
     snapshot = response.json()
     assert len(snapshot.get("scripts")) == 1
     assert len(snapshot.get("classifications")) == 0
-    assert len(snapshot.get("dns_records")) == 0
+    assert len(snapshot.get("dnsRecords")) == 0
 
 
 @pytest.mark.asyncio

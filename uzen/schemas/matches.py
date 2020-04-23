@@ -1,7 +1,8 @@
 from typing import List, Optional, Union
 from uuid import UUID
 
-from pydantic import BaseModel, Field
+from fastapi_utils.api_model import APIModel
+from pydantic import Field
 
 from uzen.schemas.base import AbstractBaseModel
 from uzen.schemas.mixins import TimestampMixin
@@ -12,7 +13,7 @@ from uzen.schemas.snapshots import Snapshot
 from uzen.schemas.yara import YaraMatch
 
 
-class BaseMatch(BaseModel):
+class BaseMatch(APIModel):
     """Base Pydantic model for Match
 
     Note that this model doesn't have "id" and "created_at" fields.
@@ -39,7 +40,7 @@ class Match(BaseMatch, AbstractBaseModel, TimestampMixin):
     """Full Pydantic model for Match"""
 
 
-class MatchResult(BaseModel):
+class MatchResult(APIModel):
     rule_id: UUID = Field(
         ..., title="Matches", description="An ID of the rule",
     )
