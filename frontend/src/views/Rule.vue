@@ -24,13 +24,20 @@ export default class RuleView extends Mixins<ErrorDialogMixin>(
   private rule: Rule | undefined = undefined;
 
   async load() {
+    const loadingComponent = this.$buefy.loading.open({
+      container: this.$refs.element,
+    });
+
     try {
       const id = this.$route.params.id;
       const response = await axios.get<Rule>(`/api/rules/${id}`);
       this.rule = response.data;
 
+      loadingComponent.close();
       this.$forceUpdate();
     } catch (error) {
+      loadingComponent.close();
+
       const data = error.response.data as ErrorData;
       this.alertError(data);
     }
