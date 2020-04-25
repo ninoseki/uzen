@@ -77,7 +77,9 @@ async def snapshots_setup(client):
         )
         await snapshot.save()
 
-        screenshot = Screenshot(data="")
+        screenshot = Screenshot()
+        screenshot.data = ""
+
         screenshot.snapshot_id = snapshot.id
         await screenshot.save()
 

@@ -127,6 +127,7 @@ class Browser:
             certificate=certificate,
             request=request,
         )
-        screenshot = Screenshot(data=screenshot_data)
+        screenshot = Screenshot()
+        screenshot.data = screenshot_data
 
         return SnapshotResult(screenshot=screenshot, snapshot=snapshot)

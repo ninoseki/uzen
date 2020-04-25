@@ -56,6 +56,9 @@ async def test_yara_scan_with_invalid_input(client):
 
 
 async def mock_take_snapshot(*args, **kwargs):
+    screenshot = Screenshot()
+    screenshot.data = ""
+
     return SnapshotResult(
         snapshot=Snapshot(
             url="https://www.w3.org/",
@@ -74,11 +77,14 @@ async def mock_take_snapshot(*args, **kwargs):
             whois="foo",
             request={},
         ),
-        screenshot=Screenshot(data=""),
+        screenshot=screenshot,
     )
 
 
 async def mock_take_snapshot_without_script(*args, **kwargs):
+    screenshot = Screenshot()
+    screenshot.data = ""
+
     return SnapshotResult(
         snapshot=Snapshot(
             url="https://www.w3.org/",
@@ -97,7 +103,7 @@ async def mock_take_snapshot_without_script(*args, **kwargs):
             whois="foo",
             request={},
         ),
-        screenshot=Screenshot(data=""),
+        screenshot=screenshot,
     )
 
 

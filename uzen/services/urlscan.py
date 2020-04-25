@@ -90,6 +90,7 @@ class URLScan:
         )
 
         data = await instance.screenshot()
-        screenshot = Screenshot(data=data)
+        screenshot = Screenshot()
+        screenshot.data = data
 
         return SnapshotResult(screenshot=screenshot, snapshot=snapshot)

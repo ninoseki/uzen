@@ -108,6 +108,7 @@ class FakeBrowser:
             certificate=certificate,
             request=request,
         )
-        screenshot = Screenshot(data="")
+        screenshot = Screenshot()
+        screenshot.data = ""
 
         return SnapshotResult(screenshot=screenshot, snapshot=snapshot)
