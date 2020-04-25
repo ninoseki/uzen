@@ -1,15 +1,13 @@
 from uuid import UUID
 
-from pydantic import BaseModel, Field
+from fastapi_utils.api_model import APIModel
+from pydantic import Field
 
 from uzen.schemas.base import AbstractBaseModel
 
 
-class BaseScreenshot(BaseModel):
+class BaseScreenshot(APIModel):
     data: str = Field(..., title="Data", description="Base64 encoded png data")
-
-    class Config:
-        orm_mode = True
 
 
 class Screenshot(BaseScreenshot, AbstractBaseModel):

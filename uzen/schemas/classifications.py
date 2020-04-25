@@ -23,9 +23,6 @@ class BaseClassification(APIModel):
         None, title="Note", description="A note of the classification",
     )
 
-    class Config:
-        orm_mode = True
-
 
 class Classification(BaseClassification, AbstractBaseModel, TimestampMixin):
     """Full Pydantic model for Classification"""
