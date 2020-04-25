@@ -3,7 +3,7 @@ from typing import List, Optional, Union, cast
 from uuid import UUID
 
 from fastapi_utils.api_model import APIModel
-from pydantic import AnyHttpUrl, BaseModel, Field, IPvAnyAddress, validator
+from pydantic import AnyHttpUrl, Field, IPvAnyAddress, validator
 
 from uzen.schemas.base import AbstractBaseModel
 from uzen.schemas.classifications import BaseClassification, Classification

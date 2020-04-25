@@ -95,7 +95,6 @@ class Browser:
             sha256 = calculate_sha256(body)
             headers = res.headers
         except PyppeteerError as e:
-            await browser.close()
             raise (e)
         else:
             await browser.close()

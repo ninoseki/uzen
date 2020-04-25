@@ -1,5 +1,6 @@
 import base64
 import datetime
+from typing import cast
 
 import httpx
 
@@ -32,7 +33,7 @@ class URLScan:
         url = f"{self.BASE_URL}/api/v1/result/{self.uuid}/"
         r = await self.client.get(url)
         r.raise_for_status()
-        return r.json()
+        return cast(dict, r.json())
 
     @classmethod
     async def import_as_snapshot(cls, uuid: str) -> SnapshotResult:
@@ -69,7 +70,7 @@ class URLScan:
 
         body = await instance.body()
         sha256 = result.get("lists", {}).get("hashes", [])[0]
-        time = result.get("task", {}).get("time")
+        time = cast(str, result.get("task", {}).get("time"))
         created_at = datetime.datetime.strptime(time, "%Y-%m-%dT%H:%M:%S.%fZ")
 
         snapshot = Snapshot(
