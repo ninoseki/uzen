@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from typing import List, Union
 
 from loguru import logger
@@ -8,7 +9,8 @@ from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot
 
 
-class AbstractTask:
+class AbstractTask(ABC):
+    @abstractmethod
     async def _process(self):
         raise NotImplementedError()
 
