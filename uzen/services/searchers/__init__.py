@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from abc import ABC, abstractmethod
 from typing import List, Optional, Type
 
 from tortoise.models import Model
@@ -8,7 +9,7 @@ from tortoise.query_utils import Q
 from uzen.schemas.search import SearchResults
 
 
-class AbstractSearcher:
+class AbstractSearcher(ABC):
     def __init__(
         self,
         model: Type[Model],
@@ -59,6 +60,7 @@ class AbstractSearcher:
         return SearchResults(results=results, total=total)
 
     @classmethod
+    @abstractmethod
     async def search(
         cls,
         filters: dict,
