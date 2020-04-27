@@ -3,16 +3,28 @@
     <b-table :data="snapshots">
       <template slot-scope="props">
         <b-table-column field="url" label="URL">
-          <strong>URL:</strong>
-          <router-link
-            :to="{
-              name: 'Snapshot',
-              params: { id: props.row.id, yaraResult: props.row.yaraResult },
-            }"
-          >
-            {{ props.row.url }}
-          </router-link>
+          <p>
+            <strong>URL:</strong>
+            <router-link
+              :to="{
+                name: 'Snapshot',
+                params: { id: props.row.id, yaraResult: props.row.yaraResult },
+              }"
+            >
+              {{ props.row.url }}
+            </router-link>
+          </p>
           <p>(<strong>Submitted URL:</strong> {{ props.row.submittedUrl }})</p>
+          <p class="is-size-7">
+            <strong>Status:</strong> {{ props.row.status }} /
+            <strong>Server:</strong>
+            {{ props.row.server || "N/A" }} /
+            <strong>Content length:</strong>
+            {{ props.row.contentLength || "N/A" }}
+          </p>
+          <p class="is-size-7">
+            <strong>SHA256:</strong> {{ props.row.sha256 }}
+          </p>
         </b-table-column>
 
         <b-table-column field="ipAddress" label="IP address">
@@ -21,10 +33,6 @@
 
         <b-table-column field="asn" label="ASN">
           {{ props.row.asn.split(" ")[0] }}
-        </b-table-column>
-
-        <b-table-column field="server" label="Server">
-          {{ props.row.server }}
         </b-table-column>
 
         <b-table-column field="createdAt" label="Created on">
