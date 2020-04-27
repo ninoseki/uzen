@@ -72,7 +72,11 @@ class YaraScanner:
             return matched_results
 
     async def scan_snapshots(
-        self, target: str = "body", filters: dict = {}
+        self,
+        target: str = "body",
+        filters: dict = {},
+        size: Optional[int] = None,
+        offset: Optional[int] = None,
     ) -> List[ScanResult]:
         """Scan snapshots data with a YARA rule
 
@@ -84,7 +88,9 @@ class YaraScanner:
             List[SearchResultModel] -- A list of simlified snapshot models
         """
         # get snapshots ids based on filters
-        search_results = await SnapshotSearcher.search(filters, id_only=True)
+        search_results = await SnapshotSearcher.search(
+            filters, id_only=True, size=size, offset=offset
+        )
         snapshot_ids = cast(List[UUID], search_results.results)
         if len(snapshot_ids) == 0:
             return []

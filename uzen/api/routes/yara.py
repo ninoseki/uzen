@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -19,10 +19,15 @@ router = APIRouter()
     description="Perform YARA scans against snapshtos (which can be narrowed down by filters)",
 )
 async def scan(
-    payload: ScanPayload, filters: SearchFilters = Depends()
+    payload: ScanPayload,
+    size: Optional[int] = None,
+    offset: Optional[int] = None,
+    filters: SearchFilters = Depends(),
 ) -> List[ScanResult]:
     yara_scanner = YaraScanner(payload.source)
-    results = await yara_scanner.scan_snapshots(payload.target, vars(filters))
+    results = await yara_scanner.scan_snapshots(
+        payload.target, vars(filters), size=size, offset=offset
+    )
     return results
 
 
