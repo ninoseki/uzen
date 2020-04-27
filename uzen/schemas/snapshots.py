@@ -50,14 +50,6 @@ class BasicAttributes(APIModel):
     content_type: Optional[str] = Field(
         None, title="Content type", description="Content type"
     )
-
-
-class BaseSnapshot(BasicAttributes):
-    """Base Pydantic model of Snapshot
-
-    Note that this model doesn't have "id" and "created_at" fields.
-    """
-
     status: int = Field(..., title="Status", description="Status code")
     content_length: Optional[int] = Field(
         None, title="Content length", description="Content length"
@@ -66,6 +58,14 @@ class BaseSnapshot(BasicAttributes):
     sha256: str = Field(
         ..., title="SHA256", description="SHA256 hash of HTTP response body"
     )
+
+
+class BaseSnapshot(BasicAttributes):
+    """Base Pydantic model of Snapshot
+
+    Note that this model doesn't have "id" and "created_at" fields.
+    """
+
     headers: dict = Field(..., title="Headers", description="HTTP response headers")
     whois: Optional[str] = Field(None, title="Whois", description="Whois record")
     certificate: Optional[str] = Field(
@@ -92,9 +92,6 @@ class BaseSnapshot(BasicAttributes):
     screenshot: Optional[Union[BaseScreenshot, Screenshot]] = Field(
         None, title="Screenshot", description="Screenshot"
     )
-
-    class Config:
-        orm_mode = True
 
 
 class Snapshot(BaseSnapshot, AbstractBaseModel, TimestampMixin):
