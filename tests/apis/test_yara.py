@@ -24,6 +24,23 @@ async def test_yara_scan(client):
 
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("snapshots_setup")
+@pytest.mark.parametrize("size", [1, 5, 10])
+async def test_yara_scan_with_size(client, size):
+    payload = {
+        "source": 'rule foo: bar {strings: $a = "foo" condition: $a}',
+    }
+    params = {"size": size}
+    response = await client.post(
+        "/api/yara/scan", data=json.dumps(payload), params=params
+    )
+    assert response.status_code == 200
+
+    snapshots = response.json()
+    assert len(snapshots) == size
+
+
+@pytest.mark.asyncio
+@pytest.mark.usefixtures("snapshots_setup")
 async def test_yara_scan_with_target(client):
     # it should return all snapshots because every snapshot has "whois" which contains "foo"
     payload = {
