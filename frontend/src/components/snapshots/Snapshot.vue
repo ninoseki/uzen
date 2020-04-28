@@ -147,7 +147,7 @@
         </b-tab-item>
 
         <b-tab-item label="DNS records">
-          <DnsRecords v-bind:dnsRecords="snapshot.dns_records" />
+          <DnsRecords v-bind:dnsRecords="snapshot.dnsRecords" />
         </b-tab-item>
 
         <b-tab-item label="Classifications">
