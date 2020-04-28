@@ -11,7 +11,7 @@ from io import BytesIO
 import certifi
 import urllib3
 from loguru import logger
-from pyppeteer.chromium_downloader import *
+from pyppeteer.chromium_downloader import *  # noqa
 from tqdm import tqdm
 
 NO_PROGRESS_BAR = os.environ.get("PYPPETEER_NO_PROGRESS_BAR", "")
