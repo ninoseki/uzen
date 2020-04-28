@@ -29,7 +29,7 @@ export interface Snapshot {
   screenshot: Screenshot;
 
   scripts: Script[];
-  dns_records: DnsRecord[];
+  dnsRecords: DnsRecord[];
   classifications: Classification[];
   rules: Rule[];
 }
