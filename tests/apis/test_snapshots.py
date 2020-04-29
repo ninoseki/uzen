@@ -121,7 +121,6 @@ def mock_take_snapshot(*args, **kwargs):
 
 
 @pytest.mark.asyncio
-@pytest.mark.usefixtures("snapshots_setup")
 async def test_snapshot_post(client, monkeypatch):
     monkeypatch.setattr(Browser, "take_snapshot", mock_take_snapshot)
 
@@ -137,6 +136,24 @@ async def test_snapshot_post(client, monkeypatch):
     snapshot = await Snapshot.get(id=snapshot.get("id"))
     await snapshot.fetch_related("_scripts")
     assert len(snapshot.scripts) == 0
+
+
+@pytest.mark.asyncio
+@pytest.mark.usefixtures("snapshots_setup")
+async def test_snapshot_get(client):
+    id_ = await first_snapshot_id()
+    response = await client.get(f"/api/snapshots/{id_}")
+    assert response.status_code == 200
+    assert response.json().get("screenshot") is None
+
+    id_ = await first_snapshot_id()
+    response = await client.get(
+        f"/api/snapshots/{id_}", params={"include_screenshot": True}
+    )
+    assert response.status_code == 200
+    assert response.json().get("screenshot") is not None
+    json = response.json()
+    assert json.get("screenshot", {}).get("data") == ""
 
 
 @pytest.mark.asyncio

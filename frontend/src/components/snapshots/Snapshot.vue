@@ -106,7 +106,10 @@
                 <h2 class="is-size-5 has-text-weight-bold middle">
                   Screenshot
                 </h2>
-                <img :src="this.imageData()" alt="screenshot" />
+                <Screenshot
+                  v-bind:snapshot_id="snapshot.id"
+                  v-bind:screenshot="snapshot.screenshot"
+                />
               </div>
             </div>
             <div class="column">
@@ -165,7 +168,6 @@
 <script lang="ts">
 import { Component, Mixin, Mixins } from "vue-mixin-decorator";
 import { Prop } from "vue-property-decorator";
-import axios, { AxiosError } from "axios";
 
 import {
   Snapshot,
@@ -177,10 +179,11 @@ import {
   Classification,
 } from "@/types";
 
-import Rules from "@/components/rules/Buttons.vue";
 import Classifications from "@/components/classifications/Classifications.vue";
 import DnsRecords from "@/components/dns_records/DnsRecords.vue";
 import Links from "@/components/links/Links.vue";
+import Rules from "@/components/rules/Buttons.vue";
+import Screenshot from "@/components/screenshots/Screenshot.vue";
 import Scripts from "@/components/scripts/Scripts.vue";
 import YaraResultComponent from "@/components/yara/Result.vue";
 
@@ -192,6 +195,7 @@ import { HighlightMixin } from "@/components/mixins";
     DnsRecords,
     Links,
     Rules,
+    Screenshot,
     Scripts,
     YaraResultComponent,
   },
@@ -201,10 +205,6 @@ export default class SnapshotComponent extends Mixins<HighlightMixin>(
 ) {
   @Prop() private snapshot!: Snapshot;
   @Prop() private yaraResult!: YaraResult;
-
-  public imageData(): string {
-    return `data:Image/png;base64,${this.snapshot.screenshot.data}`;
-  }
 
   mounted() {
     this.highlightCodeBlocks();

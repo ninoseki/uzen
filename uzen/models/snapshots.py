@@ -54,7 +54,7 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
     def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
 
-        self.screnshot_: Optional[Screenshot] = None
+        self.screenshot_: Optional[Union[BaseScreenshot, Screenshot]] = None
 
         self.scripts_: Optional[List[Union[Script, BaseScript]]] = None
         self.dns_records_: Optional[List[Union[DnsRecord, BaseDnsRecord]]] = None
@@ -134,7 +134,6 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
     def to_model(self) -> Union[BaseSnapshot, SnapshotModel]:
         if self.created_at is not None:
             return SnapshotModel.from_orm(self)
-
         return BaseSnapshot.from_orm(self)
 
     def to_dict(self) -> dict:
@@ -142,9 +141,13 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
         return model.dict()
 
     @classmethod
-    async def get_by_id(cls, id_: UUID) -> Snapshot:
+    async def get_by_id(cls, id_: UUID, include_screenshot: bool = False) -> Snapshot:
+        if include_screenshot:
+            return await cls.get(id=id_).prefetch_related(
+                "_screenshot", "_scripts", "_dns_records", "_classifications", "_rules"
+            )
         return await cls.get(id=id_).prefetch_related(
-            "_screenshot", "_scripts", "_dns_records", "_classifications", "_rules"
+            "_scripts", "_dns_records", "_classifications", "_rules"
         )
 
     class Meta:
