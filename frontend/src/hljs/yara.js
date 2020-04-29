@@ -11,7 +11,7 @@ export default function (hljs) {
     case_insensitive: false,
     keywords: {
       built_in:
-        "all and any ascii at condition contains entrypoint filesize fullword for global in import include int8 int16 int32 int8be int16be int32be matches meta nocase not or of private rule strings them uint8 uint16 uint32 uint8be uint16be uint32be wide xor",
+        "all and any ascii at base64 base64wide condition contains entrypoint false filesize for fullword global import in include int16 int16be int32 int32be int8 int8be matches meta nocase not of or private rule strings them true uint16 uint16be uint32 uint32be uint8 uint8be wide xor",
       literal: "true false",
     },
     contains: [

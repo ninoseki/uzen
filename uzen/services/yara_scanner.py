@@ -135,4 +135,4 @@ class YaraScanner:
             List[yara.Match] -- YARA matches
         """
         data = "" if data is None else data
-        return MatchesConverter.convert(self.rule.match(data=data))
+        return MatchesConverter.convert(self.rule.match(data=data, timeout=60))
