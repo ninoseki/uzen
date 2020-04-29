@@ -60,9 +60,9 @@ async def search(
     summary="Get a snapshot",
     description="Get a snapshot which has a given id",
 )
-async def get(snapshot_id: UUID) -> SnapshotModel:
+async def get(snapshot_id: UUID, include_screenshot: bool = False) -> SnapshotModel:
     try:
-        snapshot: Snapshot = await Snapshot.get_by_id(snapshot_id)
+        snapshot: Snapshot = await Snapshot.get_by_id(snapshot_id, include_screenshot)
     except DoesNotExist:
         raise HTTPException(
             status_code=404, detail=f"Snapshot:{snapshot_id} is not found"

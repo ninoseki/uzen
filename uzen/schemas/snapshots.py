@@ -89,7 +89,7 @@ class BaseSnapshot(BasicAttributes):
     )
     rules: List[Rule] = Field(..., title="Rules", description="A list of matched rules")
 
-    screenshot: Optional[Union[BaseScreenshot, Screenshot]] = Field(
+    screenshot: Optional[Union[Screenshot, BaseScreenshot]] = Field(
         None, title="Screenshot", description="Screenshot"
     )
 

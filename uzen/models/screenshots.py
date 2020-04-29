@@ -1,6 +1,7 @@
 import base64
 import zlib
 from typing import Union
+from uuid import UUID
 
 from tortoise import fields
 
@@ -29,6 +30,10 @@ class Screenshot(AbstractBaseModel):
     def data(self, data: str):
         compressed = zlib.compress(data.encode())
         self._data = base64.b64encode(compressed).decode()
+
+    @classmethod
+    async def get_by_snapshot_id(cls, id_: UUID) -> "Screenshot":
+        return await cls.get(snapshot_id=id_)
 
     def to_model(self) -> Union[ScreenshotModel, BaseScreenshot]:
         if self.snapshot_id is not None:
