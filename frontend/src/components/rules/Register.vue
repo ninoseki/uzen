@@ -47,7 +47,7 @@ export default class Register extends Mixins<ErrorDialogMixin>(
 
   async register() {
     const loadingComponent = this.$buefy.loading.open({
-      container: this.$refs.element,
+      container: this.$el.firstElementChild,
     });
 
     try {

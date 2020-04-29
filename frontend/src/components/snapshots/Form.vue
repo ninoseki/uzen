@@ -53,7 +53,7 @@ export default class Form extends Mixins<ErrorDialogMixin>(ErrorDialogMixin) {
 
   async take() {
     const loadingComponent = this.$buefy.loading.open({
-      container: this.$refs.element,
+      container: this.$el.firstElementChild,
     });
 
     try {

@@ -36,7 +36,7 @@ export default class Import extends Mixins<ErrorDialogMixin>(ErrorDialogMixin) {
 
   async import_from_urlscan() {
     const loadingComponent = this.$buefy.loading.open({
-      container: this.$refs.element,
+      container: this.$el.firstElementChild,
     });
 
     try {
