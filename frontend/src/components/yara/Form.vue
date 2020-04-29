@@ -54,7 +54,7 @@ export default class YaraForm extends Mixins<ErrorDialogMixin>(
     this.count = undefined;
 
     const loadingComponent = this.$buefy.loading.open({
-      container: this.$refs.element,
+      container: this.$el.firstElementChild,
     });
 
     const params = (this.$refs.search as SnapshotSearch).filtersParams();

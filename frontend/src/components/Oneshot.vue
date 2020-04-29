@@ -98,7 +98,7 @@ export default class OneshotView extends Mixins<ErrorDialogMixin>(
 
   async scan() {
     const loadingComponent = this.$buefy.loading.open({
-      container: this.$refs.element,
+      container: this.$el.firstElementChild,
     });
 
     try {

@@ -48,7 +48,11 @@ export default class ScreenshotComponent extends Vue {
     if (this.hasInvalidImageSource()) {
       return `${process.env.BASE_URL}images/not-found.jpg`;
     }
-    return `data:Image/png;base64,${this._screenshot?.data}`;
+
+    if (this._screenshot !== undefined) {
+      return `data:Image/png;base64,${this._screenshot.data}`;
+    }
+    return "";
   }
 }
 </script>

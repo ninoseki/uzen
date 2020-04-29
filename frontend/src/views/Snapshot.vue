@@ -31,7 +31,7 @@ export default class SnapshotView extends Mixins<ErrorDialogMixin>(
 
   async load() {
     const loadingComponent = this.$buefy.loading.open({
-      container: this.$refs.element,
+      container: this.$el.firstElementChild,
     });
 
     try {
@@ -49,7 +49,7 @@ export default class SnapshotView extends Mixins<ErrorDialogMixin>(
     }
   }
 
-  created() {
+  mounted() {
     this.load();
   }
 

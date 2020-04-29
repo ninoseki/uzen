@@ -63,7 +63,7 @@ export default class Snapshots extends Mixins<SearchFormComponentMixin>(
 
   async search(additonalLoading = false) {
     const loadingComponent = this.$buefy.loading.open({
-      container: this.$refs.element,
+      container: this.$el.firstElementChild,
     });
 
     if (!additonalLoading) {
