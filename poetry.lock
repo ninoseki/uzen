@@ -1264,7 +1264,7 @@ description = "Python interface for YARA"
 name = "yara-python"
 optional = false
 python-versions = "*"
-version = "3.11.0"
+version = "4.0.0"
 
 [[package]]
 category = "dev"
@@ -1280,7 +1280,7 @@ idna = ">=2.0"
 multidict = ">=4.0"
 
 [metadata]
-content-hash = "0474b162b9f8850c1f886e5701cb48bbfe3e29b94cc1f46e73e4d466f632d6b6"
+content-hash = "4f217cbe4bdfd3c893521153bbfe8d45eb65824556659557021b49fc5f7f5554"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -1997,19 +1997,17 @@ wrapt = [
     {file = "wrapt-1.12.1.tar.gz", hash = "sha256:b62ffa81fb85f4332a4f609cab4ac40709470da05643a082ec1eb88e6d9b97d7"},
 ]
 yara-python = [
-    {file = "yara-python-3.11.0.tar.gz", hash = "sha256:24cd492d6bf8ecedb128f5b02886770be9df03bd1b84ab06a978d45bb1a8ff92"},
-    {file = "yara_python-3.11.0-cp27-cp27m-win32.whl", hash = "sha256:8e44f9600607cb1d74a0f26df5d0a1c06ea54f4601206124f47f1bbb58e6a374"},
-    {file = "yara_python-3.11.0-cp27-cp27m-win_amd64.whl", hash = "sha256:70d39c2238c5854e7cd8f11595317dc4d89417e88035d8acca24bcc58a93150f"},
-    {file = "yara_python-3.11.0-cp33-cp33m-win32.whl", hash = "sha256:9e4fafc327e3a343c545dcf5f173fa8bc712aebffe5f034d205c0bac1f1c5df6"},
-    {file = "yara_python-3.11.0-cp33-cp33m-win_amd64.whl", hash = "sha256:c919ee656139ed46a0056e8a3de179bbc98d42a2be6fb85c95b1e2ec65396b34"},
-    {file = "yara_python-3.11.0-cp34-cp34m-win32.whl", hash = "sha256:5b8d708751a66d1507d819218d06baccdf5527c147c2bd3062f087e2f367a17d"},
-    {file = "yara_python-3.11.0-cp34-cp34m-win_amd64.whl", hash = "sha256:f104f0bb21a0867f22e750bb4e05de629ec9f37facc84daf963385a86371b0d9"},
-    {file = "yara_python-3.11.0-cp35-cp35m-win32.whl", hash = "sha256:58cfc837e7769811afbfb19b1db952ec01e50cdbf9df576fb587e1e343694526"},
-    {file = "yara_python-3.11.0-cp35-cp35m-win_amd64.whl", hash = "sha256:105d851e050b32951ee577148c7f1b18c0a7c64432fef8159069191d522fba86"},
-    {file = "yara_python-3.11.0-cp36-cp36m-win32.whl", hash = "sha256:e4124414d3cff9a10669569a89f585f81c8114b283ab48b2e756e0347a89de0a"},
-    {file = "yara_python-3.11.0-cp36-cp36m-win_amd64.whl", hash = "sha256:6f90bb264470235549e1bb4e355fa82895409cd46f27aceecaddfbf55e66ed71"},
-    {file = "yara_python-3.11.0-cp37-cp37m-win32.whl", hash = "sha256:1d35c7f606465015de02143dfa4e1ad2f4ee85fdb5d5af756b51b2bac62ac7bc"},
-    {file = "yara_python-3.11.0-cp37-cp37m-win_amd64.whl", hash = "sha256:8d255349d69d833bca604b4215bdf499c87357172512273feb934f6442b8e6b2"},
+    {file = "yara-python-4.0.0.tar.gz", hash = "sha256:44d62b25605f45a26879375bf0d90275719e6fddc7a9fbb7ca208e425eab14a4"},
+    {file = "yara_python-4.0.0-cp35-cp35m-win32.whl", hash = "sha256:e73f0d317fac43136638a288817ecd49b045d7d28059758285637fd9425c5c53"},
+    {file = "yara_python-4.0.0-cp35-cp35m-win_amd64.whl", hash = "sha256:5b64a413911772b2e203952a148aa912c3c383cc66c8e322a8f85cabc894967f"},
+    {file = "yara_python-4.0.0-cp36-cp36m-win32.whl", hash = "sha256:e9664e988d9ef3dbfb18a8f5dd9789ce39114da24b4f0696bbc159d7ed9b48a0"},
+    {file = "yara_python-4.0.0-cp36-cp36m-win_amd64.whl", hash = "sha256:aa6e179b7f05267eb9806df153bb09e77836fafd8060c3dbf0be45332843589d"},
+    {file = "yara_python-4.0.0-cp37-cp37m-win32.whl", hash = "sha256:67a695feeacd12e85682a334c2062751cec508c7cd7906d8ff5c0185e7e34e48"},
+    {file = "yara_python-4.0.0-cp37-cp37m-win_amd64.whl", hash = "sha256:71585d01c34cc6aa26f713e9606da5860f0743a70cbcc0a698e86a3f9306d9b9"},
+    {file = "yara_python-4.0.0-cp38-cp38m-win32.whl", hash = "sha256:8e9ce8ef327f9d929b382bc3c995b0a8584468e342b3e8803a0afc35c790a11e"},
+    {file = "yara_python-4.0.0-cp38-cp38m-win_amd64.whl", hash = "sha256:210b5c79ceec1a9b43b780e36580ecad8f5ce8955a93a1253efc2090432294f6"},
+    {file = "yara_python-4.0.0-py2.7-macosx-10.15-x86_64.egg", hash = "sha256:b3e1ba9fd920cfa5d46fe8ab455057a17934e03aec649ac75bcc384522feddaa"},
+    {file = "yara_python-4.0.0-py3.7-macosx-10.14-x86_64.egg", hash = "sha256:fb074aac3625975add42521b392edb257409c06c362c64523a5feedf3fcc4380"},
 ]
 yarl = [
     {file = "yarl-1.4.2-cp35-cp35m-macosx_10_13_x86_64.whl", hash = "sha256:3ce3d4f7c6b69c4e4f0704b32eca8123b9c58ae91af740481aa57d7857b5e41b"},
