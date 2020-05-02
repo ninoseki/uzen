@@ -74,6 +74,7 @@
             placeholder="Click to select..."
             icon="calendar-today"
             v-model="filters.fromAt"
+            :datetime-formatter="datetimeFormatter"
           ></b-datetimepicker>
         </b-field>
       </div>
@@ -83,6 +84,7 @@
             placeholder="Click to select..."
             icon="calendar-today"
             v-model="filters.toAt"
+            :datetime-formatter="datetimeFormatter"
           ></b-datetimepicker>
         </b-field>
       </div>

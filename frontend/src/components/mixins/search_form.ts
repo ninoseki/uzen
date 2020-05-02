@@ -1,5 +1,6 @@
 import Vue from "vue";
 import { Mixin } from "vue-mixin-decorator";
+import moment from "moment/moment";
 
 @Mixin
 export class SearchFormMixin extends Vue {
@@ -27,5 +28,9 @@ export class SearchFormMixin extends Vue {
       return value.toISOString();
     }
     return value;
+  }
+
+  datetimeFormatter(datetime: Date): string {
+    return moment.parseZone(datetime).local().format();
   }
 }

@@ -96,7 +96,7 @@
 
                       <tr>
                         <th>Created at</th>
-                        <td>{{ snapshot.createdAt || "N/A" }}</td>
+                        <td>{{ createdAtInLocalFormat() }}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -168,6 +168,7 @@
 <script lang="ts">
 import { Component, Mixin, Mixins } from "vue-mixin-decorator";
 import { Prop } from "vue-property-decorator";
+import moment from "moment/moment";
 
 import {
   Snapshot,
@@ -212,6 +213,13 @@ export default class SnapshotComponent extends Mixins<HighlightMixin>(
 
   hasYaraResult(): boolean {
     return this.yaraResult !== undefined;
+  }
+
+  createdAtInLocalFormat(): string {
+    if (this.snapshot.createdAt === undefined) {
+      return "N/A";
+    }
+    return moment.parseZone(this.snapshot.createdAt).local().format();
   }
 }
 </script>
