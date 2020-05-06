@@ -53,13 +53,12 @@ async def oneshot(payload: OneshotPayload) -> OneshotResponse:
         raise HTTPException(status_code=500, detail=str(e))
 
     snapshot = result.snapshot
-    screenshot = result.screenshot
-    snapshot.screenshot = screenshot
+    snapshot.screenshot = result.screenshot
+    snapshot.scripts = [script.to_model() for script in result.scripts]
 
     # Process enrichment tasks
     results = await EnrichmentTask.process(snapshot, insert_to_db=False)
 
-    snapshot.scripts = [script.to_model() for script in results.scripts]
     snapshot.dns_records = [record.to_model() for record in results.dns_records]
     snapshot.classifications = [
         classification.to_model() for classification in results.classifications
@@ -70,7 +69,9 @@ async def oneshot(payload: OneshotPayload) -> OneshotResponse:
     matched = False
     matches = []
     if payload.target == "script":
-        for script in results.scripts:
+        for script in snapshot.scripts:
+            print("aaaaaaaaaaaa")
+            print(script.content)
             matches = yara_scanner.match(script.content)
             if len(matches) > 0:
                 matched = True

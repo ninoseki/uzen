@@ -1,11 +1,13 @@
-from typing import Optional, cast
+from typing import List, Optional, cast
 
 import pyppeteer
 from pyppeteer import connect, launch
 from pyppeteer.errors import PyppeteerError
+from pyppeteer.network_manager import Response
 
 from uzen.core import settings
 from uzen.models.screenshots import Screenshot
+from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot
 from uzen.schemas.utils import SnapshotResult
 from uzen.services.certificate import Certificate
@@ -35,6 +37,12 @@ async def launch_browser(
 
     return await launch(
         headless=True, ignoreHTTPSErrors=ignore_https_errors, args=["--no-sandbox"],
+    )
+
+
+def is_js_content_type(content_type: str) -> bool:
+    return content_type.startswith("application/javascript") or content_type.startswith(
+        "text/javascript"
     )
 
 
@@ -74,6 +82,28 @@ class Browser:
             if accept_language is not None:
                 headers["Accept-Language"] = accept_language
             await page.setExtraHTTPHeaders(headers)
+
+            # intercept responses on page to get scripts
+            scripts: List[Script] = []
+
+            async def response_handler(response: Response) -> None:
+                if not response.ok:
+                    return
+
+                content_type: str = response.headers.get("content-type", "")
+                if not is_js_content_type(content_type):
+                    return
+
+                content = await response.text()
+                scripts.append(
+                    Script(
+                        url=response.url,
+                        content=content,
+                        sha256=calculate_sha256(content),
+                    )
+                )
+
+            page.on("response", response_handler)
 
             # default timeout = 30 seconds
             timeout = timeout or 30 * 1000
@@ -129,4 +159,6 @@ class Browser:
         screenshot = Screenshot()
         screenshot.data = screenshot_data
 
-        return SnapshotResult(screenshot=screenshot, snapshot=snapshot)
+        return SnapshotResult(
+            screenshot=screenshot, snapshot=snapshot, scripts=scripts,
+        )

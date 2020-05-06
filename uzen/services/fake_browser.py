@@ -1,8 +1,9 @@
-from typing import Optional, cast
+from typing import List, Optional, cast
 
 import httpx
 
 from uzen.models.screenshots import Screenshot
+from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot
 from uzen.schemas.utils import SnapshotResult
 from uzen.services.certificate import Certificate
@@ -13,6 +14,7 @@ from uzen.services.utils import (
     get_ip_address_by_hostname,
 )
 from uzen.services.whois import Whois
+from uzen.tasks.scripts import ScriptTask
 
 DEFAULT_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
 DEFAULT_AL = "en-US"
@@ -111,4 +113,7 @@ class FakeBrowser:
         screenshot = Screenshot()
         screenshot.data = ""
 
-        return SnapshotResult(screenshot=screenshot, snapshot=snapshot)
+        # get scripts
+        scripts = cast(List[Script], ScriptTask.process(snapshot, insert_to_db=False))
+
+        return SnapshotResult(screenshot=screenshot, snapshot=snapshot, scripts=scripts)
