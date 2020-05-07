@@ -94,4 +94,4 @@ class URLScan:
         screenshot = Screenshot()
         screenshot.data = data
 
-        return SnapshotResult(screenshot=screenshot, snapshot=snapshot)
+        return SnapshotResult(screenshot=screenshot, snapshot=snapshot, scripts=[])

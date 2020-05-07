@@ -6,6 +6,7 @@ from pyppeteer.errors import PyppeteerError
 from tortoise.transactions import in_transaction
 
 from uzen.core.exceptions import TakeSnapshotError
+from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot
 from uzen.schemas.utils import SnapshotResult
 from uzen.services.browser import Browser
@@ -74,6 +75,10 @@ async def save_snapshot(result: SnapshotResult) -> Snapshot:
         await snapshot.save()
         screenshot.snapshot_id = snapshot.id
         await screenshot.save()
+
+        for script in result.scripts:
+            script.snapshot_id = snapshot.id
+        await Script.bulk_create(result.scripts)
 
         snapshot.screenshot = screenshot
         return snapshot

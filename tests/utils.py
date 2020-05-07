@@ -58,6 +58,7 @@ async def make_snapshot_result() -> SnapshotResult:
             created_at=datetime.datetime.now(),
         ),
         screenshot=screenshot,
+        scripts=[],
     )
 
 

@@ -16,13 +16,13 @@ from uzen.models.snapshots import Snapshot
 class SnapshotResult:
     snapshot: Snapshot
     screenshot: Screenshot
+    scripts: List[Script]
 
 
 @dataclass
 class EnrichmentResults:
     classifications: List[Classification]
     dns_records: List[DnsRecord]
-    scripts: List[Script]
 
 
 @dataclass

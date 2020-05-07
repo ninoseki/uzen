@@ -1,13 +1,14 @@
 import json
 
 import pytest
-import respx
 
 from uzen.models.screenshots import Screenshot
+from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot
 from uzen.schemas.utils import SnapshotResult
 from uzen.services.browser import Browser
 from uzen.services.classifications import ClassificationBuilder
+from uzen.services.dns_records import DnsRecordBuilder
 
 
 @pytest.mark.asyncio
@@ -95,6 +96,13 @@ async def mock_take_snapshot(*args, **kwargs):
             request={},
         ),
         screenshot=screenshot,
+        scripts=[
+            Script(
+                url="https://www.w3.org/2008/site/js/main",
+                content="foo",
+                sha256="dummy",
+            )
+        ],
     )
 
 
@@ -121,6 +129,7 @@ async def mock_take_snapshot_without_script(*args, **kwargs):
             request={},
         ),
         screenshot=screenshot,
+        scripts=[],
     )
 
 
@@ -133,6 +142,9 @@ async def test_yara_oneshot(client, monkeypatch):
     monkeypatch.setattr(Browser, "take_snapshot", mock_take_snapshot_without_script)
     monkeypatch.setattr(
         ClassificationBuilder, "build_from_snapshot", mock_build_from_snapshot
+    )
+    monkeypatch.setattr(
+        DnsRecordBuilder, "build_from_snapshot", mock_build_from_snapshot
     )
 
     payload = {
@@ -157,18 +169,14 @@ async def test_yara_oneshot(client, monkeypatch):
 
 
 @pytest.mark.asyncio
-@respx.mock
 async def test_yara_oneshot_with_script(client, monkeypatch):
     monkeypatch.setattr(Browser, "take_snapshot", mock_take_snapshot)
     monkeypatch.setattr(
         ClassificationBuilder, "build_from_snapshot", mock_build_from_snapshot
     )
-    respx.get(
-        "https://www.w3.org",
-        content='<html><body><script type="text/javascript" src="https://www.w3.org/2008/site/js/main"></body></html>',
+    monkeypatch.setattr(
+        DnsRecordBuilder, "build_from_snapshot", mock_build_from_snapshot
     )
-    respx.get("https://www.w3.org/2008/site/js/main", content="foo")
-    respx.get("http://testserver/*", pass_through=True)
 
     payload = {
         "source": 'rule foo: bar {strings: $a = "foo" condition: $a}',
