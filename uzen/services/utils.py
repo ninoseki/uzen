@@ -47,9 +47,9 @@ def get_hostname_from_url(url: str) -> Optional[str]:
         Optional[str] -- A hostname, returns None if an invalid input is given
     """
     parsed = urlparse(url)
-    if parsed.netloc == "":
+    if parsed.hostname == "":
         return None
-    return parsed.netloc
+    return parsed.hostname
 
 
 def get_ip_address_by_hostname(hostname: str) -> Optional[str]:

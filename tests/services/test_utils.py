@@ -24,6 +24,8 @@ async def test_get_asn_by_ip_address():
     "hostname,expected",
     [
         pytest.param("http://example.com", "example.com"),
+        pytest.param("http://1.1.1.1", "1.1.1.1"),
+        pytest.param("http://127.0.0.1:8080", "127.0.0.1"),
         pytest.param("example.com", None),
     ],
 )
