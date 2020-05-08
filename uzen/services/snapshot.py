@@ -5,6 +5,7 @@ from loguru import logger
 from pyppeteer.errors import PyppeteerError
 from tortoise.transactions import in_transaction
 
+from uzen.core import settings
 from uzen.core.exceptions import TakeSnapshotError
 from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot
@@ -43,6 +44,9 @@ async def take_snapshot(
 
     if result is not None:
         return result
+
+    if not settings.ENABLE_HTTPX_FALLBACK:
+        raise TakeSnapshotError("\n".join(errors))
 
     # fallback to fake browser (httpx)
     if result is None:

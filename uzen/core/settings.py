@@ -22,3 +22,5 @@ GOOGLE_SAFE_BROWSING_API_KEY: str = config(
 )
 
 BROWSER_WS_ENDPOINT: str = config("BROWSER_WS_ENDPOINT", cast=str, default="")
+
+ENABLE_HTTPX_FALLBACK: bool = config("ENABLE_HTTPX_FALLBACK", cast=bool, default=True)
