@@ -26,7 +26,7 @@ def client():
     return httpx.AsyncClient(app=app, base_url="http://testserver")
 
 
-def getDBConfig(app_label: str, db_url: str, modules: List[str]) -> dict:
+def get_db_config(app_label: str, db_url: str, modules: List[str]) -> dict:
     return generate_config(
         db_url,
         app_modules={app_label: modules},
@@ -38,7 +38,7 @@ def getDBConfig(app_label: str, db_url: str, modules: List[str]) -> dict:
 @pytest.fixture(autouse=True)
 async def tortoise_db():
     db_url = environ.get("TORTOISE_TEST_DB", "sqlite://:memory:")
-    config = getDBConfig(
+    config = get_db_config(
         app_label="models", db_url=db_url, modules=settings.APP_MODELS,
     )
     try:
