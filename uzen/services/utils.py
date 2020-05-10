@@ -9,19 +9,19 @@ import httpx
 
 class IPInfo:
     HOST = "ipinfo.io"
-    BASE_URL = "https://{}".format(HOST)
+    BASE_URL = f"https://{HOST}"
 
     def __init__(self):
         self.client = httpx.AsyncClient()
 
     async def basic(self, ip_address: str) -> dict:
-        url = "{}/{}/json".format(self.BASE_URL, ip_address)
+        url = f"{self.BASE_URL}/{ip_address}/json"
         r = await self.client.get(url)
         r.raise_for_status()
         return r.json()
 
     async def geo(self, ip_address: str) -> dict:
-        url = "{}/{}/geo".format(self.BASE_URL, ip_address)
+        url = f"{self.BASE_URL}/{ip_address}/geo"
         r = await self.client.get(url)
         r.raise_for_status()
         return r.json()
@@ -63,7 +63,7 @@ def get_ip_address_by_hostname(hostname: str) -> Optional[str]:
     """
     try:
         return socket.gethostbyname(hostname)
-    except socket.error:
+    except OSError:
         return None
 
 
