@@ -1,9 +1,9 @@
 from tests.utils import make_snapshot
-from uzen.services.dns_records import DnsRecordBuilder
+from uzen.factories.dns_records import DnsRecordFactory
 
 
 def test_build_from_snapshot():
     snapshot = make_snapshot()
 
-    records = DnsRecordBuilder.build_from_snapshot(snapshot)
+    records = DnsRecordFactory.from_snapshot(snapshot)
     assert len(records) > 0

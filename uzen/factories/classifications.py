@@ -9,6 +9,14 @@ from uzen.models.snapshots import Snapshot
 
 
 def google_safe_brwosing_lookup(url: str) -> Optional[dict]:
+    """Lookup a url on GSB
+
+    Arguments:
+        url {str} -- A URL to lookup
+
+    Returns:
+        Optional[dict] -- A lookup result
+    """
     key = str(settings.GOOGLE_SAFE_BROWSING_API_KEY)
     if key == "":
         return None
@@ -22,9 +30,9 @@ def google_safe_brwosing_lookup(url: str) -> Optional[dict]:
     return None
 
 
-class ClassificationBuilder:
+class ClassificationFactory:
     @staticmethod
-    def build_from_snapshot(snapshot: Snapshot) -> List[Classification]:
+    def from_snapshot(snapshot: Snapshot) -> List[Classification]:
         classifications = []
 
         res = google_safe_brwosing_lookup(snapshot.url)

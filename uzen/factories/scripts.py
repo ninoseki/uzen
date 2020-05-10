@@ -12,11 +12,28 @@ from uzen.services.utils import calculate_sha256
 
 
 def extract_base_path(path: str) -> str:
+    """Extract base path from a path (or remove a filename from the path)
+
+    Arguments:
+        path {str} -- A path e.g. /foo/bar/index.html
+
+    Returns:
+        str -- A base path (e.g. /foo/bar/)
+    """
     parts = path.split("/")
     return "/".join(parts[:-1])
 
 
 def normalize_source(url: str, source: str) -> str:
+    """Convert a URL to an absolute URL
+
+    Arguments:
+        url {str} -- A URL
+        source {str} -- Source of a script
+
+    Returns:
+        str -- An absolute URL
+    """
     if source.startswith("http://") or source.startswith("https://"):
         return source
 
@@ -31,6 +48,15 @@ def normalize_source(url: str, source: str) -> str:
 
 
 def get_script_sources(url: str, body: str) -> List[str]:
+    """Get script sources
+
+    Arguments:
+        url {str} -- A URL
+        body {str} -- An HTTP response body
+
+    Returns:
+        List[str] -- A list of script sources
+    """
     html = HTML(html=body)
 
     sources: List[str] = []
@@ -43,24 +69,32 @@ def get_script_sources(url: str, body: str) -> List[str]:
 
 
 @dataclasses.dataclass
-class Result:
+class ScriptContent:
     source: str
     content: str
 
 
-async def get_script_content(source: str) -> Optional[Result]:
+async def get_script_content(source: str) -> Optional[ScriptContent]:
+    """Get script contents
+
+    Arguments:
+        source {str} -- A source of a script (an absolute URL)
+
+    Returns:
+        Optional[ScriptContent] -- A fetched result
+    """
     try:
         client = httpx.AsyncClient()
         res = await client.get(source)
         res.raise_for_status()
-        return Result(source=source, content=res.text)
+        return ScriptContent(source=source, content=res.text)
     except httpx.HTTPError:
         return None
 
 
-class ScriptBuilder:
+class ScriptFactory:
     @staticmethod
-    async def build_from_snapshot(snapshot: Snapshot) -> List[Script]:
+    async def from_snapshot(snapshot: Snapshot) -> List[Script]:
         sources = get_script_sources(url=snapshot.url, body=snapshot.body)
         scripts = []
 

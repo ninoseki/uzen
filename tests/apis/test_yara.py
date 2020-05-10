@@ -2,13 +2,13 @@ import json
 
 import pytest
 
+from uzen.factories.classifications import ClassificationFactory
+from uzen.factories.dns_records import DnsRecordFactory
 from uzen.models.screenshots import Screenshot
 from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot
 from uzen.schemas.utils import SnapshotResult
 from uzen.services.browser import Browser
-from uzen.services.classifications import ClassificationBuilder
-from uzen.services.dns_records import DnsRecordBuilder
 
 
 @pytest.mark.asyncio
@@ -141,11 +141,9 @@ def mock_build_from_snapshot(snapshot):
 async def test_yara_oneshot(client, monkeypatch):
     monkeypatch.setattr(Browser, "take_snapshot", mock_take_snapshot_without_script)
     monkeypatch.setattr(
-        ClassificationBuilder, "build_from_snapshot", mock_build_from_snapshot
+        ClassificationFactory, "from_snapshot", mock_build_from_snapshot
     )
-    monkeypatch.setattr(
-        DnsRecordBuilder, "build_from_snapshot", mock_build_from_snapshot
-    )
+    monkeypatch.setattr(DnsRecordFactory, "from_snapshot", mock_build_from_snapshot)
 
     payload = {
         "source": 'rule foo: bar {strings: $a = "body" condition: $a}',
@@ -172,11 +170,9 @@ async def test_yara_oneshot(client, monkeypatch):
 async def test_yara_oneshot_with_script(client, monkeypatch):
     monkeypatch.setattr(Browser, "take_snapshot", mock_take_snapshot)
     monkeypatch.setattr(
-        ClassificationBuilder, "build_from_snapshot", mock_build_from_snapshot
+        ClassificationFactory, "from_snapshot", mock_build_from_snapshot
     )
-    monkeypatch.setattr(
-        DnsRecordBuilder, "build_from_snapshot", mock_build_from_snapshot
-    )
+    monkeypatch.setattr(DnsRecordFactory, "from_snapshot", mock_build_from_snapshot)
 
     payload = {
         "source": 'rule foo: bar {strings: $a = "foo" condition: $a}',

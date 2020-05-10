@@ -10,6 +10,14 @@ TYPES: List[str] = ["A", "AAAA", "CNAME", "MX", "NS", "PTR", "TXT"]
 
 
 def query(hostname: str) -> List[BaseDnsRecord]:
+    """Quqery DNS records
+
+    Arguments:
+        hostname {str} -- A hostname to query
+
+    Returns:
+        List[BaseDnsRecord] -- A list of DNS records
+    """
     records = []
     for record_type in TYPES:
         values = pydig.query(hostname, record_type)
@@ -19,9 +27,9 @@ def query(hostname: str) -> List[BaseDnsRecord]:
     return records
 
 
-class DnsRecordBuilder:
+class DnsRecordFactory:
     @staticmethod
-    def build_from_snapshot(snapshot: Snapshot) -> List[DnsRecord]:
+    def from_snapshot(snapshot: Snapshot) -> List[DnsRecord]:
         records = query(snapshot.hostname)
         dns_records = []
         for record in records:

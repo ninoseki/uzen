@@ -4,7 +4,7 @@ import pytest
 import respx
 
 from tests.utils import make_snapshot
-from uzen.services.scripts import ScriptBuilder, get_script_sources
+from uzen.factories.scripts import ScriptFactory, get_script_sources
 
 
 @pytest.mark.asyncio
@@ -14,7 +14,7 @@ async def test_build_from_snapshot():
     snapshot.body = '<html><body><script type="text/javascript" src="https://www.w3.org/2008/site/js/main"></body></html>'
     respx.get("https://www.w3.org/2008/site/js/main", content="foo")
 
-    scripts = await ScriptBuilder.build_from_snapshot(snapshot)
+    scripts = await ScriptFactory.from_snapshot(snapshot)
     assert len(scripts) == 1
 
     script = scripts[0]
@@ -30,7 +30,7 @@ async def test_build_from_snapshot_with_relative_src():
     snapshot.body = '<html><body><script type="text/javascript" src="/2008/site/js/main"></body></html>'
     respx.get("https://www.w3.org/2008/site/js/main", content="foo")
 
-    scripts = await ScriptBuilder.build_from_snapshot(snapshot)
+    scripts = await ScriptFactory.from_snapshot(snapshot)
     assert len(scripts) == 1
 
     script = scripts[0]
@@ -43,7 +43,7 @@ async def test_build_from_snapshot_with_no_src():
     snapshot = make_snapshot()
     snapshot.body = '<html><body><script type="text/javascript"></body></html>'
 
-    scripts = await ScriptBuilder.build_from_snapshot(snapshot)
+    scripts = await ScriptFactory.from_snapshot(snapshot)
     assert len(scripts) == 0
 
 

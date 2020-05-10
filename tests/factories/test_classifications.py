@@ -1,7 +1,7 @@
 import vcr
 
 from tests.utils import make_snapshot
-from uzen.services.classifications import ClassificationBuilder
+from uzen.factories.classifications import ClassificationFactory
 
 
 @vcr.use_cassette(
@@ -10,7 +10,7 @@ from uzen.services.classifications import ClassificationBuilder
 def test_build_from_snapshot():
     snapshot = make_snapshot()
 
-    classifications = ClassificationBuilder.build_from_snapshot(snapshot)
+    classifications = ClassificationFactory.from_snapshot(snapshot)
     assert len(classifications) > 0
 
     first = classifications[0]
