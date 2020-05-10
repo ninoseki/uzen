@@ -7,7 +7,7 @@ import respx
 from uzen.services.urlscan import URLScan
 
 path = pathlib.Path(__file__).parent / "../fixtures/urlscan.json"
-fixture = open(path, "r").read()
+fixture = open(path).read()
 
 
 @pytest.mark.asyncio

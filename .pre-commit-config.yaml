@@ -10,6 +10,12 @@ repos:
             "--remove-unused-variable",
           ]
 
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v2.4.1
+    hooks:
+      - id: pyupgrade
+        args: [--py37-plus]
+
   - repo: https://github.com/asottile/seed-isort-config
     rev: v2.1.0
     hooks:

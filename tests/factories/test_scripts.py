@@ -49,7 +49,7 @@ async def test_build_from_snapshot_with_no_src():
 
 def test_get_script_sources():
     path = pathlib.Path(__file__).parent / "../fixtures/test.html"
-    fixture = open(path, "r").read()
+    fixture = open(path).read()
 
     sources = get_script_sources(url="http://example.com/test.php", body=fixture)
     assert len(sources) == 2
