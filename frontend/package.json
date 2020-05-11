@@ -22,6 +22,8 @@
   },
   "homepage": "https://github.com/ninoseki/uzen#readme",
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.13.0",
+    "@mdi/font": "^5.1.45",
     "axios": "^0.19.2",
     "boxicons": "^2.0.5",
     "buefy": "^0.8.15",
