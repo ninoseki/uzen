@@ -6,7 +6,13 @@
       <SnapshotSearch ref="search" />
       <br />
       <div class="has-text-centered">
-        <b-button type="is-light" @click="scan">Scan</b-button>
+        <b-button
+          type="is-light"
+          icon-pack="fas"
+          icon-left="search"
+          @click="scan"
+          >Scan</b-button
+        >
       </div>
     </div>
     <h2 v-if="hasCount()">{{ count }} snapshots found</h2>

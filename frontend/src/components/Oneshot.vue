@@ -19,10 +19,17 @@
       <br />
 
       <div class="buttons is-centered">
-        <b-button type="is-light" @click="scan">Scan</b-button>
+        <b-button
+          type="is-light"
+          icon-pack="fas"
+          icon-left="search"
+          @click="scan"
+          >Scan</b-button
+        >
         <b-button
           type="is-info"
-          icon-left="fas fa-cogs"
+          icon-pack="fas"
+          icon-left="cogs"
           @click="showOptions = !showOptions"
           >Options</b-button
         >

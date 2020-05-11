@@ -28,14 +28,6 @@
       <b-navbar-item>
         <a href="/docs" target="_blank" class="navbar-item">API</a>
       </b-navbar-item>
-      <b-navbar-item>
-        <a
-          href="https://github.com/ninoseki/uzen"
-          target="_blank"
-          class="navbar-item"
-          >GitHub</a
-        >
-      </b-navbar-item>
     </template>
   </b-navbar>
 </template>
