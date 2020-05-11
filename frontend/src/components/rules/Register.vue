@@ -22,7 +22,13 @@
       </b-field>
 
       <div class="has-text-centered">
-        <b-button type="is-light" @click="register">Register</b-button>
+        <b-button
+          type="is-light"
+          icon-pack="fas"
+          icon-left="keyboard"
+          @click="register"
+          >Register</b-button
+        >
       </div>
     </div>
   </div>

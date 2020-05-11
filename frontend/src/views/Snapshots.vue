@@ -13,7 +13,13 @@
       <br />
 
       <div class="has-text-centered">
-        <b-button type="is-light" @click="initSearch()">Search</b-button>
+        <b-button
+          type="is-light"
+          icon-pack="fas"
+          icon-left="search"
+          @click="initSearch()"
+          >Search</b-button
+        >
       </div>
     </div>
 

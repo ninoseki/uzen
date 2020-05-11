@@ -12,7 +12,11 @@
           v-model="uuid"
         ></b-input>
         <p class="control">
-          <b-button type="is-light" @click="import_from_urlscan"
+          <b-button
+            type="is-light"
+            icon-pack="fas"
+            icon-left="file-import"
+            @click="import_from_urlscan"
             >Import from urlscan.io</b-button
           >
         </p>

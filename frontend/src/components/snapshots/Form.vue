@@ -8,10 +8,17 @@
           v-model="url"
         ></b-input>
         <p class="control">
-          <b-button type="is-light" @click="take">Take a snapshot</b-button>
+          <b-button
+            type="is-light"
+            icon-pack="fas"
+            icon-left="camera"
+            @click="take"
+            >Take a snapshot</b-button
+          >
           <b-button
             type="is-info"
-            icon-left="fas fa-cogs"
+            icon-pack="fas"
+            icon-left="cogs"
             @click="showOptions = !showOptions"
             >Options</b-button
           >
