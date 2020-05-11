@@ -8,6 +8,21 @@ from uzen.schemas.scripts import BaseScript
 from uzen.schemas.scripts import Script as ScriptModel
 
 
+def normalize_url(url: str) -> str:
+    """Normalize URL
+
+    Arguments:
+        url {str} -- A URL
+
+    Returns:
+        str -- A normalized URL
+    """
+    # remove string after "?" to comply with Pydantic AnyHttpUrl validation
+    # e.g. http:/example.com/test.js?foo=bar to http://example.com/test.js
+    splitted = url.split("?")
+    return splitted[0]
+
+
 class Script(TimestampMixin, AbstractBaseModel):
     url = fields.TextField()
     content = fields.TextField()
@@ -21,6 +36,7 @@ class Script(TimestampMixin, AbstractBaseModel):
     )
 
     def to_model(self) -> Union[ScriptModel, BaseScript]:
+        self.url = normalize_url(self.url)
         if self.created_at is not None:
             return ScriptModel.from_orm(self)
 
