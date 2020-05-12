@@ -135,6 +135,9 @@ class CreateSnapshotPayload(APIModel):
     referer: Optional[str] = Field(
         None, title="Referer", description="Referer HTTP header"
     )
+    host: Optional[str] = Field(
+        None, title="Host", description="Host HTTP header (it only works with HTTPX)"
+    )
 
     @validator("url")
     def hostname_must_resolvable(cls, v):

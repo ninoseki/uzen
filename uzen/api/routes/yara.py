@@ -43,6 +43,7 @@ async def oneshot(payload: OneshotPayload) -> OneshotResponse:
     try:
         result = await take_snapshot(
             url=payload.url,
+            host=payload.host,
             accept_language=payload.accept_language,
             ignore_https_errors=payload.ignore_https_errors,
             referer=payload.referer,
