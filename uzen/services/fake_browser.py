@@ -26,6 +26,7 @@ class FakeBrowser:
     async def take_snapshot(
         url: str,
         accept_language: Optional[str] = None,
+        host: Optional[str] = None,
         ignore_https_errors: bool = False,
         referer: Optional[str] = None,
         timeout: Optional[int] = None,
@@ -37,12 +38,15 @@ class FakeBrowser:
             url {str} -- A URL of a website
 
         Keyword Arguments:
-            user_agent {Optional[str]} -- User agent to use (default: {None})
-            timeout {Optional[int]} -- Maximum time to wait for in seconds (default: {None})
+            accept_language {Optional[str]} -- Accept-language header to use (default: {None})
+            host {Optional[str]} -- Host header to use (default: {None})
             ignore_https_errors {bool} -- Whether to ignore HTTPS errors (default: {False})
+            referer {Optional[str]} -- Referer header to use (default: {None})
+            timeout {Optional[int]} -- Maximum time to wait for in seconds (default: {None})
+            user_agent {Optional[str]} -- User-agent header to use (default: {None})
 
         Returns:
-            Snapshot -- Snapshot ORM instance
+            SnapshotResult
         """
         submitted_url: str = url
         verify = not ignore_https_errors
@@ -50,25 +54,24 @@ class FakeBrowser:
         try:
             # default timeout = 30 seconds
             timeout = int(timeout / 1000) if timeout is not None else 30
-            user_agent = user_agent or DEFAULT_UA
-            accept_language = accept_language or DEFAULT_AL
-            referer = referer or DEFAULT_REFERER
+
+            headers = {
+                "user-agent": user_agent or DEFAULT_UA,
+                "accept-language": accept_language or DEFAULT_AL,
+                "referer": referer or DEFAULT_REFERER,
+            }
+            if host is not None:
+                headers["host"] = host
 
             client = httpx.AsyncClient(verify=verify)
             res = await client.get(
-                url,
-                headers={
-                    "user-agent": user_agent,
-                    "accept-language": accept_language,
-                    "referer": referer,
-                },
-                timeout=timeout,
-                allow_redirects=True,
+                url, headers=headers, timeout=timeout, allow_redirects=True,
             )
 
             request = {
                 "accept_language": accept_language,
                 "browser": "httpx",
+                "host": host,
                 "ignore_https_errors": ignore_https_errors,
                 "referer": referer,
                 "timeout": timeout,
@@ -114,6 +117,8 @@ class FakeBrowser:
         screenshot.data = ""
 
         # get scripts
-        scripts = cast(List[Script], ScriptTask.process(snapshot, insert_to_db=False))
+        scripts = cast(
+            List[Script], await ScriptTask.process(snapshot, insert_to_db=False)
+        )
 
         return SnapshotResult(screenshot=screenshot, snapshot=snapshot, scripts=scripts)

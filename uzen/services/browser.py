@@ -62,12 +62,14 @@ class Browser:
             url {str} -- A URL of a website
 
         Keyword Arguments:
-            user_agent {Optional[str]} -- User agent to use (default: {None})
-            timeout {Optional[int]} -- Maximum time to wait for in seconds (default: {None})
+            accept_language {Optional[str]} -- Accept-language header to use (default: {None})
             ignore_https_errors {bool} -- Whether to ignore HTTPS errors (default: {False})
+            referer {Optional[str]} -- Referer header to use (default: {None})
+            timeout {Optional[int]} -- Maximum time to wait for in seconds (default: {None})
+            user_agent {Optional[str]} -- User-agent header to use (default: {None})
 
         Returns:
-            Snapshot -- Snapshot ORM instance
+            SnapshotResult
         """
         submitted_url: str = url
         try:

@@ -19,6 +19,10 @@
       </b-select>
     </b-field>
 
+    <b-field label="Host">
+      <b-input placeholder="Host" v-model="_host"></b-input>
+    </b-field>
+
     <b-field label="Timeout (milliseconds)">
       <b-input
         v-model="_timeout"
@@ -26,6 +30,7 @@
         placeholder="Maximum navigation time in milliseconds, defaults to 30 seconds, pass 0 to disable timeout"
       ></b-input>
     </b-field>
+
     <b-field label="Ignore HTTPS errors">
       <b-checkbox v-model="_ignoreHTTPSErrors"></b-checkbox>
     </b-field>
@@ -41,6 +46,7 @@ import { languages } from "@/languages";
 @Component
 export default class Options extends Vue {
   private acceptLanguage = "";
+  private host = "";
   private ignoreHTTPSErrors = false;
   private referer = "";
   private timeout = 30000;
@@ -71,6 +77,14 @@ export default class Options extends Vue {
 
   set _acceptLanguage(value) {
     this.$emit("update:acceptLanguage", value);
+  }
+
+  get _host() {
+    return this.host;
+  }
+
+  set _host(value) {
+    this.$emit("update:host", value);
   }
 
   get _timeout() {

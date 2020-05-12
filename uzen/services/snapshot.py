@@ -16,11 +16,12 @@ from uzen.services.fake_browser import FakeBrowser
 
 async def take_snapshot(
     url: str,
-    accept_language: Optional[str],
-    ignore_https_errors: Optional[bool],
-    referer: Optional[str],
-    timeout: Optional[int],
-    user_agent: Optional[str],
+    accept_language: Optional[str] = None,
+    host: Optional[str] = None,
+    ignore_https_errors: Optional[bool] = None,
+    referer: Optional[str] = None,
+    timeout: Optional[int] = None,
+    user_agent: Optional[str] = None,
 ) -> SnapshotResult:
 
     timeout = timeout or 30000
@@ -28,31 +29,13 @@ async def take_snapshot(
 
     result = None
     errors = []
-    try:
-        result = await Browser.take_snapshot(
-            url,
-            accept_language=accept_language,
-            ignore_https_errors=ignore_https_errors,
-            referer=referer,
-            timeout=timeout,
-            user_agent=user_agent,
-        )
-    except (PyppeteerError, UnboundLocalError) as e:
-        message = f"Failed to take a snapshot by pyppeteer: {e}."
-        logger.debug(message)
-        errors.append(message)
 
-    if result is not None:
-        return result
-
-    if not settings.ENABLE_HTTPX_FALLBACK:
-        raise TakeSnapshotError("\n".join(errors))
-
-    # fallback to fake browser (httpx)
-    if result is None:
-        logger.debug("Fallback to httpx")
+    # Skip pyppeteer if a host is not None
+    # because Chromium prohibits setting "host" header.
+    # ref. https://github.com/puppeteer/puppeteer/issues/4575#issuecomment-511259872
+    if host is None:
         try:
-            result = await FakeBrowser.take_snapshot(
+            result = await Browser.take_snapshot(
                 url,
                 accept_language=accept_language,
                 ignore_https_errors=ignore_https_errors,
@@ -60,8 +43,34 @@ async def take_snapshot(
                 timeout=timeout,
                 user_agent=user_agent,
             )
+        except (PyppeteerError, UnboundLocalError) as e:
+            message = f"Failed to take a snapshot by pyppeteer: {e}."
+            logger.debug(message)
+            errors.append(message)
+
+    if result is not None:
+        return result
+
+    # if HTTPX fallback is not enabled and host is None, it raises an error
+    # if host is not None, we should use HTTPX
+    if not settings.ENABLE_HTTPX_FALLBACK and host is None:
+        raise TakeSnapshotError("\n".join(errors))
+
+    # fallback to HTTPX
+    if result is None:
+        logger.debug("Fallback to HTTPX")
+        try:
+            result = await FakeBrowser.take_snapshot(
+                url,
+                accept_language=accept_language,
+                host=host,
+                ignore_https_errors=ignore_https_errors,
+                referer=referer,
+                timeout=timeout,
+                user_agent=user_agent,
+            )
         except httpx.HTTPError as e:
-            message = f"Failed to take a snapshot by httpx: {e}."
+            message = f"Failed to take a snapshot by HTTPX: {e}."
             logger.debug(message)
             errors.append(message)
 

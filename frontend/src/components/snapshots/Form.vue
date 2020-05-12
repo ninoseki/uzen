@@ -27,6 +27,7 @@
       <Options
         v-if="showOptions"
         v-bind:acceptLanguage.sync="acceptLanguage"
+        v-bind:host.sync="host"
         v-bind:ignoreHTTPSErrors.sync="ignoreHTTPSErrors"
         v-bind:referer.sync="referer"
         v-bind:timeout.sync="timeout"
@@ -51,12 +52,14 @@ import { ErrorDialogMixin } from "@/components/mixins";
 export default class Form extends Mixins<ErrorDialogMixin>(ErrorDialogMixin) {
   private url = "";
   private showOptions = false;
+  private snapshot: Snapshot | undefined = undefined;
+
   private acceptLanguage = "";
+  private host = "";
   private ignoreHTTPSErrors = false;
   private referer = "";
   private timeout = 30000;
   private userAgent = "";
-  private snapshot: Snapshot | undefined = undefined;
 
   async take() {
     const loadingComponent = this.$buefy.loading.open({
@@ -68,6 +71,7 @@ export default class Form extends Mixins<ErrorDialogMixin>(ErrorDialogMixin) {
         url: this.url,
         accept_language:
           this.acceptLanguage === "" ? undefined : this.acceptLanguage,
+        host: this.host === "" ? undefined : this.host,
         ignore_https_errors: this.ignoreHTTPSErrors,
         referer: this.referer === "" ? undefined : this.referer,
         timeout: this.timeout,

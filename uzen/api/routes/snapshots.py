@@ -87,6 +87,7 @@ async def create(
         result = await take_snapshot(
             url=payload.url,
             accept_language=payload.accept_language,
+            host=payload.host,
             ignore_https_errors=payload.ignore_https_errors,
             referer=payload.referer,
             timeout=payload.timeout,
