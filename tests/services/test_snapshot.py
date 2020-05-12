@@ -1,3 +1,5 @@
+from unittest.mock import AsyncMock
+
 import pytest
 
 from uzen.services.browser import Browser
@@ -7,8 +9,8 @@ from uzen.services.snapshot import take_snapshot
 
 @pytest.mark.asyncio
 async def test_take_snapshot(mocker):
-    mocker.patch("uzen.services.browser.Browser.take_snapshot")
-    mocker.patch("uzen.services.fake_browser.FakeBrowser.take_snapshot")
+    mocker.patch("uzen.services.browser.Browser.take_snapshot", AsyncMock())
+    mocker.patch("uzen.services.fake_browser.FakeBrowser.take_snapshot", AsyncMock())
 
     # it should fallback to HTTPX if a host is given
     await take_snapshot(url="http://example.com", host="example.com")
@@ -20,8 +22,8 @@ async def test_take_snapshot(mocker):
 @pytest.mark.asyncio
 async def test_take_snapshot_2(mocker, monkeypatch):
     monkeypatch.setattr("uzen.core.settings.ENABLE_HTTPX_FALLBACK", False)
-    mocker.patch("uzen.services.browser.Browser.take_snapshot")
-    mocker.patch("uzen.services.fake_browser.FakeBrowser.take_snapshot")
+    mocker.patch("uzen.services.browser.Browser.take_snapshot", AsyncMock())
+    mocker.patch("uzen.services.fake_browser.FakeBrowser.take_snapshot", AsyncMock())
 
     # it should use HTTPX even if ENABLE_HTTPX_FALLBACK is false
     await take_snapshot(url="http://example.com", host="example.com")
