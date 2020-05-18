@@ -4,37 +4,7 @@ import socket
 from typing import Optional
 from urllib.parse import urlparse
 
-import httpx
-
-
-class IPInfo:
-    HOST = "ipinfo.io"
-    BASE_URL = f"https://{HOST}"
-
-    def __init__(self):
-        self.client = httpx.AsyncClient()
-
-    async def basic(self, ip_address: str) -> dict:
-        url = f"{self.BASE_URL}/{ip_address}/json"
-        r = await self.client.get(url)
-        r.raise_for_status()
-        return r.json()
-
-    async def geo(self, ip_address: str) -> dict:
-        url = f"{self.BASE_URL}/{ip_address}/geo"
-        r = await self.client.get(url)
-        r.raise_for_status()
-        return r.json()
-
-    @classmethod
-    async def get_geo(cls, ip_address: str) -> dict:
-        instance = cls()
-        return await instance.geo(ip_address)
-
-    @classmethod
-    async def get_basic(cls, ip_address: str) -> dict:
-        instance = cls()
-        return await instance.basic(ip_address)
+from uzen.services.ipinfo import IPInfo
 
 
 def get_hostname_from_url(url: str) -> Optional[str]:
@@ -77,7 +47,7 @@ async def get_asn_by_ip_address(ip_address: str) -> Optional[str]:
         Optional[str] -- ASN as a string, returns None if an error occurs
     """
     try:
-        json = await IPInfo.get_basic(ip_address)
+        json = await IPInfo.get_info(ip_address)
         return json.get("org")
     except Exception:
         return None

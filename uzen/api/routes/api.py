@@ -1,8 +1,17 @@
 from fastapi import APIRouter
 
-from uzen.api.routes import matches, rules, screenshots, snapshots, urlscan, yara
+from uzen.api.routes import (
+    ip_address,
+    matches,
+    rules,
+    screenshots,
+    snapshots,
+    urlscan,
+    yara,
+)
 
 api_router = APIRouter()
+api_router.include_router(ip_address.router, prefix="/ip_address", tags=["IP address"])
 api_router.include_router(matches.router, prefix="/matches", tags=["Matches"])
 api_router.include_router(rules.router, prefix="/rules", tags=["Rules"])
 api_router.include_router(

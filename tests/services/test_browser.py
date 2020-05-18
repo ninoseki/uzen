@@ -23,7 +23,7 @@ def mock_load_and_dump_from_url(url: str):
 
 @pytest.mark.asyncio
 async def test_take_snapshot(monkeypatch):
-    monkeypatch.setattr(IPInfo, "get_basic", mock_get_basic)
+    monkeypatch.setattr(IPInfo, "get_info", mock_get_basic)
     monkeypatch.setattr(Whois, "whois", mock_whois)
     monkeypatch.setattr(
         Certificate, "load_and_dump_from_url", mock_load_and_dump_from_url
@@ -46,7 +46,7 @@ async def test_take_snapshot(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_take_snapshot_with_options(monkeypatch):
-    monkeypatch.setattr(IPInfo, "get_basic", mock_get_basic)
+    monkeypatch.setattr(IPInfo, "get_info", mock_get_basic)
     monkeypatch.setattr(Whois, "whois", mock_whois)
 
     result = await Browser.take_snapshot("http://example.com", timeout=10000)
@@ -70,7 +70,7 @@ async def test_take_snapshot_with_options(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_take_snapshot_with_bad_ssl(monkeypatch):
-    monkeypatch.setattr(IPInfo, "get_basic", mock_get_basic)
+    monkeypatch.setattr(IPInfo, "get_info", mock_get_basic)
     monkeypatch.setattr(Whois, "whois", mock_whois)
 
     with pytest.raises(PyppeteerError):
