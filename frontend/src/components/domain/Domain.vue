@@ -1,26 +1,19 @@
 <template>
   <div class="box" v-if="hasInformation()">
-    <div class="column">
-      <h2 class="is-size-5 has-text-weight-bold middle">
-        Basic information
-      </h2>
-      <div class="table-container">
-        <table class="table">
-          <tbody>
-            <tr>
-              <th>IP address</th>
-              <td>{{ information.ipAddress }}</td>
-            </tr>
-            <tr>
-              <th>Country</th>
-              <td>{{ information.country }}</td>
-            </tr>
-            <tr>
-              <th>Organization</th>
-              <td>{{ information.org }}</td>
-            </tr>
-          </tbody>
-        </table>
+    <div class="column is-full">
+      <div class="columns">
+        <div class="column is-half">
+          <h2 class="is-size-5 has-text-weight-bold middle">
+            Live preview
+          </h2>
+          <Preview v-bind:hostname="information.hostname" />
+        </div>
+        <div class="column is-half">
+          <h2 class="is-size-5 has-text-weight-bold middle">
+            DNS records ({{ information.hostname }})
+          </h2>
+          <DnsRecords v-bind:dnsRecords="information.dnsRecords" />
+        </div>
       </div>
     </div>
 
@@ -28,7 +21,6 @@
       <h2 class="is-size-5 has-text-weight-bold middle">
         Recent snapshots
       </h2>
-
       <b-table v-if="hasSnapshots()" :data="information.snapshots">
         <template slot-scope="props">
           <b-table-column field="url" label="URL">
@@ -81,19 +73,22 @@ import axios, { AxiosError } from "axios";
 import moment from "moment/moment";
 
 import { ErrorDialogMixin } from "@/components/mixins";
+
+import DnsRecords from "@/components/dns_records/DnsRecords.vue";
+import Preview from "@/components/screenshots/Preview.vue";
 import Screenshot from "@/components/screenshots/Screenshot.vue";
 
-import { IPAddressInformation, Snapshot, ErrorData } from "@/types";
+import { DomainInformation, Snapshot, ErrorData } from "@/types";
 
 @Component({
   components: {
+    DnsRecords,
+    Preview,
     Screenshot,
   },
 })
-export default class IPAddress extends Mixins<ErrorDialogMixin>(
-  ErrorDialogMixin
-) {
-  private information: IPAddressInformation | undefined = undefined;
+export default class Domain extends Mixins<ErrorDialogMixin>(ErrorDialogMixin) {
+  private information: DomainInformation | undefined = undefined;
 
   created() {
     this.load();
@@ -105,10 +100,8 @@ export default class IPAddress extends Mixins<ErrorDialogMixin>(
     });
 
     try {
-      const ipAddress = this.$route.params.ipAddress;
-      const res = await axios.get<IPAddressInformation>(
-        `/api/ip_address/${ipAddress}`
-      );
+      const hostname = this.$route.params.hostname;
+      const res = await axios.get<DomainInformation>(`/api/domain/${hostname}`);
       this.information = res.data;
 
       loadingComponent.close();

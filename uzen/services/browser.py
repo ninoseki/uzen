@@ -164,3 +164,25 @@ class Browser:
         return SnapshotResult(
             screenshot=screenshot, snapshot=snapshot, scripts=scripts,
         )
+
+    @staticmethod
+    async def preview(hostname: str) -> Screenshot:
+        async def _preview(hostname: str, protocol="http") -> Screenshot:
+            try:
+                browser = await launch_browser()
+                page = await browser.newPage()
+                # try with http
+                await page.goto(f"{protocol}://{hostname}")
+                screenshot_data = await page.screenshot(encoding="base64")
+                await browser.close()
+
+                screenshot = Screenshot()
+                screenshot.data = cast(str, screenshot_data)
+                return screenshot
+            except PyppeteerError as e:
+                raise (e)
+
+        try:
+            return await _preview(hostname, "http")
+        except PyppeteerError:
+            return await _preview(hostname, "https")

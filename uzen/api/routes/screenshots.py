@@ -5,7 +5,9 @@ from fastapi import APIRouter, HTTPException
 from tortoise.exceptions import DoesNotExist
 
 from uzen.models.screenshots import Screenshot
+from uzen.schemas.screenshots import BaseScreenshot
 from uzen.schemas.screenshots import Screenshot as ScreenshotModel
+from uzen.services.browser import Browser
 
 router = APIRouter()
 
@@ -26,4 +28,18 @@ async def get_by_snapshot_id(snapshot_id: UUID) -> ScreenshotModel:
         )
 
     model = cast(ScreenshotModel, screenshot.to_model())
+    return model
+
+
+@router.get(
+    "/preview/{hostname}",
+    response_model=BaseScreenshot,
+    response_description="Returns a screenshot",
+    summary="Get a screenshot",
+    description="Get a screenshot for previewing",
+)
+async def perview(hostname: str) -> BaseScreenshot:
+    screenshot: Screenshot = await Browser.preview(hostname)
+
+    model = cast(BaseScreenshot, screenshot.to_model())
     return model
