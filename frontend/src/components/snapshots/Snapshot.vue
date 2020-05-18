@@ -47,8 +47,8 @@
                         <td>
                           <router-link
                             :to="{
-                              name: 'Snapshots',
-                              query: { ipAddress: snapshot.ipAddress },
+                              name: 'IP address',
+                              params: { ipAddress: snapshot.ipAddress },
                             }"
                             >{{ snapshot.ipAddress }}
                           </router-link>

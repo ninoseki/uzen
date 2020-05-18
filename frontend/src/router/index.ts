@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 
 import Home from "@/views/Home.vue";
+import IPAddress from "@/views/IPAddress.vue";
 import Import from "@/views/Import.vue";
 import Matches from "@/views/Matches.vue";
 import Oneshot from "@/views/Oneshot.vue";
@@ -59,6 +60,11 @@ const routes = [
     path: "/matches",
     name: "Matches",
     component: Matches,
+  },
+  {
+    path: "/ip_address/:ipAddress",
+    name: "IP address",
+    component: IPAddress,
   },
 ];
 

@@ -22,7 +22,7 @@ def mock_load_and_dump_from_url(url: str):
 @pytest.mark.asyncio
 @respx.mock
 async def test_take_snapshot(monkeypatch):
-    monkeypatch.setattr(IPInfo, "get_basic", mock_get_basic)
+    monkeypatch.setattr(IPInfo, "get_info", mock_get_basic)
     monkeypatch.setattr(Whois, "whois", mock_whois)
     monkeypatch.setattr(
         Certificate, "load_and_dump_from_url", mock_load_and_dump_from_url

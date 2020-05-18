@@ -172,3 +172,11 @@ export interface RuleSearchResults extends SearchResults {
 export interface CountResponse {
   count: number;
 }
+
+export interface IPAddressInformation {
+  ipAddress: string;
+  org: string;
+  country: string;
+  whois: string | undefined;
+  snapshots: Snapshot[];
+}
