@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 
 import Home from "@/views/Home.vue";
+import Domain from "@/views/Domain.vue";
 import IPAddress from "@/views/IPAddress.vue";
 import Import from "@/views/Import.vue";
 import Matches from "@/views/Matches.vue";
@@ -65,6 +66,11 @@ const routes = [
     path: "/ip_address/:ipAddress",
     name: "IP address",
     component: IPAddress,
+  },
+  {
+    path: "/domain/:hostname",
+    name: "Domain",
+    component: Domain,
   },
 ];
 

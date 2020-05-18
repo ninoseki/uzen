@@ -30,14 +30,16 @@ def query(hostname: str) -> List[BaseDnsRecord]:
 class DnsRecordFactory:
     @staticmethod
     def from_snapshot(snapshot: Snapshot) -> List[DnsRecord]:
-        records = query(snapshot.hostname)
-        dns_records = []
-        for record in records:
-            dns_record = DnsRecord(
+        return [
+            DnsRecord(
                 type=record.type,
                 value=record.value,
                 # insert a dummy ID if a snapshot doesn't have ID
                 snapshot_id=snapshot.id or -1,
             )
-            dns_records.append(dns_record)
-        return dns_records
+            for record in query(snapshot.hostname)
+        ]
+
+    @staticmethod
+    def from_hostname(hostname: str) -> List[BaseDnsRecord]:
+        return query(hostname)

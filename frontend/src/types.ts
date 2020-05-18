@@ -180,3 +180,10 @@ export interface IPAddressInformation {
   whois: string | undefined;
   snapshots: Snapshot[];
 }
+
+export interface DomainInformation {
+  hostname: string;
+  whois: string | undefined;
+  dnsRecords: DnsRecord[];
+  snapshots: Snapshot[];
+}

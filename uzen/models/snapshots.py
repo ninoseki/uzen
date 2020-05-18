@@ -154,6 +154,10 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
     async def find_by_ip_address(cls, ip_address: str, size=20) -> List[Snapshot]:
         return await cls.filter(ip_address=ip_address).limit(size)
 
+    @classmethod
+    async def find_by_hostname(cls, hostname: str, size=20) -> List[Snapshot]:
+        return await cls.filter(hostname=hostname).limit(size)
+
     class Meta:
         table = "snapshots"
         ordering = ["-created_at"]

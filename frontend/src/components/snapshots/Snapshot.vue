@@ -34,8 +34,8 @@
                         <td>
                           <router-link
                             :to="{
-                              name: 'Snapshots',
-                              query: { hostname: snapshot.hostname },
+                              name: 'Domain',
+                              params: { hostname: snapshot.hostname },
                             }"
                             >{{ snapshot.hostname }}
                           </router-link>
