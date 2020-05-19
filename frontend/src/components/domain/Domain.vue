@@ -1,5 +1,9 @@
 <template>
   <div class="box" v-if="hasInformation()">
+    <h2 class="is-size-4 has-text-weight-bold middle">
+      Domain: {{ information.hostname }}
+    </h2>
+
     <div class="column is-full">
       <div class="columns">
         <div class="column is-half">
@@ -10,7 +14,7 @@
         </div>
         <div class="column is-half">
           <h2 class="is-size-5 has-text-weight-bold middle">
-            DNS records ({{ information.hostname }})
+            DNS records
           </h2>
           <DnsRecords v-bind:dnsRecords="information.dnsRecords" />
         </div>
