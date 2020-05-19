@@ -1,5 +1,10 @@
 <template>
-  <img :src="this.imageSource()" :alt="screenshot" ref="screenshot" />
+  <img
+    v-if="loaded"
+    :src="this.imageSource()"
+    :alt="screenshot"
+    ref="screenshot"
+  />
 </template>
 
 <script lang="ts">
@@ -15,6 +20,7 @@ export default class ScreenshotComponent extends Vue {
 
   private _screenshot: Screenshot | undefined = undefined;
   private failed: boolean = false;
+  private loaded: boolean = false;
 
   created() {
     if (this.screenshot !== undefined && this.screenshot !== null) {
@@ -35,24 +41,24 @@ export default class ScreenshotComponent extends Vue {
     } catch (error) {
       this.failed = true;
     }
+    this.loaded = true;
   }
 
-  hasInvalidImageSource(): boolean {
+  hasValidImageSource(): boolean {
     if (this.failed) {
-      return true;
+      return false;
     }
-    return this._screenshot?.data === "";
+    if (this._screenshot === undefined) {
+      return false;
+    }
+    return this._screenshot.data !== "";
   }
 
   imageSource(): string {
-    if (this.hasInvalidImageSource()) {
-      return `${process.env.BASE_URL}images/not-found.jpg`;
-    }
-
-    if (this._screenshot !== undefined) {
+    if (this.hasValidImageSource() && this._screenshot !== undefined) {
       return `data:Image/png;base64,${this._screenshot.data}`;
     }
-    return "";
+    return `${process.env.BASE_URL}images/not-found.jpg`;
   }
 }
 </script>
