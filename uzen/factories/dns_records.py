@@ -1,6 +1,7 @@
 from typing import List
 
-import pydig
+import dns.resolver
+from dns.exception import DNSException
 
 from uzen.models.dns_records import DnsRecord
 from uzen.models.snapshots import Snapshot
@@ -18,12 +19,16 @@ def query(hostname: str) -> List[BaseDnsRecord]:
     Returns:
         List[BaseDnsRecord] -- A list of DNS records
     """
+    resolver = dns.resolver.Resolver()
     records = []
     for record_type in TYPES:
-        values = pydig.query(hostname, record_type)
-        for value in values:
-            record = BaseDnsRecord(type=record_type, value=value)
-            records.append(record)
+        try:
+            answer = resolver.query(hostname, record_type)
+            for rr in answer:
+                record = BaseDnsRecord(type=record_type, value=str(rr))
+                records.append(record)
+        except DNSException:
+            pass
     return records
 
 
