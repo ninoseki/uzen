@@ -1,13 +1,23 @@
+from concurrent.futures import ProcessPoolExecutor
+from functools import partial
 from typing import List
 
-import dns.resolver
 from dns.exception import DNSException
+from dns.resolver import Resolver
 
 from uzen.models.dns_records import DnsRecord
 from uzen.models.snapshots import Snapshot
 from uzen.schemas.dns_records import BaseDnsRecord
 
 TYPES: List[str] = ["A", "AAAA", "CNAME", "MX", "NS", "PTR", "TXT"]
+
+
+def _query(resolver: Resolver, hostname: str, record_type: str) -> List[BaseDnsRecord]:
+    try:
+        answer = resolver.query(hostname, record_type)
+        return [BaseDnsRecord(type=record_type, value=str(rr)) for rr in answer]
+    except DNSException:
+        return []
 
 
 def query(hostname: str) -> List[BaseDnsRecord]:
@@ -19,16 +29,16 @@ def query(hostname: str) -> List[BaseDnsRecord]:
     Returns:
         List[BaseDnsRecord] -- A list of DNS records
     """
-    resolver = dns.resolver.Resolver()
+    resolver = Resolver()
+    with ProcessPoolExecutor() as executor:
+        futures = [
+            executor.submit(partial(_query, resolver, hostname, record_type))
+            for record_type in TYPES
+        ]
+
     records = []
-    for record_type in TYPES:
-        try:
-            answer = resolver.query(hostname, record_type)
-            for rr in answer:
-                record = BaseDnsRecord(type=record_type, value=str(rr))
-                records.append(record)
-        except DNSException:
-            pass
+    for future in futures:
+        records.extend(future.result())
     return records
 
 
