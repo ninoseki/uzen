@@ -1,5 +1,7 @@
 <template>
-  <img v-if="loaded" :src="this.imageSource()" :alt="screenshot" />
+  <div class="screenshot">
+    <img v-if="loaded" :src="this.imageSource()" :alt="screenshot" />
+  </div>
 </template>
 
 <script lang="ts">
@@ -26,7 +28,6 @@ export default class Preview extends Vue {
         `/api/screenshots/preview/${this.hostname}`
       );
       this.screenshot = response.data;
-      this.$forceUpdate();
     } catch (error) {
       this.failed = true;
     }
@@ -51,3 +52,9 @@ export default class Preview extends Vue {
   }
 }
 </script>
+
+<style scoped>
+.screenshot {
+  min-height: 470px;
+}
+</style>
