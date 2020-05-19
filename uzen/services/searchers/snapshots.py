@@ -31,7 +31,7 @@ class SnapshotSearcher(AbstractSearcher):
 
         url = filters.get("url")
         if url is not None:
-            queries.append(Q(url__contains=url))
+            queries.append(Q(url=url))
 
         status = filters.get("status")
         if status is not None:
@@ -39,15 +39,15 @@ class SnapshotSearcher(AbstractSearcher):
 
         hostname = filters.get("hostname")
         if hostname is not None:
-            queries.append(Q(hostname__contains=hostname))
+            queries.append(Q(hostname=hostname))
 
         ip_address = filters.get("ip_address")
         if ip_address is not None:
-            queries.append(Q(ip_address__contains=ip_address))
+            queries.append(Q(ip_address=ip_address))
 
         asn = filters.get("asn")
         if asn is not None:
-            queries.append(Q(asn__contains=asn))
+            queries.append(Q(asn=asn))
 
         server = filters.get("server")
         if server is not None:

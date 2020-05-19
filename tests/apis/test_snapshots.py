@@ -16,7 +16,9 @@ async def test_snapshot_search(client):
     snapshots = json.get("results")
     assert len(snapshots) == count
 
-    response = await client.get("/api/snapshots/search", params={"hostname": "example"})
+    response = await client.get(
+        "/api/snapshots/search", params={"hostname": "example.com"}
+    )
     json = response.json()
     snapshots = json.get("results")
     assert len(snapshots) == count
