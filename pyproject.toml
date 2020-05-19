@@ -19,13 +19,13 @@ pyopenssl = "^19.1.0"
 pydantic = "^1.4"
 fastapi = "^0.54.0"
 requests-html = "^0.10.0"
-pydig = "^0.2.0"
 pysafebrowsing = "^0.1.1"
 pyppeteer2 = "^0.2.2"
 certifi = "^2020.4.5"
 aiomysql = "^0.0.20"
 fastapi-utils = "^0.2.1"
 yara-python = "^4.0.0"
+dnspython = "^1.16.0"
 
 [tool.poetry.dev-dependencies]
 autopep8 = "^1.5.1"
@@ -51,7 +51,7 @@ pytest-mock = "^3.1.0"
 [tool.isort]
 force_grid_wrap = 0
 include_trailing_comma = true
-known_third_party = ["OpenSSL", "alembic", "certifi", "fastapi", "fastapi_utils", "httpx", "loguru", "pydantic", "pydig", "pyppeteer", "pysafebrowsing", "pytest", "requests", "requests_html", "respx", "sqlalchemy", "starlette", "tortoise", "tqdm", "urllib3", "vcr", "whois", "yara"]
+known_third_party = ["OpenSSL", "alembic", "certifi", "dns", "fastapi", "fastapi_utils", "httpx", "loguru", "pydantic", "pyppeteer", "pysafebrowsing", "pytest", "requests", "requests_html", "respx", "sqlalchemy", "starlette", "tortoise", "tqdm", "urllib3", "vcr", "whois", "yara"]
 line_length = 88
 multi_line_output = 3
 use_parentheses= true
