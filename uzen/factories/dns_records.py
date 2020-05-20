@@ -1,5 +1,5 @@
 from concurrent.futures import ProcessPoolExecutor
-from functools import partial
+from functools import lru_cache, partial
 from typing import List
 
 from dns.exception import DNSException
@@ -20,6 +20,7 @@ def _query(resolver: Resolver, hostname: str, record_type: str) -> List[BaseDnsR
         return []
 
 
+@lru_cache()
 def query(hostname: str) -> List[BaseDnsRecord]:
     """Quqery DNS records
 

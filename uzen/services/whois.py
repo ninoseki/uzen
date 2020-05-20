@@ -1,4 +1,5 @@
 import socket
+from functools import lru_cache
 from typing import Optional
 
 import whois
@@ -6,6 +7,7 @@ import whois
 
 class Whois:
     @staticmethod
+    @lru_cache()
     def whois(hostname: str) -> Optional[str]:
         """Perform Whois lookup
 
