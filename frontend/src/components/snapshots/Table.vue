@@ -16,9 +16,13 @@
           </p>
           <p>(<strong>Submitted URL:</strong> {{ props.row.submittedUrl }})</p>
           <p class="is-size-7">
-            <strong>Status:</strong> {{ props.row.status }} /
+            <strong>IP address:</strong> {{ props.row.ipAddress }} -
+            <strong>ASN:</strong> {{ props.row.asn.split(" ")[0] }}
+          </p>
+          <p class="is-size-7">
+            <strong>Status:</strong> {{ props.row.status }} -
             <strong>Server:</strong>
-            {{ props.row.server || "N/A" }} /
+            {{ props.row.server || "N/A" }} -
             <strong>Content length:</strong>
             {{ props.row.contentLength || "N/A" }}
           </p>
@@ -27,16 +31,8 @@
           </p>
         </b-table-column>
 
-        <b-table-column field="ipAddress" label="IP address">
-          {{ props.row.ipAddress }}
-        </b-table-column>
-
-        <b-table-column field="asn" label="ASN">
-          {{ props.row.asn.split(" ")[0] }}
-        </b-table-column>
-
-        <b-table-column field="createdAt" label="Created on">
-          {{ props.row.createdAt.split("T")[0] }}
+        <b-table-column field="createdAt" label="Created at">
+          <DatetimeWithDiff v-bind:datetime="props.row.createdAt" />
         </b-table-column>
       </template>
     </b-table>
@@ -49,7 +45,13 @@ import axios, { AxiosError } from "axios";
 
 import { Snapshot, SnapshotWithYaraResult } from "@/types";
 
-@Component
+import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
+
+@Component({
+  components: {
+    DatetimeWithDiff,
+  },
+})
 export default class Table extends Vue {
   @Prop() private snapshots!: Snapshot[] | SnapshotWithYaraResult[];
 
