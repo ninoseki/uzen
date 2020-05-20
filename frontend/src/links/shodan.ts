@@ -1,17 +1,19 @@
-import { Link } from "@/types";
+import { Link, LinkType } from "@/types";
 
 export class Shodan implements Link {
   public baseURL: string;
   public favicon: string;
   public name: string;
+  public type: LinkType;
 
   public constructor() {
     this.baseURL = "https://shodan.io";
     this.favicon = "https://www.google.com/s2/favicons?domain=shodan.io";
     this.name = "Shodan (IP)";
+    this.type = "ip_address";
   }
 
-  public href(_hostname, ipAddress): string {
-    return this.baseURL + `/host/${ipAddress}`;
+  public href(hostname: string): string {
+    return this.baseURL + `/host/${hostname}`;
   }
 }
