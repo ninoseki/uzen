@@ -62,6 +62,14 @@ version = "2.1.1"
 cached-property = "*"
 
 [[package]]
+category = "main"
+description = "Simple lru_cache for asyncio"
+name = "async-lru"
+optional = false
+python-versions = "*"
+version = "1.0.2"
+
+[[package]]
 category = "dev"
 description = "Enhance the standard unittest package with features for testing asyncio libraries"
 name = "asynctest"
@@ -711,14 +719,6 @@ typing_extensions = ["typing-extensions (>=3.7.2)"]
 
 [[package]]
 category = "main"
-description = "Python wrapper library for the 'dig' command line tool"
-name = "pydig"
-optional = false
-python-versions = ">=3.4,<4.0"
-version = "0.2.0"
-
-[[package]]
-category = "main"
 description = "A port of node.js's EventEmitter to python."
 name = "pyee"
 optional = false
@@ -1300,7 +1300,7 @@ idna = ">=2.0"
 multidict = ">=4.0"
 
 [metadata]
-content-hash = "3d5886b5345079cdfe1457ae173d4703f621ba5e924a6e0633ea810f102a7128"
+content-hash = "2e097509b1ce13f11a00e67b1e922d31a6eae978219b2c9e08a44b1cd5b9535b"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -1325,6 +1325,9 @@ appdirs = [
 "aspy.refactor-imports" = [
     {file = "aspy.refactor_imports-2.1.1-py2.py3-none-any.whl", hash = "sha256:9df76bf19ef81620068b785a386740ab3c8939fcbdcebf20c4a4e0057230d782"},
     {file = "aspy.refactor_imports-2.1.1.tar.gz", hash = "sha256:eec8d1a73bedf64ffb8b589ad919a030c1fb14acf7d1ce0ab192f6eedae895c5"},
+]
+async-lru = [
+    {file = "async_lru-1.0.2.tar.gz", hash = "sha256:baa898027619f5cc31b7966f96f00e4fc0df43ba206a8940a5d1af5336a477cb"},
 ]
 asynctest = [
     {file = "asynctest-0.13.0-py3-none-any.whl", hash = "sha256:5da6118a7e6d6b54d83a8f7197769d046922a44d2a99c21382f0a6e4fadae676"},
@@ -1737,10 +1740,6 @@ pydantic = [
     {file = "pydantic-1.5.1-cp38-cp38-win_amd64.whl", hash = "sha256:3714a4056f5bdbecf3a41e0706ec9b228c9513eee2ad884dc2c568c4dfa540e9"},
     {file = "pydantic-1.5.1-py36.py37.py38-none-any.whl", hash = "sha256:70f27d2f0268f490fe3de0a9b6fca7b7492b8fd6623f9fecd25b221ebee385e3"},
     {file = "pydantic-1.5.1.tar.gz", hash = "sha256:f0018613c7a0d19df3240c2a913849786f21b6539b9f23d85ce4067489dfacfa"},
-]
-pydig = [
-    {file = "pydig-0.2.0-py3-none-any.whl", hash = "sha256:3c43239cd831140ff9b142cce5200ab802e85cac74f7fd152301f5dc6abf9724"},
-    {file = "pydig-0.2.0.tar.gz", hash = "sha256:6c438a04120adc3b84118cb86c88cb6397b6d72683b94df442790649906f43f0"},
 ]
 pyee = [
     {file = "pyee-7.0.2-py2.py3-none-any.whl", hash = "sha256:a0fee808414a4fc077d81be80dfe785879430b03101088747714c045292751c0"},
