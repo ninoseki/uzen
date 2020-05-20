@@ -8,6 +8,21 @@
       </p>
     </b-message>
     <div class="box">
+      <nav class="navbar">
+        <div class="navbar-brand">
+          <h2 class="is-size-4 has-text-weight-bold">
+            {{ snapshot.url }}
+          </h2>
+        </div>
+        <div class="navbar-menu">
+          <div class="navbar-end">
+            <Links
+              v-bind:hostname="snapshot.hostname"
+              v-bind:ipAddress="snapshot.ipAddress"
+            />
+          </div>
+        </div>
+      </nav>
       <b-tabs type="is-boxed">
         <b-tab-item label="Summary">
           <div class="column is-full">
@@ -20,10 +35,6 @@
                       <tr>
                         <th>ID</th>
                         <td>{{ snapshot.id || "N/A" }}</td>
-                      </tr>
-                      <tr>
-                        <th>URL</th>
-                        <td>{{ snapshot.url }}</td>
                       </tr>
                       <tr>
                         <th>Submitted URL</th>
@@ -124,11 +135,6 @@
                 Matched rules
               </h2>
               <Rules v-bind:rules="snapshot.rules" />
-            </div>
-
-            <div class="column">
-              <h2 class="is-size-5 has-text-weight-bold middle">Links</h2>
-              <Links v-bind:snapshot="snapshot" />
             </div>
           </div>
         </b-tab-item>

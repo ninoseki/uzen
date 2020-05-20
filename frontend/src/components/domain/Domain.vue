@@ -1,22 +1,31 @@
 <template>
   <div class="box" v-if="hasInformation()">
-    <h2 class="is-size-4 has-text-weight-bold middle">
-      Domain: {{ information.hostname }}
-    </h2>
+    <nav class="navbar">
+      <div class="navbar-brand">
+        <h2 class="is-size-4 has-text-weight-bold">
+          Domain: {{ information.hostname }}
+        </h2>
+      </div>
+      <div class="navbar-menu">
+        <div class="navbar-end">
+          <Links v-bind:hostname="information.hostname" type="domain" />
+        </div>
+      </div>
+    </nav>
 
     <div class="column is-full">
       <div class="columns">
         <div class="column is-half">
           <h2 class="is-size-5 has-text-weight-bold middle">
-            Live preview
-          </h2>
-          <Preview v-bind:hostname="information.hostname" />
-        </div>
-        <div class="column is-half">
-          <h2 class="is-size-5 has-text-weight-bold middle">
             DNS records
           </h2>
           <DnsRecords v-bind:dnsRecords="information.dnsRecords" />
+        </div>
+        <div class="column is-half">
+          <h2 class="is-size-5 has-text-weight-bold middle">
+            Live preview
+          </h2>
+          <Preview v-bind:hostname="information.hostname" />
         </div>
       </div>
     </div>
@@ -47,6 +56,7 @@ import moment from "moment/moment";
 import { ErrorDialogMixin } from "@/components/mixins";
 
 import DnsRecords from "@/components/dns_records/DnsRecords.vue";
+import Links from "@/components/links/Links.vue";
 import Preview from "@/components/screenshots/Preview.vue";
 import Screenshot from "@/components/screenshots/Screenshot.vue";
 import Table from "@/components/snapshots/TableWithScreenshot.vue";
@@ -56,6 +66,7 @@ import { DomainInformation, Snapshot, ErrorData } from "@/types";
 @Component({
   components: {
     DnsRecords,
+    Links,
     Preview,
     Table,
   },

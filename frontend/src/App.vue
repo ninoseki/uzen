@@ -50,4 +50,9 @@ pre code.hljs {
   background-color: whitesmoke;
   color: #4a4a4a;
 }
+
+.container .navbar {
+  margin-bottom: 10px;
+  border-bottom: 2px solid lightgray;
+}
 </style>

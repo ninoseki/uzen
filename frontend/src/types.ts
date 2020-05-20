@@ -57,11 +57,14 @@ export interface SnapshotFilters {
   toAt: Date | undefined;
 }
 
+export type LinkType = "ip_address" | "domain";
+
 export interface Link {
   name: string;
+  type: string;
   baseURL: string;
   favicon: string;
-  href(hostname: string | undefined, ipAddress: string | undefined): string;
+  href(hostname: string): string;
 }
 
 export interface Script {

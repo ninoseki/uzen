@@ -1,5 +1,5 @@
 <template>
-  <a v-bind:href="link.href(hostname, ipAddress)" class="link" target="_blank">
+  <a v-bind:href="link.href(hostname)" class="link" target="_blank">
     <img v-bind:src="link.favicon" alt="favicon" />
     <span>{{ link.name }}</span>
   </a>
@@ -13,7 +13,6 @@ import { Snapshot, Link } from "@/types";
 @Component
 export default class LinkComponent extends Vue {
   @Prop() private hostname!: string;
-  @Prop() private ipAddress!: string;
   @Prop() private link!: Link;
 }
 </script>

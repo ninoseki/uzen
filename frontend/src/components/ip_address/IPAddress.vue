@@ -1,17 +1,20 @@
 <template>
   <div class="box" v-if="hasInformation()">
-    <h2 class="is-size-4 has-text-weight-bold middle">
-      IP address: {{ information.ipAddress }}
-    </h2>
+    <nav class="navbar">
+      <div class="navbar-brand">
+        <h2 class="is-size-4 has-text-weight-bold">
+          IP address: {{ information.ipAddress }}
+        </h2>
+      </div>
+      <div class="navbar-menu">
+        <div class="navbar-end">
+          <Links v-bind:ipAddress="information.ipAddress" type="ip_address" />
+        </div>
+      </div>
+    </nav>
 
     <div class="column is-full">
       <div class="columns">
-        <div class="column is-half">
-          <h2 class="is-size-5 has-text-weight-bold middle">
-            Live preview
-          </h2>
-          <Preview v-bind:hostname="information.ipAddress" />
-        </div>
         <div class="column is-half">
           <h2 class="is-size-5 has-text-weight-bold middle">
             Basic information
@@ -30,6 +33,12 @@
               </tbody>
             </table>
           </div>
+        </div>
+        <div class="column is-half">
+          <h2 class="is-size-5 has-text-weight-bold middle">
+            Live preview
+          </h2>
+          <Preview v-bind:hostname="information.ipAddress" />
         </div>
       </div>
     </div>
@@ -57,6 +66,7 @@ import axios, { AxiosError } from "axios";
 import moment from "moment/moment";
 
 import { ErrorDialogMixin } from "@/components/mixins";
+import Links from "@/components/links/Links.vue";
 import Preview from "@/components/screenshots/Preview.vue";
 import Screenshot from "@/components/screenshots/Screenshot.vue";
 import Table from "@/components/snapshots/TableWithScreenshot.vue";
@@ -65,6 +75,7 @@ import { IPAddressInformation, Snapshot, ErrorData } from "@/types";
 
 @Component({
   components: {
+    Links,
     Preview,
     Table,
   },

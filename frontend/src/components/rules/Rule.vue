@@ -38,9 +38,10 @@
       </div>
       <div class="column">
         <h2 class="is-size-5 has-text-weight-bold middle">
-          The latest matched snapshots (max = 20)
+          Recent related snapshots
         </h2>
-        <Snapshots v-bind:snapshots="rule.snapshots" />
+        <Table v-if="hasSnapshots()" v-bind:snapshots="rule.snapshots" />
+        <p v-else>N/A</p>
       </div>
     </div>
   </div>
@@ -53,13 +54,13 @@ import axios, { AxiosError } from "axios";
 
 import { Rule, ErrorData } from "@/types";
 
-import Snapshots from "@/components/snapshots/Buttons.vue";
+import Table from "@/components/snapshots/TableWithScreenshot.vue";
 
 import { HighlightMixin } from "@/components/mixins";
 
 @Component({
   components: {
-    Snapshots,
+    Table,
   },
 })
 export default class RuleComponent extends Mixins<HighlightMixin>(
@@ -69,6 +70,10 @@ export default class RuleComponent extends Mixins<HighlightMixin>(
 
   mounted() {
     this.highlightCodeBlocks();
+  }
+
+  hasSnapshots(): boolean {
+    return this.rule.snapshots.length > 0;
   }
 }
 </script>
