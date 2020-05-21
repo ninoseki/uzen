@@ -47,6 +47,7 @@ export default class Counter extends Vue {
       this.totalCount = response.data.total;
     } catch (error) {
       const data = error.response.data as ErrorData;
+      // eslint-disable-next-line no-console
       console.error(data);
     }
   }
