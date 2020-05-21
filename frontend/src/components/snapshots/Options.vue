@@ -50,7 +50,7 @@ export default class Options extends Vue {
   private ignoreHTTPSErrors = false;
   private referer = "";
   private timeout = 30000;
-  private userAgent = "";
+  private userAgent = navigator.userAgent;
 
   private languages = languages;
   private languagKeys = Object.keys(languages);
