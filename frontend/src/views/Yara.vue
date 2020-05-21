@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <YaraForm />
-  </div>
+  <YaraForm />
 </template>
 
 <script lang="ts">

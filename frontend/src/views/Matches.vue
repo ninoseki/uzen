@@ -1,10 +1,8 @@
 <template>
-  <div>
-    <Search
-      v-bind:ruleId="$route.query.ruleId"
-      v-bind:snapshotId="$route.query.snapshotId"
-    />
-  </div>
+  <Search
+    v-bind:ruleId="$route.query.ruleId"
+    v-bind:snapshotId="$route.query.snapshotId"
+  />
 </template>
 
 <script lang="ts">

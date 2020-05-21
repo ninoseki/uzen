@@ -1,11 +1,9 @@
 <template>
-  <div>
-    <SnapshotForm />
-  </div>
+  <SnapshotForm />
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 
 import SnapshotForm from "@/components/snapshots/Form.vue";
 

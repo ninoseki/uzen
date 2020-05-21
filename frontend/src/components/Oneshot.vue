@@ -54,7 +54,7 @@
     <div>
       <SnapshotComponent
         v-if="hasSnapshot()"
-        v-bind:snapshot="oneshot.snapshot"
+        v-bind:_snapshot="oneshot.snapshot"
         v-bind:yaraResult="yaraResult()"
       />
     </div>

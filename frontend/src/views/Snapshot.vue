@@ -1,9 +1,5 @@
 <template>
-  <SnapshotComponebnt
-    v-bind:snapshot="snapshot"
-    v-bind:yaraResult="yaraResult"
-    v-if="hasSnapshot()"
-  />
+  <SnapshotComponebnt v-bind:id="id" v-bind:yaraResult="yaraResult" />
 </template>
 
 <script lang="ts">
@@ -26,35 +22,11 @@ export default class SnapshotView extends Mixins<ErrorDialogMixin>(
   ErrorDialogMixin
 ) {
   @Prop() private yaraResult!: YaraResult;
-  @Prop() private test!: string;
-  private snapshot: Snapshot | undefined = undefined;
 
-  async load() {
-    const loadingComponent = this.$buefy.loading.open({
-      container: this.$el.firstElementChild,
-    });
+  private id: string | undefined = undefined;
 
-    try {
-      const id = this.$route.params.id;
-      const response = await axios.get<Snapshot>(`/api/snapshots/${id}`);
-      this.snapshot = response.data;
-
-      loadingComponent.close();
-      this.$forceUpdate();
-    } catch (error) {
-      loadingComponent.close();
-
-      const data = error.response.data as ErrorData;
-      this.alertError(data);
-    }
-  }
-
-  mounted() {
-    this.load();
-  }
-
-  hasSnapshot(): boolean {
-    return this.snapshot !== undefined;
+  created() {
+    this.id = this.$route.params.id;
   }
 }
 </script>

@@ -6,4 +6,8 @@ export interface SearchFormComponentMixin
   extends SearchFormMixin,
     ErrorDialogMixin {}
 
+export interface HighlightComponentMixin
+  extends HighlightMixin,
+    ErrorDialogMixin {}
+
 export { ErrorDialogMixin, HighlightMixin, SearchFormMixin };

@@ -3,7 +3,7 @@
     <div class="box">
       <BasicForm v-bind:source.sync="source" v-bind:target.sync="target" />
       <hr />
-      <SnapshotSearch ref="search" />
+      <SnapshotForm ref="form" />
       <br />
       <div class="has-text-centered">
         <b-button
@@ -35,7 +35,7 @@ import {
 } from "@/types";
 
 import BasicForm from "@/components/yara/BasicForm.vue";
-import SnapshotSearch from "@/components/snapshots/Search.vue";
+import SnapshotForm from "@/components/snapshots/SearchForm.vue";
 import SnapshotTable from "@/components/snapshots/Table.vue";
 
 import { ErrorDialogMixin } from "@/components/mixins";
@@ -43,7 +43,7 @@ import { ErrorDialogMixin } from "@/components/mixins";
 @Component({
   components: {
     BasicForm,
-    SnapshotSearch,
+    SnapshotForm,
     SnapshotTable,
   },
 })
@@ -63,7 +63,7 @@ export default class YaraForm extends Mixins<ErrorDialogMixin>(
       container: this.$el.firstElementChild,
     });
 
-    const params = (this.$refs.search as SnapshotSearch).filtersParams();
+    const params = (this.$refs.form as SnapshotForm).filtersParams();
     // get total count of snapshots and set it as a size
     const totalCount = await this.getTotalCount();
     if (totalCount !== undefined) {

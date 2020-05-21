@@ -1,5 +1,5 @@
 <template>
-  <div class="box">
+  <div class="box" v-if="hasRule()">
     <div class="column is-full">
       <div class="columns">
         <div class="column is-half">
@@ -58,7 +58,11 @@ import { Rule, ErrorData } from "@/types";
 import Counter from "@/components/matches/Counter.vue";
 import Table from "@/components/snapshots/TableWithScreenshot.vue";
 
-import { HighlightMixin } from "@/components/mixins";
+import {
+  HighlightComponentMixin,
+  HighlightMixin,
+  ErrorDialogMixin,
+} from "@/components/mixins";
 
 @Component({
   components: {
@@ -66,17 +70,44 @@ import { HighlightMixin } from "@/components/mixins";
     Table,
   },
 })
-export default class RuleComponent extends Mixins<HighlightMixin>(
-  HighlightMixin
+export default class RuleComponent extends Mixins<HighlightComponentMixin>(
+  HighlightMixin,
+  ErrorDialogMixin
 ) {
-  @Prop() private rule!: Rule;
+  @Prop() private id!: string;
 
-  mounted() {
+  private rule: Rule | undefined = undefined;
+
+  async load() {
+    const loadingComponent = this.$buefy.loading.open({
+      container: this.$el.firstElementChild,
+    });
+
+    try {
+      const response = await axios.get<Rule>(`/api/rules/${this.id}`);
+      this.rule = response.data;
+
+      loadingComponent.close();
+      this.$forceUpdate();
+    } catch (error) {
+      loadingComponent.close();
+
+      const data = error.response.data as ErrorData;
+      this.alertError(data);
+    }
+  }
+
+  async mounted() {
+    await this.load();
     this.highlightCodeBlocks();
   }
 
+  hasRule(): boolean {
+    return this.rule !== undefined;
+  }
+
   hasSnapshots(): boolean {
-    return this.rule.snapshots.length > 0;
+    return (this.rule?.snapshots || []).length > 0;
   }
 }
 </script>

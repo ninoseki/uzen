@@ -1,5 +1,5 @@
 <template>
-  <RuleComponebnt v-bind:rule="rule" v-if="hasRule()" />
+  <RuleComponebnt v-bind:id="id" />
 </template>
 
 <script lang="ts">
@@ -21,34 +21,10 @@ import { ErrorDialogMixin } from "@/components/mixins";
 export default class RuleView extends Mixins<ErrorDialogMixin>(
   ErrorDialogMixin
 ) {
-  private rule: Rule | undefined = undefined;
+  private id: string | undefined = undefined;
 
-  async load() {
-    const loadingComponent = this.$buefy.loading.open({
-      container: this.$el.firstElementChild,
-    });
-
-    try {
-      const id = this.$route.params.id;
-      const response = await axios.get<Rule>(`/api/rules/${id}`);
-      this.rule = response.data;
-
-      loadingComponent.close();
-      this.$forceUpdate();
-    } catch (error) {
-      loadingComponent.close();
-
-      const data = error.response.data as ErrorData;
-      this.alertError(data);
-    }
-  }
-
-  mounted() {
-    this.load();
-  }
-
-  hasRule(): boolean {
-    return this.rule !== undefined;
+  created() {
+    this.id = this.$route.params.id;
   }
 }
 </script>

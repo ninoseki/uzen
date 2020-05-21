@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <IPAddress />
-  </div>
+  <IPAddress />
 </template>
 
 <script lang="ts">
