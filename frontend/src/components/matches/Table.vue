@@ -29,8 +29,8 @@
           <pre><code class="json">{{ props.row.matches }}</code></pre>
         </b-table-column>
 
-        <b-table-column field="createdAt" label="Created on">
-          {{ props.row.createdAt.split("T")[0] }}
+        <b-table-column field="createdAt" label="Created at">
+          <DatetimeWithDiff v-bind:datetime="props.row.createdAt" />
         </b-table-column>
       </template>
     </b-table>
@@ -44,8 +44,13 @@ import { Prop } from "vue-property-decorator";
 import { Match } from "@/types";
 
 import { HighlightMixin } from "@/components/mixins";
+import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
 
-@Component
+@Component({
+  components: {
+    DatetimeWithDiff,
+  },
+})
 export default class Table extends Mixins<HighlightMixin>(HighlightMixin) {
   @Prop() private matches!: Match[];
 
