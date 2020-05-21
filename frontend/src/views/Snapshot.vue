@@ -1,5 +1,8 @@
 <template>
-  <SnapshotComponebnt v-bind:id="id" v-bind:yaraResult="yaraResult" />
+  <SnapshotComponebnt
+    v-bind:id="this.$route.params.id"
+    v-bind:yaraResult="yaraResult"
+  />
 </template>
 
 <script lang="ts">
@@ -20,11 +23,5 @@ export default class SnapshotView extends Mixins<ErrorDialogMixin>(
   ErrorDialogMixin
 ) {
   @Prop() private yaraResult!: YaraResult;
-
-  private id: string | undefined = undefined;
-
-  created() {
-    this.id = this.$route.params.id;
-  }
 }
 </script>

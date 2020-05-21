@@ -1,5 +1,5 @@
 <template>
-  <RuleComponebnt v-bind:id="id" />
+  <RuleComponebnt v-bind:id="this.$route.params.id" />
 </template>
 
 <script lang="ts">
@@ -18,11 +18,5 @@ import { ErrorData, Rule } from "@/types";
 })
 export default class RuleView extends Mixins<ErrorDialogMixin>(
   ErrorDialogMixin
-) {
-  private id: string | undefined = undefined;
-
-  created() {
-    this.id = this.$route.params.id;
-  }
-}
+) {}
 </script>
