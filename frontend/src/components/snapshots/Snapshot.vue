@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="hasSnapshot()">
     <b-message v-if="snapshot.processing" type="is-warning">
       <p><strong>Background tasks in progress...</strong></p>
       <p>
@@ -172,29 +172,24 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixin, Mixins } from "vue-mixin-decorator";
-import { Prop } from "vue-property-decorator";
+import axios from "axios";
 import moment from "moment/moment";
-
-import {
-  Snapshot,
-  Script,
-  ErrorData,
-  DnsRecord,
-  YaraResult,
-  SnapshotWithYaraResult,
-  Classification,
-} from "@/types";
+import { Component, Mixins } from "vue-mixin-decorator";
+import { Prop } from "vue-property-decorator";
 
 import Classifications from "@/components/classifications/Classifications.vue";
 import DnsRecords from "@/components/dns_records/DnsRecords.vue";
 import Links from "@/components/links/Links.vue";
+import {
+  ErrorDialogMixin,
+  HighlightComponentMixin,
+  HighlightMixin,
+} from "@/components/mixins";
 import Rules from "@/components/rules/Buttons.vue";
 import Screenshot from "@/components/screenshots/Screenshot.vue";
 import Scripts from "@/components/scripts/Scripts.vue";
 import YaraResultComponent from "@/components/yara/Result.vue";
-
-import { HighlightMixin } from "@/components/mixins";
+import { ErrorData, Snapshot, YaraResult } from "@/types";
 
 @Component({
   components: {
@@ -207,13 +202,42 @@ import { HighlightMixin } from "@/components/mixins";
     YaraResultComponent,
   },
 })
-export default class SnapshotComponent extends Mixins<HighlightMixin>(
-  HighlightMixin
+export default class SnapshotComponent extends Mixins<HighlightComponentMixin>(
+  HighlightMixin,
+  ErrorDialogMixin
 ) {
-  @Prop() private snapshot!: Snapshot;
+  @Prop() private id!: string;
+  @Prop() private _snapshot!: Snapshot;
   @Prop() private yaraResult!: YaraResult;
 
-  mounted() {
+  private snapshot: Snapshot | undefined = undefined;
+
+  async load() {
+    const loadingComponent = this.$buefy.loading.open({
+      container: this.$el.firstElementChild,
+    });
+
+    try {
+      const response = await axios.get<Snapshot>(`/api/snapshots/${this.id}`);
+      this.snapshot = response.data;
+
+      loadingComponent.close();
+      this.$forceUpdate();
+    } catch (error) {
+      loadingComponent.close();
+
+      const data = error.response.data as ErrorData;
+      this.alertError(data);
+    }
+  }
+
+  async mounted() {
+    this.snapshot = this._snapshot;
+    this.$forceUpdate();
+
+    if (this.snapshot === undefined) {
+      await this.load();
+    }
     this.highlightCodeBlocks();
   }
 
@@ -222,10 +246,14 @@ export default class SnapshotComponent extends Mixins<HighlightMixin>(
   }
 
   createdAtInLocalFormat(): string {
-    if (this.snapshot.createdAt === undefined) {
+    if (this.snapshot?.createdAt === undefined) {
       return "N/A";
     }
     return moment.parseZone(this.snapshot.createdAt).local().format();
+  }
+
+  hasSnapshot(): boolean {
+    return this.snapshot !== undefined;
   }
 }
 </script>

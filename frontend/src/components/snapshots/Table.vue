@@ -41,11 +41,9 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import axios, { AxiosError } from "axios";
-
-import { Snapshot, SnapshotWithYaraResult } from "@/types";
 
 import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
+import { Snapshot, SnapshotWithYaraResult } from "@/types";
 
 @Component({
   components: {

@@ -46,6 +46,7 @@
     <div class="column">
       <h2 class="is-size-5 has-text-weight-bold middle">
         Recent snapshots
+        <Counter v-bind:ipAddress="information.ipAddress" />
       </h2>
       <Table v-if="hasSnapshots()" v-bind:snapshots="information.snapshots" />
       <p v-else>N/A</p>
@@ -61,20 +62,20 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixin, Mixins } from "vue-mixin-decorator";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import moment from "moment/moment";
+import { Component, Mixins } from "vue-mixin-decorator";
 
-import { ErrorDialogMixin } from "@/components/mixins";
 import Links from "@/components/links/Links.vue";
+import { ErrorDialogMixin } from "@/components/mixins";
 import Preview from "@/components/screenshots/Preview.vue";
-import Screenshot from "@/components/screenshots/Screenshot.vue";
+import Counter from "@/components/snapshots/Counter.vue";
 import Table from "@/components/snapshots/TableWithScreenshot.vue";
-
-import { IPAddressInformation, Snapshot, ErrorData } from "@/types";
+import { ErrorData, IPAddressInformation, Snapshot } from "@/types";
 
 @Component({
   components: {
+    Counter,
     Links,
     Preview,
     Table,

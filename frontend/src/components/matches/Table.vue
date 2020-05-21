@@ -38,13 +38,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixin, Mixins } from "vue-mixin-decorator";
+import { Component, Mixins } from "vue-mixin-decorator";
 import { Prop } from "vue-property-decorator";
-
-import { Match } from "@/types";
 
 import { HighlightMixin } from "@/components/mixins";
 import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
+import { Match } from "@/types";
 
 @Component({
   components: {

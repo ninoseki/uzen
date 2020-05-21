@@ -1,17 +1,12 @@
 <template>
-  <RuleComponebnt v-bind:rule="rule" v-if="hasRule()" />
+  <RuleComponebnt v-bind:id="this.$route.params.id" />
 </template>
 
 <script lang="ts">
-import { Component, Mixin, Mixins } from "vue-mixin-decorator";
-import { Prop } from "vue-property-decorator";
-import axios, { AxiosError } from "axios";
-
-import { Rule, ErrorData } from "@/types";
-
-import RuleComponebnt from "@/components/rules/Rule.vue";
+import { Component, Mixins } from "vue-mixin-decorator";
 
 import { ErrorDialogMixin } from "@/components/mixins";
+import RuleComponebnt from "@/components/rules/Rule.vue";
 
 @Component({
   components: {
@@ -20,35 +15,5 @@ import { ErrorDialogMixin } from "@/components/mixins";
 })
 export default class RuleView extends Mixins<ErrorDialogMixin>(
   ErrorDialogMixin
-) {
-  private rule: Rule | undefined = undefined;
-
-  async load() {
-    const loadingComponent = this.$buefy.loading.open({
-      container: this.$el.firstElementChild,
-    });
-
-    try {
-      const id = this.$route.params.id;
-      const response = await axios.get<Rule>(`/api/rules/${id}`);
-      this.rule = response.data;
-
-      loadingComponent.close();
-      this.$forceUpdate();
-    } catch (error) {
-      loadingComponent.close();
-
-      const data = error.response.data as ErrorData;
-      this.alertError(data);
-    }
-  }
-
-  mounted() {
-    this.load();
-  }
-
-  hasRule(): boolean {
-    return this.rule !== undefined;
-  }
-}
+) {}
 </script>

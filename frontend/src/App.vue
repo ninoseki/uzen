@@ -10,9 +10,9 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
-
 import "highlight.js/styles/default.css";
+
+import { Component, Vue } from "vue-property-decorator";
 
 import Navbar from "@/components/ui/Navbar.vue";
 

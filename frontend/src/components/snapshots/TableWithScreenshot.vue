@@ -45,13 +45,10 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import axios, { AxiosError } from "axios";
-import moment from "moment/moment";
-
-import { Snapshot } from "@/types";
 
 import Screenshot from "@/components/screenshots/Screenshot.vue";
 import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
+import { Snapshot } from "@/types";
 
 @Component({
   components: {

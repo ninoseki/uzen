@@ -3,7 +3,7 @@
     <div class="box">
       <BasicForm v-bind:source.sync="source" v-bind:target.sync="target" />
       <hr />
-      <SnapshotSearch ref="search" />
+      <SnapshotForm ref="form" />
       <br />
       <div class="has-text-centered">
         <b-button
@@ -22,35 +22,31 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixin, Mixins } from "vue-mixin-decorator";
-import { Prop } from "vue-property-decorator";
-import axios, { AxiosError } from "axios";
-
-import {
-  ErrorData,
-  Snapshot,
-  TargetTypes,
-  SnapshotWithYaraResult,
-  CountResponse,
-} from "@/types";
-
-import BasicForm from "@/components/yara/BasicForm.vue";
-import SnapshotSearch from "@/components/snapshots/Search.vue";
-import SnapshotTable from "@/components/snapshots/Table.vue";
+import axios from "axios";
+import { Component, Mixins } from "vue-mixin-decorator";
 
 import { ErrorDialogMixin } from "@/components/mixins";
+import SnapshotForm from "@/components/snapshots/SearchForm.vue";
+import SnapshotTable from "@/components/snapshots/Table.vue";
+import BasicForm from "@/components/yara/BasicForm.vue";
+import {
+  CountResponse,
+  ErrorData,
+  SnapshotWithYaraResult,
+  TargetTypes,
+} from "@/types";
 
 @Component({
   components: {
     BasicForm,
-    SnapshotSearch,
+    SnapshotForm,
     SnapshotTable,
   },
 })
 export default class YaraForm extends Mixins<ErrorDialogMixin>(
   ErrorDialogMixin
 ) {
-  private source: string = "";
+  private source = "";
   private target: TargetTypes = "body";
   private count: number | undefined = undefined;
   private results: SnapshotWithYaraResult[] = [];
@@ -63,7 +59,7 @@ export default class YaraForm extends Mixins<ErrorDialogMixin>(
       container: this.$el.firstElementChild,
     });
 
-    const params = (this.$refs.search as SnapshotSearch).filtersParams();
+    const params = (this.$refs.form as SnapshotForm).filtersParams();
     // get total count of snapshots and set it as a size
     const totalCount = await this.getTotalCount();
     if (totalCount !== undefined) {

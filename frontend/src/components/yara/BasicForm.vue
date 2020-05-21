@@ -19,13 +19,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 
 import { TargetTypes } from "@/types";
 
 @Component
 export default class BasicForm extends Vue {
-  private source: string = "";
+  private source = "";
   private target: TargetTypes = "body";
   private targets: TargetTypes[] = ["body", "whois", "certificate", "script"];
 
