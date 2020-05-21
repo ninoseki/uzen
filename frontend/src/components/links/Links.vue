@@ -31,7 +31,7 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 
 import LinkComponent from "@/components/links/Link.vue";
 import { Links } from "@/links";
-import { Link, LinkType, Snapshot } from "@/types";
+import { Link, LinkType } from "@/types";
 
 @Component({
   components: {

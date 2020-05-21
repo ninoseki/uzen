@@ -27,8 +27,8 @@
 </template>
 
 <script lang="ts">
-import axios, { AxiosError } from "axios";
-import { Component, Mixin, Mixins } from "vue-mixin-decorator";
+import axios from "axios";
+import { Component, Mixins } from "vue-mixin-decorator";
 import { Prop } from "vue-property-decorator";
 
 import Form from "@/components/matches/Form.vue";
@@ -38,7 +38,7 @@ import {
   SearchFormComponentMixin,
   SearchFormMixin,
 } from "@/components/mixins";
-import { ErrorData, Match, MatchFilters, MatchSearchResults } from "@/types";
+import { ErrorData, Match, MatchSearchResults } from "@/types";
 
 @Component({
   components: {

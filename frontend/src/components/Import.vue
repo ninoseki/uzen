@@ -16,7 +16,7 @@
             type="is-light"
             icon-pack="fas"
             icon-left="file-import"
-            @click="import_from_urlscan"
+            @click="importFromUrlscan"
             >Import from urlscan.io</b-button
           >
         </p>
@@ -26,17 +26,17 @@
 </template>
 
 <script lang="ts">
-import axios, { AxiosError } from "axios";
-import { Component, Mixin, Mixins } from "vue-mixin-decorator";
+import axios from "axios";
+import { Component, Mixins } from "vue-mixin-decorator";
 
 import { ErrorDialogMixin } from "@/components/mixins";
 import { ErrorData, Snapshot } from "@/types";
 
 @Component
 export default class Import extends Mixins<ErrorDialogMixin>(ErrorDialogMixin) {
-  private uuid: string = "";
+  private uuid = "";
 
-  async import_from_urlscan() {
+  async importFromUrlscan() {
     const loadingComponent = this.$buefy.loading.open({
       container: this.$el.firstElementChild,
     });

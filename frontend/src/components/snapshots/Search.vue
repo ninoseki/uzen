@@ -35,8 +35,8 @@
 </template>
 
 <script lang="ts">
-import axios, { AxiosError } from "axios";
-import { Component, Mixin, Mixins } from "vue-mixin-decorator";
+import axios from "axios";
+import { Component, Mixins } from "vue-mixin-decorator";
 
 import {
   ErrorDialogMixin,

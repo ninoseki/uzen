@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixin, Mixins } from "vue-mixin-decorator";
+import { Component, Mixins } from "vue-mixin-decorator";
 import { Prop } from "vue-property-decorator";
 
 import {
@@ -64,7 +64,7 @@ export default class SearchForm extends Mixins<SearchFormComponentMixin>(
   };
 
   filtersParams() {
-    const obj: { [k: string]: any } = {};
+    const obj: { [k: string]: string | number | undefined } = {};
 
     for (const key in this.filters) {
       if (this.filters[key] !== undefined) {

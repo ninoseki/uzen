@@ -8,7 +8,7 @@ export class SearchFormMixin extends Vue {
   DEFAULT_OFFSET = 0;
 
   count: number | undefined = undefined;
-  totalCount: number = 0;
+  totalCount = 0;
   size = this.DEFAULT_PAGE_SIZE;
   offset = this.DEFAULT_OFFSET;
 

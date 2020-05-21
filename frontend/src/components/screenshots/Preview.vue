@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { Component, Prop, Vue } from "vue-property-decorator";
 
 import { Screenshot } from "@/types";
@@ -15,8 +15,8 @@ export default class Preview extends Vue {
   @Prop() private hostname!: string;
 
   private screenshot: Screenshot | undefined = undefined;
-  private failed: boolean = false;
-  private loaded: boolean = false;
+  private failed = false;
+  private loaded = false;
 
   created() {
     this.load();

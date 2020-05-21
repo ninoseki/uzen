@@ -22,8 +22,8 @@
 </template>
 
 <script lang="ts">
-import axios, { AxiosError } from "axios";
-import { Component, Mixin, Mixins } from "vue-mixin-decorator";
+import axios from "axios";
+import { Component, Mixins } from "vue-mixin-decorator";
 
 import { ErrorDialogMixin } from "@/components/mixins";
 import SnapshotForm from "@/components/snapshots/SearchForm.vue";
@@ -32,7 +32,6 @@ import BasicForm from "@/components/yara/BasicForm.vue";
 import {
   CountResponse,
   ErrorData,
-  Snapshot,
   SnapshotWithYaraResult,
   TargetTypes,
 } from "@/types";
@@ -47,7 +46,7 @@ import {
 export default class YaraForm extends Mixins<ErrorDialogMixin>(
   ErrorDialogMixin
 ) {
-  private source: string = "";
+  private source = "";
   private target: TargetTypes = "body";
   private count: number | undefined = undefined;
   private results: SnapshotWithYaraResult[] = [];

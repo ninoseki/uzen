@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { Component, Prop, Vue } from "vue-property-decorator";
 
 import { ErrorData, MatchSearchResults } from "@/types";
@@ -22,7 +22,7 @@ import { ErrorData, MatchSearchResults } from "@/types";
 export default class Counter extends Vue {
   @Prop() private ruleId: string | undefined;
 
-  private totalCount: number = 0;
+  private totalCount = 0;
 
   created() {
     this.load();
@@ -45,6 +45,7 @@ export default class Counter extends Vue {
       this.totalCount = response.data.total;
     } catch (error) {
       const data = error.response.data as ErrorData;
+      console.error(data);
     }
   }
 }

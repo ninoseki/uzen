@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixin, Mixins } from "vue-mixin-decorator";
+import { Component, Mixins } from "vue-mixin-decorator";
 import { Prop } from "vue-property-decorator";
 
 import { HighlightMixin } from "@/components/mixins";

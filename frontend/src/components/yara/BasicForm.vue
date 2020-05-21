@@ -25,7 +25,7 @@ import { TargetTypes } from "@/types";
 
 @Component
 export default class BasicForm extends Vue {
-  private source: string = "";
+  private source = "";
   private target: TargetTypes = "body";
   private targets: TargetTypes[] = ["body", "whois", "certificate", "script"];
 

@@ -172,9 +172,9 @@
 </template>
 
 <script lang="ts">
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import moment from "moment/moment";
-import { Component, Mixin, Mixins } from "vue-mixin-decorator";
+import { Component, Mixins } from "vue-mixin-decorator";
 import { Prop } from "vue-property-decorator";
 
 import Classifications from "@/components/classifications/Classifications.vue";
@@ -189,15 +189,7 @@ import Rules from "@/components/rules/Buttons.vue";
 import Screenshot from "@/components/screenshots/Screenshot.vue";
 import Scripts from "@/components/scripts/Scripts.vue";
 import YaraResultComponent from "@/components/yara/Result.vue";
-import {
-  Classification,
-  DnsRecord,
-  ErrorData,
-  Script,
-  Snapshot,
-  SnapshotWithYaraResult,
-  YaraResult,
-} from "@/types";
+import { ErrorData, Snapshot, YaraResult } from "@/types";
 
 @Component({
   components: {

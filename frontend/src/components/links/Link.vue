@@ -8,7 +8,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 
-import { Link, Snapshot } from "@/types";
+import { Link } from "@/types";
 
 @Component
 export default class LinkComponent extends Vue {

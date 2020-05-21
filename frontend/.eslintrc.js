@@ -3,7 +3,14 @@ module.exports = {
   env: {
     node: true,
   },
-  extends: ["plugin:vue/essential", "@vue/prettier", "@vue/typescript"],
+  extends: [
+    "@vue/prettier",
+    "@vue/prettier/@typescript-eslint",
+    "@vue/typescript",
+    "@vue/typescript/recommended",
+    "eslint:recommended",
+    "plugin:vue/essential",
+  ],
   plugins: ["simple-import-sort"],
   rules: {
     "no-console": process.env.NODE_ENV === "production" ? "error" : "off",

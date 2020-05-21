@@ -50,23 +50,17 @@
 </template>
 
 <script lang="ts">
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import moment from "moment/moment";
-import { Component, Mixin, Mixins } from "vue-mixin-decorator";
+import { Component, Mixins } from "vue-mixin-decorator";
 
 import DnsRecords from "@/components/dns_records/DnsRecords.vue";
 import Links from "@/components/links/Links.vue";
 import { ErrorDialogMixin } from "@/components/mixins";
 import Preview from "@/components/screenshots/Preview.vue";
-import Screenshot from "@/components/screenshots/Screenshot.vue";
 import Counter from "@/components/snapshots/Counter.vue";
 import Table from "@/components/snapshots/TableWithScreenshot.vue";
-import {
-  DomainInformation,
-  ErrorData,
-  Snapshot,
-  SnapshotSearchResults,
-} from "@/types";
+import { DomainInformation, ErrorData, Snapshot } from "@/types";
 
 @Component({
   components: {

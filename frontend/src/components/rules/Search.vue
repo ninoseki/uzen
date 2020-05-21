@@ -31,8 +31,8 @@
 </template>
 
 <script lang="ts">
-import axios, { AxiosError } from "axios";
-import { Component, Mixin, Mixins } from "vue-mixin-decorator";
+import axios from "axios";
+import { Component, Mixins } from "vue-mixin-decorator";
 
 import {
   ErrorDialogMixin,
@@ -41,7 +41,7 @@ import {
 } from "@/components/mixins";
 import Form from "@/components/rules/Form.vue";
 import Table from "@/components/rules/Table.vue";
-import { ErrorData, Rule, RuleFilters, RuleSearchResults } from "@/types";
+import { ErrorData, Rule, RuleSearchResults } from "@/types";
 
 @Component({
   components: {

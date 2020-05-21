@@ -22,7 +22,6 @@
 </template>
 
 <script lang="ts">
-import axios, { AxiosError } from "axios";
 import { Component, Prop, Vue } from "vue-property-decorator";
 
 import { Rule } from "@/types";

@@ -38,8 +38,8 @@
 </template>
 
 <script lang="ts">
-import axios, { AxiosError } from "axios";
-import { Component, Mixin, Mixins } from "vue-mixin-decorator";
+import axios from "axios";
+import { Component, Mixins } from "vue-mixin-decorator";
 
 import { ErrorDialogMixin } from "@/components/mixins";
 import Options from "@/components/snapshots/Options.vue";
@@ -66,13 +66,13 @@ export default class Form extends Mixins<ErrorDialogMixin>(ErrorDialogMixin) {
     try {
       const response = await axios.post<Snapshot>("/api/snapshots/", {
         url: this.url,
-        accept_language:
+        acceptLanguage:
           this.acceptLanguage === "" ? undefined : this.acceptLanguage,
         host: this.host === "" ? undefined : this.host,
-        ignore_https_errors: this.ignoreHTTPSErrors,
+        ignoreHttpsErrors: this.ignoreHTTPSErrors,
         referer: this.referer === "" ? undefined : this.referer,
         timeout: this.timeout,
-        user_agent: this.userAgent === "" ? undefined : this.userAgent,
+        userAgent: this.userAgent === "" ? undefined : this.userAgent,
       });
       const snapshot = response.data;
 
