@@ -32,7 +32,6 @@
 
 <script lang="ts">
 import { Component, Mixin, Mixins } from "vue-mixin-decorator";
-import { Prop } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 
 import { Rule, RuleFilters, ErrorData, RuleSearchResults } from "@/types";

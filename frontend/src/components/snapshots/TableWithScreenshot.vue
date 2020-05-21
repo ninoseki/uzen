@@ -45,8 +45,6 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import axios, { AxiosError } from "axios";
-import moment from "moment/moment";
 
 import { Snapshot } from "@/types";
 
