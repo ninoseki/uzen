@@ -54,7 +54,7 @@
     <div>
       <SnapshotComponent
         v-if="hasSnapshot()"
-        v-bind:snapshot="oneshot.snapshot"
+        v-bind:_snapshot="oneshot.snapshot"
         v-bind:yaraResult="yaraResult()"
       />
     </div>
@@ -62,25 +62,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixin, Mixins } from "vue-mixin-decorator";
-import { Prop } from "vue-property-decorator";
-import axios, { AxiosError } from "axios";
-
-import {
-  ErrorData,
-  Snapshot,
-  Oneshot,
-  TargetTypes,
-  Script,
-  DnsRecord,
-  YaraResult,
-} from "@/types";
-
-import SnapshotComponent from "@/components/snapshots/Snapshot.vue";
-import BasicYaraForm from "@/components/yara/BasicForm.vue";
-import Options from "@/components/snapshots/Options.vue";
+import axios from "axios";
+import { Component, Mixins } from "vue-mixin-decorator";
 
 import { ErrorDialogMixin } from "@/components/mixins";
+import Options from "@/components/snapshots/Options.vue";
+import SnapshotComponent from "@/components/snapshots/Snapshot.vue";
+import BasicYaraForm from "@/components/yara/BasicForm.vue";
+import { ErrorData, Oneshot, TargetTypes, YaraResult } from "@/types";
 
 @Component({
   components: {
@@ -92,9 +81,9 @@ import { ErrorDialogMixin } from "@/components/mixins";
 export default class OneshotView extends Mixins<ErrorDialogMixin>(
   ErrorDialogMixin
 ) {
-  private source: string = "";
+  private source = "";
   private target: TargetTypes = "body";
-  private url: string = "";
+  private url = "";
   private oneshot: Oneshot | undefined = undefined;
 
   private showOptions = false;
@@ -115,13 +104,13 @@ export default class OneshotView extends Mixins<ErrorDialogMixin>(
         source: this.source,
         url: this.url,
         target: this.target,
-        accept_language:
+        acceptLanguage:
           this.acceptLanguage === "" ? undefined : this.acceptLanguage,
         host: this.host === "" ? undefined : this.host,
-        ignore_https_errors: this.ignoreHTTPSErrors,
+        ignoreHttpErrors: this.ignoreHTTPSErrors,
         referer: this.referer === "" ? undefined : this.referer,
         timeout: this.timeout,
-        user_agent: this.userAgent === "" ? undefined : this.userAgent,
+        userAgent: this.userAgent === "" ? undefined : this.userAgent,
       });
 
       this.oneshot = response.data;

@@ -40,12 +40,12 @@ export default class SearchForm extends Vue {
   };
 
   filtersParams() {
-    const obj: { [k: string]: any } = {};
+    const obj: { [k: string]: string | number | undefined } = {};
 
     for (const key in this.filters) {
       if (this.filters[key] !== undefined) {
         const value = this.filters[key];
-        obj[key] = this.filters[key];
+        obj[key] = value;
       }
     }
     return obj;

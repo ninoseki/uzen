@@ -38,31 +38,33 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixin, Mixins } from "vue-mixin-decorator";
+import { Component, Mixins } from "vue-mixin-decorator";
 import { Prop } from "vue-property-decorator";
 
-import { MatchFilters } from "@/types";
-
 import {
-  SearchFormMixin,
   ErrorDialogMixin,
   SearchFormComponentMixin,
+  SearchFormMixin,
 } from "@/components/mixins";
+import { MatchFilters } from "@/types";
 
 @Component
 export default class SearchForm extends Mixins<SearchFormComponentMixin>(
   ErrorDialogMixin,
   SearchFormMixin
 ) {
+  @Prop() private ruleId: string | undefined;
+  @Prop() private snapshotId: string | undefined;
+
   private filters: MatchFilters = {
-    ruleId: undefined,
-    snapshotId: undefined,
+    ruleId: this.ruleId,
+    snapshotId: this.snapshotId,
     fromAt: undefined,
     toAt: undefined,
   };
 
   filtersParams() {
-    const obj: { [k: string]: any } = {};
+    const obj: { [k: string]: string | number | undefined } = {};
 
     for (const key in this.filters) {
       if (this.filters[key] !== undefined) {

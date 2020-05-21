@@ -1,5 +1,5 @@
 <template>
-  <div class="box">
+  <div class="box" v-if="hasRule()">
     <div class="column is-full">
       <div class="columns">
         <div class="column is-half">
@@ -39,6 +39,7 @@
       <div class="column">
         <h2 class="is-size-5 has-text-weight-bold middle">
           Recent related snapshots
+          <Counter v-bind:ruleId="rule.id" />
         </h2>
         <Table v-if="hasSnapshots()" v-bind:snapshots="rule.snapshots" />
         <p v-else>N/A</p>
@@ -48,32 +49,63 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixin, Mixins } from "vue-mixin-decorator";
+import axios from "axios";
+import { Component, Mixins } from "vue-mixin-decorator";
 import { Prop } from "vue-property-decorator";
-import axios, { AxiosError } from "axios";
 
-import { Rule, ErrorData } from "@/types";
-
+import Counter from "@/components/matches/Counter.vue";
+import {
+  ErrorDialogMixin,
+  HighlightComponentMixin,
+  HighlightMixin,
+} from "@/components/mixins";
 import Table from "@/components/snapshots/TableWithScreenshot.vue";
-
-import { HighlightMixin } from "@/components/mixins";
+import { ErrorData, Rule } from "@/types";
 
 @Component({
   components: {
+    Counter,
     Table,
   },
 })
-export default class RuleComponent extends Mixins<HighlightMixin>(
-  HighlightMixin
+export default class RuleComponent extends Mixins<HighlightComponentMixin>(
+  HighlightMixin,
+  ErrorDialogMixin
 ) {
-  @Prop() private rule!: Rule;
+  @Prop() private id!: string;
 
-  mounted() {
+  private rule: Rule | undefined = undefined;
+
+  async load() {
+    const loadingComponent = this.$buefy.loading.open({
+      container: this.$el.firstElementChild,
+    });
+
+    try {
+      const response = await axios.get<Rule>(`/api/rules/${this.id}`);
+      this.rule = response.data;
+
+      loadingComponent.close();
+      this.$forceUpdate();
+    } catch (error) {
+      loadingComponent.close();
+
+      const data = error.response.data as ErrorData;
+      this.alertError(data);
+    }
+  }
+
+  async mounted() {
+    await this.load();
     this.highlightCodeBlocks();
   }
 
+  hasRule(): boolean {
+    return this.rule !== undefined;
+  }
+
   hasSnapshots(): boolean {
-    return this.rule.snapshots.length > 0;
+    return (this.rule?.snapshots || []).length > 0;
   }
 }
 </script>

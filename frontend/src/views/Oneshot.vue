@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <Oneshot />
-  </div>
+  <Oneshot />
 </template>
 
 <script lang="ts">

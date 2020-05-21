@@ -27,11 +27,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Prop, Vue } from "vue-property-decorator";
 
 import LinkComponent from "@/components/links/Link.vue";
 import { Links } from "@/links";
-import { Snapshot, Link, LinkType } from "@/types";
+import { Link, LinkType } from "@/types";
 
 @Component({
   components: {

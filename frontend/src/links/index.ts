@@ -1,9 +1,10 @@
 import { Link } from "@/types";
+
 import { Censys } from "./censys";
 import { Crtsh } from "./crtsh";
 import { SecurityTrails } from "./securitytrails";
-import { Spyse } from "./spyse";
 import { Shodan } from "./shodan";
+import { Spyse } from "./spyse";
 import { Urlscan } from "./urlscan";
 import { VirusTotal } from "./virustotal";
 

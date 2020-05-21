@@ -3,8 +3,8 @@
 </template>
 
 <script lang="ts">
+import axios from "axios";
 import { Component, Prop, Vue } from "vue-property-decorator";
-import axios, { AxiosError } from "axios";
 
 import { Screenshot } from "@/types";
 
@@ -14,7 +14,7 @@ export default class ScreenshotComponent extends Vue {
   @Prop() private snapshot_id!: string;
 
   private _screenshot: Screenshot | undefined = undefined;
-  private failed: boolean = false;
+  private failed = false;
 
   created() {
     if (this.screenshot !== undefined && this.screenshot !== null) {

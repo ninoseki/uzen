@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <Domain />
-  </div>
+  <Domain />
 </template>
 
 <script lang="ts">

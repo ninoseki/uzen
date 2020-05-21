@@ -1,7 +1,8 @@
 <template>
-  <div>
-    <Search />
-  </div>
+  <Search
+    v-bind:ruleId="$route.query.ruleId"
+    v-bind:snapshotId="$route.query.snapshotId"
+  />
 </template>
 
 <script lang="ts">

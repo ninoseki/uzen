@@ -1,146 +1,117 @@
 <template>
   <div>
-    <div class="columns">
-      <div class="column is-half">
-        <b-field label="URL">
-          <b-input
-            placeholder="http://example.com"
-            v-model="filters.url"
-          ></b-input>
-        </b-field>
-      </div>
-      <div class="column is-half">
-        <b-field label="Status">
-          <b-input
-            type="number"
-            placeholder="200"
-            v-model="filters.status"
-          ></b-input>
-        </b-field>
-      </div>
-    </div>
-    <div class="columns">
-      <div class="column is-half">
-        <b-field label="Hostname">
-          <b-input
-            placeholder="example.com"
-            v-model="filters.hostname"
-          ></b-input>
-        </b-field>
-      </div>
-      <div class="column is-half">
-        <b-field label="IP address">
-          <b-input placeholder="1.1.1.1" v-model="filters.ipAddress"></b-input>
-        </b-field>
+    <div class="box">
+      <Form
+        ref="form"
+        v-bind:sha256="$route.query.sha256"
+        v-bind:asn="$route.query.asn"
+        v-bind:contentType="$route.query.contentType"
+        v-bind:hostname="$route.query.hostname"
+        v-bind:ipAddress="$route.query.ipAddress"
+        v-bind:server="$route.query.server"
+      />
+
+      <br />
+
+      <div class="has-text-centered">
+        <b-button
+          type="is-light"
+          icon-pack="fas"
+          icon-left="search"
+          @click="initSearch()"
+          >Search</b-button
+        >
       </div>
     </div>
-    <div class="columns">
-      <div class="column is-half">
-        <b-field label="ASN">
-          <b-input placeholder="AS15133" v-model="filters.asn"></b-input>
-        </b-field>
-      </div>
-      <div class="column is-half">
-        <b-field label="Server">
-          <b-input
-            placeholder="Apache-Coyote/1.1"
-            v-model="filters.server"
-          ></b-input>
-        </b-field>
-      </div>
-    </div>
-    <div class="columns">
-      <div class="column is-half">
-        <b-field label="Content-Type">
-          <b-input
-            placeholder="text/html"
-            v-model="filters.contentType"
-          ></b-input>
-        </b-field>
-      </div>
-      <div class="column is-half">
-        <b-field label="SHA256">
-          <b-input
-            placeholder="ea8fac7c65fb589b0d53560f5251f74f9e9b243478dcb6b3ea79b5e36449c8d9"
-            v-model="filters.sha256"
-          ></b-input>
-        </b-field>
-      </div>
-    </div>
-    <div class="columns">
-      <div class="column is-half">
-        <b-field label="From">
-          <b-datetimepicker
-            placeholder="Click to select..."
-            icon="calendar-today"
-            v-model="filters.fromAt"
-            :datetime-formatter="datetimeFormatter"
-          ></b-datetimepicker>
-        </b-field>
-      </div>
-      <div class="column is-half">
-        <b-field label="To">
-          <b-datetimepicker
-            placeholder="Click to select..."
-            icon="calendar-today"
-            v-model="filters.toAt"
-            :datetime-formatter="datetimeFormatter"
-          ></b-datetimepicker>
-        </b-field>
-      </div>
-    </div>
+
+    <h2 v-if="hasCount()">Search results ({{ count }} / {{ totalCount }})</h2>
+
+    <Table v-bind:snapshots="snapshots" />
+
+    <b-button v-if="hasLoadMore()" type="is-dark" @click="loadMore"
+      >Load more...</b-button
+    >
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Mixin, Mixins } from "vue-mixin-decorator";
-import { Prop } from "vue-property-decorator";
-
-import { SnapshotFilters } from "@/types";
+import axios from "axios";
+import { Component, Mixins } from "vue-mixin-decorator";
 
 import {
-  SearchFormMixin,
   ErrorDialogMixin,
   SearchFormComponentMixin,
+  SearchFormMixin,
 } from "@/components/mixins";
+import Form from "@/components/snapshots/SearchForm.vue";
+import Table from "@/components/snapshots/Table.vue";
+import { ErrorData, Snapshot, SnapshotSearchResults } from "@/types";
 
-@Component
-export default class Search extends Mixins<SearchFormComponentMixin>(
+@Component({
+  components: {
+    Form,
+    Table,
+  },
+})
+export default class SearchForm extends Mixins<SearchFormComponentMixin>(
   ErrorDialogMixin,
   SearchFormMixin
 ) {
-  @Prop() private asn: string | undefined;
-  @Prop() private contentType: string | undefined;
-  @Prop() private hostname: string | undefined;
-  @Prop() private ipAddress: string | undefined;
-  @Prop() private server: string | undefined;
-  @Prop() private sha256: string | undefined;
-  @Prop() private status: number | undefined;
-  @Prop() private url: string | undefined;
+  private snapshots: Snapshot[] = [];
 
-  private filters: SnapshotFilters = {
-    asn: this.asn,
-    contentType: this.contentType,
-    hostname: this.hostname,
-    ipAddress: this.ipAddress,
-    server: this.server,
-    sha256: this.sha256,
-    status: this.status,
-    url: this.url,
-    fromAt: undefined,
-    toAt: undefined,
-  };
+  resetPagination() {
+    this.snapshots = [];
+    this.size = this.DEFAULT_PAGE_SIZE;
+    this.offset = this.DEFAULT_OFFSET;
+  }
 
-  filtersParams() {
-    const obj: { [k: string]: any } = {};
+  async search(additonalLoading = false) {
+    const loadingComponent = this.$buefy.loading.open({
+      container: this.$el.firstElementChild,
+    });
 
-    for (const key in this.filters) {
-      if (this.filters[key] !== undefined) {
-        const value = this.filters[key];
-        obj[key] = this.normalizeFilterValue(value);
-      }
+    if (!additonalLoading) {
+      this.resetPagination();
     }
-    return obj;
+
+    const params = (this.$refs.form as Form).filtersParams();
+    params["size"] = this.size;
+    params["offset"] = this.offset;
+
+    try {
+      const response = await axios.get<SnapshotSearchResults>(
+        "/api/snapshots/search",
+        {
+          params: params,
+        }
+      );
+
+      loadingComponent.close();
+
+      this.snapshots = this.snapshots.concat(response.data.results);
+      this.totalCount = response.data.total;
+      this.count = this.snapshots.length;
+    } catch (error) {
+      loadingComponent.close();
+
+      const data = error.response.data as ErrorData;
+      this.alertError(data);
+    }
+  }
+
+  loadMore() {
+    this.offset += this.size;
+    this.search(true);
+  }
+
+  initSearch() {
+    this.search();
+  }
+
+  mounted() {
+    if (Object.keys(this.$route.query).length > 0) {
+      this.initSearch();
+    }
   }
 }
 </script>

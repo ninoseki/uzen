@@ -1,6 +1,6 @@
+import moment from "moment/moment";
 import Vue from "vue";
 import { Mixin } from "vue-mixin-decorator";
-import moment from "moment/moment";
 
 @Mixin
 export class SearchFormMixin extends Vue {
@@ -8,7 +8,7 @@ export class SearchFormMixin extends Vue {
   DEFAULT_OFFSET = 0;
 
   count: number | undefined = undefined;
-  totalCount: number = 0;
+  totalCount = 0;
   size = this.DEFAULT_PAGE_SIZE;
   offset = this.DEFAULT_OFFSET;
 
@@ -23,9 +23,15 @@ export class SearchFormMixin extends Vue {
     return count < total;
   }
 
-  normalizeFilterValue(value: string | number | Date): string | number {
+  normalizeFilterValue(
+    value: string | number | Date
+  ): string | number | undefined {
     if (value instanceof Date) {
       return value.toISOString();
+    }
+    if (typeof value === "string") {
+      // returns undefined if a value is an empty string
+      return value === "" ? undefined : value;
     }
     return value;
   }
