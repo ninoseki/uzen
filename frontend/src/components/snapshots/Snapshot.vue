@@ -172,34 +172,32 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixin, Mixins } from "vue-mixin-decorator";
-import { Prop } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 import moment from "moment/moment";
-
-import {
-  Snapshot,
-  Script,
-  ErrorData,
-  DnsRecord,
-  YaraResult,
-  SnapshotWithYaraResult,
-  Classification,
-} from "@/types";
+import { Component, Mixin, Mixins } from "vue-mixin-decorator";
+import { Prop } from "vue-property-decorator";
 
 import Classifications from "@/components/classifications/Classifications.vue";
 import DnsRecords from "@/components/dns_records/DnsRecords.vue";
 import Links from "@/components/links/Links.vue";
+import {
+  ErrorDialogMixin,
+  HighlightComponentMixin,
+  HighlightMixin,
+} from "@/components/mixins";
 import Rules from "@/components/rules/Buttons.vue";
 import Screenshot from "@/components/screenshots/Screenshot.vue";
 import Scripts from "@/components/scripts/Scripts.vue";
 import YaraResultComponent from "@/components/yara/Result.vue";
-
 import {
-  HighlightComponentMixin,
-  HighlightMixin,
-  ErrorDialogMixin,
-} from "@/components/mixins";
+  Classification,
+  DnsRecord,
+  ErrorData,
+  Script,
+  Snapshot,
+  SnapshotWithYaraResult,
+  YaraResult,
+} from "@/types";
 
 @Component({
   components: {

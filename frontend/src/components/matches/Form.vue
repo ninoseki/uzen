@@ -41,13 +41,12 @@
 import { Component, Mixin, Mixins } from "vue-mixin-decorator";
 import { Prop } from "vue-property-decorator";
 
-import { MatchFilters } from "@/types";
-
 import {
-  SearchFormMixin,
   ErrorDialogMixin,
   SearchFormComponentMixin,
+  SearchFormMixin,
 } from "@/components/mixins";
+import { MatchFilters } from "@/types";
 
 @Component
 export default class SearchForm extends Mixins<SearchFormComponentMixin>(

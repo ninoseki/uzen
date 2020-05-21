@@ -62,24 +62,22 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixin, Mixins } from "vue-mixin-decorator";
 import axios, { AxiosError } from "axios";
-
-import {
-  ErrorData,
-  Snapshot,
-  Oneshot,
-  TargetTypes,
-  Script,
-  DnsRecord,
-  YaraResult,
-} from "@/types";
-
-import SnapshotComponent from "@/components/snapshots/Snapshot.vue";
-import BasicYaraForm from "@/components/yara/BasicForm.vue";
-import Options from "@/components/snapshots/Options.vue";
+import { Component, Mixin, Mixins } from "vue-mixin-decorator";
 
 import { ErrorDialogMixin } from "@/components/mixins";
+import Options from "@/components/snapshots/Options.vue";
+import SnapshotComponent from "@/components/snapshots/Snapshot.vue";
+import BasicYaraForm from "@/components/yara/BasicForm.vue";
+import {
+  DnsRecord,
+  ErrorData,
+  Oneshot,
+  Script,
+  Snapshot,
+  TargetTypes,
+  YaraResult,
+} from "@/types";
 
 @Component({
   components: {

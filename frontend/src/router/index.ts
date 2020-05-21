@@ -1,10 +1,10 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 
-import Home from "@/views/Home.vue";
 import Domain from "@/views/Domain.vue";
-import IPAddress from "@/views/IPAddress.vue";
+import Home from "@/views/Home.vue";
 import Import from "@/views/Import.vue";
+import IPAddress from "@/views/IPAddress.vue";
 import Matches from "@/views/Matches.vue";
 import Oneshot from "@/views/Oneshot.vue";
 import Rule from "@/views/Rule.vue";

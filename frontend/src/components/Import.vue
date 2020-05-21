@@ -26,12 +26,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixin, Mixins } from "vue-mixin-decorator";
 import axios, { AxiosError } from "axios";
-
-import { ErrorData, Snapshot } from "@/types";
+import { Component, Mixin, Mixins } from "vue-mixin-decorator";
 
 import { ErrorDialogMixin } from "@/components/mixins";
+import { ErrorData, Snapshot } from "@/types";
 
 @Component
 export default class Import extends Mixins<ErrorDialogMixin>(ErrorDialogMixin) {

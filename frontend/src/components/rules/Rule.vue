@@ -49,20 +49,18 @@
 </template>
 
 <script lang="ts">
+import axios, { AxiosError } from "axios";
 import { Component, Mixin, Mixins } from "vue-mixin-decorator";
 import { Prop } from "vue-property-decorator";
-import axios, { AxiosError } from "axios";
-
-import { Rule, ErrorData } from "@/types";
 
 import Counter from "@/components/matches/Counter.vue";
-import Table from "@/components/snapshots/TableWithScreenshot.vue";
-
 import {
+  ErrorDialogMixin,
   HighlightComponentMixin,
   HighlightMixin,
-  ErrorDialogMixin,
 } from "@/components/mixins";
+import Table from "@/components/snapshots/TableWithScreenshot.vue";
+import { ErrorData, Rule } from "@/types";
 
 @Component({
   components: {

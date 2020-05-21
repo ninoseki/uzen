@@ -38,14 +38,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixin, Mixins } from "vue-mixin-decorator";
 import axios, { AxiosError } from "axios";
-
-import { ErrorData, Snapshot } from "@/types";
-
-import Options from "@/components/snapshots/Options.vue";
+import { Component, Mixin, Mixins } from "vue-mixin-decorator";
 
 import { ErrorDialogMixin } from "@/components/mixins";
+import Options from "@/components/snapshots/Options.vue";
+import { ErrorData, Snapshot } from "@/types";
 
 @Component({ components: { Options } })
 export default class Form extends Mixins<ErrorDialogMixin>(ErrorDialogMixin) {

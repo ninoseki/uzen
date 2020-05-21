@@ -13,10 +13,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
+import { Component, Prop, Vue } from "vue-property-decorator";
 
-import { MatchSearchResults, ErrorData } from "@/types";
+import { ErrorData, MatchSearchResults } from "@/types";
 
 @Component
 export default class Counter extends Vue {

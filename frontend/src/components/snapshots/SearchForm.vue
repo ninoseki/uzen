@@ -96,13 +96,12 @@
 import { Component, Mixin, Mixins } from "vue-mixin-decorator";
 import { Prop } from "vue-property-decorator";
 
-import { SnapshotFilters } from "@/types";
-
 import {
-  SearchFormMixin,
   ErrorDialogMixin,
   SearchFormComponentMixin,
+  SearchFormMixin,
 } from "@/components/mixins";
+import { SnapshotFilters } from "@/types";
 
 @Component
 export default class Search extends Mixins<SearchFormComponentMixin>(

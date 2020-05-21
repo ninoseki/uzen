@@ -1,6 +1,6 @@
+import moment from "moment/moment";
 import Vue from "vue";
 import { Mixin } from "vue-mixin-decorator";
-import moment from "moment/moment";
 
 @Mixin
 export class SearchFormMixin extends Vue {

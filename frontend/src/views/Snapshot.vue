@@ -3,15 +3,13 @@
 </template>
 
 <script lang="ts">
+import axios, { AxiosError } from "axios";
 import { Component, Mixin, Mixins } from "vue-mixin-decorator";
 import { Prop } from "vue-property-decorator";
-import axios, { AxiosError } from "axios";
-
-import { Snapshot, ErrorData, YaraResult } from "@/types";
-
-import SnapshotComponebnt from "@/components/snapshots/Snapshot.vue";
 
 import { ErrorDialogMixin } from "@/components/mixins";
+import SnapshotComponebnt from "@/components/snapshots/Snapshot.vue";
+import { ErrorData, Snapshot, YaraResult } from "@/types";
 
 @Component({
   components: {

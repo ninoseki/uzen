@@ -27,20 +27,18 @@
 </template>
 
 <script lang="ts">
+import axios, { AxiosError } from "axios";
 import { Component, Mixin, Mixins } from "vue-mixin-decorator";
 import { Prop } from "vue-property-decorator";
-import axios, { AxiosError } from "axios";
 
-import { Match, ErrorData, MatchSearchResults, MatchFilters } from "@/types";
-
-import Table from "@/components/matches/Table.vue";
 import Form from "@/components/matches/Form.vue";
-
+import Table from "@/components/matches/Table.vue";
 import {
-  SearchFormMixin,
   ErrorDialogMixin,
   SearchFormComponentMixin,
+  SearchFormMixin,
 } from "@/components/mixins";
+import { ErrorData, Match, MatchFilters, MatchSearchResults } from "@/types";
 
 @Component({
   components: {

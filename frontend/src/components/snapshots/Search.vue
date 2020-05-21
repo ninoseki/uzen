@@ -35,19 +35,17 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixin, Mixins } from "vue-mixin-decorator";
 import axios, { AxiosError } from "axios";
-
-import { Snapshot, ErrorData, SnapshotSearchResults } from "@/types";
-
-import Form from "@/components/snapshots/SearchForm.vue";
-import Table from "@/components/snapshots/Table.vue";
+import { Component, Mixin, Mixins } from "vue-mixin-decorator";
 
 import {
-  SearchFormMixin,
   ErrorDialogMixin,
   SearchFormComponentMixin,
+  SearchFormMixin,
 } from "@/components/mixins";
+import Form from "@/components/snapshots/SearchForm.vue";
+import Table from "@/components/snapshots/Table.vue";
+import { ErrorData, Snapshot, SnapshotSearchResults } from "@/types";
 
 @Component({
   components: {

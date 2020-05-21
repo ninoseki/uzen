@@ -22,22 +22,20 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixin, Mixins } from "vue-mixin-decorator";
 import axios, { AxiosError } from "axios";
-
-import {
-  ErrorData,
-  Snapshot,
-  TargetTypes,
-  SnapshotWithYaraResult,
-  CountResponse,
-} from "@/types";
-
-import BasicForm from "@/components/yara/BasicForm.vue";
-import SnapshotForm from "@/components/snapshots/SearchForm.vue";
-import SnapshotTable from "@/components/snapshots/Table.vue";
+import { Component, Mixin, Mixins } from "vue-mixin-decorator";
 
 import { ErrorDialogMixin } from "@/components/mixins";
+import SnapshotForm from "@/components/snapshots/SearchForm.vue";
+import SnapshotTable from "@/components/snapshots/Table.vue";
+import BasicForm from "@/components/yara/BasicForm.vue";
+import {
+  CountResponse,
+  ErrorData,
+  Snapshot,
+  SnapshotWithYaraResult,
+  TargetTypes,
+} from "@/types";
 
 @Component({
   components: {

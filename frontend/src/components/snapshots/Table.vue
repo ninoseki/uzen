@@ -42,9 +42,8 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 
-import { Snapshot, SnapshotWithYaraResult } from "@/types";
-
 import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
+import { Snapshot, SnapshotWithYaraResult } from "@/types";
 
 @Component({
   components: {

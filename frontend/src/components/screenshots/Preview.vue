@@ -5,8 +5,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
+import { Component, Prop, Vue } from "vue-property-decorator";
 
 import { Screenshot } from "@/types";
 

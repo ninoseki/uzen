@@ -6,8 +6,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
 import moment from "moment/moment";
+import { Component, Prop, Vue } from "vue-property-decorator";
 
 @Component
 export default class DatetimeWithDiff extends Vue {
