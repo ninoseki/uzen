@@ -54,9 +54,12 @@ export default class SearchForm extends Mixins<SearchFormComponentMixin>(
   ErrorDialogMixin,
   SearchFormMixin
 ) {
+  @Prop() private ruleId: string | undefined;
+  @Prop() private snapshotId: string | undefined;
+
   private filters: MatchFilters = {
-    ruleId: undefined,
-    snapshotId: undefined,
+    ruleId: this.ruleId,
+    snapshotId: this.snapshotId,
     fromAt: undefined,
     toAt: undefined,
   };

@@ -1,0 +1,51 @@
+<template>
+  <span>
+    (
+    <router-link
+      :to="{
+        name: 'Matches',
+        query: { ruleId: ruleId },
+      }"
+      >{{ this.totalCount }} in total
+    </router-link>
+    )</span
+  >
+</template>
+
+<script lang="ts">
+import { Component, Vue, Prop } from "vue-property-decorator";
+import axios, { AxiosError } from "axios";
+
+import { MatchSearchResults, ErrorData } from "@/types";
+
+@Component
+export default class Counter extends Vue {
+  @Prop() private ruleId: string | undefined;
+
+  private totalCount: number = 0;
+
+  created() {
+    this.load();
+  }
+
+  async load() {
+    const params = {
+      size: 0,
+      ruleId: this.ruleId,
+    };
+
+    try {
+      const response = await axios.get<MatchSearchResults>(
+        "/api/matches/search",
+        {
+          params: params,
+        }
+      );
+
+      this.totalCount = response.data.total;
+    } catch (error) {
+      const data = error.response.data as ErrorData;
+    }
+  }
+}
+</script>

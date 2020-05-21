@@ -1,6 +1,9 @@
 <template>
   <div>
-    <Search />
+    <Search
+      v-bind:ruleId="$route.query.ruleId"
+      v-bind:snapshotId="$route.query.snapshotId"
+    />
   </div>
 </template>
 

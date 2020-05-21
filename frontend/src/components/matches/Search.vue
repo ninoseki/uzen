@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="box">
-      <Form ref="form" />
+      <Form ref="form" v-bind:ruleId="ruleId" v-bind:snapshotId="snapshotId" />
 
       <br />
 
@@ -31,7 +31,7 @@ import { Component, Mixin, Mixins } from "vue-mixin-decorator";
 import { Prop } from "vue-property-decorator";
 import axios, { AxiosError } from "axios";
 
-import { Match, ErrorData, MatchSearchResults } from "@/types";
+import { Match, ErrorData, MatchSearchResults, MatchFilters } from "@/types";
 
 import Table from "@/components/matches/Table.vue";
 import Form from "@/components/matches/Form.vue";
@@ -53,6 +53,9 @@ export default class Search extends Mixins<SearchFormComponentMixin>(
   SearchFormMixin
 ) {
   private matches: Match[] = [];
+
+  @Prop() private ruleId: string | undefined;
+  @Prop() private snapshotId: string | undefined;
 
   resetPagination() {
     this.matches = [];
@@ -101,6 +104,12 @@ export default class Search extends Mixins<SearchFormComponentMixin>(
 
   initSearch() {
     this.search();
+  }
+
+  mounted() {
+    if (Object.keys(this.$route.query).length > 0) {
+      this.initSearch();
+    }
   }
 }
 </script>

@@ -46,6 +46,7 @@
     <div class="column">
       <h2 class="is-size-5 has-text-weight-bold middle">
         Recent snapshots
+        <Counter v-bind:ipAddress="information.ipAddress" />
       </h2>
       <Table v-if="hasSnapshots()" v-bind:snapshots="information.snapshots" />
       <p v-else>N/A</p>
@@ -66,6 +67,8 @@ import axios, { AxiosError } from "axios";
 import moment from "moment/moment";
 
 import { ErrorDialogMixin } from "@/components/mixins";
+
+import Counter from "@/components/snapshots/Counter.vue";
 import Links from "@/components/links/Links.vue";
 import Preview from "@/components/screenshots/Preview.vue";
 import Screenshot from "@/components/screenshots/Screenshot.vue";
@@ -75,6 +78,7 @@ import { IPAddressInformation, Snapshot, ErrorData } from "@/types";
 
 @Component({
   components: {
+    Counter,
     Links,
     Preview,
     Table,

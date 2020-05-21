@@ -33,6 +33,7 @@
     <div class="column">
       <h2 class="is-size-5 has-text-weight-bold middle">
         Recent snapshots
+        <Counter v-bind:hostname="information.hostname" />
       </h2>
 
       <Table v-if="hasSnapshots()" v-bind:snapshots="information.snapshots" />
@@ -55,16 +56,23 @@ import moment from "moment/moment";
 
 import { ErrorDialogMixin } from "@/components/mixins";
 
+import Counter from "@/components/snapshots/Counter.vue";
 import DnsRecords from "@/components/dns_records/DnsRecords.vue";
 import Links from "@/components/links/Links.vue";
 import Preview from "@/components/screenshots/Preview.vue";
 import Screenshot from "@/components/screenshots/Screenshot.vue";
 import Table from "@/components/snapshots/TableWithScreenshot.vue";
 
-import { DomainInformation, Snapshot, ErrorData } from "@/types";
+import {
+  DomainInformation,
+  Snapshot,
+  SnapshotSearchResults,
+  ErrorData,
+} from "@/types";
 
 @Component({
   components: {
+    Counter,
     DnsRecords,
     Links,
     Preview,

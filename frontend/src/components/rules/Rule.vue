@@ -39,6 +39,7 @@
       <div class="column">
         <h2 class="is-size-5 has-text-weight-bold middle">
           Recent related snapshots
+          <Counter v-bind:ruleId="rule.id" />
         </h2>
         <Table v-if="hasSnapshots()" v-bind:snapshots="rule.snapshots" />
         <p v-else>N/A</p>
@@ -54,12 +55,14 @@ import axios, { AxiosError } from "axios";
 
 import { Rule, ErrorData } from "@/types";
 
+import Counter from "@/components/matches/Counter.vue";
 import Table from "@/components/snapshots/TableWithScreenshot.vue";
 
 import { HighlightMixin } from "@/components/mixins";
 
 @Component({
   components: {
+    Counter,
     Table,
   },
 })
