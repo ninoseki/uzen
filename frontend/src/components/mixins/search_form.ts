@@ -23,9 +23,15 @@ export class SearchFormMixin extends Vue {
     return count < total;
   }
 
-  normalizeFilterValue(value: string | number | Date): string | number {
+  normalizeFilterValue(
+    value: string | number | Date
+  ): string | number | undefined {
     if (value instanceof Date) {
       return value.toISOString();
+    }
+    if (typeof value === "string") {
+      // returns undefined if a value is an empty string
+      return value === "" ? undefined : value;
     }
     return value;
   }
