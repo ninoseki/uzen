@@ -4,7 +4,7 @@ import socket
 from typing import Optional
 from urllib.parse import urlparse
 
-from uzen.services.ipinfo import IPInfo
+from uzen.services.rdap import RDAP
 
 
 def get_hostname_from_url(url: str) -> Optional[str]:
@@ -37,7 +37,7 @@ def get_ip_address_by_hostname(hostname: str) -> Optional[str]:
         return None
 
 
-async def get_asn_by_ip_address(ip_address: str) -> Optional[str]:
+def get_asn_by_ip_address(ip_address: str) -> Optional[str]:
     """Get ASN by an IP address
 
     Arguments:
@@ -46,11 +46,8 @@ async def get_asn_by_ip_address(ip_address: str) -> Optional[str]:
     Returns:
         Optional[str] -- ASN as a string, returns None if an error occurs
     """
-    try:
-        json = await IPInfo.get_info(ip_address)
-        return json.get("org")
-    except Exception:
-        return None
+    res = RDAP.lookup(ip_address)
+    return res.get("asn")
 
 
 def calculate_sha256(s: str) -> str:

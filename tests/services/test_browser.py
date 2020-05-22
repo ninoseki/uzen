@@ -5,12 +5,12 @@ from pyppeteer.errors import PyppeteerError
 from uzen.core import settings
 from uzen.services.browser import Browser, launch_browser
 from uzen.services.certificate import Certificate
-from uzen.services.utils import IPInfo
+from uzen.services.rdap import RDAP
 from uzen.services.whois import Whois
 
 
-async def mock_get_basic(ip_address: str):
-    return {"org": "AS15133 MCI Communications Services, Inc. d/b/a Verizon Business"}
+def mock_lookup(ip_address: str):
+    return {"asn": "AS15133"}
 
 
 def mock_whois(hostname: str):
@@ -23,7 +23,7 @@ def mock_load_and_dump_from_url(url: str):
 
 @pytest.mark.asyncio
 async def test_take_snapshot(monkeypatch):
-    monkeypatch.setattr(IPInfo, "get_info", mock_get_basic)
+    monkeypatch.setattr(RDAP, "lookup", mock_lookup)
     monkeypatch.setattr(Whois, "whois", mock_whois)
     monkeypatch.setattr(
         Certificate, "load_and_dump_from_url", mock_load_and_dump_from_url
@@ -37,16 +37,13 @@ async def test_take_snapshot(monkeypatch):
     assert snapshot.hostname == "example.com"
     assert snapshot.status == 200
     assert snapshot.content_type == "text/html; charset=UTF-8"
-    assert (
-        snapshot.asn
-        == "AS15133 MCI Communications Services, Inc. d/b/a Verizon Business"
-    )
+    assert snapshot.asn == "AS15133"
     assert snapshot.whois == "foo"
 
 
 @pytest.mark.asyncio
 async def test_take_snapshot_with_options(monkeypatch):
-    monkeypatch.setattr(IPInfo, "get_info", mock_get_basic)
+    monkeypatch.setattr(RDAP, "lookup", mock_lookup)
     monkeypatch.setattr(Whois, "whois", mock_whois)
 
     result = await Browser.take_snapshot("http://example.com", timeout=10000)
@@ -70,7 +67,7 @@ async def test_take_snapshot_with_options(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_take_snapshot_with_bad_ssl(monkeypatch):
-    monkeypatch.setattr(IPInfo, "get_info", mock_get_basic)
+    monkeypatch.setattr(RDAP, "lookup", mock_lookup)
     monkeypatch.setattr(Whois, "whois", mock_whois)
 
     with pytest.raises(PyppeteerError):
