@@ -13,13 +13,13 @@ class IPAddressInformation(APIModel):
         ..., title="IP address", description="An IP address"
     )
     country: str = Field(..., title="Country", description="A country of an IP address")
-    org: str = Field(
-        ..., title="Organization", description="A organization of an IP address"
+    asn: str = Field(..., title="ASN", description="An ASN of an IP address")
+    description: str = Field(
+        ..., title="Description", description="A dectiption of an IP address"
     )
     whois: Optional[str] = Field(
         None, title="Whois", description="A whois record of an IP address"
     )
-
     snapshots: List[Snapshot] = Field(
         ..., title="Snapshots", description="A list of related snapshots"
     )

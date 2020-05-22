@@ -1,7 +1,7 @@
 import socket
 
 import pytest
-import respx
+import vcr
 
 from uzen.services.utils import (
     get_asn_by_ip_address,
@@ -10,14 +10,10 @@ from uzen.services.utils import (
 )
 
 
-@pytest.mark.asyncio
-@respx.mock
-async def test_get_asn_by_ip_address():
-    respx.get(
-        "https://ipinfo.io/1.1.1.1/json", content='{"org": "AS13335 Cloudflare, Inc."}'
-    )
-    res = await get_asn_by_ip_address("1.1.1.1")
-    assert res == "AS13335 Cloudflare, Inc."
+@vcr.use_cassette("tests/fixtures/vcr_cassettes/ip_address.yaml")
+def test_get_asn_by_ip_address():
+    asn = get_asn_by_ip_address("1.1.1.1")
+    assert asn == "AS13335"
 
 
 @pytest.mark.parametrize(

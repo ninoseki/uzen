@@ -23,12 +23,16 @@
             <table class="table">
               <tbody>
                 <tr>
-                  <th>Country</th>
-                  <td>{{ information.country }}</td>
+                  <th>ASN</th>
+                  <td>{{ information.asn }}</td>
                 </tr>
                 <tr>
-                  <th>Organization</th>
-                  <td>{{ information.org }}</td>
+                  <th>Description</th>
+                  <td>{{ information.description }}</td>
+                </tr>
+                <tr>
+                  <th>Country</th>
+                  <td>{{ information.country }}</td>
                 </tr>
               </tbody>
             </table>

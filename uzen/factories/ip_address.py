@@ -1,24 +1,26 @@
 from uzen.models.snapshots import Snapshot
 from uzen.schemas.ip_address import IPAddressInformation
-from uzen.services.ipinfo import IPInfo
+from uzen.services.rdap import RDAP
 from uzen.services.whois import Whois
 
 
 class IPAddressInformationFactory:
     @staticmethod
     async def from_ip_address(ip_address: str) -> IPAddressInformation:
-        info = await IPInfo.get_info(ip_address)
+        res = RDAP.lookup(ip_address)
         whois = Whois.whois(ip_address)
         snapshots = await Snapshot.find_by_ip_address(ip_address)
 
-        ip_address = info.get("ip", "")
-        country = info.get("country", "")
-        org = info.get("org", "")
+        ip_address = ip_address
+        asn = res.get("asn", "")
+        country = res.get("country", "")
+        description = res.get("description", "")
 
         return IPAddressInformation(
-            ip_address=ip_address,
+            asn=asn,
             country=country,
-            org=org,
-            whois=whois,
+            description=description,
+            ip_address=ip_address,
             snapshots=snapshots,
+            whois=whois,
         )

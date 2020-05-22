@@ -1,0 +1,58 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/rdap+json
+      Connection:
+      - close
+      Host:
+      - rdap.apnic.net
+      User-Agent:
+      - Python-urllib/3.8
+    method: GET
+    uri: http://rdap.apnic.net/ip/1.1.1.1
+  response:
+    body:
+      string: '{"rdapConformance":["history_version_0","cidr0","rdap_level_0"],"notices":[{"title":"Source","description":["Objects
+        returned came from source","APNIC"]},{"title":"Terms and Conditions","description":["This
+        is the APNIC WHOIS Database query service. The objects are in RDAP format."],"links":[{"value":"http://rdap.apnic.net/ip/1.1.1.1","rel":"terms-of-service","href":"http://www.apnic.net/db/dbcopyright.html","type":"text/html"}]}],"country":"AU","events":[{"eventAction":"last
+        changed","eventDate":"2018-03-30T01:51:28Z"}],"name":"APNIC-LABS","remarks":[{"description":["APNIC
+        and Cloudflare DNS Resolver project","Routed globally by AS13335/Cloudflare","Research
+        prefix for APNIC Labs"],"title":"description"},{"description":["---------------","All
+        Cloudflare abuse reporting can be done via","resolver-abuse@cloudflare.com","---------------"],"title":"remarks"}],"links":[{"value":"http://rdap.apnic.net/ip/1.1.1.1","rel":"self","href":"http://rdap.apnic.net/ip/1.1.1.0/24","type":"application/rdap+json"}],"type":"ASSIGNED
+        PORTABLE","ipVersion":"v4","startAddress":"1.1.1.0","endAddress":"1.1.1.255","objectClassName":"ip
+        network","handle":"1.1.1.0 - 1.1.1.255","entities":[{"roles":["abuse"],"events":[{"eventAction":"last
+        changed","eventDate":"2011-09-22T03:53:02Z"}],"links":[{"value":"http://rdap.apnic.net/ip/1.1.1.1","rel":"self","href":"http://rdap.apnic.net/entity/IRT-APNICRANDNET-AU","type":"application/rdap+json"}],"vcardArray":["vcard",[["version",{},"text","4.0"],["fn",{},"text","IRT-APNICRANDNET-AU"],["kind",{},"text","group"],["adr",{"label":"PO
+        Box 3646\nSouth Brisbane, QLD 4101\nAustralia"},"text",["","","","","","",""]],["email",{},"text","abuse@apnic.net"],["email",{"pref":"1"},"text","abuse@apnic.net"]]],"objectClassName":"entity","handle":"IRT-APNICRANDNET-AU"},{"roles":["administrative","technical"],"events":[{"eventAction":"last
+        changed","eventDate":"2018-04-04T04:26:04Z"}],"links":[{"value":"http://rdap.apnic.net/ip/1.1.1.1","rel":"self","href":"http://rdap.apnic.net/entity/AR302-AP","type":"application/rdap+json"}],"vcardArray":["vcard",[["version",{},"text","4.0"],["fn",{},"text","APNIC
+        RESEARCH"],["kind",{},"text","group"],["adr",{"label":"PO Box 3646\nSouth
+        Brisbane, QLD 4101\nAustralia"},"text",["","","","","","",""]],["tel",{"type":"voice"},"text","+61-7-3858-3188"],["tel",{"type":"fax"},"text","+61-7-3858-3199"],["email",{},"text","research@apnic.net"]]],"objectClassName":"entity","handle":"AR302-AP"}],"cidr0_cidrs":[{"v4prefix":"1.1.1.0","length":24}],"port43":"whois.apnic.net"}'
+    headers:
+      CF-Cache-Status:
+      - DYNAMIC
+      CF-RAY:
+      - 5974bccabbf5f8ab-NRT
+      Connection:
+      - close
+      Content-Disposition:
+      - inline;filename=f.txt
+      Content-Type:
+      - application/rdap+json
+      Date:
+      - Fri, 22 May 2020 07:13:57 GMT
+      Server:
+      - cloudflare
+      Set-Cookie:
+      - __cfduid=d47ad96538593ad27a27baddfc6c705cf1590131636; expires=Sun, 21-Jun-20
+        07:13:56 GMT; path=/; domain=.rdap.apnic.net; HttpOnly; SameSite=Lax
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      cf-request-id:
+      - 02dcd452b00000f8abb338d200000001
+    status:
+      code: 200
+      message: OK
+version: 1

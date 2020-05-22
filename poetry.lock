@@ -495,6 +495,17 @@ version = "2.9"
 
 [[package]]
 category = "main"
+description = "Retrieve and parse whois data for IPv4 and IPv6 addresses."
+name = "ipwhois"
+optional = false
+python-versions = "*"
+version = "1.1.0"
+
+[package.dependencies]
+dnspython = "*"
+
+[[package]]
+category = "main"
 description = "Simple module to parse ISO 8601 dates"
 marker = "sys_platform == \"win32\" or implementation_name != \"cpython\""
 name = "iso8601"
@@ -1300,7 +1311,7 @@ idna = ">=2.0"
 multidict = ">=4.0"
 
 [metadata]
-content-hash = "2e097509b1ce13f11a00e67b1e922d31a6eae978219b2c9e08a44b1cd5b9535b"
+content-hash = "3d9ac3aa14d294ffb612e4361ff53adbf90a71ef0d8fa81a4fe061ae11b1c3b0"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -1559,6 +1570,10 @@ identify = [
 idna = [
     {file = "idna-2.9-py2.py3-none-any.whl", hash = "sha256:a068a21ceac8a4d63dbfd964670474107f541babbd2250d61922f029858365fa"},
     {file = "idna-2.9.tar.gz", hash = "sha256:7588d1c14ae4c77d74036e8c22ff447b26d0fde8f007354fd48a7814db15b7cb"},
+]
+ipwhois = [
+    {file = "ipwhois-1.1.0-py2.py3-none-any.whl", hash = "sha256:1f01f7cf4b4d667df6859e9f52d0971aac830d1e602946b4c02f477a393cb585"},
+    {file = "ipwhois-1.1.0.tar.gz", hash = "sha256:904efbd8d5fbb3319fc7e3aa33923fdd272bb81fd5a04bd56fd9125be6437a71"},
 ]
 iso8601 = [
     {file = "iso8601-0.1.12-py2.py3-none-any.whl", hash = "sha256:210e0134677cc0d02f6028087fee1df1e1d76d372ee1db0bf30bf66c5c1c89a3"},

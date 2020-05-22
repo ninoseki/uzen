@@ -93,7 +93,7 @@ class FakeBrowser:
         hostname = cast(str, get_hostname_from_url(url))
         certificate = Certificate.load_and_dump_from_url(url)
         ip_address = cast(str, get_ip_address_by_hostname(hostname))
-        asn = await get_asn_by_ip_address(ip_address) or ""
+        asn = get_asn_by_ip_address(ip_address) or ""
         whois = Whois.whois(hostname)
 
         snapshot = Snapshot(
