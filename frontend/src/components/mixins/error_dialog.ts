@@ -19,6 +19,10 @@ export class ErrorDialogMixin extends Vue {
   }
 
   alertError(error: ErrorData) {
+    // if something goes wrong, the app returns a string (e.g Internal Server Error).
+    if (typeof error === "string") {
+      error = { detail: error };
+    }
     const message = this.buildMessage(error);
 
     this.$buefy.dialog.alert({

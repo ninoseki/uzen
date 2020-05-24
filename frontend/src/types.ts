@@ -155,7 +155,6 @@ export interface MatchFilters {
   toAt: Date | undefined;
 }
 
-// Search results
 interface SearchResults {
   total: number;
 }
