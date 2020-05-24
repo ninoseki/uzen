@@ -6,7 +6,7 @@ from uzen.api.dependencies.snapshots import SearchFilters
 from uzen.schemas.yara import OneshotPayload, OneshotResponse, ScanPayload, ScanResult
 from uzen.services.snapshot import TakeSnapshotError, take_snapshot
 from uzen.services.yara_scanner import YaraScanner
-from uzen.tasks.enrichment import EnrichmentTask
+from uzen.tasks.enrichment import EnrichmentTasks
 
 router = APIRouter()
 
@@ -58,7 +58,7 @@ async def oneshot(payload: OneshotPayload) -> OneshotResponse:
     snapshot.scripts = [script.to_model() for script in result.scripts]
 
     # Process enrichment tasks
-    results = await EnrichmentTask.process(snapshot, insert_to_db=False)
+    results = await EnrichmentTasks.process(snapshot, insert_to_db=False)
 
     snapshot.dns_records = [record.to_model() for record in results.dns_records]
     snapshot.classifications = [
@@ -71,8 +71,6 @@ async def oneshot(payload: OneshotPayload) -> OneshotResponse:
     matches = []
     if payload.target == "script":
         for script in snapshot.scripts:
-            print("aaaaaaaaaaaa")
-            print(script.content)
             matches = yara_scanner.match(script.content)
             if len(matches) > 0:
                 matched = True
