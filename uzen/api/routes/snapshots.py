@@ -16,7 +16,7 @@ from uzen.schemas.snapshots import Snapshot as SnapshotModel
 from uzen.schemas.utils import CountResponse
 from uzen.services.searchers.snapshots import SnapshotSearcher
 from uzen.services.snapshot import save_snapshot, take_snapshot
-from uzen.tasks.enrichment import EnrichmentTask
+from uzen.tasks.enrichment import EnrichmentTasks
 from uzen.tasks.matches import MatchinbgTask
 from uzen.tasks.snapshots import UpdateProcessingTask
 
@@ -98,7 +98,7 @@ async def create(
 
     snapshot = await save_snapshot(result)
 
-    background_tasks.add_task(EnrichmentTask.process, snapshot)
+    background_tasks.add_task(EnrichmentTasks.process, snapshot)
     background_tasks.add_task(MatchinbgTask.process, snapshot)
     background_tasks.add_task(UpdateProcessingTask.process, snapshot)
 

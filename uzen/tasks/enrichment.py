@@ -1,5 +1,6 @@
 import asyncio
 import itertools
+from typing import cast
 
 from uzen.models.classifications import Classification
 from uzen.models.dns_records import DnsRecord
@@ -10,7 +11,7 @@ from uzen.tasks.classifications import ClassificationTask
 from uzen.tasks.dns_records import DnsRecordTask
 
 
-class EnrichmentTask(AbstractTask):
+class EnrichmentTasks(AbstractTask):
     def __init__(
         self, snapshot: Snapshot, insert_to_db: bool = True,
     ):
@@ -40,4 +41,5 @@ class EnrichmentTask(AbstractTask):
         cls, snapshot: Snapshot, insert_to_db: bool = True
     ) -> EnrichmentResults:
         instance = cls(snapshot, insert_to_db)
-        return await instance.safe_process()
+        results = await instance.safe_process()
+        return cast(EnrichmentResults, results)
