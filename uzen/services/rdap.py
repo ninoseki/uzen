@@ -21,5 +21,5 @@ class RDAP:
                 "country": country,
                 "description": description,
             }
-        except BaseIpwhoisException:
+        except (BaseIpwhoisException, AttributeError):
             return {}
