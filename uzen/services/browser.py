@@ -109,7 +109,9 @@ class Browser:
 
             # default timeout = 30 seconds
             timeout = timeout or 30 * 1000
-            res = await page.goto(url, timeout=timeout)
+            res = await page.goto(
+                url, timeout=timeout, wailtUntil=settings.BROWSER_WAIT_UNTIL
+            )
 
             request = {
                 "accept_language": accept_language,
@@ -172,7 +174,9 @@ class Browser:
                 browser = await launch_browser()
                 page = await browser.newPage()
                 # try with http
-                await page.goto(f"{protocol}://{hostname}")
+                await page.goto(
+                    f"{protocol}://{hostname}", wailtUntil=settings.BROWSER_WAIT_UNTIL
+                )
                 screenshot_data = await page.screenshot(encoding="base64")
                 await browser.close()
 
