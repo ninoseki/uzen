@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from uzen.api.routes import (
+from uzen.api.endpoints import (
     domain,
     ip_address,
     matches,
