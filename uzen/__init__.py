@@ -3,7 +3,7 @@ from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
 from loguru import logger
 
-from uzen.api.routes.api import api_router
+from uzen.api.api import api_router
 from uzen.core import settings
 from uzen.core.events import create_start_app_handler, create_stop_app_handler
 
