@@ -28,7 +28,7 @@ async def test_take_snapshot(monkeypatch):
         Certificate, "load_and_dump_from_url", mock_load_and_dump_from_url
     )
     respx.get(
-        "http://example.com", content="foo", headers={"Content-Type": "text/html"}
+        "http://example.com/", content="foo", headers={"Content-Type": "text/html"}
     )
 
     result = await FakeBrowser.take_snapshot("http://example.com")

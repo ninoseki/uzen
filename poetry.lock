@@ -433,7 +433,20 @@ description = "Chromium HSTS Preload list as a Python package and updated daily"
 name = "hstspreload"
 optional = false
 python-versions = ">=3.6"
-version = "2020.5.19"
+version = "2020.5.27"
+
+[[package]]
+category = "main"
+description = "A minimal low-level HTTP client."
+name = "httpcore"
+optional = false
+python-versions = ">=3.6"
+version = "0.9.1"
+
+[package.dependencies]
+h11 = ">=0.8,<0.10"
+h2 = ">=3.0.0,<4.0.0"
+sniffio = ">=1.0.0,<2.0.0"
 
 [[package]]
 category = "main"
@@ -453,18 +466,16 @@ description = "The next generation HTTP client."
 name = "httpx"
 optional = false
 python-versions = ">=3.6"
-version = "0.12.1"
+version = "0.13.3"
 
 [package.dependencies]
 certifi = "*"
 chardet = ">=3.0.0,<4.0.0"
-h11 = ">=0.8,<0.10"
-h2 = ">=3.0.0,<4.0.0"
 hstspreload = "*"
+httpcore = ">=0.9.0,<0.10.0"
 idna = ">=2.0.0,<3.0.0"
 rfc3986 = ">=1.3,<2"
-sniffio = ">=1.0.0,<2.0.0"
-urllib3 = ">=1.0.0,<2.0.0"
+sniffio = "*"
 
 [[package]]
 category = "main"
@@ -480,7 +491,7 @@ description = "File identification library for Python"
 name = "identify"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,>=2.7"
-version = "1.4.16"
+version = "1.4.17"
 
 [package.extras]
 license = ["editdistance"]
@@ -562,7 +573,7 @@ description = "A super-fast templating language that borrows the  best ideas fro
 name = "mako"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "1.1.2"
+version = "1.1.3"
 
 [package.dependencies]
 MarkupSafe = ">=0.9.2"
@@ -629,7 +640,7 @@ python-versions = "*"
 version = "0.4.3"
 
 [[package]]
-category = "main"
+category = "dev"
 description = "Python interface to MySQL"
 name = "mysqlclient"
 optional = false
@@ -793,7 +804,7 @@ description = "A SQL query builder API for Python"
 name = "pypika"
 optional = false
 python-versions = "*"
-version = "0.37.6"
+version = "0.37.7"
 
 [[package]]
 category = "main"
@@ -936,7 +947,7 @@ description = "Pytest plugin to randomly order tests and control random.seed."
 name = "pytest-randomly"
 optional = false
 python-versions = ">=3.5"
-version = "3.3.1"
+version = "3.4.0"
 
 [package.dependencies]
 pytest = "*"
@@ -1038,15 +1049,15 @@ w3lib = "*"
 
 [[package]]
 category = "dev"
-description = "A utility for mocking out the Python HTTPX library."
+description = "A utility for mocking out the Python HTTPX and HTTP Core libraries."
 name = "respx"
 optional = false
 python-versions = ">=3.6"
-version = "0.10.1"
+version = "0.11.0"
 
 [package.dependencies]
 asynctest = "*"
-httpx = ">=0.12,<0.13"
+httpx = ">=0.13,<0.14"
 
 [[package]]
 category = "main"
@@ -1319,7 +1330,7 @@ idna = ">=2.0"
 multidict = ">=4.0"
 
 [metadata]
-content-hash = "00cc13b18c2b110c6792e784f635ea51f089b25c821fe36d61122486dc2f6331"
+content-hash = "c73cb4386427dfd0235b408998c7f28920bd7634c4fb4d947fcb5bc84fe97ca3"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -1547,8 +1558,12 @@ hpack = [
     {file = "hpack-3.0.0.tar.gz", hash = "sha256:8eec9c1f4bfae3408a3f30500261f7e6a65912dc138526ea054f9ad98892e9d2"},
 ]
 hstspreload = [
-    {file = "hstspreload-2020.5.19-py3-none-any.whl", hash = "sha256:6f8f617d8e0dc2f8e2851131b1d43de24adea875a1a9238b1baa1c6373f162cc"},
-    {file = "hstspreload-2020.5.19.tar.gz", hash = "sha256:d703d771d47035ad9298c14b84b8293a33fcbbfe6deedeeb35fa7e46dc3c619e"},
+    {file = "hstspreload-2020.5.27-py3-none-any.whl", hash = "sha256:5ff96b5df463afd665db2a6069db8a6ed9f2e791aa186200066f92b8d6989546"},
+    {file = "hstspreload-2020.5.27.tar.gz", hash = "sha256:088884adc70f0efdd3002c86290e2c25c097fa49286feea7120507534f9e8be5"},
+]
+httpcore = [
+    {file = "httpcore-0.9.1-py3-none-any.whl", hash = "sha256:9850fe97a166a794d7e920590d5ec49a05488884c9fc8b5dba8561effab0c2a0"},
+    {file = "httpcore-0.9.1.tar.gz", hash = "sha256:ecc5949310d9dae4de64648a4ce529f86df1f232ce23dcfefe737c24d21dfbe9"},
 ]
 httptools = [
     {file = "httptools-0.1.1-cp35-cp35m-macosx_10_13_x86_64.whl", hash = "sha256:a2719e1d7a84bb131c4f1e0cb79705034b48de6ae486eb5297a139d6a3296dce"},
@@ -1565,16 +1580,16 @@ httptools = [
     {file = "httptools-0.1.1.tar.gz", hash = "sha256:41b573cf33f64a8f8f3400d0a7faf48e1888582b6f6e02b82b9bd4f0bf7497ce"},
 ]
 httpx = [
-    {file = "httpx-0.12.1-py3-none-any.whl", hash = "sha256:ce51c8e8ed2834447fde5a94650299fd74017b7da69cc786b6421fefda09a393"},
-    {file = "httpx-0.12.1.tar.gz", hash = "sha256:405b4749f597b1f45cae5bffc17b23dc251cce30a0c4c8126f1007b9e728a615"},
+    {file = "httpx-0.13.3-py3-none-any.whl", hash = "sha256:32d930858eab677bc29a742aaa4f096de259f1c78c68a90ad11f5c3c04f08335"},
+    {file = "httpx-0.13.3.tar.gz", hash = "sha256:3642bd13e90b80ba8a243a730275eb10a4c26ec96f5fc16b87e458d4ab21efae"},
 ]
 hyperframe = [
     {file = "hyperframe-5.2.0-py2.py3-none-any.whl", hash = "sha256:5187962cb16dcc078f23cb5a4b110098d546c3f41ff2d4038a9896893bbd0b40"},
     {file = "hyperframe-5.2.0.tar.gz", hash = "sha256:a9f5c17f2cc3c719b917c4f33ed1c61bd1f8dfac4b1bd23b7c80b3400971b41f"},
 ]
 identify = [
-    {file = "identify-1.4.16-py2.py3-none-any.whl", hash = "sha256:0f3c3aac62b51b86fea6ff52fe8ff9e06f57f10411502443809064d23e16f1c2"},
-    {file = "identify-1.4.16.tar.gz", hash = "sha256:f9ad3d41f01e98eb066b6e05c5b184fd1e925fadec48eb165b4e01c72a1ef3a7"},
+    {file = "identify-1.4.17-py2.py3-none-any.whl", hash = "sha256:ef6fa3d125c27516f8d1aaa2038c3263d741e8723825eb38350cdc0288ab35eb"},
+    {file = "identify-1.4.17.tar.gz", hash = "sha256:be66b9673d59336acd18a3a0e0c10d35b8a780309561edf16c46b6b74b83f6af"},
 ]
 idna = [
     {file = "idna-2.9-py2.py3-none-any.whl", hash = "sha256:a068a21ceac8a4d63dbfd964670474107f541babbd2250d61922f029858365fa"},
@@ -1627,8 +1642,7 @@ lxml = [
     {file = "lxml-4.5.1.tar.gz", hash = "sha256:27ee0faf8077c7c1a589573b1450743011117f1aa1a91d5ae776bbc5ca6070f2"},
 ]
 mako = [
-    {file = "Mako-1.1.2-py2.py3-none-any.whl", hash = "sha256:8e8b53c71c7e59f3de716b6832c4e401d903af574f6962edbbbf6ecc2a5fe6c9"},
-    {file = "Mako-1.1.2.tar.gz", hash = "sha256:3139c5d64aa5d175dbafb95027057128b5fbd05a40c53999f3905ceb53366d9d"},
+    {file = "Mako-1.1.3.tar.gz", hash = "sha256:8195c8c1400ceb53496064314c6736719c6f25e7479cd24c77be3d9361cddc27"},
 ]
 markupsafe = [
     {file = "MarkupSafe-1.1.1-cp27-cp27m-macosx_10_6_intel.whl", hash = "sha256:09027a7803a62ca78792ad89403b1b7a73a01c8cb65909cd876f7fcebd79b161"},
@@ -1792,7 +1806,7 @@ pyparsing = [
     {file = "pyparsing-2.4.7.tar.gz", hash = "sha256:c203ec8783bf771a155b207279b9bccb8dea02d8f0c9e5f8ead507bc3246ecc1"},
 ]
 pypika = [
-    {file = "PyPika-0.37.6.tar.gz", hash = "sha256:64510fa36667e8bb654bdc1be5a3a77bac1dbc2f03d4848efac08e39d9cac6f5"},
+    {file = "PyPika-0.37.7.tar.gz", hash = "sha256:20bebc05983cd401d428e3beb62d037e5f0271daab2bb5aba82f4e092d4a3694"},
 ]
 pyppeteer = [
     {file = "pyppeteer-0.2.2-py3-none-any.whl", hash = "sha256:27d1f1a54e233428b4de3489d516db7d4805f67442bb77a7718cc04d7a40debb"},
@@ -1829,8 +1843,8 @@ pytest-mock = [
     {file = "pytest_mock-3.1.0-py2.py3-none-any.whl", hash = "sha256:997729451dfc36b851a9accf675488c7020beccda15e11c75632ee3d1b1ccd71"},
 ]
 pytest-randomly = [
-    {file = "pytest-randomly-3.3.1.tar.gz", hash = "sha256:568b6a3bd251b566e8d99fc7bcb15c3c39561babd07e16412563b7dab1b0290a"},
-    {file = "pytest_randomly-3.3.1-py3-none-any.whl", hash = "sha256:9b06429c877b3aab360c7cf698f2a65dbe75db1b1ed0ab02dc3bb47f3487e469"},
+    {file = "pytest-randomly-3.4.0.tar.gz", hash = "sha256:e44a69623237e47cc4ee77da9c04c6b505ed1a7b00656dc1409f8344c707b87b"},
+    {file = "pytest_randomly-3.4.0-py3-none-any.whl", hash = "sha256:4e02887ba52f021cc8d5429e91e93be2b5df4adf38bf1715c7c153968b260b59"},
 ]
 pytest-timeout = [
     {file = "pytest-timeout-1.3.4.tar.gz", hash = "sha256:80faa19cd245a42b87a51699d640c00d937c02b749052bfca6bae8bdbe12c48e"},
@@ -1895,8 +1909,8 @@ requests-html = [
     {file = "requests_html-0.10.0-py3-none-any.whl", hash = "sha256:cb8a78cf829c4eca9d6233f28524f65dd2bfaafb4bdbbc407f0a0b8f487df6e2"},
 ]
 respx = [
-    {file = "respx-0.10.1-py2.py3-none-any.whl", hash = "sha256:43aca802e0fd0c964865b07f101943e7b5902ea070ec94cf8e84a39db8729b06"},
-    {file = "respx-0.10.1.tar.gz", hash = "sha256:190d1fb5bddaf6fcc1319a3cdfbd682c77d7167017b3283cbe79b8fb74927135"},
+    {file = "respx-0.11.0-py2.py3-none-any.whl", hash = "sha256:c9febaa2dabd2400b85e1d832836d17962a2dd54d84a051a6331e3dd86e4dbba"},
+    {file = "respx-0.11.0.tar.gz", hash = "sha256:7bf8369f4caeb494b424291617f0d26d3f64b3cab4b47f8aac25e034ff3526c3"},
 ]
 rfc3986 = [
     {file = "rfc3986-1.4.0-py2.py3-none-any.whl", hash = "sha256:af9147e9aceda37c91a05f4deb128d4b4b49d6b199775fd2d2927768abdc8f50"},
