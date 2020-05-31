@@ -21,11 +21,11 @@ async def test_take_snapshot(mocker):
 
 @pytest.mark.asyncio
 async def test_take_snapshot_2(mocker, monkeypatch):
-    monkeypatch.setattr("uzen.core.settings.ENABLE_HTTPX_FALLBACK", False)
+    monkeypatch.setattr("uzen.core.settings.HTTPX_FALLBACK", False)
     mocker.patch("uzen.services.browser.Browser.take_snapshot", AsyncMock())
     mocker.patch("uzen.services.fake_browser.FakeBrowser.take_snapshot", AsyncMock())
 
-    # it should use HTTPX even if ENABLE_HTTPX_FALLBACK is false
+    # it should use HTTPX even if HTTPX_FALLBACK is false
     await take_snapshot(url="http://example.com", host="example.com")
 
     Browser.take_snapshot.assert_not_called()
