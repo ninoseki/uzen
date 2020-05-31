@@ -14,6 +14,16 @@ from uzen.services.browser import Browser
 from uzen.services.fake_browser import FakeBrowser
 
 
+def use_pyppeteer(host: Optional[str] = None) -> bool:
+    return host is None
+
+
+def use_httpx(host: Optional[str] = None) -> bool:
+    if host is not None:
+        return True
+    return settings.HTTPX_FALLBACK
+
+
 async def take_snapshot(
     url: str,
     accept_language: Optional[str] = None,
@@ -33,7 +43,7 @@ async def take_snapshot(
     # Skip pyppeteer if a host is not None
     # because Chromium prohibits setting "host" header.
     # ref. https://github.com/puppeteer/puppeteer/issues/4575#issuecomment-511259872
-    if host is None:
+    if use_pyppeteer(host):
         try:
             result = await Browser.take_snapshot(
                 url,
@@ -51,28 +61,26 @@ async def take_snapshot(
     if result is not None:
         return result
 
-    # if HTTPX fallback is not enabled and host is None, it raises an error
-    # if host is not None, we should use HTTPX
-    if not settings.ENABLE_HTTPX_FALLBACK and host is None:
+    # raise an error if HTTPX is not enabled
+    if not use_httpx(host):
         raise TakeSnapshotError("\n".join(errors))
 
     # fallback to HTTPX
-    if result is None:
-        logger.debug("Fallback to HTTPX")
-        try:
-            result = await FakeBrowser.take_snapshot(
-                url,
-                accept_language=accept_language,
-                host=host,
-                ignore_https_errors=ignore_https_errors,
-                referer=referer,
-                timeout=timeout,
-                user_agent=user_agent,
-            )
-        except httpx.HTTPError as e:
-            message = f"Failed to take a snapshot by HTTPX: {e}."
-            logger.debug(message)
-            errors.append(message)
+    logger.debug("Fallback to HTTPX")
+    try:
+        result = await FakeBrowser.take_snapshot(
+            url,
+            accept_language=accept_language,
+            host=host,
+            ignore_https_errors=ignore_https_errors,
+            referer=referer,
+            timeout=timeout,
+            user_agent=user_agent,
+        )
+    except httpx.HTTPError as e:
+        message = f"Failed to take a snapshot by HTTPX: {e}."
+        logger.debug(message)
+        errors.append(message)
 
     if result is not None:
         return result
