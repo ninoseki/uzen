@@ -41,12 +41,12 @@ class MatchSearcher(AbstractSearcher):
         from_at = filters.get("from_at")
         if from_at is not None:
             from_at = convert_to_datetime(from_at)
-            queries.append(Q(created_at__gte=from_at))
+            queries.append(Q(created_at__gt=from_at))
 
         to_at = filters.get("to_at")
         if to_at is not None:
             to_at = convert_to_datetime(to_at)
-            queries.append(Q(created_at__lte=to_at))
+            queries.append(Q(created_at__lt=to_at))
 
         query = Q(*queries)
 

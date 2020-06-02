@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import List, Optional, Type
 
-from tortoise.models import Model
+from tortoise.models import Model, QuerySet
 from tortoise.query_utils import Q
 
 from uzen.schemas.search import SearchResults
@@ -25,38 +25,29 @@ class AbstractSearcher(ABC):
     async def _total(self) -> int:
         return await self.model.filter(self.query).count()
 
+    def build_queryset(
+        self, size: Optional[int] = None, offset: Optional[int] = None, id_only=False
+    ) -> QuerySet[Type[Model]]:
+        size = 100 if size is None else size
+
+        queryset = self.model.filter(self.query).limit(size)
+        if offset is not None:
+            queryset = queryset.offset(offset)
+
+        if id_only:
+            return queryset.values_list("id", flat=True)
+
+        if self.values is not None:
+            return queryset.values(*self.values)
+
+        return queryset.prefetch_related(*self.prefetch_related)
+
     async def _search(
         self, size: Optional[int] = None, offset: Optional[int] = None, id_only=False,
     ) -> SearchResults:
         total = await self._total()
-
-        offset = 0 if offset is None else offset
-        size = 100 if size is None else size
-
-        if id_only:
-            results = (
-                await self.model.filter(self.query)
-                .offset(offset)
-                .limit(size)
-                .values_list("id", flat=True)
-            )
-            return SearchResults(results=results, total=total)
-
-        if self.values is not None:
-            results = (
-                await self.model.filter(self.query)
-                .offset(offset)
-                .limit(size)
-                .values(*self.values)
-            )
-            return SearchResults(results=results, total=total)
-
-        results = (
-            await self.model.filter(self.query)
-            .offset(offset)
-            .limit(size)
-            .prefetch_related(*self.prefetch_related)
-        )
+        queryset = self.build_queryset(size=size, offset=offset, id_only=id_only)
+        results = await queryset
         return SearchResults(results=results, total=total)
 
     @classmethod
