@@ -63,11 +63,11 @@ class SnapshotSearcher(AbstractSearcher):
 
         from_at = filters.get("from_at")
         if from_at is not None:
-            queries.append(Q(created_at__gte=convert_to_datetime(from_at)))
+            queries.append(Q(created_at__gt=convert_to_datetime(from_at)))
 
         to_at = filters.get("to_at")
         if to_at is not None:
-            queries.append(Q(created_at__lte=convert_to_datetime(to_at)))
+            queries.append(Q(created_at__lt=convert_to_datetime(to_at)))
 
         query = Q(*queries)
 

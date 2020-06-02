@@ -62,7 +62,7 @@ export default class SearchForm extends Mixins<SearchFormComponentMixin>(
   resetPagination() {
     this.snapshots = [];
     this.size = this.DEFAULT_PAGE_SIZE;
-    this.offset = this.DEFAULT_OFFSET;
+    this.oldestCreatedAt = this.nowDatetime();
   }
 
   async search(additonalLoading = false) {
@@ -76,7 +76,7 @@ export default class SearchForm extends Mixins<SearchFormComponentMixin>(
 
     const params = (this.$refs.form as Form).filtersParams();
     params["size"] = this.size;
-    params["offset"] = this.offset;
+    params["toAt"] = this.minDatetime(params["toAt"], this.oldestCreatedAt);
 
     try {
       const response = await axios.get<SnapshotSearchResults>(
@@ -89,8 +89,11 @@ export default class SearchForm extends Mixins<SearchFormComponentMixin>(
       loadingComponent.close();
 
       this.snapshots = this.snapshots.concat(response.data.results);
-      this.totalCount = response.data.total;
       this.count = this.snapshots.length;
+      this.oldestCreatedAt = this.snapshots[this.count - 1].createdAt;
+      if (!additonalLoading) {
+        this.totalCount = response.data.total;
+      }
     } catch (error) {
       loadingComponent.close();
 
@@ -100,7 +103,6 @@ export default class SearchForm extends Mixins<SearchFormComponentMixin>(
   }
 
   loadMore() {
-    this.offset += this.size;
     this.search(true);
   }
 
