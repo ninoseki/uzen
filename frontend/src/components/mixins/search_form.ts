@@ -11,7 +11,7 @@ export class SearchFormMixin extends Vue {
   totalCount = 0;
   size = this.DEFAULT_PAGE_SIZE;
   offset = this.DEFAULT_OFFSET;
-  oldestCreatedAt: string | undefined = this.nowDatetime();
+  oldestCreatedAt: string | undefined = undefined;
 
   hasCount(): boolean {
     return this.count !== undefined;
@@ -49,8 +49,8 @@ export class SearchFormMixin extends Vue {
     a: string | number | undefined,
     b: string | number | undefined
   ): string {
-    const c = a === undefined ? this.nowDatetime() : a.toString();
-    const d = b === undefined ? this.nowDatetime() : b.toString();
+    const c = a === undefined ? this.nowDatetime() : moment(a).toISOString();
+    const d = b === undefined ? this.nowDatetime() : moment(b).toISOString();
 
     return c > d ? d : c;
   }
