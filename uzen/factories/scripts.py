@@ -6,6 +6,7 @@ from urllib.parse import urlparse
 import httpx
 from requests_html import HTML
 
+from uzen.core.resources import httpx_client
 from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot
 from uzen.services.utils import calculate_sha256
@@ -84,8 +85,7 @@ async def get_script_content(source: str) -> Optional[ScriptContent]:
         Optional[ScriptContent] -- A fetched result
     """
     try:
-        client = httpx.AsyncClient()
-        res = await client.get(source)
+        res = await httpx_client.get(source)
         res.raise_for_status()
         return ScriptContent(source=source, content=res.text)
     except httpx.HTTPError:

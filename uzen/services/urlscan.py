@@ -4,6 +4,7 @@ from typing import cast
 
 import httpx
 
+from uzen.core.resources import httpx_client
 from uzen.models.screenshots import Screenshot
 from uzen.models.snapshots import Snapshot
 from uzen.schemas.utils import SnapshotResult
@@ -13,8 +14,8 @@ class URLScan:
     HOST = "urlscan.io"
     BASE_URL = f"https://{HOST}"
 
-    def __init__(self, uuid: str):
-        self.client = httpx.AsyncClient()
+    def __init__(self, client: httpx.AsyncClient, uuid: str):
+        self.client = client
         self.uuid = uuid
 
     async def body(self) -> str:
@@ -45,7 +46,7 @@ class URLScan:
         Returns:
             Snapshot -- Snapshot ORM instance
         """
-        instance = cls(uuid)
+        instance = cls(httpx_client, uuid)
         result = await instance.result()
 
         requests = result.get("data", {}).get("requests", [])
