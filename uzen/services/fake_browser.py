@@ -49,8 +49,6 @@ class FakeBrowser:
         Returns:
             SnapshotResult
         """
-        submitted_url: str = url
-        not ignore_https_errors
 
         try:
             # default timeout = 30 seconds
