@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import "highlight.js/styles/default.css";
+import "highlight.js/styles/androidstudio.css";
 
 import { Component, Vue } from "vue-property-decorator";
 
@@ -44,11 +44,10 @@ h2.middle {
 }
 
 pre {
-  word-break: normal;
-}
-pre code.hljs {
-  background-color: whitesmoke;
-  color: #4a4a4a;
+  white-space: pre;
+  white-space: pre-wrap;
+  word-break: break-all;
+  word-wrap: break-word;
 }
 
 .container .navbar {
