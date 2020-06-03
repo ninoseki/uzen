@@ -2,6 +2,7 @@ from typing import List, Optional, cast
 
 import httpx
 
+from uzen.core.resources import httpx_client
 from uzen.models.screenshots import Screenshot
 from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot
@@ -49,7 +50,7 @@ class FakeBrowser:
             SnapshotResult
         """
         submitted_url: str = url
-        verify = not ignore_https_errors
+        not ignore_https_errors
 
         try:
             # default timeout = 30 seconds
@@ -63,8 +64,7 @@ class FakeBrowser:
             if host is not None:
                 headers["host"] = host
 
-            client = httpx.AsyncClient(verify=verify)
-            res = await client.get(
+            res = await httpx_client.get(
                 url, headers=headers, timeout=timeout, allow_redirects=True,
             )
 
