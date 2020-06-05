@@ -22,6 +22,10 @@ export class HighlightMixin extends Vue {
 
     this.$el.querySelectorAll("pre code").forEach((block) => {
       hljs.highlightBlock(block);
+      const parent = block.parentElement;
+      if (parent !== null) {
+        parent.style.backgroundColor = "#282b2e";
+      }
     });
   }
 }
