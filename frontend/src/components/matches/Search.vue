@@ -99,7 +99,6 @@ export default class Search extends Mixins<SearchFormComponentMixin>(
   }
 
   loadMore() {
-    this.offset += this.size;
     this.search(true);
   }
 

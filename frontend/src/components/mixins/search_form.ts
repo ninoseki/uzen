@@ -49,9 +49,9 @@ export class SearchFormMixin extends Vue {
     a: string | number | undefined,
     b: string | number | undefined
   ): string {
-    const c = a === undefined ? this.nowDatetime() : moment(a).toISOString();
-    const d = b === undefined ? this.nowDatetime() : moment(b).toISOString();
+    const c = a === undefined ? moment() : moment(a);
+    const d = b === undefined ? moment() : moment(b);
 
-    return c > d ? d : c;
+    return c > d ? d.toISOString(true) : c.toISOString(true);
   }
 }
