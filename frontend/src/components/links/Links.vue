@@ -8,7 +8,7 @@
 
     <b-dropdown-item
       v-for="link in selectedLinks()"
-      v-bind:key="link.baseURL"
+      v-bind:key="link.name"
       aria-role="listitem"
       has-link
     >
