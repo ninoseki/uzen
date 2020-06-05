@@ -9,7 +9,7 @@
               params: { id: props.row.snapshot.id },
             }"
           >
-            {{ props.row.snapshot.url }}
+            {{ props.row.snapshot.url | truncate }}
           </router-link>
           <p v-if="props.row.script">({{ props.row.script.url }})</p>
         </b-table-column>
