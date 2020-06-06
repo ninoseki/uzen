@@ -11,10 +11,13 @@
                 params: { id: props.row.id, yaraResult: props.row.yaraResult },
               }"
             >
-              {{ props.row.url }}
+              {{ props.row.url | truncate }}
             </router-link>
           </p>
-          <p>(<strong>Submitted URL:</strong> {{ props.row.submittedUrl }})</p>
+          <p>
+            (<strong>Submitted URL:</strong>
+            {{ props.row.submittedUrl | truncate }})
+          </p>
           <p class="is-size-7">
             <strong>IP address:</strong> {{ props.row.ipAddress }} -
             <strong>ASN:</strong> {{ props.row.asn.split(" ")[0] }}
