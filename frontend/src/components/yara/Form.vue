@@ -70,7 +70,7 @@ export default class YaraForm extends Mixins<ErrorDialogMixin>(
       const response = await axios.post<SnapshotWithYaraResult[]>(
         "/api/yara/scan",
         {
-          source: this.source,
+          source: this.source === "" ? undefined : this.source,
           target: this.target,
         },
         { params: params }

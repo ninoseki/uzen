@@ -101,7 +101,7 @@ export default class OneshotView extends Mixins<ErrorDialogMixin>(
 
     try {
       const response = await axios.post<Oneshot>("/api/yara/oneshot", {
-        source: this.source,
+        source: this.source === "" ? undefined : this.source,
         url: this.url,
         target: this.target,
         acceptLanguage:
