@@ -189,4 +189,11 @@ class Browser:
         try:
             return await _preview(hostname, "http")
         except PyppeteerError:
+            pass
+
+        try:
             return await _preview(hostname, "https")
+        except PyppeteerError:
+            screenshot = Screenshot()
+            screenshot.data = ""
+            return screenshot
