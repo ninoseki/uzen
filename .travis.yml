@@ -26,8 +26,8 @@ matrix:
         - pyppeteer-install
       before_script:
         # create dummy directories & file
-        - mkdir -p frontend/dist/static
-        - touch frontend/dist/index.html
+        - mkdir -p frontend/dist/static frontend/dist/images
+        - touch frontend/dist/index.html frontend/dist/images/not-found.png
       script: pytest -v --cov=uzen --cov-report=term-missing
 
     # python with mysql
@@ -45,8 +45,8 @@ matrix:
         - poetry install
         - pyppeteer-install
       before_script:
-        - mkdir -p frontend/dist/static
-        - touch frontend/dist/index.html
+        - mkdir -p frontend/dist/static frontend/dist/images
+        - touch frontend/dist/index.html frontend/dist/images/not-found.png
       script: pytest -v --cov=uzen --cov-report=term-missing
       after_success:
         - COVERALLS_REPO_TOKEN=78xcfkSWMOYAFjJla5nmgJ2PzpI0s0YJm coveralls
