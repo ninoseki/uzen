@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 
+import Bulk from "@/views/Bulk.vue";
 import Domain from "@/views/Domain.vue";
 import Home from "@/views/Home.vue";
 import Import from "@/views/Import.vue";
@@ -71,6 +72,11 @@ const routes = [
     path: "/domain/:hostname",
     name: "Domain",
     component: Domain,
+  },
+  {
+    path: "/bulk",
+    name: "Bulk",
+    component: Bulk,
   },
 ];
 
