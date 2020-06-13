@@ -25,6 +25,9 @@
       <b-navbar-item tag="router-link" :to="{ path: '/import' }"
         >Import</b-navbar-item
       >
+      <b-navbar-item tag="router-link" :to="{ path: '/bulk' }"
+        >Bulk submission</b-navbar-item
+      >
       <b-navbar-item>
         <a href="/docs" target="_blank" class="navbar-item">API</a>
       </b-navbar-item>
