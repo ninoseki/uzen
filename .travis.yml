@@ -49,8 +49,11 @@ matrix:
         - touch frontend/dist/index.html frontend/dist/images/not-found.png
       script: pytest -v --cov=uzen --cov-report=term-missing
       after_success:
-        - COVERALLS_REPO_TOKEN=78xcfkSWMOYAFjJla5nmgJ2PzpI0s0YJm coveralls
+        - coveralls
 
     - language: node_js
-      node_js: 13
+      node_js: 14
+      install:
+        - cd frontend && npm install
+        - cd ..
       before_script: cd frontend

@@ -5,9 +5,9 @@ describe("SearchFormMixin", () => {
 
   describe("#normalizeFilterValue", () => {
     it("return a string of a data", () => {
-      const date: Date = new Date("December 17, 1995");
+      const date: Date = new Date("December 17, 1995 00:00:00 GMT");
       const str = subject.normalizeFilterValue(date);
-      expect(str).toEqual("1995-12-16T15:00:00.000Z");
+      expect(str).toEqual("1995-12-17T00:00:00.000Z");
     });
 
     it("return a value without any modification", () => {
