@@ -1,5 +1,5 @@
 <template>
-  <img :src="this.imageSource" :alt="screenshot" ref="screenshot" />
+  <img :src="this.imageSource" alt="screenshot" ref="screenshot" />
 </template>
 
 <script lang="ts">
