@@ -107,7 +107,11 @@
 
                       <tr>
                         <th>Created at</th>
-                        <td>{{ createdAtInLocalFormat() }}</td>
+                        <td>
+                          <DatetimeWithDiff
+                            v-bind:datetime="snapshot.createdAt"
+                          />
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -173,7 +177,6 @@
 
 <script lang="ts">
 import axios from "axios";
-import moment from "moment/moment";
 import { Component, Mixins } from "vue-mixin-decorator";
 import { Prop } from "vue-property-decorator";
 
@@ -188,6 +191,7 @@ import {
 import Rules from "@/components/rules/Buttons.vue";
 import Screenshot from "@/components/screenshots/Screenshot.vue";
 import Scripts from "@/components/scripts/Scripts.vue";
+import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
 import H2 from "@/components/ui/H2.vue";
 import H3 from "@/components/ui/H3.vue";
 import YaraResultComponent from "@/components/yara/Result.vue";
@@ -196,6 +200,7 @@ import { ErrorData, Snapshot, YaraResult } from "@/types";
 @Component({
   components: {
     Classifications,
+    DatetimeWithDiff,
     DnsRecords,
     H2,
     H3,
@@ -247,13 +252,6 @@ export default class SnapshotComponent extends Mixins<HighlightComponentMixin>(
 
   hasYaraResult(): boolean {
     return this.yaraResult !== undefined;
-  }
-
-  createdAtInLocalFormat(): string {
-    if (this.snapshot?.createdAt === undefined) {
-      return "N/A";
-    }
-    return moment.parseZone(this.snapshot.createdAt).local().format();
   }
 
   hasSnapshot(): boolean {
