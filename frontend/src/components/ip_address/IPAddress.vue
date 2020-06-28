@@ -67,7 +67,6 @@
 
 <script lang="ts">
 import axios from "axios";
-import moment from "moment/moment";
 import { Component, Mixins } from "vue-mixin-decorator";
 
 import Links from "@/components/links/Links.vue";
@@ -75,7 +74,7 @@ import { ErrorDialogMixin } from "@/components/mixins";
 import Preview from "@/components/screenshots/Preview.vue";
 import Counter from "@/components/snapshots/Counter.vue";
 import Table from "@/components/snapshots/TableWithScreenshot.vue";
-import { ErrorData, IPAddressInformation, Snapshot } from "@/types";
+import { ErrorData, IPAddressInformation } from "@/types";
 
 @Component({
   components: {
@@ -124,13 +123,6 @@ export default class IPAddress extends Mixins<ErrorDialogMixin>(
     return (
       this.information !== undefined && this.information.snapshots.length > 0
     );
-  }
-
-  createdAtInLocalFormat(snapshot: Snapshot): string {
-    if (snapshot.createdAt === undefined) {
-      return "N/A";
-    }
-    return moment.parseZone(snapshot.createdAt).local().format();
   }
 }
 </script>

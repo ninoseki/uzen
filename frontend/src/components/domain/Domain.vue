@@ -51,7 +51,6 @@
 
 <script lang="ts">
 import axios from "axios";
-import moment from "moment/moment";
 import { Component, Mixins } from "vue-mixin-decorator";
 
 import DnsRecords from "@/components/dns_records/DnsRecords.vue";
@@ -60,7 +59,7 @@ import { ErrorDialogMixin } from "@/components/mixins";
 import Preview from "@/components/screenshots/Preview.vue";
 import Counter from "@/components/snapshots/Counter.vue";
 import Table from "@/components/snapshots/TableWithScreenshot.vue";
-import { DomainInformation, ErrorData, Snapshot } from "@/types";
+import { DomainInformation, ErrorData } from "@/types";
 
 @Component({
   components: {
@@ -106,13 +105,6 @@ export default class Domain extends Mixins<ErrorDialogMixin>(ErrorDialogMixin) {
     return (
       this.information !== undefined && this.information.snapshots.length > 0
     );
-  }
-
-  createdAtInLocalFormat(snapshot: Snapshot): string {
-    if (snapshot.createdAt === undefined) {
-      return "N/A";
-    }
-    return moment.parseZone(snapshot.createdAt).local().format();
   }
 }
 </script>
