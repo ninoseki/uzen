@@ -2,9 +2,7 @@
   <div class="box" v-if="hasInformation()">
     <nav class="navbar">
       <div class="navbar-brand">
-        <h2 class="is-size-4 has-text-weight-bold">
-          Domain: {{ information.hostname }}
-        </h2>
+        <H2>Domain: {{ information.hostname }}</H2>
       </div>
       <div class="navbar-menu">
         <div class="navbar-end">
@@ -16,34 +14,34 @@
     <div class="column is-full">
       <div class="columns">
         <div class="column is-half">
-          <h2 class="is-size-5 has-text-weight-bold middle">
+          <H3>
             DNS records
-          </h2>
+          </H3>
           <DnsRecords v-bind:dnsRecords="information.dnsRecords" />
         </div>
         <div class="column is-half">
-          <h2 class="is-size-5 has-text-weight-bold middle">
+          <H3>
             Live preview
-          </h2>
+          </H3>
           <Preview v-bind:hostname="information.hostname" />
         </div>
       </div>
     </div>
 
     <div class="column">
-      <h2 class="is-size-5 has-text-weight-bold middle">
+      <H3>
         Recent snapshots
         <Counter v-bind:hostname="information.hostname" />
-      </h2>
+      </H3>
 
       <Table v-if="hasSnapshots()" v-bind:snapshots="information.snapshots" />
       <p v-else>N/A</p>
     </div>
 
     <div class="column">
-      <h2 class="is-size-5 has-text-weight-bold middle">
+      <H3>
         Whois
-      </h2>
+      </H3>
       <pre>{{ information.whois || "N/A" }}</pre>
     </div>
   </div>
@@ -59,12 +57,16 @@ import { ErrorDialogMixin } from "@/components/mixins";
 import Preview from "@/components/screenshots/Preview.vue";
 import Counter from "@/components/snapshots/Counter.vue";
 import Table from "@/components/snapshots/TableWithScreenshot.vue";
+import H2 from "@/components/ui/H2.vue";
+import H3 from "@/components/ui/H3.vue";
 import { DomainInformation, ErrorData } from "@/types";
 
 @Component({
   components: {
     Counter,
     DnsRecords,
+    H2,
+    H3,
     Links,
     Preview,
     Table,

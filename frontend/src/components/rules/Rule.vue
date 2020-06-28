@@ -3,7 +3,7 @@
     <div class="column is-full">
       <div class="columns">
         <div class="column is-half">
-          <h2 class="is-size-5 has-text-weight-bold middle">Info</h2>
+          <H3>Info</H3>
           <div class="table-container">
             <table class="table">
               <tbody>
@@ -32,15 +32,15 @@
           </div>
         </div>
         <div class="column is-half">
-          <h2 class="is-size-5 has-text-weight-bold middle">Source</h2>
+          <H3>Source</H3>
           <pre><code class="yara">{{ rule.source || "N/A" }}</code></pre>
         </div>
       </div>
       <div class="column">
-        <h2 class="is-size-5 has-text-weight-bold middle">
+        <H3>
           Recent related snapshots
           <Counter v-bind:ruleId="rule.id" />
-        </h2>
+        </H3>
         <Table v-if="hasSnapshots()" v-bind:snapshots="rule.snapshots" />
         <p v-else>N/A</p>
       </div>
@@ -60,11 +60,13 @@ import {
   HighlightMixin,
 } from "@/components/mixins";
 import Table from "@/components/snapshots/TableWithScreenshot.vue";
+import H3 from "@/components/ui/H3.vue";
 import { ErrorData, Rule } from "@/types";
 
 @Component({
   components: {
     Counter,
+    H3,
     Table,
   },
 })
