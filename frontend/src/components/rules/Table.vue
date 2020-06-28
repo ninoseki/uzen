@@ -1,5 +1,5 @@
 <template>
-  <div class="box table-container" v-if="hasRules()">
+  <div class="box table-container" v-if="hasRules">
     <b-table :data="rules">
       <template slot-scope="props">
         <b-table-column field="name" label="Name">
@@ -43,7 +43,7 @@ import { Rule } from "@/types";
 export default class Table extends Vue {
   @Prop() private rules!: Rule[];
 
-  hasRules(): boolean {
+  get hasRules(): boolean {
     return this.rules.length > 0;
   }
 }
