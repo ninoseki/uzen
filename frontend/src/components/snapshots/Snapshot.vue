@@ -10,9 +10,9 @@
     <div class="box">
       <nav class="navbar">
         <div class="navbar-brand">
-          <h2 class="is-size-4 has-text-weight-bold">
+          <H2>
             {{ snapshot.url }}
-          </h2>
+          </H2>
         </div>
         <div class="navbar-menu">
           <div class="navbar-end">
@@ -28,7 +28,7 @@
           <div class="column is-full">
             <div class="columns">
               <div class="column is-half">
-                <h2 class="is-size-5 has-text-weight-bold middle">Info</h2>
+                <H3>Info</H3>
                 <div class="table-container">
                   <table class="table">
                     <tbody>
@@ -107,16 +107,20 @@
 
                       <tr>
                         <th>Created at</th>
-                        <td>{{ createdAtInLocalFormat() }}</td>
+                        <td>
+                          <DatetimeWithDiff
+                            v-bind:datetime="snapshot.createdAt"
+                          />
+                        </td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
               </div>
               <div class="column is-half">
-                <h2 class="is-size-5 has-text-weight-bold middle">
+                <H3>
                   Screenshot
-                </h2>
+                </H3>
                 <Screenshot
                   v-bind:snapshot_id="snapshot.id"
                   v-bind:screenshot="snapshot.screenshot"
@@ -124,16 +128,16 @@
               </div>
             </div>
             <div class="column">
-              <h2 class="is-size-5 has-text-weight-bold middle">SHA256</h2>
+              <H3>SHA256</H3>
               <router-link
                 :to="{ name: 'Snapshots', query: { sha256: snapshot.sha256 } }"
                 >{{ snapshot.sha256 }}
               </router-link>
             </div>
             <div class="column">
-              <h2 class="is-size-5 has-text-weight-bold middle">
+              <H3>
                 Matched rules
-              </h2>
+              </H3>
               <Rules v-bind:rules="snapshot.rules" />
             </div>
           </div>
@@ -173,7 +177,6 @@
 
 <script lang="ts">
 import axios from "axios";
-import moment from "moment/moment";
 import { Component, Mixins } from "vue-mixin-decorator";
 import { Prop } from "vue-property-decorator";
 
@@ -188,13 +191,19 @@ import {
 import Rules from "@/components/rules/Buttons.vue";
 import Screenshot from "@/components/screenshots/Screenshot.vue";
 import Scripts from "@/components/scripts/Scripts.vue";
+import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
+import H2 from "@/components/ui/H2.vue";
+import H3 from "@/components/ui/H3.vue";
 import YaraResultComponent from "@/components/yara/Result.vue";
 import { ErrorData, Snapshot, YaraResult } from "@/types";
 
 @Component({
   components: {
     Classifications,
+    DatetimeWithDiff,
     DnsRecords,
+    H2,
+    H3,
     Links,
     Rules,
     Screenshot,
@@ -243,13 +252,6 @@ export default class SnapshotComponent extends Mixins<HighlightComponentMixin>(
 
   hasYaraResult(): boolean {
     return this.yaraResult !== undefined;
-  }
-
-  createdAtInLocalFormat(): string {
-    if (this.snapshot?.createdAt === undefined) {
-      return "N/A";
-    }
-    return moment.parseZone(this.snapshot.createdAt).local().format();
   }
 
   hasSnapshot(): boolean {

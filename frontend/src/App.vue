@@ -37,12 +37,6 @@ html {
   color: #5892d0;
 }
 
-h2.middle {
-  padding-bottom: 10px;
-  margin-bottom: 10px;
-  border-bottom: 2px solid lightgray;
-}
-
 pre {
   white-space: pre;
   white-space: pre-wrap;

@@ -7,7 +7,7 @@
     </button>
 
     <b-dropdown-item
-      v-for="link in selectedLinks()"
+      v-for="link in selectedLinks"
       v-bind:key="link.name"
       aria-role="listitem"
       has-link
@@ -45,7 +45,7 @@ export default class LinksComponent extends Vue {
 
   private links = Links;
 
-  selectedLinks(): Link[] {
+  get selectedLinks(): Link[] {
     if (this.type === undefined) {
       return this.links;
     }

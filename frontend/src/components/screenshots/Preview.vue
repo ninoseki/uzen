@@ -1,6 +1,6 @@
 <template>
   <div class="screenshot">
-    <img :src="this.imageSource()" :alt="screenshot" />
+    <img :src="this.imageSource" alt="screenshot" />
   </div>
 </template>
 
@@ -11,7 +11,7 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 export default class Preview extends Vue {
   @Prop() private hostname!: string;
 
-  imageSource(): string {
+  get imageSource(): string {
     return `/api/screenshots/preview/${this.hostname}?output_format=png`;
   }
 }

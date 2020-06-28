@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div v-if="hasSnapshots()" class="buttons">
+    <div v-if="hasSnapshots" class="buttons">
       <b-button
-        v-for="snapshot in uniqueSnapshots()"
+        v-for="snapshot in uniqueSnapshots"
         v-bind:key="snapshot.id"
         tag="router-link"
         :to="{ name: 'Snapshot', params: { id: snapshot.id } }"
@@ -26,7 +26,7 @@ import { Snapshot } from "@/types";
 export default class Buttons extends Vue {
   @Prop() private snapshots!: Snapshot[];
 
-  uniqueSnapshots(): Snapshot[] {
+  get uniqueSnapshots(): Snapshot[] {
     let snapshots: Snapshot[] = [];
     const memo = new Set();
     for (const snapshot of this.snapshots) {
@@ -38,7 +38,7 @@ export default class Buttons extends Vue {
     return snapshots;
   }
 
-  hasSnapshots(): boolean {
+  get hasSnapshots(): boolean {
     return this.snapshots.length > 0;
   }
 }

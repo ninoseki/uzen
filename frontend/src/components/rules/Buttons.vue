@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div v-if="hasRules()" class="buttons">
+    <div v-if="hasRules" class="buttons">
       <b-button
-        v-for="rule in uniqueRules()"
+        v-for="rule in uniqueRules"
         v-bind:key="rule.id"
         tag="router-link"
         :to="{ name: 'Rule', params: { id: rule.id } }"
@@ -26,7 +26,7 @@ import { Rule } from "@/types";
 export default class Buttons extends Vue {
   @Prop() private rules!: Rule[];
 
-  uniqueRules(): Rule[] {
+  get uniqueRules(): Rule[] {
     let rules: Rule[] = [];
     const memo = new Set();
     for (const rule of this.rules) {
@@ -38,7 +38,7 @@ export default class Buttons extends Vue {
     return rules;
   }
 
-  hasRules(): boolean {
+  get hasRules(): boolean {
     return this.rules.length > 0;
   }
 }

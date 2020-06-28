@@ -1,5 +1,5 @@
 <template>
-  <div class="box table-container" v-if="hasSnapshots()">
+  <div class="box table-container" v-if="hasSnapshots">
     <b-table :data="snapshots">
       <template slot-scope="props">
         <b-table-column field="url" label="URL">
@@ -56,7 +56,7 @@ import { Snapshot, SnapshotWithYaraResult } from "@/types";
 export default class Table extends Vue {
   @Prop() private snapshots!: Snapshot[] | SnapshotWithYaraResult[];
 
-  hasSnapshots(): boolean {
+  get hasSnapshots(): boolean {
     return this.snapshots.length > 0;
   }
 }

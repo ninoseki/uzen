@@ -40,7 +40,7 @@
       />
     </div>
 
-    <div class="box" v-if="hasURLs()">
+    <div class="box" v-if="hasURLs">
       <Row
         v-for="(url, index) in urls"
         :key="url + index"
@@ -81,7 +81,7 @@ export default class Form extends Vue {
     this.urls = this.urlText.split("\n");
   }
 
-  hasURLs(): boolean {
+  get hasURLs(): boolean {
     return this.urls.length > 0;
   }
 }

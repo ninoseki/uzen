@@ -1,5 +1,5 @@
 <template>
-  <div class="box table-container" v-if="hasMatches()">
+  <div class="box table-container" v-if="hasMatches">
     <b-table :data="matches">
       <template slot-scope="props">
         <b-table-column field="snapshot" label="Snapshot">
@@ -53,7 +53,7 @@ import { Match } from "@/types";
 export default class Table extends Mixins<HighlightMixin>(HighlightMixin) {
   @Prop() private matches!: Match[];
 
-  hasMatches(): boolean {
+  get hasMatches(): boolean {
     return this.matches.length > 0;
   }
 

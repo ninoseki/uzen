@@ -1,5 +1,5 @@
 <template>
-  <div v-if="hasSnapshots()">
+  <div v-if="hasSnapshots">
     <b-table :data="snapshots">
       <template slot-scope="props">
         <b-table-column field="url" label="URL">
@@ -59,7 +59,7 @@ import { Snapshot } from "@/types";
 export default class TableWithScreenshot extends Vue {
   @Prop() private snapshots!: Snapshot[];
 
-  hasSnapshots(): boolean {
+  get hasSnapshots(): boolean {
     return this.snapshots.length > 0;
   }
 }
