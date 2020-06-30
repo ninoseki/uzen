@@ -19,7 +19,12 @@ class Whois:
         """
         try:
             w = whois.whois(hostname)
-        except (whois.parser.PywhoisError, socket.timeout, ConnectionError):
+        except (
+            whois.parser.PywhoisError,
+            socket.timeout,
+            ConnectionError,
+            TimeoutError,
+        ):
             return None
 
         return w.text
