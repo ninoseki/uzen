@@ -28,6 +28,7 @@ requests-html = "^0.10.0"
 tortoise-orm = "^0.16.4"
 uvicorn = "^0.11.3"
 yara-python = "^4.0.0"
+aiometer = "^0.2.1"
 
 [tool.poetry.dev-dependencies]
 asynctest = "^0.13.0"
@@ -54,7 +55,7 @@ vcrpy = "^4.0.2"
 [tool.isort]
 force_grid_wrap = 0
 include_trailing_comma = true
-known_third_party = ["OpenSSL", "alembic", "certifi", "dns", "fastapi", "fastapi_utils", "httpx", "ipwhois", "loguru", "pydantic", "pyppeteer", "pysafebrowsing", "pytest", "requests", "requests_html", "respx", "sqlalchemy", "starlette", "tortoise", "tqdm", "urllib3", "vcr", "whois", "yara"]
+known_third_party = ["OpenSSL", "aiometer", "alembic", "certifi", "dns", "fastapi", "fastapi_utils", "httpx", "ipwhois", "loguru", "pydantic", "pyppeteer", "pysafebrowsing", "pytest", "requests", "requests_html", "respx", "sqlalchemy", "starlette", "tortoise", "tqdm", "urllib3", "vcr", "whois", "yara"]
 line_length = 88
 multi_line_output = 3
 use_parentheses= true
