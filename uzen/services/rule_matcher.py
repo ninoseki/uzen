@@ -1,7 +1,9 @@
-import asyncio
 import itertools
+from functools import partial
 from typing import List, cast
 from uuid import UUID
+
+import aiometer
 
 from uzen.models.rules import Rule
 from uzen.models.snapshots import Snapshot
@@ -11,8 +13,7 @@ from uzen.services.searchers.rules import RuleSearcher
 from uzen.services.yara_scanner import YaraScanner
 
 CHUNK_SIZE = 100
-PARALLEL_LIMIT = 10
-sem = asyncio.Semaphore(PARALLEL_LIMIT)
+MAX_AT_ONCE = 10
 
 
 class RuleMatcher:
@@ -45,23 +46,22 @@ class RuleMatcher:
         return results
 
     async def partial_scan(self, ids: List[UUID]) -> List[MatchResult]:
-        async with sem:
-            results: List[MatchResult] = []
-            rules: List[Rule] = await Rule.filter(id__in=ids)
-            for rule in rules:
-                scanner = YaraScanner(rule.source)
+        results: List[MatchResult] = []
+        rules: List[Rule] = await Rule.filter(id__in=ids)
+        for rule in rules:
+            scanner = YaraScanner(rule.source)
 
-                if rule.target == "script":
-                    results.extend(
-                        self._partial_scan_for_script(scanner=scanner, rule=rule)
-                    )
-                else:
-                    data = self._extract_data_from_snapshot(rule.target)
-                    matches = scanner.match(data)
-                    if len(matches) > 0:
-                        results.append(MatchResult(rule_id=rule.id, matches=matches))
+            if rule.target == "script":
+                results.extend(
+                    self._partial_scan_for_script(scanner=scanner, rule=rule)
+                )
+            else:
+                data = self._extract_data_from_snapshot(rule.target)
+                matches = scanner.match(data)
+                if len(matches) > 0:
+                    results.append(MatchResult(rule_id=rule.id, matches=matches))
 
-            return results
+        return results
 
     async def scan(self) -> List[MatchResult]:
         search_results = await RuleSearcher.search({}, id_only=True)
@@ -74,7 +74,7 @@ class RuleMatcher:
             rule_ids[i : i + CHUNK_SIZE] for i in range(0, len(rule_ids), CHUNK_SIZE)
         ]
         # make scan tasks
-        tasks = [self.partial_scan(ids=chunk) for chunk in chunks]
-        completed, pending = await asyncio.wait(tasks)
-        results = list(itertools.chain(*[t.result() for t in completed]))
-        return results
+        tasks = [partial(self.partial_scan, chunk) for chunk in chunks]
+        results = await aiometer.run_all(tasks, max_at_once=MAX_AT_ONCE)
+        flatten_results = list(itertools.chain.from_iterable(results))
+        return flatten_results

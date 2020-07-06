@@ -1,8 +1,9 @@
-import asyncio
 import itertools
+from functools import partial
 from typing import Dict, List, Optional, cast
 from uuid import UUID
 
+import aiometer
 import yara
 
 from uzen.models.scripts import Script
@@ -12,8 +13,7 @@ from uzen.services.matches_converter import MatchesConverter
 from uzen.services.searchers.snapshots import SnapshotSearcher
 
 CHUNK_SIZE = 100
-PARALLEL_LIMIT = 10
-sem = asyncio.Semaphore(PARALLEL_LIMIT)
+MAX_AT_ONCE = 10
 
 
 class YaraScanner:
@@ -50,26 +50,25 @@ class YaraScanner:
         Returns:
             List[int] -- A list of ids which are matched with a YARA rule
         """
-        async with sem:
-            if target == "script":
-                return await self.partial_scan_for_scripts(ids)
+        if target == "script":
+            return await self.partial_scan_for_scripts(ids)
 
-            snapshots = await Snapshot.filter(id__in=ids).values("id", target)
-            matched_results = []
-            for snapshot in snapshots:
-                snapshot_id = snapshot.get("id")
-                data = snapshot.get(target, "")
-                matches = self.match(data=data)
-                if len(matches) > 0:
-                    result = YaraResult(
-                        snapshot_id=snapshot_id,
-                        script_id=None,
-                        target=target,
-                        matches=matches,
-                    )
-                    matched_results.append(result)
+        snapshots = await Snapshot.filter(id__in=ids).values("id", target)
+        matched_results = []
+        for snapshot in snapshots:
+            snapshot_id = snapshot.get("id")
+            data = snapshot.get(target, "")
+            matches = self.match(data=data)
+            if len(matches) > 0:
+                result = YaraResult(
+                    snapshot_id=snapshot_id,
+                    script_id=None,
+                    target=target,
+                    matches=matches,
+                )
+                matched_results.append(result)
 
-            return matched_results
+        return matched_results
 
     async def scan_snapshots(
         self,
@@ -101,17 +100,17 @@ class YaraScanner:
             for i in range(0, len(snapshot_ids), CHUNK_SIZE)
         ]
         # make scan tasks
-        tasks = [self.partial_scan(target=target, ids=chunk) for chunk in chunks]
-        completed, pending = await asyncio.wait(tasks)
-        results = list(itertools.chain(*[t.result() for t in completed]))
+        tasks = [partial(self.partial_scan, target, chunk) for chunk in chunks]
+        results = await aiometer.run_all(tasks, max_at_once=MAX_AT_ONCE)
+        flatten_results = list(itertools.chain.from_iterable(results))
 
-        matched_ids = [result.snapshot_id for result in results]
+        matched_ids = [result.snapshot_id for result in flatten_results]
         snapshots: List[dict] = (
             await Snapshot.filter(id__in=matched_ids).values(*ScanResult.field_keys())
         )
 
         table = self._build_snapshot_table(snapshots)
-        for result in results:
+        for result in flatten_results:
             snapshot = table.get(str(result.snapshot_id))
             if snapshot is not None:
                 snapshot["yara_result"] = result

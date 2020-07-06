@@ -1,8 +1,9 @@
-import asyncio
 import dataclasses
+from functools import partial
 from typing import List, Optional
 from urllib.parse import urlparse
 
+import aiometer
 import httpx
 from requests_html import HTML
 
@@ -10,6 +11,9 @@ from uzen.core.resources import httpx_client
 from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot
 from uzen.services.utils import calculate_sha256
+from uzen.services.yara_scanner import MAX_AT_ONCE
+
+MAX_AT_ONCE = 10
 
 
 def extract_base_path(path: str) -> str:
@@ -98,12 +102,11 @@ class ScriptFactory:
         sources = get_script_sources(url=snapshot.url, body=snapshot.body)
         scripts = []
 
-        tasks = [get_script_content(source) for source in sources]
+        tasks = [partial(get_script_content, source) for source in sources]
         if len(tasks) <= 0:
             return []
 
-        completed, pending = await asyncio.wait(tasks)
-        results = [t.result() for t in completed]
+        results = await aiometer.run_all(tasks, max_at_once=MAX_AT_ONCE)
         for result in results:
             if result is None:
                 continue

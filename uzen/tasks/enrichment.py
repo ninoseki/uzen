@@ -1,6 +1,7 @@
-import asyncio
-import itertools
+from functools import partial
 from typing import cast
+
+import aiometer
 
 from uzen.models.classifications import Classification
 from uzen.models.dns_records import DnsRecord
@@ -16,13 +17,12 @@ class EnrichmentTasks(AbstractTask):
         self, snapshot: Snapshot, insert_to_db: bool = True,
     ):
         self.tasks = [
-            asyncio.create_task(ClassificationTask.process(snapshot, insert_to_db)),
-            asyncio.create_task(DnsRecordTask.process(snapshot, insert_to_db)),
+            partial(ClassificationTask.process, snapshot, insert_to_db),
+            partial(DnsRecordTask.process, snapshot, insert_to_db),
         ]
 
     async def _process(self) -> EnrichmentResults:
-        completed, pending = await asyncio.wait(self.tasks)
-        results = list(itertools.chain(*[t.result() for t in completed]))
+        results = await aiometer.run_all(self.tasks)
 
         classifications = []
         dns_records = []
