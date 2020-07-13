@@ -1,17 +1,15 @@
 import dataclasses
 from functools import partial
-from typing import List, Optional
+from typing import Dict, List, Optional
 from urllib.parse import urlparse
 
 import aiometer
 import httpx
 from requests_html import HTML
 
-from uzen.core.resources import httpx_client
 from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot
 from uzen.services.utils import calculate_sha256
-from uzen.services.yara_scanner import MAX_AT_ONCE
 
 MAX_AT_ONCE = 10
 
@@ -79,7 +77,9 @@ class ScriptContent:
     content: str
 
 
-async def get_script_content(source: str) -> Optional[ScriptContent]:
+async def get_script_content(
+    client, source: str, headers: Dict
+) -> Optional[ScriptContent]:
     """Get script contents
 
     Arguments:
@@ -89,7 +89,7 @@ async def get_script_content(source: str) -> Optional[ScriptContent]:
         Optional[ScriptContent] -- A fetched result
     """
     try:
-        res = await httpx_client.get(source)
+        res = await client.get(source, headers=headers)
         res.raise_for_status()
         return ScriptContent(source=source, content=res.text)
     except httpx.HTTPError:
@@ -102,7 +102,23 @@ class ScriptFactory:
         sources = get_script_sources(url=snapshot.url, body=snapshot.body)
         scripts = []
 
-        tasks = [partial(get_script_content, source) for source in sources]
+        # Use the same settings as the original request
+        headers = {
+            "accept_language": snapshot.request.get("accept_language"),
+            "host": snapshot.request.get("host"),
+            "user_agent": snapshot.request.get("user_agent"),
+        }
+        # Remove none value
+        headers = {k: v for k, v in headers.items() if v is not None}
+
+        ignore_https_errors = snapshot.request.get("ignore_https_errors")
+        verify = not ignore_https_errors
+        client = httpx.AsyncClient(verify=verify)
+
+        # Get sources
+        tasks = [
+            partial(get_script_content, client, source, headers) for source in sources
+        ]
         if len(tasks) <= 0:
             return []
 

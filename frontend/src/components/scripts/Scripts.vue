@@ -15,7 +15,7 @@
         </option>
       </b-select>
     </b-field>
-    <ScriptView v-if="hasSelectedScript" v-bind:script="selectedScript" />
+    <ScriptView v-if="hasSelectedScript()" v-bind:script="selectedScript" />
   </div>
 </template>
 
@@ -40,7 +40,7 @@ export default class ScriptsView extends Vue {
     this.selectedScript = script;
   }
 
-  get hasSelectedScript(): boolean {
+  hasSelectedScript(): boolean {
     return this.selectedScript !== undefined;
   }
 }
