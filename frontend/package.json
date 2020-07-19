@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/ninoseki/uzen#readme",
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.13.1",
+    "@fortawesome/fontawesome-free": "^5.14.0",
     "@mdi/font": "^5.3.45",
     "axios": "^0.19.2",
     "boxicons": "^2.0.5",
@@ -35,14 +35,14 @@
     "qs": "^6.9.4",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.3",
-    "vue-json-pretty": "^1.6.3",
-    "vue-property-decorator": "^8.5.1",
+    "vue-json-pretty": "^1.6.5",
+    "vue-property-decorator": "^9.0.0",
     "vue-router": "^3.3.4"
   },
   "devDependencies": {
     "@types/crypto-js": "^3.1.47",
     "@types/highlight.js": "^9.12.4",
-    "@types/jest": "^26.0.3",
+    "@types/jest": "^26.0.5",
     "@types/qs": "^6.9.3",
     "@typescript-eslint/eslint-plugin": "^2.34.0",
     "@typescript-eslint/parser": "^2.34.0",
@@ -59,7 +59,7 @@
     "eslint-plugin-simple-import-sort": "^5.0.3",
     "eslint-plugin-vue": "^6.2.2",
     "prettier": "^2.0.5",
-    "typescript": "^3.9.5",
+    "typescript": "^3.9.7",
     "vue-mixin-decorator": "^1.2.0",
     "vue-template-compiler": "^2.6.11"
   }
