@@ -1,9 +1,9 @@
-from concurrent.futures import ProcessPoolExecutor
-from functools import lru_cache, partial
+from functools import partial
 from typing import List
 
+import aiometer
+from dns.asyncresolver import Resolver
 from dns.exception import DNSException
-from dns.resolver import Resolver
 
 from uzen.models.dns_records import DnsRecord
 from uzen.models.snapshots import Snapshot
@@ -12,16 +12,35 @@ from uzen.schemas.dns_records import BaseDnsRecord
 TYPES: List[str] = ["A", "AAAA", "CNAME", "MX", "NS", "PTR", "TXT"]
 
 
-def _query(resolver: Resolver, hostname: str, record_type: str) -> List[BaseDnsRecord]:
+async def resolve(
+    resolver: Resolver,
+    hostname: str,
+    rdtype="A",
+    rdclass="IN",
+    tcp=False,
+    source=None,
+    raise_on_no_answer=True,
+    source_port=0,
+    lifetime=None,
+) -> List[BaseDnsRecord]:
     try:
-        answer = resolver.query(hostname, record_type)
-        return [BaseDnsRecord(type=record_type, value=str(rr)) for rr in answer]
+        answer = await resolver.resolve(
+            hostname,
+            rdtype,
+            rdclass,
+            tcp,
+            source,
+            raise_on_no_answer,
+            source_port,
+            lifetime,
+            True,
+        )
+        return [BaseDnsRecord(type=rdtype, value=str(rr)) for rr in answer]
     except DNSException:
         return []
 
 
-@lru_cache()
-def query(hostname: str) -> List[BaseDnsRecord]:
+async def query(hostname: str) -> List[BaseDnsRecord]:
     """Quqery DNS records
 
     Arguments:
@@ -31,21 +50,14 @@ def query(hostname: str) -> List[BaseDnsRecord]:
         List[BaseDnsRecord] -- A list of DNS records
     """
     resolver = Resolver()
-    with ProcessPoolExecutor() as executor:
-        futures = [
-            executor.submit(partial(_query, resolver, hostname, record_type))
-            for record_type in TYPES
-        ]
-
-    records = []
-    for future in futures:
-        records.extend(future.result())
-    return records
+    tasks = [partial(resolve, resolver, hostname, record_type) for record_type in TYPES]
+    results = await aiometer.run_all(tasks)
+    return sum(results, [])
 
 
 class DnsRecordFactory:
     @staticmethod
-    def from_snapshot(snapshot: Snapshot) -> List[DnsRecord]:
+    async def from_snapshot(snapshot: Snapshot) -> List[DnsRecord]:
         return [
             DnsRecord(
                 type=record.type,
@@ -53,9 +65,9 @@ class DnsRecordFactory:
                 # insert a dummy ID if a snapshot doesn't have ID
                 snapshot_id=snapshot.id or -1,
             )
-            for record in query(snapshot.hostname)
+            for record in await query(snapshot.hostname)
         ]
 
     @staticmethod
-    def from_hostname(hostname: str) -> List[BaseDnsRecord]:
-        return query(hostname)
+    async def from_hostname(hostname: str) -> List[BaseDnsRecord]:
+        return await query(hostname)

@@ -8,7 +8,7 @@ class DomainInformationFactory:
     @staticmethod
     async def from_hostname(hostname: str) -> DomainInformation:
         whois = Whois.whois(hostname)
-        records = DnsRecordFactory.from_hostname(hostname)
+        records = await DnsRecordFactory.from_hostname(hostname)
         snapshots = await Snapshot.find_by_hostname(hostname)
         return DomainInformation(
             hostname=hostname, whois=whois, dns_records=records, snapshots=snapshots
