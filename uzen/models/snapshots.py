@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, List, Optional, Union
+from typing import List, Optional
 from uuid import UUID
 
 from tortoise import fields
@@ -8,12 +8,11 @@ from tortoise.exceptions import NoValuesFetched
 
 from uzen.models.base import AbstractBaseModel
 from uzen.models.mixins import TimestampMixin
-from uzen.schemas.classifications import BaseClassification, Classification
-from uzen.schemas.dns_records import BaseDnsRecord, DnsRecord
+from uzen.schemas.classifications import Classification
+from uzen.schemas.dns_records import DnsRecord
 from uzen.schemas.rules import Rule
-from uzen.schemas.screenshots import BaseScreenshot, Screenshot
-from uzen.schemas.scripts import BaseScript, Script
-from uzen.schemas.snapshots import BaseSnapshot
+from uzen.schemas.screenshots import Screenshot
+from uzen.schemas.scripts import Script
 from uzen.schemas.snapshots import Snapshot as SnapshotModel
 
 
@@ -51,32 +50,12 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
         backward_key="snapshot_id",
     )
 
-    def __init__(self, **kwargs: Any) -> None:
-        super().__init__(**kwargs)
-
-        self.screenshot_: Optional[Union[BaseScreenshot, Screenshot]] = None
-
-        self.scripts_: Optional[List[Union[Script, BaseScript]]] = None
-        self.dns_records_: Optional[List[Union[DnsRecord, BaseDnsRecord]]] = None
-        self.classifications_: Optional[
-            List[Union[Classification, BaseClassification]]
-        ] = None
-
-        self.rules_: Optional[List[Rule]] = None
-
     @property
-    def screenshot(self) -> Optional[Union[BaseScreenshot, Screenshot]]:
-        if hasattr(self, "screenshot_") and self.screenshot_ is not None:
-            return self.screenshot_
-
+    def screenshot(self) -> Optional[Screenshot]:
         if self._screenshot is not None:
             return self._screenshot.to_model()
 
         return None
-
-    @screenshot.setter
-    def screenshot(self, screenshot: Union[BaseScreenshot, Screenshot]):
-        self.screenshot_ = screenshot
 
     @property
     def rules(self) -> List[Rule]:
@@ -86,38 +65,21 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
             return []
 
     @property
-    def scripts(self) -> List[Union[Script, BaseScript]]:
-        if hasattr(self, "scripts_") and self.scripts_ is not None:
-            return self.scripts_
-
+    def scripts(self) -> List[Script]:
         try:
             return [script.to_model() for script in self._scripts]
         except NoValuesFetched:
             return []
 
-    @scripts.setter
-    def scripts(self, scripts: List[Union[Script, BaseScript]]):
-        self.scripts_ = scripts
-
     @property
-    def dns_records(self) -> List[Union[DnsRecord, BaseDnsRecord]]:
-        if hasattr(self, "dns_records_") and self.dns_records_ is not None:
-            return self.dns_records_
-
+    def dns_records(self) -> List[DnsRecord]:
         try:
             return [record.to_model() for record in self._dns_records]
         except NoValuesFetched:
             return []
 
-    @dns_records.setter
-    def dns_records(self, dns_records: List[Union[DnsRecord, BaseDnsRecord]]):
-        self.dns_records_ = dns_records
-
     @property
-    def classifications(self) -> List[Union[Classification, BaseClassification]]:
-        if hasattr(self, "classifications_") and self.classifications_ is not None:
-            return self.classifications_
-
+    def classifications(self) -> List[Classification]:
         try:
             return [
                 classification.to_model() for classification in self._classifications
@@ -125,16 +87,8 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
         except NoValuesFetched:
             return []
 
-    @classifications.setter
-    def classifications(
-        self, classifications: List[Union[Classification, BaseClassification]]
-    ):
-        self.classifications_ = classifications
-
-    def to_model(self) -> Union[BaseSnapshot, SnapshotModel]:
-        if self.created_at is not None:
-            return SnapshotModel.from_orm(self)
-        return BaseSnapshot.from_orm(self)
+    def to_model(self) -> SnapshotModel:
+        return SnapshotModel.from_orm(self)
 
     def to_dict(self) -> dict:
         model = self.to_model()

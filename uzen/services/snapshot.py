@@ -101,5 +101,4 @@ async def save_snapshot(result: SnapshotResult) -> Snapshot:
             script.snapshot_id = snapshot.id
         await Script.bulk_create(result.scripts)
 
-        snapshot.screenshot = screenshot
         return snapshot

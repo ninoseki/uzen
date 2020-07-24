@@ -2,13 +2,10 @@ import json
 
 import pytest
 
-from uzen.factories.classifications import ClassificationFactory
-from uzen.factories.dns_records import DnsRecordFactory
 from uzen.models.screenshots import Screenshot
 from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot
 from uzen.schemas.utils import SnapshotResult
-from uzen.services.browser import Browser
 
 
 @pytest.mark.asyncio
@@ -131,69 +128,3 @@ async def mock_take_snapshot_without_script(*args, **kwargs):
         screenshot=screenshot,
         scripts=[],
     )
-
-
-def mock_build_from_snapshot(snapshot):
-    return []
-
-
-@pytest.mark.asyncio
-async def test_yara_oneshot(client, monkeypatch):
-    monkeypatch.setattr(Browser, "take_snapshot", mock_take_snapshot_without_script)
-    monkeypatch.setattr(
-        ClassificationFactory, "from_snapshot", mock_build_from_snapshot
-    )
-    monkeypatch.setattr(DnsRecordFactory, "from_snapshot", mock_build_from_snapshot)
-
-    payload = {
-        "source": 'rule foo: bar {strings: $a = "body" condition: $a}',
-        "url": "https://www.w3.org",
-    }
-    response = await client.post("/api/yara/oneshot", data=json.dumps(payload))
-    assert response.status_code == 200
-
-    data = response.json()
-    assert data.get("matched")
-
-    payload = {
-        "source": 'rule foo: bar {strings: $a = "foo bar" condition: $a}',
-        "url": "https://www.w3.org",
-    }
-    response = await client.post("/api/yara/oneshot", data=json.dumps(payload))
-    assert response.status_code == 200
-
-    data = response.json()
-    assert not data.get("matched")
-
-
-@pytest.mark.asyncio
-async def test_yara_oneshot_with_script(client, monkeypatch):
-    monkeypatch.setattr(Browser, "take_snapshot", mock_take_snapshot)
-    monkeypatch.setattr(
-        ClassificationFactory, "from_snapshot", mock_build_from_snapshot
-    )
-    monkeypatch.setattr(DnsRecordFactory, "from_snapshot", mock_build_from_snapshot)
-
-    payload = {
-        "source": 'rule foo: bar {strings: $a = "foo" condition: $a}',
-        "url": "https://www.w3.org",
-        "target": "script",
-    }
-    response = await client.post("/api/yara/oneshot", data=json.dumps(payload))
-    assert response.status_code == 200
-
-    data = response.json()
-    assert data.get("matched")
-
-    matches = data.get("matches")
-    assert isinstance(matches, list)
-
-
-@pytest.mark.asyncio
-async def test_yara_oneshot_with_invalid_input(client):
-    # without url
-    payload = {
-        "source": 'rule foo: bar {strings: $a = "foo" condition: $a}',
-    }
-    response = await client.post("/api/yara/oneshot", data=json.dumps(payload))
-    assert response.status_code == 422
