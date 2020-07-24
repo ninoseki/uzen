@@ -30,11 +30,11 @@
     "buefy": "^0.8.20",
     "core-js": "^3.6.5",
     "crypto-js": "^4.0.0",
-    "highlight.js": "^10.1.1",
+    "highlight.js": "^10.1.2",
     "moment": "^2.27.0",
     "qs": "^6.9.4",
     "vue": "^2.6.11",
-    "vue-class-component": "^7.2.3",
+    "vue-class-component": "^7.2.5",
     "vue-json-pretty": "^1.6.5",
     "vue-property-decorator": "^9.0.0",
     "vue-router": "^3.3.4"
@@ -42,7 +42,7 @@
   "devDependencies": {
     "@types/crypto-js": "^3.1.47",
     "@types/highlight.js": "^9.12.4",
-    "@types/jest": "^26.0.5",
+    "@types/jest": "^26.0.7",
     "@types/qs": "^6.9.3",
     "@typescript-eslint/eslint-plugin": "^2.34.0",
     "@typescript-eslint/parser": "^2.34.0",
