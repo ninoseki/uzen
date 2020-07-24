@@ -21,11 +21,17 @@ const routes = [
     path: "/",
     name: "Home",
     component: Home,
+    meta: {
+      title: "Uzen",
+    },
   },
   {
     path: "/snapshots",
     name: "Snapshots",
     component: Snapshots,
+    meta: {
+      title: "Snapshots - Uzen",
+    },
   },
   {
     path: "/snapshots/:id",
@@ -37,21 +43,33 @@ const routes = [
     path: "/yara",
     name: "Yara",
     component: Yara,
+    meta: {
+      title: "YARA - Uzen",
+    },
   },
   {
     path: "/import",
     name: "Import",
     component: Import,
+    meta: {
+      title: "Import - Uzen",
+    },
   },
   {
     path: "/oneshot",
     name: "Oneshot",
     component: Oneshot,
+    meta: {
+      title: "Oneshot - Uzen",
+    },
   },
   {
     path: "/rules",
     name: "Rules",
     component: Rules,
+    meta: {
+      title: "Rules - Uzen",
+    },
   },
   {
     path: "/rules/:id",
@@ -62,6 +80,9 @@ const routes = [
     path: "/matches",
     name: "Matches",
     component: Matches,
+    meta: {
+      title: "Matches - Uzen",
+    },
   },
   {
     path: "/ip_address/:ipAddress",
@@ -77,11 +98,20 @@ const routes = [
     path: "/bulk",
     name: "Bulk",
     component: Bulk,
+    meta: {
+      title: "Bulk - Uzen",
+    },
   },
 ];
 
 const router = new VueRouter({
   routes,
+});
+
+router.beforeEach((to, _from, next) => {
+  document.title = to.meta.title || "";
+
+  next();
 });
 
 export default router;

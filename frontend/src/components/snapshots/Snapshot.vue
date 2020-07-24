@@ -240,6 +240,11 @@ export default class SnapshotComponent extends Mixins<HighlightComponentMixin>(
     }
   }
 
+  updateTitle(): void {
+    const url = this.snapshot?.url || "undefined";
+    document.title = `${url} - Uzen`;
+  }
+
   async mounted() {
     this.snapshot = this._snapshot;
     this.$forceUpdate();
@@ -247,6 +252,7 @@ export default class SnapshotComponent extends Mixins<HighlightComponentMixin>(
     if (this.snapshot === undefined) {
       await this.load();
     }
+    this.updateTitle();
     this.highlightCodeBlocks();
   }
 
