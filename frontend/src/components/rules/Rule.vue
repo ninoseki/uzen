@@ -97,8 +97,14 @@ export default class RuleComponent extends Mixins<HighlightComponentMixin>(
     }
   }
 
+  updateTitle(): void {
+    const name = this.rule?.name || "undefined";
+    document.title = `${name} - Uzen`;
+  }
+
   async mounted() {
     await this.load();
+    this.updateTitle();
     this.highlightCodeBlocks();
   }
 

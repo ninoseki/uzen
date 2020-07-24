@@ -12,5 +12,14 @@ import Domain from "@/components/domain/Domain.vue";
     Domain,
   },
 })
-export default class DomainView extends Vue {}
+export default class DomainView extends Vue {
+  updateTitle(): void {
+    const hostname = this.$route.params.hostname;
+    document.title = `${hostname} - Uzen`;
+  }
+
+  mounted() {
+    this.updateTitle();
+  }
+}
 </script>
