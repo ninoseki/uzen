@@ -5,18 +5,10 @@ from fastapi_utils.api_model import APIModel
 from pydantic import Field
 
 from uzen.schemas.common import Source, Target
-from uzen.schemas.snapshots import (
-    BaseSnapshot,
-    CreateSnapshotPayload,
-    SimplifiedSnapshot,
-)
+from uzen.schemas.snapshots import SimplifiedSnapshot
 
 
 class ScanPayload(Source, Target, APIModel):
-    pass
-
-
-class OneshotPayload(CreateSnapshotPayload, ScanPayload):
     pass
 
 
@@ -58,20 +50,6 @@ class YaraResult(APIModel):
         ..., title="Script ID", description="An ID of the script"
     )
     target: str = Field(..., title="Target", description="The target to scan")
-    matches: List[YaraMatch] = Field(
-        [], title="YARA matches", description="A list of YARA matches"
-    )
-
-
-class OneshotResponse(APIModel):
-    snapshot: BaseSnapshot = Field(
-        ...,
-        title="Snapshot",
-        description="A snapshot model without id & created_at fields",
-    )
-    matched: bool = Field(
-        ..., title="whether matched or not", description="whether matched or not"
-    )
     matches: List[YaraMatch] = Field(
         [], title="YARA matches", description="A list of YARA matches"
     )

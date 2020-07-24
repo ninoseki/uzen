@@ -7,7 +7,6 @@ import Home from "@/views/Home.vue";
 import Import from "@/views/Import.vue";
 import IPAddress from "@/views/IPAddress.vue";
 import Matches from "@/views/Matches.vue";
-import Oneshot from "@/views/Oneshot.vue";
 import Rule from "@/views/Rule.vue";
 import Rules from "@/views/Rules.vue";
 import Snapshot from "@/views/Snapshot.vue";
@@ -53,14 +52,6 @@ const routes = [
     component: Import,
     meta: {
       title: "Import - Uzen",
-    },
-  },
-  {
-    path: "/oneshot",
-    name: "Oneshot",
-    component: Oneshot,
-    meta: {
-      title: "Oneshot - Uzen",
     },
   },
   {
