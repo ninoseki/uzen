@@ -81,7 +81,7 @@ async def test_take_snapshot_with_bad_ssl(monkeypatch):
 
 
 @pytest.mark.asyncio
-@pytest.mark.timeout(10)
+@pytest.mark.timeout(10, method="thread")
 async def test_launch_browser(monkeypatch):
     monkeypatch.setattr(
         "uzen.core.settings.BROWSER_WS_ENDPOINT", "wss://chrome.browserless.io"

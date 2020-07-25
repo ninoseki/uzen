@@ -53,6 +53,7 @@ respx = "^0.11.2"
 seed-isort-config = "^2.2.0"
 vcrpy = "^4.0.2"
 pytest-sugar = "^0.9.4"
+pytest-parallel = "^0.1.0"
 
 [tool.isort]
 force_grid_wrap = 0
