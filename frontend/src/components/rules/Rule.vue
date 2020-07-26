@@ -1,19 +1,34 @@
 <template>
   <div class="box" v-if="hasRule()">
+    <nav class="navbar">
+      <div class="navbar-brand">
+        <H2>
+          {{ rule.name }}
+        </H2>
+      </div>
+      <div class="navbar-menu">
+        <div class="navbar-end">
+          <router-link
+            class="button"
+            :to="{
+              name: 'EditRule',
+              params: { id: rule.id },
+            }"
+            >Edit
+          </router-link>
+        </div>
+      </div>
+    </nav>
+
     <div class="column is-full">
       <div class="columns">
         <div class="column is-half">
-          <H3>Info</H3>
           <div class="table-container">
             <table class="table">
               <tbody>
                 <tr>
                   <th>ID</th>
-                  <td>{{ rule.id || "N/A" }}</td>
-                </tr>
-                <tr>
-                  <th>Name</th>
-                  <td>{{ rule.name }}</td>
+                  <td>{{ rule.id }}</td>
                 </tr>
                 <tr>
                   <th>Target</th>
@@ -60,12 +75,14 @@ import {
   HighlightMixin,
 } from "@/components/mixins";
 import Table from "@/components/snapshots/TableWithScreenshot.vue";
+import H2 from "@/components/ui/H2.vue";
 import H3 from "@/components/ui/H3.vue";
 import { ErrorData, Rule } from "@/types";
 
 @Component({
   components: {
     Counter,
+    H2,
     H3,
     Table,
   },

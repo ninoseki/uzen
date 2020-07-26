@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 
 import Bulk from "@/views/Bulk.vue";
 import Domain from "@/views/Domain.vue";
+import EditRule from "@/views/EditRule.vue";
 import Home from "@/views/Home.vue";
 import Import from "@/views/Import.vue";
 import IPAddress from "@/views/IPAddress.vue";
@@ -66,6 +67,14 @@ const routes = [
     path: "/rules/:id",
     name: "Rule",
     component: Rule,
+  },
+  {
+    path: "/rules/edit/:id",
+    name: "EditRule",
+    component: EditRule,
+    meta: {
+      title: "Edit a rule - Uzen",
+    },
   },
   {
     path: "/matches",
