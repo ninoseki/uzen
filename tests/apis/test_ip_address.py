@@ -9,7 +9,9 @@ def mock_whois(hostname: str):
 
 
 @pytest.mark.asyncio
-@vcr.use_cassette("tests/fixtures/vcr_cassettes/ip_address.yaml")
+@vcr.use_cassette(
+    "tests/fixtures/vcr_cassettes/ip_address.yaml", ignore_hosts=["testserver"]
+)
 async def test_get(client, monkeypatch):
     monkeypatch.setattr(Whois, "whois", mock_whois)
 
