@@ -18,6 +18,10 @@ from uzen.services.utils import get_hostname_from_url, get_ip_address_by_hostnam
 # Declare rules related schemas here to prevent circular reference
 
 
+def remove_sharp_and_question_from_tail(v: str) -> str:
+    return v.rstrip("#|?")
+
+
 class BaseRule(Source, Target):
     """Base Pydantic model for Rule
 
@@ -58,6 +62,18 @@ class BasicAttributes(APIModel):
     sha256: str = Field(
         ..., title="SHA256", description="SHA256 hash of HTTP response body"
     )
+
+    @validator(
+        "url", pre=True,
+    )
+    def normalize_url(cls, v: str):
+        return remove_sharp_and_question_from_tail(v)
+
+    @validator(
+        "submitted_url", pre=True,
+    )
+    def normalize_submitted_url(cls, v: str):
+        return remove_sharp_and_question_from_tail(v)
 
 
 class BaseSnapshot(BasicAttributes):
