@@ -148,11 +148,11 @@
         </b-tab-item>
 
         <b-tab-item label="Whois">
-          <pre>{{ snapshot.whois || "N/A" }}</pre>
+          <Whois v-bind:whois="snapshot.whois" />
         </b-tab-item>
 
         <b-tab-item label="Certificate">
-          <pre>{{ snapshot.certificate || "N/A" }}</pre>
+          <Certificate v-bind:certificate="snapshot.certificate" />
         </b-tab-item>
 
         <b-tab-item label="Scripts">
@@ -180,6 +180,7 @@ import axios from "axios";
 import { Component, Mixins } from "vue-mixin-decorator";
 import { Prop } from "vue-property-decorator";
 
+import Certificate from "@/components/certificate/Certificate.vue";
 import Classifications from "@/components/classifications/Classifications.vue";
 import DnsRecords from "@/components/dns_records/DnsRecords.vue";
 import Links from "@/components/links/Links.vue";
@@ -194,11 +195,13 @@ import Scripts from "@/components/scripts/Scripts.vue";
 import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
 import H2 from "@/components/ui/H2.vue";
 import H3 from "@/components/ui/H3.vue";
+import Whois from "@/components/whois/Whois.vue";
 import YaraResultComponent from "@/components/yara/Result.vue";
 import { ErrorData, Snapshot, YaraResult } from "@/types";
 
 @Component({
   components: {
+    Certificate,
     Classifications,
     DatetimeWithDiff,
     DnsRecords,
@@ -208,6 +211,7 @@ import { ErrorData, Snapshot, YaraResult } from "@/types";
     Rules,
     Screenshot,
     Scripts,
+    Whois,
     YaraResultComponent,
   },
 })
