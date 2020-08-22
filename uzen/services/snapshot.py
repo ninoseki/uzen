@@ -2,7 +2,7 @@ from typing import Optional
 
 import httpx
 from loguru import logger
-from pyppeteer.errors import PyppeteerError
+from playwright import Error
 from tortoise.transactions import in_transaction
 
 from uzen.core import settings
@@ -14,7 +14,7 @@ from uzen.services.browser import Browser
 from uzen.services.fake_browser import FakeBrowser
 
 
-def use_pyppeteer(host: Optional[str] = None) -> bool:
+def use_playwright(host: Optional[str] = None) -> bool:
     return host is None
 
 
@@ -40,10 +40,10 @@ async def take_snapshot(
     result = None
     errors = []
 
-    # Skip pyppeteer if a host is not None
+    # Skip playwright if a host is not None
     # because Chromium prohibits setting "host" header.
     # ref. https://github.com/puppeteer/puppeteer/issues/4575#issuecomment-511259872
-    if use_pyppeteer(host):
+    if use_playwright(host):
         try:
             result = await Browser.take_snapshot(
                 url,
@@ -53,8 +53,8 @@ async def take_snapshot(
                 timeout=timeout,
                 user_agent=user_agent,
             )
-        except (PyppeteerError, UnboundLocalError) as e:
-            message = f"Failed to take a snapshot by pyppeteer: {e}."
+        except Error as e:
+            message = f"Failed to take a snapshot by playwright: {e}."
             logger.debug(message)
             errors.append(message)
 

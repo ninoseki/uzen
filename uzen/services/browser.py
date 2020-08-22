@@ -1,9 +1,12 @@
+import asyncio
+import base64
 from typing import List, Optional, cast
 
-import pyppeteer
-from pyppeteer import connect, launch
-from pyppeteer.errors import PyppeteerError
-from pyppeteer.network_manager import Response
+import playwright
+from playwright import Error, async_playwright
+from playwright.network import Response
+from playwright.page import Page
+from playwright.playwright import Playwright
 
 from uzen.core import settings
 from uzen.models.screenshots import Screenshot
@@ -18,26 +21,13 @@ from uzen.services.utils import (
     get_ip_address_by_hostname,
 )
 from uzen.services.whois import Whois
-from uzen.utils.patch_pyppeteer import patch_pyppeteer
-
-# apply a patch to download chromium
-patch_pyppeteer()
 
 
-async def launch_browser(
-    ignore_https_errors: bool = False,
-) -> pyppeteer.browser.Browser:
+async def launch_browser(p: Playwright) -> playwright.browser.Browser:
     if settings.BROWSER_WS_ENDPOINT != "":
-        return await connect(
-            browserWSEndpoint=settings.BROWSER_WS_ENDPOINT,
-            headless=True,
-            ignoreHTTPSErrors=ignore_https_errors,
-            args=["--no-sandbox"],
-        )
+        return await p.chromium.connect(wsEndpoint=settings.BROWSER_WS_ENDPOINT)
 
-    return await launch(
-        headless=True, ignoreHTTPSErrors=ignore_https_errors, args=["--no-sandbox"],
-    )
+    return await p.chromium.launch(headless=True, chromiumSandbox=False)
 
 
 def is_js_content_type(content_type: str) -> bool:
@@ -73,65 +63,65 @@ class Browser:
         """
         submitted_url: str = url
         try:
-            browser = await launch_browser(ignore_https_errors)
-            page = await browser.newPage()
-
-            if user_agent is not None:
-                await page.setUserAgent(user_agent)
-
-            referer = referer or ""
-            headers = {"Referer": referer}
-            if accept_language is not None:
-                headers["Accept-Language"] = accept_language
-            await page.setExtraHTTPHeaders(headers)
-
-            # intercept responses on page to get scripts
-            scripts: List[Script] = []
-
-            async def response_handler(response: Response) -> None:
-                if not response.ok:
-                    return
-
-                content_type: str = response.headers.get("content-type", "")
-                if not is_js_content_type(content_type):
-                    return
-
-                content = await response.text()
-                scripts.append(
-                    Script(
-                        url=response.url,
-                        content=content,
-                        sha256=calculate_sha256(content),
-                    )
+            async with async_playwright() as p:
+                browser: playwright.browser.Browser = await launch_browser(p)
+                page: Page = await browser.newPage(
+                    ignoreHTTPSErrors=ignore_https_errors, userAgent=user_agent
                 )
 
-            page.on("response", response_handler)
+                headers = {}
+                if accept_language is not None:
+                    headers["Accept-Language"] = accept_language
+                await page.setExtraHTTPHeaders(headers)
 
-            # default timeout = 30 seconds
-            timeout = timeout or 30 * 1000
-            res = await page.goto(
-                url, timeout=timeout, wailtUntil=settings.BROWSER_WAIT_UNTIL
-            )
+                # intercept responses on page to get scripts
+                scripts: List[Script] = []
 
-            request = {
-                "accept_language": accept_language,
-                "browser": await browser.version(),
-                "ignore_https_errors": ignore_https_errors,
-                "referer": referer,
-                "timeout": timeout,
-                "user_agent": user_agent or await browser.userAgent(),
-            }
+                async def handle_response(response: Response) -> None:
+                    content_type: str = response.headers.get("content-type", "")
+                    if response.ok and is_js_content_type(content_type):
+                        content = await response.text()
+                        scripts.append(
+                            Script(
+                                url=response.url,
+                                content=content,
+                                sha256=calculate_sha256(content),
+                            )
+                        )
 
-            url = page.url
-            status = res.status
-            screenshot_data = await page.screenshot(encoding="base64")
-            body = await page.content()
-            sha256 = calculate_sha256(body)
-            headers = res.headers
-        except PyppeteerError as e:
+                page.on(
+                    "response",
+                    lambda response: asyncio.create_task(handle_response(response)),
+                )
+
+                # default timeout = 30 seconds
+                timeout = timeout or 30 * 1000
+                res: Response = await page.goto(
+                    url,
+                    referer=referer,
+                    timeout=timeout,
+                    waitUntil=settings.BROWSER_WAIT_UNTIL,
+                )
+
+                request = {
+                    "accept_language": accept_language,
+                    "browser": browser.version,
+                    "ignore_https_errors": ignore_https_errors,
+                    "referer": referer,
+                    "timeout": timeout,
+                    "user_agent": await page.evaluate("() => navigator.userAgent"),
+                }
+
+                url = page.url
+                status = res.status
+                screenshot_data = await page.screenshot()
+                body = await page.content()
+                sha256 = calculate_sha256(body)
+                headers = res.headers
+
+                await browser.close()
+        except Error as e:
             raise (e)
-        else:
-            await browser.close()
 
         server = headers.get("server")
         content_type = headers.get("content-type")
@@ -161,7 +151,7 @@ class Browser:
             request=request,
         )
         screenshot = Screenshot()
-        screenshot.data = screenshot_data
+        screenshot.data = base64.b64encode(screenshot_data).decode()
 
         return SnapshotResult(
             screenshot=screenshot, snapshot=snapshot, scripts=scripts,
@@ -171,29 +161,31 @@ class Browser:
     async def preview(hostname: str) -> Screenshot:
         async def _preview(hostname: str, protocol="http") -> Screenshot:
             try:
-                browser = await launch_browser()
-                page = await browser.newPage()
-                # try with http
-                await page.goto(
-                    f"{protocol}://{hostname}", wailtUntil=settings.BROWSER_WAIT_UNTIL
-                )
-                screenshot_data = await page.screenshot(encoding="base64")
-                await browser.close()
+                async with async_playwright() as p:
+                    browser = await launch_browser(p)
+                    page = await browser.newPage()
+                    # try with http
+                    await page.goto(
+                        f"{protocol}://{hostname}",
+                        waitUntil=settings.BROWSER_WAIT_UNTIL,
+                    )
+                    screenshot_data = await page.screenshot()
+                    await browser.close()
 
-                screenshot = Screenshot()
-                screenshot.data = cast(str, screenshot_data)
-                return screenshot
-            except PyppeteerError as e:
+                    screenshot = Screenshot()
+                    screenshot.data = base64.b64encode(screenshot_data).decode()
+                    return screenshot
+            except Error as e:
                 raise (e)
 
         try:
             return await _preview(hostname, "http")
-        except PyppeteerError:
+        except Error:
             pass
 
         try:
             return await _preview(hostname, "https")
-        except PyppeteerError:
+        except Error:
             screenshot = Screenshot()
             screenshot.data = ""
             return screenshot
