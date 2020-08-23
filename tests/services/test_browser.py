@@ -1,6 +1,6 @@
-import pyppeteer
+import playwright
 import pytest
-from pyppeteer.errors import PyppeteerError
+from playwright import Error, async_playwright
 
 from uzen.core import settings
 from uzen.services.browser import Browser, launch_browser
@@ -42,6 +42,18 @@ async def test_take_snapshot(monkeypatch):
 
 
 @pytest.mark.asyncio
+async def test_take_snapshot_with_scripts(monkeypatch):
+    monkeypatch.setattr(RDAP, "lookup", mock_lookup)
+    monkeypatch.setattr(Whois, "whois", mock_whois)
+    monkeypatch.setattr(
+        Certificate, "load_and_dump_from_url", mock_load_and_dump_from_url
+    )
+
+    result = await Browser.take_snapshot("https://github.com/")
+    assert len(result.scripts) > 0
+
+
+@pytest.mark.asyncio
 async def test_take_snapshot_with_options(monkeypatch):
     monkeypatch.setattr(RDAP, "lookup", mock_lookup)
     monkeypatch.setattr(Whois, "whois", mock_whois)
@@ -70,7 +82,7 @@ async def test_take_snapshot_with_bad_ssl(monkeypatch):
     monkeypatch.setattr(RDAP, "lookup", mock_lookup)
     monkeypatch.setattr(Whois, "whois", mock_whois)
 
-    with pytest.raises(PyppeteerError):
+    with pytest.raises(Error):
         result = await Browser.take_snapshot("https://expired.badssl.com")
 
     result = await Browser.take_snapshot(
@@ -89,9 +101,10 @@ async def test_launch_browser(monkeypatch):
     assert settings.BROWSER_WS_ENDPOINT == "wss://chrome.browserless.io"
 
     try:
-        browser = await launch_browser()
-        assert isinstance(browser, pyppeteer.browser.Browser)
-        assert browser.wsEndpoint == "wss://chrome.browserless.io"
-        await browser.close()
+        async with async_playwright() as p:
+            browser = await launch_browser(p)
+            assert isinstance(browser, playwright.browser.Browser)
+            assert browser.wsEndpoint == "wss://chrome.browserless.io"
+            await browser.close()
     except Exception:
-        await browser.close()
+        pass

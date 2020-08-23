@@ -23,7 +23,7 @@ matrix:
         - pip install poetry
         - poetry config virtualenvs.create false
         - poetry install
-        - pyppeteer-install
+        - python -m playwright install
       before_script:
         # create dummy directories & file
         - mkdir -p frontend/dist/static frontend/dist/images
@@ -43,7 +43,7 @@ matrix:
         - pip install poetry
         - poetry config virtualenvs.create false
         - poetry install
-        - pyppeteer-install
+        - python -m playwright install
       before_script:
         - mkdir -p frontend/dist/static frontend/dist/images
         - touch frontend/dist/index.html frontend/dist/images/not-found.png
