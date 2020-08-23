@@ -19,6 +19,7 @@ matrix:
         pip: true
         directories:
           - "$HOME/.cache/pypoetry"
+          - "%HOME/.cache/ms-playwright"
       install:
         - pip install poetry
         - poetry config virtualenvs.create false
@@ -38,6 +39,7 @@ matrix:
         pip: true
         directories:
           - "$HOME/.cache/pypoetry"
+          - "%HOME/.cache/ms-playwright"
       before_install: mysql -e 'CREATE DATABASE uzen;'
       install:
         - pip install poetry
