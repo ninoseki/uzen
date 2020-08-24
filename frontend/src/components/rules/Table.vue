@@ -1,30 +1,28 @@
 <template>
   <div class="box table-container" v-if="hasRules">
     <b-table :data="rules">
-      <template slot-scope="props">
-        <b-table-column field="name" label="Name">
-          <router-link
-            :to="{
-              name: 'Rule',
-              params: { id: props.row.id },
-            }"
-          >
-            {{ props.row.name }}
-          </router-link>
-        </b-table-column>
+      <b-table-column field="name" label="Name" v-slot="props">
+        <router-link
+          :to="{
+            name: 'Rule',
+            params: { id: props.row.id },
+          }"
+        >
+          {{ props.row.name }}
+        </router-link>
+      </b-table-column>
 
-        <b-table-column field="target" label="Target">
-          {{ props.row.target }}
-        </b-table-column>
+      <b-table-column field="target" label="Target" v-slot="props">
+        {{ props.row.target }}
+      </b-table-column>
 
-        <b-table-column field="createdAt" label="Created at">
-          <DatetimeWithDiff v-bind:datetime="props.row.createdAt" />
-        </b-table-column>
+      <b-table-column field="createdAt" label="Created at" v-slot="props">
+        <DatetimeWithDiff v-bind:datetime="props.row.createdAt" />
+      </b-table-column>
 
-        <b-table-column field="updatedAt" label="Updated at">
-          <DatetimeWithDiff v-bind:datetime="props.row.updatedAt" />
-        </b-table-column>
-      </template>
+      <b-table-column field="updatedAt" label="Updated at" v-slot="props">
+        <DatetimeWithDiff v-bind:datetime="props.row.updatedAt" />
+      </b-table-column>
     </b-table>
   </div>
 </template>

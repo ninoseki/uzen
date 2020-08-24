@@ -2,15 +2,13 @@
   <div>
     <div class="table-container" v-if="hasClassifications">
       <b-table :data="classifications">
-        <template slot-scope="props">
-          <b-table-column field="name" label="Name">
-            {{ props.row.name }}
-          </b-table-column>
+        <b-table-column field="name" label="Name" v-slot="props">
+          {{ props.row.name }}
+        </b-table-column>
 
-          <b-table-column field="malicious" label="Malicious">
-            {{ props.row.malicious }}
-          </b-table-column>
-        </template>
+        <b-table-column field="malicious" label="Malicious" v-slot="props">
+          {{ props.row.malicious }}
+        </b-table-column>
       </b-table>
     </div>
     <div v-else>
