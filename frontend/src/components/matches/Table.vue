@@ -1,38 +1,36 @@
 <template>
   <div class="box table-container" v-if="hasMatches">
     <b-table :data="matches">
-      <template slot-scope="props">
-        <b-table-column field="snapshot" label="Snapshot">
-          <router-link
-            :to="{
-              name: 'Snapshot',
-              params: { id: props.row.snapshot.id },
-            }"
-          >
-            {{ props.row.snapshot.url | truncate }}
-          </router-link>
-          <p v-if="props.row.script">({{ props.row.script.url }})</p>
-        </b-table-column>
+      <b-table-column field="snapshot" label="Snapshot" v-slot="props">
+        <router-link
+          :to="{
+            name: 'Snapshot',
+            params: { id: props.row.snapshot.id },
+          }"
+        >
+          {{ props.row.snapshot.url | truncate }}
+        </router-link>
+        <p v-if="props.row.script">({{ props.row.script.url }})</p>
+      </b-table-column>
 
-        <b-table-column field="rule" label="Matched rule">
-          <router-link
-            :to="{
-              name: 'Rule',
-              params: { id: props.row.rule.id },
-            }"
-          >
-            {{ props.row.rule.name }}
-          </router-link>
-        </b-table-column>
+      <b-table-column field="rule" label="Matched rule" v-slot="props">
+        <router-link
+          :to="{
+            name: 'Rule',
+            params: { id: props.row.rule.id },
+          }"
+        >
+          {{ props.row.rule.name }}
+        </router-link>
+      </b-table-column>
 
-        <b-table-column field="matches" label="Matches">
-          <pre><code class="json">{{ props.row.matches }}</code></pre>
-        </b-table-column>
+      <b-table-column field="matches" label="Matches" v-slot="props">
+        <pre><code class="json">{{ props.row.matches }}</code></pre>
+      </b-table-column>
 
-        <b-table-column field="createdAt" label="Created at">
-          <DatetimeWithDiff v-bind:datetime="props.row.createdAt" />
-        </b-table-column>
-      </template>
+      <b-table-column field="createdAt" label="Created at" v-slot="props">
+        <DatetimeWithDiff v-bind:datetime="props.row.createdAt" />
+      </b-table-column>
     </b-table>
   </div>
 </template>

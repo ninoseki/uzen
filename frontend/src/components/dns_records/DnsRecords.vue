@@ -2,15 +2,13 @@
   <div>
     <div class="table-container" v-if="hasDnsRecords">
       <b-table :data="dnsRecords">
-        <template slot-scope="props">
-          <b-table-column field="type" label="Type">
-            {{ props.row.type }}
-          </b-table-column>
+        <b-table-column field="type" label="Type" v-slot="props">
+          {{ props.row.type }}
+        </b-table-column>
 
-          <b-table-column field="value" label="Value">
-            {{ props.row.value }}
-          </b-table-column>
-        </template>
+        <b-table-column field="value" label="Value" v-slot="props">
+          {{ props.row.value }}
+        </b-table-column>
       </b-table>
     </div>
     <div v-else>
