@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 
 import aiometer
 import httpx
-from requests_html import HTML
+from bs4 import BeautifulSoup
 
 from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot
@@ -60,10 +60,10 @@ def get_script_sources(url: str, body: str) -> List[str]:
     Returns:
         List[str] -- A list of script sources
     """
-    html = HTML(html=body)
+    html = BeautifulSoup(body, "html.parser")
 
     sources: List[str] = []
-    for script in html.find("script"):
+    for script in html.find_all("script"):
         source = script.attrs.get("src")
         if source is not None:
             sources.append(normalize_source(url, source))
