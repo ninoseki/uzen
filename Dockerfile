@@ -8,7 +8,6 @@ RUN npm install && npm run build && rm -rf node_modules
 # prod env
 FROM python:3.8-slim-buster
 
-# ref. https://github.com/puppeteer/puppeteer/blob/master/docs/troubleshooting.md#chrome-headless-doesnt-launch-on-unix
 RUN apt-get update \
   && apt-get install -y \
   # Install dependencies for puppeteer
@@ -57,7 +56,8 @@ RUN apt-get update \
   gcc \
   pkg-config \
   # Install dependencies for Uzen
-  dnsutils procps \
+  dnsutils \
+  procps \
   && apt-get clean  \
   && rm -rf /var/lib/apt/lists/*
 
@@ -74,6 +74,7 @@ RUN pip3 install poetry && poetry config virtualenvs.create false && poetry inst
 ENV PLAYWRIGHT_BROWSERS_PATH /app/playwright
 
 RUN mkdir -p /app/playwright && python -m playwright install
+RUN rm -rf /app/playwright/webkit-* && rm -rf /app/playwright/firefox-*
 
 ENV PORT 8000
 
