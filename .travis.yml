@@ -9,9 +9,6 @@ env:
     - TESTING=True
     - GOOGLE_SAFE_BROWSING_API_KEY=foo
 
-before_install:
-  - sudo apt-get install -y ffmpeg
-
 matrix:
   include:
     # python with sqlite
@@ -23,6 +20,8 @@ matrix:
         directories:
           - "$HOME/.cache/pypoetry"
           - "%HOME/.cache/ms-playwright"
+      before_install:
+        - sudo apt-get install -y ffmpeg
       install:
         - pip install poetry
         - poetry config virtualenvs.create false
@@ -43,7 +42,9 @@ matrix:
         directories:
           - "$HOME/.cache/pypoetry"
           - "%HOME/.cache/ms-playwright"
-      before_install: mysql -e 'CREATE DATABASE uzen;'
+      before_install:
+        - sudo apt-get install -y ffmpeg
+        - mysql -e 'CREATE DATABASE uzen;'
       install:
         - pip install poetry
         - poetry config virtualenvs.create false
