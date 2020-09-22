@@ -6,8 +6,15 @@
 </template>
 
 <script lang="ts">
-import moment from "moment/moment";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import { Component, Prop, Vue } from "vue-property-decorator";
+
+dayjs.extend(relativeTime);
+dayjs.extend(timezone);
+dayjs.extend(utc);
 
 @Component
 export default class DatetimeWithDiff extends Vue {
@@ -17,14 +24,14 @@ export default class DatetimeWithDiff extends Vue {
     if (this.datetime === undefined) {
       return "N/A";
     }
-    return moment.parseZone(this.datetime).local().format();
+    return dayjs(this.datetime).local().format();
   }
 
   get humanreadableTimeDifference(): string {
     if (this.datetime === undefined) {
       return "N/A";
     }
-    return moment.parseZone(this.datetime).local().fromNow(true);
+    return dayjs(this.datetime).local().fromNow();
   }
 }
 </script>

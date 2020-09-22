@@ -1,6 +1,13 @@
-import moment from "moment/moment";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import Vue from "vue";
 import { Mixin } from "vue-mixin-decorator";
+
+dayjs.extend(relativeTime);
+dayjs.extend(timezone);
+dayjs.extend(utc);
 
 @Mixin
 export class SearchFormMixin extends Vue {
@@ -38,20 +45,20 @@ export class SearchFormMixin extends Vue {
   }
 
   datetimeFormatter(datetime: Date): string {
-    return moment.parseZone(datetime).local().format();
+    return dayjs(datetime).local().format();
   }
 
   nowDatetime(): string {
-    return moment().toISOString();
+    return dayjs().toISOString();
   }
 
   minDatetime(
     a: string | number | undefined,
     b: string | number | undefined
   ): string {
-    const c = a === undefined ? moment() : moment(a);
-    const d = b === undefined ? moment() : moment(b);
+    const c = a === undefined ? dayjs() : dayjs(a);
+    const d = b === undefined ? dayjs() : dayjs(b);
 
-    return c > d ? d.toISOString(true) : c.toISOString(true);
+    return c > d ? d.toISOString() : c.toISOString();
   }
 }
