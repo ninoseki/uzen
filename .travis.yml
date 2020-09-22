@@ -9,6 +9,9 @@ env:
     - TESTING=True
     - GOOGLE_SAFE_BROWSING_API_KEY=foo
 
+before_install:
+  - sudo apt-get install -y ffmpeg
+
 matrix:
   include:
     # python with sqlite
