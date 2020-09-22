@@ -175,7 +175,6 @@ export interface CountResponse {
   count: number;
 }
 
-// eslint-disable-next-line @typescript-eslint/interface-name-prefix
 export interface IPAddressInformation {
   ipAddress: string;
   asn: string;

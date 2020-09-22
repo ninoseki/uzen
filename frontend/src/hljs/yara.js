@@ -8,10 +8,8 @@ export default function (hljs) {
   return {
     name: "YARA",
     aliases: ["yara", "yar"],
-    // eslint-disable-next-line @typescript-eslint/camelcase
     case_insensitive: false,
     keywords: {
-      // eslint-disable-next-line @typescript-eslint/camelcase
       built_in:
         "all and any ascii at base64 base64wide condition contains entrypoint false filesize for fullword global import in include int16 int16be int32 int32be int8 int8be matches meta nocase not of or private rule strings them true uint16 uint16be uint32 uint32be uint8 uint8be wide xor",
       literal: "true false",

@@ -118,9 +118,7 @@
                 </div>
               </div>
               <div class="column is-half">
-                <H3>
-                  Screenshot
-                </H3>
+                <H3> Screenshot </H3>
                 <Screenshot
                   v-bind:snapshot_id="snapshot.id"
                   v-bind:screenshot="snapshot.screenshot"
@@ -135,9 +133,7 @@
               </router-link>
             </div>
             <div class="column">
-              <H3>
-                Matched rules
-              </H3>
+              <H3> Matched rules </H3>
               <Rules v-bind:rules="snapshot.rules" />
             </div>
           </div>

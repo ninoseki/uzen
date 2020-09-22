@@ -51,9 +51,7 @@
     </div>
 
     <div class="column">
-      <H3>
-        Whois
-      </H3>
+      <H3> Whois </H3>
       <pre>{{ information.whois || "N/A" }}</pre>
     </div>
   </div>

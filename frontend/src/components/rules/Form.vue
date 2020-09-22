@@ -33,11 +33,13 @@ export default class SearchForm extends Vue {
   @Prop() private target: TargetTypes | undefined;
   @Prop() private source: string | undefined;
 
-  private filters: RuleFilters = {
-    name: this.name,
-    target: this.target,
-    source: this.source,
-  };
+  get filters(): RuleFilters {
+    return {
+      name: this.name,
+      target: this.target,
+      source: this.source,
+    };
+  }
 
   filtersParams() {
     const obj: { [k: string]: string | number | undefined } = {};
