@@ -56,12 +56,14 @@ export default class SearchForm extends Mixins<SearchFormComponentMixin>(
   @Prop() private ruleId: string | undefined;
   @Prop() private snapshotId: string | undefined;
 
-  private filters: MatchFilters = {
-    ruleId: this.ruleId,
-    snapshotId: this.snapshotId,
-    fromAt: undefined,
-    toAt: undefined,
-  };
+  get filters(): MatchFilters {
+    return {
+      ruleId: this.ruleId,
+      snapshotId: this.snapshotId,
+      fromAt: undefined,
+      toAt: undefined,
+    };
+  }
 
   filtersParams() {
     const obj: { [k: string]: string | number | undefined } = {};

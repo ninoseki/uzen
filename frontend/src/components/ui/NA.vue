@@ -1,7 +1,5 @@
 <template>
-  <b-message>
-    N/A
-  </b-message>
+  <b-message> N/A </b-message>
 </template>
 
 <script lang="ts">

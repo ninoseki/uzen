@@ -11,9 +11,7 @@
         {{ snapshot.hostname }} ({{ snapshot.createdAt.split("T")[0] }})
       </b-button>
     </div>
-    <div v-else>
-      N/A
-    </div>
+    <div v-else>N/A</div>
   </div>
 </template>
 

@@ -117,18 +117,20 @@ export default class Search extends Mixins<SearchFormComponentMixin>(
   @Prop() private status: number | undefined;
   @Prop() private url: string | undefined;
 
-  private filters: SnapshotFilters = {
-    asn: this.asn,
-    contentType: this.contentType,
-    hostname: this.hostname,
-    ipAddress: this.ipAddress,
-    server: this.server,
-    sha256: this.sha256,
-    status: this.status,
-    url: this.url,
-    fromAt: undefined,
-    toAt: undefined,
-  };
+  get filters(): SnapshotFilters {
+    return {
+      asn: this.asn,
+      contentType: this.contentType,
+      hostname: this.hostname,
+      ipAddress: this.ipAddress,
+      server: this.server,
+      sha256: this.sha256,
+      status: this.status,
+      url: this.url,
+      fromAt: undefined,
+      toAt: undefined,
+    };
+  }
 
   filtersParams() {
     const obj: { [k: string]: string | number | undefined } = {};

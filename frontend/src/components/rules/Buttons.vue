@@ -11,9 +11,7 @@
         {{ rule.name }}
       </b-button>
     </div>
-    <div v-else>
-      N/A
-    </div>
+    <div v-else>N/A</div>
   </div>
 </template>
 

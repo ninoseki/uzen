@@ -14,15 +14,11 @@
     <div class="column is-full">
       <div class="columns">
         <div class="column is-half">
-          <H3>
-            DNS records
-          </H3>
+          <H3> DNS records </H3>
           <DnsRecords v-bind:dnsRecords="information.dnsRecords" />
         </div>
         <div class="column is-half">
-          <H3>
-            Live preview
-          </H3>
+          <H3> Live preview </H3>
           <Preview v-bind:hostname="information.hostname" />
         </div>
       </div>
@@ -39,9 +35,7 @@
     </div>
 
     <div class="column">
-      <H3>
-        Whois
-      </H3>
+      <H3> Whois </H3>
       <pre>{{ information.whois || "N/A" }}</pre>
     </div>
   </div>

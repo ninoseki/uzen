@@ -1,4 +1,3 @@
-/* eslint @typescript-eslint/camelcase: 0 */
 /* eslint @typescript-eslint/no-var-requires: 0 */
 const path = require("path");
 const webpack = require("webpack");
