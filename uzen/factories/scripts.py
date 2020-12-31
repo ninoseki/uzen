@@ -113,26 +113,27 @@ class ScriptFactory:
 
         ignore_https_errors = snapshot.request.get("ignore_https_errors")
         verify = not ignore_https_errors
-        client = httpx.AsyncClient(verify=verify)
 
-        # Get sources
-        tasks = [
-            partial(get_script_content, client, source, headers) for source in sources
-        ]
-        if len(tasks) <= 0:
-            return []
+        async with httpx.AsyncClient(verify=verify) as client:
+            # Get sources
+            tasks = [
+                partial(get_script_content, client, source, headers)
+                for source in sources
+            ]
+            if len(tasks) <= 0:
+                return []
 
-        results = await aiometer.run_all(tasks, max_at_once=MAX_AT_ONCE)
-        for result in results:
-            if result is None:
-                continue
+            results = await aiometer.run_all(tasks, max_at_once=MAX_AT_ONCE)
+            for result in results:
+                if result is None:
+                    continue
 
-            script = Script(
-                url=result.source,
-                content=result.content,
-                sha256=calculate_sha256(result.content),
-                # insert a dummy ID if a snapshot doesn't have ID
-                snapshot_id=snapshot.id or -1,
-            )
-            scripts.append(script)
+                script = Script(
+                    url=result.source,
+                    content=result.content,
+                    sha256=calculate_sha256(result.content),
+                    # insert a dummy ID if a snapshot doesn't have ID
+                    snapshot_id=snapshot.id or -1,
+                )
+                scripts.append(script)
         return scripts

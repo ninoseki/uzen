@@ -3,10 +3,8 @@ import base64
 from typing import List, Optional, cast
 
 import playwright
-from playwright import Error, async_playwright
-from playwright.network import Response
-from playwright.page import Page
-from playwright.playwright import Playwright
+from playwright import async_playwright
+from playwright.async_api import Browser, Error, Page, Playwright, Response
 
 from uzen.core import settings
 from uzen.models.screenshots import Screenshot
@@ -23,7 +21,7 @@ from uzen.services.utils import (
 from uzen.services.whois import Whois
 
 
-async def launch_browser(p: Playwright) -> playwright.browser.Browser:
+async def launch_browser(p: Playwright) -> Browser:
     if settings.BROWSER_WS_ENDPOINT != "":
         return await p.chromium.connect(wsEndpoint=settings.BROWSER_WS_ENDPOINT)
 

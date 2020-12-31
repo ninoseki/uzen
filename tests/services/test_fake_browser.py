@@ -1,5 +1,6 @@
 import pytest
 import respx
+from httpx import Response
 
 from uzen.services.certificate import Certificate
 from uzen.services.fake_browser import FakeBrowser
@@ -27,8 +28,8 @@ async def test_take_snapshot(monkeypatch):
     monkeypatch.setattr(
         Certificate, "load_and_dump_from_url", mock_load_and_dump_from_url
     )
-    respx.get(
-        "http://example.com/", content="foo", headers={"Content-Type": "text/html"}
+    respx.get("http://example.com/",).mock(
+        Response(status_code=200, content="foo", headers={"Content-Type": "text/html"})
     )
 
     result = await FakeBrowser.take_snapshot("http://example.com")

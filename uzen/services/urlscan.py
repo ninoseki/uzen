@@ -4,7 +4,6 @@ from typing import cast
 
 import httpx
 
-from uzen.core.resources import httpx_client
 from uzen.models.screenshots import Screenshot
 from uzen.models.snapshots import Snapshot
 from uzen.schemas.utils import SnapshotResult
@@ -14,27 +13,29 @@ class URLScan:
     HOST = "urlscan.io"
     BASE_URL = f"https://{HOST}"
 
-    def __init__(self, client: httpx.AsyncClient, uuid: str):
-        self.client = client
+    def __init__(self, uuid: str):
         self.uuid = uuid
 
     async def body(self) -> str:
         url = f"{self.BASE_URL}/dom/{self.uuid}/"
-        r = await self.client.get(url)
-        r.raise_for_status()
-        return r.text
+        async with httpx.AsyncClient() as client:
+            r = await client.get(url)
+            r.raise_for_status()
+            return r.text
 
     async def screenshot(self) -> str:
         url = f"{self.BASE_URL}/screenshots/{self.uuid}.png"
-        r = await self.client.get(url)
-        r.raise_for_status()
-        return str(base64.b64encode(r.content), "utf-8")
+        async with httpx.AsyncClient() as client:
+            r = await client.get(url)
+            r.raise_for_status()
+            return str(base64.b64encode(r.content), "utf-8")
 
     async def result(self) -> dict:
         url = f"{self.BASE_URL}/api/v1/result/{self.uuid}/"
-        r = await self.client.get(url)
-        r.raise_for_status()
-        return cast(dict, r.json())
+        async with httpx.AsyncClient() as client:
+            r = await client.get(url)
+            r.raise_for_status()
+            return cast(dict, r.json())
 
     @classmethod
     async def import_as_snapshot(cls, uuid: str) -> SnapshotResult:
@@ -46,7 +47,7 @@ class URLScan:
         Returns:
             Snapshot -- Snapshot ORM instance
         """
-        instance = cls(httpx_client, uuid)
+        instance = cls(uuid)
         result = await instance.result()
 
         requests = result.get("data", {}).get("requests", [])

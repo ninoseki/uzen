@@ -15,7 +15,8 @@ module.exports = {
   rules: {
     "no-console": process.env.NODE_ENV === "production" ? "error" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "error" : "off",
-    "simple-import-sort/sort": "error",
+    "simple-import-sort/exports": "error",
+    "simple-import-sort/imports": "error",
   },
   parserOptions: {
     parser: "@typescript-eslint/parser",

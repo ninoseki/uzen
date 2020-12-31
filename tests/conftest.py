@@ -21,9 +21,10 @@ from uzen.models.snapshots import Snapshot
 
 
 @pytest.fixture
-def client():
+async def client():
     app = create_app()
-    return httpx.AsyncClient(app=app, base_url="http://testserver")
+    async with httpx.AsyncClient(app=app, base_url="http://testserver") as client:
+        yield client
 
 
 def get_db_config(app_label: str, db_url: str, modules: List[str]) -> dict:

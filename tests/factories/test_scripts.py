@@ -2,6 +2,7 @@ import pathlib
 
 import pytest
 import respx
+from httpx import Response
 
 from tests.utils import make_snapshot
 from uzen.factories.scripts import ScriptFactory, get_script_sources
@@ -12,7 +13,9 @@ from uzen.factories.scripts import ScriptFactory, get_script_sources
 async def test_build_from_snapshot():
     snapshot = make_snapshot()
     snapshot.body = '<html><body><script type="text/javascript" src="https://www.w3.org/2008/site/js/main"></body></html>'
-    respx.get("https://www.w3.org/2008/site/js/main", content="foo")
+    respx.get("https://www.w3.org/2008/site/js/main").mock(
+        Response(status_code=200, content="foo")
+    )
 
     scripts = await ScriptFactory.from_snapshot(snapshot)
     assert len(scripts) == 1
@@ -28,7 +31,9 @@ async def test_build_from_snapshot_with_relative_src():
     snapshot = make_snapshot()
     snapshot.url = "https://www.w3.org"
     snapshot.body = '<html><body><script type="text/javascript" src="/2008/site/js/main"></body></html>'
-    respx.get("https://www.w3.org/2008/site/js/main", content="foo")
+    respx.get("https://www.w3.org/2008/site/js/main").mock(
+        Response(status_code=200, content="foo")
+    )
 
     scripts = await ScriptFactory.from_snapshot(snapshot)
     assert len(scripts) == 1
