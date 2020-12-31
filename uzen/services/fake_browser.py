@@ -63,26 +63,26 @@ class FakeBrowser:
             if host is not None:
                 headers["host"] = host
 
-            client = httpx.AsyncClient(verify=verify)
-            res = await client.get(
-                url, headers=headers, timeout=timeout, allow_redirects=True,
-            )
+            async with httpx.AsyncClient(verify=verify) as client:
+                res = await client.get(
+                    url, headers=headers, timeout=timeout, allow_redirects=True,
+                )
 
-            request = {
-                "accept_language": accept_language,
-                "browser": "httpx",
-                "host": host,
-                "ignore_https_errors": ignore_https_errors,
-                "referer": referer,
-                "timeout": timeout,
-                "user_agent": user_agent,
-            }
+                request = {
+                    "accept_language": accept_language,
+                    "browser": "httpx",
+                    "host": host,
+                    "ignore_https_errors": ignore_https_errors,
+                    "referer": referer,
+                    "timeout": timeout,
+                    "user_agent": user_agent,
+                }
 
-            url = str(res.url)
-            status = res.status_code
-            body = res.text
-            sha256 = calculate_sha256(body)
-            headers = {k.lower(): v for (k, v) in res.headers.items()}
+                url = str(res.url)
+                status = res.status_code
+                body = res.text
+                sha256 = calculate_sha256(body)
+                headers = {k.lower(): v for (k, v) in res.headers.items()}
         except httpx.HTTPError as e:
             raise (e)
 

@@ -3,6 +3,7 @@ import pathlib
 
 import pytest
 import respx
+from httpx import Response
 
 from uzen.services.urlscan import URLScan
 
@@ -15,15 +16,13 @@ fixture = open(path).read()
 async def test_urlscan_import():
     respx.get(
         "https://urlscan.io/api/v1/result/e6d69372-b402-487a-9825-7e25cc15ce41/",
-        content=fixture,
-    )
-    respx.get(
-        "https://urlscan.io/dom/e6d69372-b402-487a-9825-7e25cc15ce41/", content="foo"
+    ).mock(Response(status_code=200, content=fixture))
+    respx.get("https://urlscan.io/dom/e6d69372-b402-487a-9825-7e25cc15ce41/").mock(
+        Response(status_code=200, content="foo")
     )
     respx.get(
         "https://urlscan.io/screenshots/e6d69372-b402-487a-9825-7e25cc15ce41.png",
-        content="foo",
-    )
+    ).mock(Response(status_code=200, content="foo"))
 
     result = await URLScan.import_as_snapshot("e6d69372-b402-487a-9825-7e25cc15ce41")
     snapshot = result.snapshot
