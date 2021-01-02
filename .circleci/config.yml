@@ -1,0 +1,75 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3.8-buster-browsers
+        environment:
+          TESTING: "true"
+          GOOGLE_SAFE_BROWSING_API_KEY: foo
+          DATABASE_URL: mysql://root:rootpass@127.0.0.1:3306/ci_test
+      - image: circleci/mysql:8
+        environment:
+          MYSQL_DATABASE: 'ci_test'
+          MYSQL_USER: 'root'
+          MYSQL_ROOT_PASSWORD: 'rootpass'
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - deps-{{ checksum "poetry.lock" }}
+      - run:
+          name: Install Python Dependencies
+          command: |
+            pip install poetry
+            poetry config virtualenvs.create false
+            poetry install
+            python -m playwright install
+      - save_cache:
+          key: deps-{{ checksum "poetry.lock" }}
+          paths:
+            - /home/circleci/.cache/pypoetry
+            - /home/circleci/.cache/ms-playwright
+      - run:
+          name: Create Dummy Files
+          command: |
+            mkdir -p frontend/dist/static frontend/dist/images
+            touch frontend/dist/index.html frontend/dist/images/not-found.png
+      - run:
+          name: Run Pytest (with MySQL)
+          environment:
+            DATABASE_URL: mysql://root:rootpass@127.0.0.1:3306/ci_test
+          command: pytest -v --cov=uzen --cov-report=term-missing
+      - run:
+          name: coveralls
+          command: coveralls
+
+  build-frontend:
+    docker:
+      - image: circleci/node:14-buster
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - deps-{{ checksum "frontend/package-lock.json" }}
+      - run:
+          name: Install Node.js Dependencies
+          command: |
+            cd frontend
+            npm install
+      - save_cache:
+          key: deps-{{ checksum "frontend/package-lock.json" }}
+          paths:
+            - ./frontend/node_modules
+      - run:
+          name: Run Test
+          command: |
+            cd frontend
+            npm run test
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - build-frontend

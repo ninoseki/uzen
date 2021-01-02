@@ -1,6 +1,6 @@
 # Uzen: YARA with Puppeteer
 
-[![Build Status](https://travis-ci.com/ninoseki/uzen.svg?branch=master)](https://travis-ci.com/ninoseki/uzen)
+[![CircleCI](https://circleci.com/gh/ninoseki/uzen.svg?style=shield)](https://app.circleci.com/pipelines/github/ninoseki/uzen)
 [![Coverage Status](https://coveralls.io/repos/github/ninoseki/uzen/badge.svg?branch=master)](https://coveralls.io/github/ninoseki/uzen?branch=master)
 [![CodeFactor](https://www.codefactor.io/repository/github/ninoseki/uzen/badge)](https://www.codefactor.io/repository/github/ninoseki/uzen)
 
