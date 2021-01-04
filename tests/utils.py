@@ -11,7 +11,7 @@ def make_snapshot() -> Snapshot:
     return Snapshot(
         id=uuid.uuid4(),
         url=f"http://example.com/",
-        submitted_url=f"http://example.com",
+        submitted_url="http://example.com",
         status=200,
         hostname="example.com",
         ip_address="1.1.1.1",
@@ -32,8 +32,8 @@ async def make_snapshot_result() -> SnapshotResult:
     return SnapshotResult(
         snapshot=Snapshot(
             id=uuid.uuid4(),
-            url=f"http://example.com/",
-            submitted_url=f"http://example.com",
+            url="http://example.com/",
+            submitted_url="http://example.com",
             status=200,
             hostname="example.com",
             ip_address="1.1.1.1",

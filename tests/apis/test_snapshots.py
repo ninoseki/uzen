@@ -193,7 +193,7 @@ async def test_snapshot_get_with_scripts(client):
 async def test_count(client):
     count = await Snapshot.all().count()
 
-    response = await client.get(f"/api/snapshots/count")
+    response = await client.get("/api/snapshots/count")
     assert response.status_code == 200
 
     json = response.json()

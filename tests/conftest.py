@@ -98,7 +98,7 @@ async def dns_records_setup(client, snapshots_setup):
     for id_ in snapshot_ids:
         record = DnsRecord(
             snapshot_id=id_,
-            value=f"1.1.1.1",
+            value="1.1.1.1",
             type="A",
             created_at=datetime.datetime.now(),
         )
