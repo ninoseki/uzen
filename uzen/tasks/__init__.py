@@ -9,7 +9,7 @@ from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot
 
 
-class AbstractTask(ABC):
+class AbstractAsyncTask(ABC):
     @abstractmethod
     async def _process(self):
         raise NotImplementedError()
@@ -37,7 +37,7 @@ class AbstractSyncTask(ABC):
             )
 
 
-class EnrichmentTask(AbstractTask):
+class EnrichmentTask(AbstractAsyncTask):
     def __init__(self, snapshot: Snapshot, insert_to_db: bool = True):
         self.snapshot = snapshot
         self.insert_to_db = insert_to_db

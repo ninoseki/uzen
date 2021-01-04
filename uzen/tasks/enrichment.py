@@ -7,12 +7,12 @@ from uzen.models.classifications import Classification
 from uzen.models.dns_records import DnsRecord
 from uzen.models.snapshots import Snapshot
 from uzen.schemas.utils import EnrichmentResults
-from uzen.tasks import AbstractTask
+from uzen.tasks import AbstractAsyncTask
 from uzen.tasks.classifications import ClassificationTask
 from uzen.tasks.dns_records import DnsRecordTask
 
 
-class EnrichmentTasks(AbstractTask):
+class EnrichmentTasks(AbstractAsyncTask):
     def __init__(
         self, snapshot: Snapshot, insert_to_db: bool = True,
     ):

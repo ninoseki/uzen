@@ -6,10 +6,10 @@ from uzen.models.matches import Match
 from uzen.models.snapshots import Snapshot
 from uzen.schemas.matches import MatchResult
 from uzen.services.rule_matcher import RuleMatcher
-from uzen.tasks import AbstractTask
+from uzen.tasks import AbstractAsyncTask
 
 
-class MatchinbgTask(AbstractTask):
+class MatchinbgTask(AbstractAsyncTask):
     def __init__(self, snapshot: Snapshot):
         self.snapshot = snapshot
 
