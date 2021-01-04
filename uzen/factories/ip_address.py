@@ -11,7 +11,6 @@ class IPAddressInformationFactory:
         whois = Whois.whois(ip_address)
         snapshots = await Snapshot.find_by_ip_address(ip_address)
 
-        ip_address = ip_address
         asn = res.get("asn", "")
         country = res.get("country", "")
         description = res.get("description", "")

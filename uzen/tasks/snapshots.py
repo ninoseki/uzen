@@ -1,8 +1,8 @@
 from uzen.models.snapshots import Snapshot
-from uzen.tasks import AbstractTask
+from uzen.tasks import AbstractAsyncTask
 
 
-class UpdateProcessingTask(AbstractTask):
+class UpdateProcessingTask(AbstractAsyncTask):
     def __init__(self, snapshot: Snapshot):
         self.snapshot = snapshot
 
