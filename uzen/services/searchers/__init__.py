@@ -15,8 +15,11 @@ class AbstractSearcher(ABC):
         model: Type[Model],
         query: Q,
         values: Optional[List[str]] = None,
-        prefetch_related: List[str] = [],
+        prefetch_related: Optional[List[str]] = None,
     ):
+        if prefetch_related is None:
+            prefetch_related = []
+
         self.model = model
         self.query = query
         self.values = values

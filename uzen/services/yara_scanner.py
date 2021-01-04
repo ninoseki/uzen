@@ -73,7 +73,7 @@ class YaraScanner:
     async def scan_snapshots(
         self,
         target: str = "body",
-        filters: dict = {},
+        filters: Optional[dict] = None,
         size: Optional[int] = None,
         offset: Optional[int] = None,
     ) -> List[ScanResult]:
@@ -86,6 +86,9 @@ class YaraScanner:
         Returns:
             List[SearchResultModel] -- A list of simlified snapshot models
         """
+        if filters is None:
+            filters = {}
+
         # get snapshots ids based on filters
         search_results = await SnapshotSearcher.search(
             filters, id_only=True, size=size, offset=offset
@@ -105,8 +108,8 @@ class YaraScanner:
         flatten_results = list(itertools.chain.from_iterable(results))
 
         matched_ids = [result.snapshot_id for result in flatten_results]
-        snapshots: List[dict] = (
-            await Snapshot.filter(id__in=matched_ids).values(*ScanResult.field_keys())
+        snapshots: List[dict] = await Snapshot.filter(id__in=matched_ids).values(
+            *ScanResult.field_keys()
         )
 
         table = self._build_snapshot_table(snapshots)
