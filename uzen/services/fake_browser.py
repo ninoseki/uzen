@@ -2,7 +2,6 @@ from typing import List, Optional, cast
 
 import httpx
 
-from uzen.models.screenshots import Screenshot
 from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot
 from uzen.schemas.utils import SnapshotResult
@@ -113,12 +112,10 @@ class FakeBrowser:
             certificate=certificate,
             request=request,
         )
-        screenshot = Screenshot()
-        screenshot.data = ""
 
         # get scripts
         scripts = cast(
             List[Script], await ScriptTask.process(snapshot, insert_to_db=False)
         )
 
-        return SnapshotResult(screenshot=screenshot, snapshot=snapshot, scripts=scripts)
+        return SnapshotResult(screenshot=b"", snapshot=snapshot, scripts=scripts)

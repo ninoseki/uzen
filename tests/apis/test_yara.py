@@ -2,7 +2,6 @@ import json
 
 import pytest
 
-from uzen.models.screenshots import Screenshot
 from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot
 from uzen.schemas.utils import SnapshotResult
@@ -71,9 +70,6 @@ async def test_yara_scan_with_invalid_input(client):
 
 
 async def mock_take_snapshot(*args, **kwargs):
-    screenshot = Screenshot()
-    screenshot.data = ""
-
     return SnapshotResult(
         snapshot=Snapshot(
             url="https://www.w3.org/",
@@ -88,11 +84,10 @@ async def mock_take_snapshot(*args, **kwargs):
             headers={},
             body='<html><body><script type="text/javascript" src="/2008/site/js/main"></body></html>',
             sha256="fbc1a9f858ea9e177916964bd88c3d37b91a1e84412765e29950777f265c4b75",
-            screenshot=Screenshot(data=""),
             whois="foo",
             request={},
         ),
-        screenshot=screenshot,
+        screenshot=b"",
         scripts=[
             Script(
                 url="https://www.w3.org/2008/site/js/main",
@@ -104,9 +99,6 @@ async def mock_take_snapshot(*args, **kwargs):
 
 
 async def mock_take_snapshot_without_script(*args, **kwargs):
-    screenshot = Screenshot()
-    screenshot.data = ""
-
     return SnapshotResult(
         snapshot=Snapshot(
             url="https://www.w3.org/",
@@ -121,10 +113,9 @@ async def mock_take_snapshot_without_script(*args, **kwargs):
             headers={},
             body="<html><body></body></html>",
             sha256="fbc1a9f858ea9e177916964bd88c3d37b91a1e84412765e29950777f265c4b75",
-            screenshot=Screenshot(data=""),
             whois="foo",
             request={},
         ),
-        screenshot=screenshot,
+        screenshot=b"",
         scripts=[],
     )

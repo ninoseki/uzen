@@ -15,7 +15,6 @@ from uzen.models.classifications import Classification
 from uzen.models.dns_records import DnsRecord
 from uzen.models.matches import Match
 from uzen.models.rules import Rule
-from uzen.models.screenshots import Screenshot
 from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot
 
@@ -77,12 +76,6 @@ async def snapshots_setup(client):
             created_at=datetime.datetime.now(),
         )
         await snapshot.save()
-
-        screenshot = Screenshot()
-        screenshot.data = ""
-
-        screenshot.snapshot_id = snapshot.id
-        await screenshot.save()
 
 
 @pytest.fixture

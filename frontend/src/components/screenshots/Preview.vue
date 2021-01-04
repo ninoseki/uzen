@@ -12,7 +12,7 @@ export default class Preview extends Vue {
   @Prop() private hostname!: string;
 
   get imageSource(): string {
-    return `/api/screenshots/preview/${this.hostname}?output_format=png`;
+    return `/api/screenshots/preview/${this.hostname}`;
   }
 }
 </script>

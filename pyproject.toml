@@ -29,6 +29,7 @@ python-whois = "^0.7.3"
 tortoise-orm = "^0.16.19"
 uvicorn = {extras = ["standard"], version = "^0.13.3"}
 yara-python = "^4.0.2"
+minio = "^7.0.0"
 
 [tool.poetry.dev-dependencies]
 asynctest = "^0.13.0"

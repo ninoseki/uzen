@@ -18,6 +18,7 @@ from uzen.services.searchers.snapshots import SnapshotSearcher
 from uzen.services.snapshot import save_snapshot, take_snapshot
 from uzen.tasks.enrichment import EnrichmentTasks
 from uzen.tasks.matches import MatchinbgTask
+from uzen.tasks.screenshot import UploadScrenshotTask
 from uzen.tasks.snapshots import UpdateProcessingTask
 
 router = APIRouter()
@@ -60,9 +61,9 @@ async def search(
     summary="Get a snapshot",
     description="Get a snapshot which has a given id",
 )
-async def get(snapshot_id: UUID, include_screenshot: bool = False) -> SnapshotModel:
+async def get(snapshot_id: UUID) -> SnapshotModel:
     try:
-        snapshot: Snapshot = await Snapshot.get_by_id(snapshot_id, include_screenshot)
+        snapshot: Snapshot = await Snapshot.get_by_id(snapshot_id)
     except DoesNotExist:
         raise HTTPException(
             status_code=404, detail=f"Snapshot:{snapshot_id} is not found"
@@ -98,6 +99,9 @@ async def create(
 
     snapshot = await save_snapshot(result)
 
+    background_tasks.add_task(
+        UploadScrenshotTask.process, uuid=snapshot.id, screenshot=result.screenshot
+    )
     background_tasks.add_task(EnrichmentTasks.process, snapshot)
     background_tasks.add_task(MatchinbgTask.process, snapshot)
     background_tasks.add_task(UpdateProcessingTask.process, snapshot)

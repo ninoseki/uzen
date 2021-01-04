@@ -23,6 +23,20 @@ class AbstractTask(ABC):
             )
 
 
+class AbstractSyncTask(ABC):
+    @abstractmethod
+    def _process(self):
+        raise NotImplementedError()
+
+    def safe_process(self):
+        try:
+            return self._process()
+        except Exception as e:
+            logger.error(
+                f"Failed to process {self.__class__.__name__} task. Error: {e}"
+            )
+
+
 class EnrichmentTask(AbstractTask):
     def __init__(self, snapshot: Snapshot, insert_to_db: bool = True):
         self.snapshot = snapshot

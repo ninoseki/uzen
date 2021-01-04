@@ -146,16 +146,7 @@ async def test_snapshot_get(client):
     id_ = await first_snapshot_id()
     response = await client.get(f"/api/snapshots/{id_}")
     assert response.status_code == 200
-    assert response.json().get("screenshot") is None
-
-    id_ = await first_snapshot_id()
-    response = await client.get(
-        f"/api/snapshots/{id_}", params={"include_screenshot": True}
-    )
-    assert response.status_code == 200
-    assert response.json().get("screenshot") is not None
-    json = response.json()
-    assert json.get("screenshot", {}).get("data") == ""
+    assert response.json().get("id") == str(id_)
 
 
 @pytest.mark.asyncio

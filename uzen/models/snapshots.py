@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import List
 from uuid import UUID
 
 from tortoise import fields
@@ -11,7 +11,6 @@ from uzen.models.mixins import TimestampMixin
 from uzen.schemas.classifications import Classification
 from uzen.schemas.dns_records import DnsRecord
 from uzen.schemas.rules import Rule
-from uzen.schemas.screenshots import Screenshot
 from uzen.schemas.scripts import Script
 from uzen.schemas.snapshots import Snapshot as SnapshotModel
 
@@ -36,8 +35,6 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
     request = fields.JSONField()
     processing = fields.BooleanField(default=True)
 
-    _screenshot: fields.OneToOneRelation["Screenshot"]
-
     _scripts: fields.ReverseRelation["Script"]
     _dns_records: fields.ReverseRelation["DnsRecord"]
     _classifications: fields.ReverseRelation["Classification"]
@@ -49,13 +46,6 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
         forward_key="rule_id",
         backward_key="snapshot_id",
     )
-
-    @property
-    def screenshot(self) -> Optional[Screenshot]:
-        if self._screenshot is not None:
-            return self._screenshot.to_model()
-
-        return None
 
     @property
     def rules(self) -> List[Rule]:
@@ -95,11 +85,7 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
         return model.dict()
 
     @classmethod
-    async def get_by_id(cls, id_: UUID, include_screenshot: bool = False) -> Snapshot:
-        if include_screenshot:
-            return await cls.get(id=id_).prefetch_related(
-                "_screenshot", "_scripts", "_dns_records", "_classifications", "_rules"
-            )
+    async def get_by_id(cls, id_: UUID) -> Snapshot:
         return await cls.get(id=id_).prefetch_related(
             "_scripts", "_dns_records", "_classifications", "_rules"
         )
