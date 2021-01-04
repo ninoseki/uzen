@@ -7,7 +7,6 @@ from tortoise.models import Model
 
 from uzen.models.classifications import Classification
 from uzen.models.dns_records import DnsRecord
-from uzen.models.screenshots import Screenshot
 from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot
 
@@ -15,7 +14,7 @@ from uzen.models.snapshots import Snapshot
 @dataclass
 class SnapshotResult:
     snapshot: Snapshot
-    screenshot: Screenshot
+    screenshot: bytes
     scripts: List[Script]
 
 

@@ -3,15 +3,11 @@ import uuid
 from uuid import UUID
 
 from uzen.models.rules import Rule
-from uzen.models.screenshots import Screenshot
 from uzen.models.snapshots import Snapshot
 from uzen.schemas.utils import SnapshotResult
 
 
 def make_snapshot() -> Snapshot:
-    screenshot = Screenshot()
-    screenshot.data = ""
-
     return Snapshot(
         id=uuid.uuid4(),
         url=f"http://example.com/",
@@ -26,7 +22,6 @@ def make_snapshot() -> Snapshot:
         headers={},
         body="foo bar",
         sha256="fbc1a9f858ea9e177916964bd88c3d37b91a1e84412765e29950777f265c4b75",
-        screenshot=screenshot,
         whois="foo",
         request={},
         created_at=datetime.datetime.now(),
@@ -34,9 +29,6 @@ def make_snapshot() -> Snapshot:
 
 
 async def make_snapshot_result() -> SnapshotResult:
-    screenshot = Screenshot()
-    screenshot.data = ""
-
     return SnapshotResult(
         snapshot=Snapshot(
             id=uuid.uuid4(),
@@ -57,7 +49,7 @@ async def make_snapshot_result() -> SnapshotResult:
             request={},
             created_at=datetime.datetime.now(),
         ),
-        screenshot=screenshot,
+        screenshot=b"",
         scripts=[],
     )
 

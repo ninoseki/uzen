@@ -91,11 +91,7 @@ async def take_snapshot(
 async def save_snapshot(result: SnapshotResult) -> Snapshot:
     async with in_transaction():
         snapshot = result.snapshot
-        screenshot = result.screenshot
-
         await snapshot.save()
-        screenshot.snapshot_id = snapshot.id
-        await screenshot.save()
 
         for script in result.scripts:
             script.snapshot_id = snapshot.id

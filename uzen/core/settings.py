@@ -1,4 +1,5 @@
 import sys
+from typing import Literal, cast
 
 from starlette.config import Config
 from starlette.datastructures import CommaSeparatedStrings, Secret
@@ -22,6 +23,14 @@ GOOGLE_SAFE_BROWSING_API_KEY: str = config(
 )
 
 BROWSER_WS_ENDPOINT: str = config("BROWSER_WS_ENDPOINT", cast=str, default="")
-BROWSER_WAIT_UNTIL: str = config("BROWSER_WAIT_UNTIL", cast=str, default="load")
+BROWSER_WAIT_UNTIL = config("BROWSER_WAIT_UNTIL", cast=str, default="load",)
+BROWSER_WAIT_UNTIL: Literal["domcontentloaded", "load", "networkidle"] = cast(
+    Literal["domcontentloaded", "load", "networkidle"], BROWSER_WAIT_UNTIL
+)
 
 HTTPX_FALLBACK: bool = config("HTTPX_FALLBACK", cast=bool, default=True)
+
+MINIO_ENDPOINT: str = config("MINIO_ENDPOINT", cast=str, default="localhost:9000")
+MINIO_ACCESS_KEY: str = config("MINIO_ACCESS_KEY", cast=str, default="")
+MINIO_SECRET_KEY: str = config("MINIO_SECRET_KEY", cast=str, default="")
+MINIO_SECURE: str = config("MINIO_SECURE", cast=bool, default=False)

@@ -10,7 +10,6 @@ from uzen.schemas.classifications import BaseClassification, Classification
 from uzen.schemas.common import Source, Target
 from uzen.schemas.dns_records import BaseDnsRecord, DnsRecord
 from uzen.schemas.mixins import TimestampMixin
-from uzen.schemas.screenshots import BaseScreenshot, Screenshot
 from uzen.schemas.scripts import BaseScript, Script
 from uzen.schemas.search import BaseSearchResults
 from uzen.services.utils import get_hostname_from_url, get_ip_address_by_hostname
@@ -104,10 +103,6 @@ class BaseSnapshot(BasicAttributes):
         ..., title="Classifications", description="A list of classifications"
     )
     rules: List[Rule] = Field(..., title="Rules", description="A list of matched rules")
-
-    screenshot: Optional[Union[Screenshot, BaseScreenshot]] = Field(
-        None, title="Screenshot", description="Screenshot"
-    )
 
 
 class Snapshot(BaseSnapshot, AbstractBaseModel, TimestampMixin):

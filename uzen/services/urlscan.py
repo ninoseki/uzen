@@ -1,10 +1,8 @@
-import base64
 import datetime
 from typing import cast
 
 import httpx
 
-from uzen.models.screenshots import Screenshot
 from uzen.models.snapshots import Snapshot
 from uzen.schemas.utils import SnapshotResult
 
@@ -23,12 +21,12 @@ class URLScan:
             r.raise_for_status()
             return r.text
 
-    async def screenshot(self) -> str:
+    async def screenshot(self) -> bytes:
         url = f"{self.BASE_URL}/screenshots/{self.uuid}.png"
         async with httpx.AsyncClient() as client:
             r = await client.get(url)
             r.raise_for_status()
-            return str(base64.b64encode(r.content), "utf-8")
+            return r.content
 
     async def result(self) -> dict:
         url = f"{self.BASE_URL}/api/v1/result/{self.uuid}/"
@@ -92,8 +90,6 @@ class URLScan:
             request={"urlscan.io": uuid},
         )
 
-        data = await instance.screenshot()
-        screenshot = Screenshot()
-        screenshot.data = data
+        screenshot = await instance.screenshot()
 
         return SnapshotResult(screenshot=screenshot, snapshot=snapshot, scripts=[])

@@ -10,7 +10,7 @@ export default class ScreenshotComponent extends Vue {
   @Prop() private snapshot_id!: string;
 
   get imageSource(): string {
-    return `/api/screenshots/${this.snapshot_id}?output_format=png`;
+    return `/api/screenshots/${this.snapshot_id}`;
   }
 }
 </script>

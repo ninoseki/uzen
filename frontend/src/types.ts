@@ -2,11 +2,6 @@ export interface Dict {
   [key: string]: string | number;
 }
 
-export interface Screenshot {
-  id: string | undefined;
-  data: string;
-}
-
 export interface Snapshot {
   id: string | undefined;
   url: string;
@@ -25,8 +20,6 @@ export interface Snapshot {
   certificate: string | undefined;
   processing: boolean;
   createdAt: string | undefined;
-
-  screenshot: Screenshot;
 
   scripts: Script[];
   dnsRecords: DnsRecord[];
@@ -64,6 +57,7 @@ export interface Link {
   type: string;
   baseURL: string;
   favicon: string;
+  // eslint-disable-next-line no-unused-vars
   href(hostname: string): string;
 }
 
