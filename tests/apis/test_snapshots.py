@@ -136,7 +136,7 @@ async def test_snapshot_post(client, monkeypatch):
     assert snapshot.get("body") == "foo bar"
 
     snapshot = await Snapshot.get(id=snapshot.get("id"))
-    await snapshot.fetch_related("_scripts")
+    await snapshot.fetch_related("_scripts__file")
     assert len(snapshot.scripts) == 0
 
 

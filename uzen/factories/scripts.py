@@ -7,8 +7,9 @@ import aiometer
 import httpx
 from bs4 import BeautifulSoup
 
-from uzen.models.scripts import Script
+from uzen.models.scripts import File, Script
 from uzen.models.snapshots import Snapshot
+from uzen.schemas.utils import ScriptFile
 from uzen.services.utils import calculate_sha256
 
 MAX_AT_ONCE = 10
@@ -98,9 +99,9 @@ async def get_script_content(
 
 class ScriptFactory:
     @staticmethod
-    async def from_snapshot(snapshot: Snapshot) -> List[Script]:
+    async def from_snapshot(snapshot: Snapshot) -> List[ScriptFile]:
         sources = get_script_sources(url=snapshot.url, body=snapshot.body)
-        scripts = []
+        script_files: List[ScriptFile] = []
 
         # Use the same settings as the original request
         headers = {
@@ -128,12 +129,14 @@ class ScriptFactory:
                 if result is None:
                     continue
 
+                sha256 = calculate_sha256(result.content)
+                file = File(id=sha256, content=result.content)
                 script = Script(
                     url=result.source,
-                    content=result.content,
-                    sha256=calculate_sha256(result.content),
+                    file_id=sha256,
                     # insert a dummy ID if a snapshot doesn't have ID
                     snapshot_id=snapshot.id or -1,
                 )
-                scripts.append(script)
-        return scripts
+                script_files.append(ScriptFile(script=script, file=file))
+
+        return script_files

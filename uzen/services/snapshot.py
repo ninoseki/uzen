@@ -3,6 +3,7 @@ from typing import Optional
 import httpx
 from loguru import logger
 from playwright import Error
+from tortoise.exceptions import IntegrityError
 from tortoise.transactions import in_transaction
 
 from uzen.core import settings
@@ -93,8 +94,18 @@ async def save_snapshot(result: SnapshotResult) -> Snapshot:
         snapshot = result.snapshot
         await snapshot.save()
 
-        for script in result.scripts:
+        files = [script_file.file for script_file in result.script_files]
+        for file in files:
+            try:
+                await file.save()
+            except IntegrityError:
+                # ignore the intergrity error
+                # e.g. tortoise.exceptions.IntegrityError: UNIQUE constraint failed: files.id
+                pass
+
+        scripts = [script_file.script for script_file in result.script_files]
+        for script in scripts:
             script.snapshot_id = snapshot.id
-        await Script.bulk_create(result.scripts)
+        await Script.bulk_create(scripts)
 
         return snapshot

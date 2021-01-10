@@ -61,11 +61,15 @@ export interface Link {
   href(hostname: string): string;
 }
 
+export interface File {
+  id: string;
+  content: string;
+}
+
 export interface Script {
   id: string | undefined;
   url: string;
-  content: string;
-  sha256: string;
+  file: File;
   createdAt: string | undefined;
 }
 

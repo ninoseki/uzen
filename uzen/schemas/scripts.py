@@ -5,6 +5,13 @@ from uzen.schemas.base import AbstractBaseModel
 from uzen.schemas.mixins import TimestampMixin
 
 
+class File(APIModel):
+    """Full Pydantic model for File"""
+
+    id: str = Field(..., title="ID", description="A SHA256 hash of the content")
+    content: str = Field(..., title="Contnt", description="Content of the script")
+
+
 class BaseScript(APIModel):
     """Base Pydantic model for Script
 
@@ -12,8 +19,7 @@ class BaseScript(APIModel):
     """
 
     url: AnyHttpUrl = Field(..., title="URL", description="A URL of the script")
-    content: str = Field(..., title="Content", description="A content of the script")
-    sha256: str = Field(..., title="SHA256", description="A SHA256 hash of the script")
+    file: File = Field(..., title="File", description="A file of the script")
 
 
 class Script(BaseScript, AbstractBaseModel, TimestampMixin):

@@ -21,18 +21,16 @@ class YaraScanner:
         self.rule: yara.Rules = yara.compile(source=source)
 
     async def partial_scan_for_scripts(self, ids: List[UUID]) -> List[YaraResult]:
-        scripts = await Script.filter(snapshot_id__in=ids).values(
-            "id", "snapshot_id", "content"
-        )
+        scripts = await Script.filter(snapshot_id__in=ids).prefetch_related("file")
         matched_results = []
         for script in scripts:
-            snapshot_id = script.get("snapshot_id")
-            content = script.get("content")
+            snapshot_id = script.snapshot_id
+            content = script.file.content
             matches = self.match(data=content)
             if len(matches) > 0:
                 result = YaraResult(
                     snapshot_id=snapshot_id,
-                    script_id=script.get("id"),
+                    script_id=script.id,
                     target="script",
                     matches=matches,
                 )

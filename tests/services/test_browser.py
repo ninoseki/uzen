@@ -50,7 +50,7 @@ async def test_take_snapshot_with_scripts(monkeypatch):
     )
 
     result = await Browser.take_snapshot("https://github.com/")
-    assert len(result.scripts) > 0
+    assert len(result.script_files) > 0
 
 
 @pytest.mark.asyncio
