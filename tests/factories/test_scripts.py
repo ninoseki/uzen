@@ -17,12 +17,14 @@ async def test_build_from_snapshot():
         Response(status_code=200, content="foo")
     )
 
-    scripts = await ScriptFactory.from_snapshot(snapshot)
-    assert len(scripts) == 1
+    script_files = await ScriptFactory.from_snapshot(snapshot)
+    assert len(script_files) == 1
 
-    script = scripts[0]
+    script = script_files[0].script
     assert script.url == "https://www.w3.org/2008/site/js/main"
-    assert "foo" in script.content
+
+    file = script_files[0].file
+    assert "foo" in file.content
 
 
 @respx.mock
@@ -35,12 +37,14 @@ async def test_build_from_snapshot_with_relative_src():
         Response(status_code=200, content="foo")
     )
 
-    scripts = await ScriptFactory.from_snapshot(snapshot)
-    assert len(scripts) == 1
+    script_files = await ScriptFactory.from_snapshot(snapshot)
+    assert len(script_files) == 1
 
-    script = scripts[0]
+    script = script_files[0].script
     assert script.url == "https://www.w3.org/2008/site/js/main"
-    assert "foo" in script.content
+
+    file = script_files[0].file
+    assert "foo" in file.content
 
 
 @pytest.mark.asyncio
@@ -48,8 +52,8 @@ async def test_build_from_snapshot_with_no_src():
     snapshot = make_snapshot()
     snapshot.body = '<html><body><script type="text/javascript"></body></html>'
 
-    scripts = await ScriptFactory.from_snapshot(snapshot)
-    assert len(scripts) == 0
+    script_files = await ScriptFactory.from_snapshot(snapshot)
+    assert len(script_files) == 0
 
 
 def test_get_script_sources():

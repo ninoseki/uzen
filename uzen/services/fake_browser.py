@@ -2,9 +2,8 @@ from typing import List, Optional, cast
 
 import httpx
 
-from uzen.models.scripts import Script
 from uzen.models.snapshots import Snapshot
-from uzen.schemas.utils import SnapshotResult
+from uzen.schemas.utils import ScriptFile, SnapshotResult
 from uzen.services.certificate import Certificate
 from uzen.services.utils import (
     calculate_sha256,
@@ -113,9 +112,11 @@ class FakeBrowser:
             request=request,
         )
 
-        # get scripts
-        scripts = cast(
-            List[Script], await ScriptTask.process(snapshot, insert_to_db=False)
+        # get script files
+        script_files = cast(
+            List[ScriptFile], await ScriptTask.process(snapshot, insert_to_db=False)
         )
 
-        return SnapshotResult(screenshot=b"", snapshot=snapshot, scripts=scripts)
+        return SnapshotResult(
+            screenshot=None, snapshot=snapshot, script_files=script_files
+        )

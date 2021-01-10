@@ -1,7 +1,9 @@
 from tortoise import fields
+from tortoise.models import Model
 
 from uzen.models.base import AbstractBaseModel
 from uzen.models.mixins import TimestampMixin
+from uzen.schemas.scripts import File as FileModel
 from uzen.schemas.scripts import Script as ScriptModel
 
 
@@ -22,14 +24,15 @@ def normalize_url(url: str) -> str:
 
 class Script(TimestampMixin, AbstractBaseModel):
     url = fields.TextField()
-    content = fields.TextField()
-    sha256 = fields.CharField(max_length=64)
-
     snapshot: fields.ForeignKeyRelation["Snapshot"] = fields.ForeignKeyField(
         "models.Snapshot",
         related_name="_scripts",
         to_field="id",
         on_delete=fields.CASCADE,
+    )
+
+    file: fields.ForeignKeyRelation["File"] = fields.ForeignKeyField(
+        "models.File", related_name="scripts", on_delete=fields.RESTRICT
     )
 
     def to_model(self) -> ScriptModel:
@@ -38,3 +41,16 @@ class Script(TimestampMixin, AbstractBaseModel):
 
     class Meta:
         table = "scripts"
+
+
+class File(Model):
+    id = fields.CharField(max_length=64, pk=True)
+    content = fields.TextField()
+
+    scripts: fields.ReverseRelation["Script"]
+
+    def to_model(self) -> FileModel:
+        return FileModel.from_orm(self)
+
+    class Meta:
+        table = "files"

@@ -92,4 +92,4 @@ class URLScan:
 
         screenshot = await instance.screenshot()
 
-        return SnapshotResult(screenshot=screenshot, snapshot=snapshot, scripts=[])
+        return SnapshotResult(screenshot=screenshot, snapshot=snapshot, script_files=[])

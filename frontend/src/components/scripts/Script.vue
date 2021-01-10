@@ -1,6 +1,6 @@
 <template>
   <div>
-    <pre>{{ script.content }}</pre>
+    <pre>{{ script.file.content }}</pre>
   </div>
 </template>
 

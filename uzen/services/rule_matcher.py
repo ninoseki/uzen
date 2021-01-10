@@ -37,7 +37,7 @@ class RuleMatcher:
     ) -> List[MatchResult]:
         results = []
         for script in cast(List[Script], self.snapshot.scripts):
-            data = script.content
+            data = script.file.content
             matches = scanner.match(data)
             if len(matches) > 0:
                 results.append(

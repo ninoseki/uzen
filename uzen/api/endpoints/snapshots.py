@@ -99,9 +99,11 @@ async def create(
 
     snapshot = await save_snapshot(result)
 
-    background_tasks.add_task(
-        UploadScrenshotTask.process, uuid=snapshot.id, screenshot=result.screenshot
-    )
+    if result.screenshot is not None:
+        background_tasks.add_task(
+            UploadScrenshotTask.process, uuid=snapshot.id, screenshot=result.screenshot
+        )
+
     background_tasks.add_task(EnrichmentTasks.process, snapshot)
     background_tasks.add_task(MatchinbgTask.process, snapshot)
     background_tasks.add_task(UpdateProcessingTask.process, snapshot)

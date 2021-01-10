@@ -1,5 +1,6 @@
 import os
 from io import BytesIO
+from typing import Optional
 
 import httpx
 
@@ -10,8 +11,11 @@ SCREENSHOT_BUCKET_NAME: str = "uzen-screenshot"
 
 
 def upload_screenshot(
-    file_name: str, screenshot: bytes, bucket_name=SCREENSHOT_BUCKET_NAME
+    file_name: str, screenshot: Optional[bytes], bucket_name=SCREENSHOT_BUCKET_NAME
 ):
+    if screenshot is None:
+        return
+
     client = get_client()
 
     create_bucket_if_not_exists(client, bucket_name)
@@ -43,6 +47,7 @@ async def get_screenshot(uuid: str) -> bytes:
         async with httpx.AsyncClient() as client:
             res = await client.get(url)
             res.raise_for_status()
+            print(url)
             return res.content
     except httpx.HTTPError:
         return get_not_found_png()

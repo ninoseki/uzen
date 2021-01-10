@@ -1,6 +1,6 @@
 import datetime
 from typing import List
-from uuid import UUID
+from uuid import UUID, uuid4
 
 import httpx
 import pytest
@@ -15,7 +15,7 @@ from uzen.models.classifications import Classification
 from uzen.models.dns_records import DnsRecord
 from uzen.models.matches import Match
 from uzen.models.rules import Rule
-from uzen.models.scripts import Script
+from uzen.models.scripts import File, Script
 from uzen.models.snapshots import Snapshot
 
 
@@ -82,11 +82,14 @@ async def snapshots_setup(client):
 async def scripts_setup(client, snapshots_setup):
     snapshot_ids = await Snapshot().all().values_list("id", flat=True)
     for id_ in snapshot_ids:
+        file_id = uuid4().hex
+        file = File(id=file_id, content="foo")
+        await file.save()
+
         script = Script(
             snapshot_id=id_,
+            file_id=file_id,
             url=f"http://example{id_}.com/test.js",
-            content="foo bar",
-            sha256="fbc1a9f858ea9e177916964bd88c3d37b91a1e84412765e29950777f265c4b75",
             created_at=datetime.datetime.now(),
         )
         await script.save()

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Type, Union
+from typing import List, Optional, Type, Union
 from uuid import UUID
 
 from pydantic import BaseModel, Field
@@ -7,15 +7,21 @@ from tortoise.models import Model
 
 from uzen.models.classifications import Classification
 from uzen.models.dns_records import DnsRecord
-from uzen.models.scripts import Script
+from uzen.models.scripts import File, Script
 from uzen.models.snapshots import Snapshot
+
+
+@dataclass
+class ScriptFile:
+    script: Script
+    file: File
 
 
 @dataclass
 class SnapshotResult:
     snapshot: Snapshot
-    screenshot: bytes
-    scripts: List[Script]
+    screenshot: Optional[bytes]
+    script_files: List[ScriptFile]
 
 
 @dataclass

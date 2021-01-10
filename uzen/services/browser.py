@@ -6,9 +6,9 @@ from playwright.async_api import Browser as PlaywrightBrowser
 from playwright.async_api import Error, Page, Playwright, Response
 
 from uzen.core import settings
-from uzen.models.scripts import Script
+from uzen.models.scripts import File, Script
 from uzen.models.snapshots import Snapshot
-from uzen.schemas.utils import SnapshotResult
+from uzen.schemas.utils import ScriptFile, SnapshotResult
 from uzen.services.certificate import Certificate
 from uzen.services.utils import (
     calculate_sha256,
@@ -68,19 +68,17 @@ class Browser:
                 await page.setExtraHTTPHeaders(headers)
 
                 # intercept responses on page to get scripts
-                scripts: List[Script] = []
+                script_files: List[ScriptFile] = []
 
                 async def handle_response(response: Response) -> None:
                     content_type: str = response.headers.get("content-type", "")
                     if response.ok and is_js_content_type(content_type):
                         content = await response.text()
-                        scripts.append(
-                            Script(
-                                url=response.url,
-                                content=content,
-                                sha256=calculate_sha256(content),
-                            )
-                        )
+                        sha256 = calculate_sha256(content)
+
+                        script = Script(url=response.url, file_id=sha256)
+                        file = File(id=sha256, content=content)
+                        script_files.append(ScriptFile(script=script, file=file))
 
                 page.on(
                     "response",
@@ -97,7 +95,7 @@ class Browser:
                 )
 
                 if res is None:
-                    raise Error()
+                    raise Error("Cannot get the response")
 
                 request = {
                     "accept_language": accept_language,
@@ -148,7 +146,7 @@ class Browser:
         )
 
         return SnapshotResult(
-            screenshot=screenshot, snapshot=snapshot, scripts=scripts,
+            screenshot=screenshot, snapshot=snapshot, script_files=script_files,
         )
 
     @staticmethod

@@ -24,7 +24,7 @@ async def rule_setup(client):
 @pytest.mark.usefixtures("rule_setup")
 @pytest.mark.usefixtures("scripts_setup")
 async def test_scan():
-    snapshot = await Snapshot.all().first().prefetch_related("_scripts")
+    snapshot = await Snapshot.all().first().prefetch_related("_scripts__file")
     matcher = RuleMatcher(snapshot)
     results = await matcher.scan()
     assert len(results) == 1

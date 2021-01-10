@@ -87,7 +87,7 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
     @classmethod
     async def get_by_id(cls, id_: UUID) -> Snapshot:
         return await cls.get(id=id_).prefetch_related(
-            "_scripts", "_dns_records", "_classifications", "_rules"
+            "_scripts__file", "_dns_records", "_classifications", "_rules"
         )
 
     @classmethod
