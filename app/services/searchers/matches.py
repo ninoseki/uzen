@@ -3,9 +3,7 @@ from uuid import UUID
 
 from tortoise.query_utils import Q
 
-from app.models.matches import Match
-from app.schemas.matches import Match as MatchModel
-from app.schemas.matches import SearchResults
+from app import models, schemas
 from app.services.searchers import AbstractSearcher
 from app.services.searchers.utils import convert_to_datetime
 
@@ -14,7 +12,7 @@ class MatchSearcher(AbstractSearcher):
     @classmethod
     async def search(
         cls, filters: dict, size=None, offset=None, id_only=False
-    ) -> SearchResults:
+    ) -> schemas.MatchesSearchResults:
         """Search matches
 
         Arguments:
@@ -52,16 +50,18 @@ class MatchSearcher(AbstractSearcher):
 
         # Run search
         instance = cls(
-            model=Match, query=query, prefetch_related=["snapshot", "rule", "script"]
+            model=models.Match,
+            query=query,
+            prefetch_related=["snapshot", "rule", "script"],
         )
         results = await instance._search(size=size, offset=offset, id_only=id_only)
 
         if id_only:
-            return SearchResults(
+            return schemas.MatchesSearchResults(
                 results=cast(List[UUID], results.results), total=results.total
             )
 
-        matches: List[MatchModel] = [
-            match.to_model() for match in cast(List[Match], results.results)
+        matches: List[schemas.Match] = [
+            match.to_model() for match in cast(List[models.Match], results.results)
         ]
-        return SearchResults(results=matches, total=results.total)
+        return schemas.MatchesSearchResults(results=matches, total=results.total)

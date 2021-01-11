@@ -12,7 +12,7 @@ from app.schemas.dns_records import BaseDnsRecord, DnsRecord
 from app.schemas.mixins import TimestampMixin
 from app.schemas.scripts import BaseScript, Script
 from app.schemas.search import BaseSearchResults
-from app.services.utils import get_hostname_from_url, get_ip_address_by_hostname
+from app.utils.network import get_hostname_from_url, get_ip_address_by_hostname
 
 # Declare rules related schemas here to prevent circular reference
 
@@ -117,7 +117,7 @@ class SimplifiedSnapshot(BasicAttributes, AbstractBaseModel, TimestampMixin):
         return list(cls.__fields__.keys())
 
 
-class SearchResults(BaseSearchResults):
+class SnapshotsSearchResults(BaseSearchResults):
     results: Union[List[SimplifiedSnapshot], List[UUID]]
 
 

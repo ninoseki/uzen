@@ -3,16 +3,14 @@ from typing import Optional
 import httpx
 from loguru import logger
 from playwright import Error
-from tortoise.exceptions import IntegrityError
 from tortoise.transactions import in_transaction
 
+from app import dataclasses, models
 from app.core import settings
 from app.core.exceptions import TakeSnapshotError
-from app.models.scripts import Script
-from app.models.snapshots import Snapshot
-from app.schemas.utils import SnapshotResult
 from app.services.browser import Browser
 from app.services.fake_browser import FakeBrowser
+from app.utils.script import save_script_files
 
 
 def use_playwright(host: Optional[str] = None) -> bool:
@@ -33,7 +31,7 @@ async def take_snapshot(
     referer: Optional[str] = None,
     timeout: Optional[int] = None,
     user_agent: Optional[str] = None,
-) -> SnapshotResult:
+) -> dataclasses.SnapshotResult:
 
     timeout = timeout or 30000
     ignore_https_errors = ignore_https_errors or False
@@ -89,23 +87,11 @@ async def take_snapshot(
     raise TakeSnapshotError("\n".join(errors))
 
 
-async def save_snapshot(result: SnapshotResult) -> Snapshot:
+async def save_snapshot(result: dataclasses.SnapshotResult) -> models.Snapshot:
     async with in_transaction():
         snapshot = result.snapshot
         await snapshot.save()
 
-        files = [script_file.file for script_file in result.script_files]
-        for file in files:
-            try:
-                await file.save()
-            except IntegrityError:
-                # ignore the intergrity error
-                # e.g. tortoise.exceptions.IntegrityError: UNIQUE constraint failed: files.id
-                pass
-
-        scripts = [script_file.script for script_file in result.script_files]
-        for script in scripts:
-            script.snapshot_id = snapshot.id
-        await Script.bulk_create(scripts)
+        await save_script_files(result.script_files, snapshot.id)
 
         return snapshot

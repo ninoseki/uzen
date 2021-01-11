@@ -3,8 +3,7 @@ from uuid import UUID
 
 from tortoise.query_utils import Q
 
-from app.models.snapshots import Snapshot
-from app.schemas.snapshots import SearchResults, SimplifiedSnapshot
+from app import models, schemas
 from app.services.searchers import AbstractSearcher
 from app.services.searchers.utils import convert_to_datetime
 
@@ -13,7 +12,7 @@ class SnapshotSearcher(AbstractSearcher):
     @classmethod
     async def search(
         cls, filters: dict, size=None, offset=None, id_only=False,
-    ) -> SearchResults:
+    ) -> schemas.SnapshotsSearchResults:
         """Search snapshots
 
         Arguments:
@@ -73,18 +72,20 @@ class SnapshotSearcher(AbstractSearcher):
 
         # Run search
         instance = cls(
-            model=Snapshot, query=query, values=SimplifiedSnapshot.field_keys()
+            model=models.Snapshot,
+            query=query,
+            values=schemas.SimplifiedSnapshot.field_keys(),
         )
 
         results = await instance._search(size=size, offset=offset, id_only=id_only)
 
         if id_only:
-            return SearchResults(
+            return schemas.SnapshotsSearchResults(
                 results=cast(List[UUID], results.results), total=results.total
             )
 
         results_ = cast(List[dict], results.results)
-        return SearchResults(
-            results=[SimplifiedSnapshot(**result) for result in results_],
+        return schemas.SnapshotsSearchResults(
+            results=[schemas.SimplifiedSnapshot(**result) for result in results_],
             total=results.total,
         )

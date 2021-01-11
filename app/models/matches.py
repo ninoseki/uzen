@@ -1,8 +1,8 @@
 from tortoise import fields
 
+from app import schemas
 from app.models.base import AbstractBaseModel
 from app.models.mixins import TimestampMixin
-from app.schemas.matches import Match as MatchModel
 
 
 class Match(TimestampMixin, AbstractBaseModel):
@@ -18,8 +18,8 @@ class Match(TimestampMixin, AbstractBaseModel):
         "models.Script", null=True, on_delete=fields.CASCADE
     )
 
-    def to_model(self) -> MatchModel:
-        return MatchModel.from_orm(self)
+    def to_model(self) -> schemas.Match:
+        return schemas.Match.from_orm(self)
 
     class Meta:
         table = "matches"

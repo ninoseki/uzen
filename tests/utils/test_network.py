@@ -3,7 +3,7 @@ import socket
 import pytest
 import vcr
 
-from app.services.utils import (
+from app.utils.network import (
     get_asn_by_ip_address,
     get_hostname_from_url,
     get_ip_address_by_hostname,

@@ -5,10 +5,7 @@ from uuid import UUID
 
 import aiometer
 
-from app.models.rules import Rule
-from app.models.snapshots import Snapshot
-from app.schemas.matches import MatchResult
-from app.schemas.scripts import Script
+from app import models, schemas
 from app.services.searchers.rules import RuleSearcher
 from app.services.yara_scanner import YaraScanner
 
@@ -17,7 +14,7 @@ MAX_AT_ONCE = 10
 
 
 class RuleMatcher:
-    def __init__(self, snapshot: Snapshot):
+    def __init__(self, snapshot: models.Snapshot):
         self.snapshot = snapshot
 
     def _extract_data_from_snapshot(self, target: str = "body") -> str:
@@ -33,21 +30,23 @@ class RuleMatcher:
         return ""
 
     def _partial_scan_for_script(
-        self, rule: Rule, scanner: YaraScanner
-    ) -> List[MatchResult]:
+        self, rule: models.Rule, scanner: YaraScanner
+    ) -> List[schemas.MatchResult]:
         results = []
-        for script in cast(List[Script], self.snapshot.scripts):
+        for script in cast(List[models.Script], self.snapshot.scripts):
             data = script.file.content
             matches = scanner.match(data)
             if len(matches) > 0:
                 results.append(
-                    MatchResult(rule_id=rule.id, script_id=script.id, matches=matches)
+                    schemas.MatchResult(
+                        rule_id=rule.id, script_id=script.id, matches=matches
+                    )
                 )
         return results
 
-    async def partial_scan(self, ids: List[UUID]) -> List[MatchResult]:
-        results: List[MatchResult] = []
-        rules: List[Rule] = await Rule.filter(id__in=ids)
+    async def partial_scan(self, ids: List[UUID]) -> List[schemas.MatchResult]:
+        results: List[schemas.MatchResult] = []
+        rules: List[models.Rule] = await models.Rule.filter(id__in=ids)
         for rule in rules:
             scanner = YaraScanner(rule.source)
 
@@ -59,11 +58,13 @@ class RuleMatcher:
                 data = self._extract_data_from_snapshot(rule.target)
                 matches = scanner.match(data)
                 if len(matches) > 0:
-                    results.append(MatchResult(rule_id=rule.id, matches=matches))
+                    results.append(
+                        schemas.MatchResult(rule_id=rule.id, matches=matches)
+                    )
 
         return results
 
-    async def scan(self) -> List[MatchResult]:
+    async def scan(self) -> List[schemas.MatchResult]:
         search_results = await RuleSearcher.search({}, id_only=True)
         rule_ids = cast(List[UUID], search_results.results)
         if len(rule_ids) == 0:

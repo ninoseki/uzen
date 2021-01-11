@@ -1,8 +1,8 @@
 from tortoise import fields
 
+from app import schemas
 from app.models.base import AbstractBaseModel
 from app.models.mixins import TimestampMixin
-from app.schemas.dns_records import DnsRecord as DnsRecordModel
 
 
 class DnsRecord(TimestampMixin, AbstractBaseModel):
@@ -16,8 +16,8 @@ class DnsRecord(TimestampMixin, AbstractBaseModel):
         on_delete=fields.CASCADE,
     )
 
-    def to_model(self) -> DnsRecordModel:
-        return DnsRecordModel.from_orm(self)
+    def to_model(self) -> schemas.DnsRecord:
+        return schemas.DnsRecord.from_orm(self)
 
     class Meta:
         table = "dns_records"

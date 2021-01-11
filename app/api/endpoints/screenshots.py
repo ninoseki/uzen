@@ -5,7 +5,7 @@ from fastapi import APIRouter
 from fastapi.responses import Response
 
 from app.services.browser import Browser
-from app.services.screenshot import get_screenshot
+from app.utils.screenshot import get_screenshot
 
 router = APIRouter()
 
@@ -13,7 +13,7 @@ router = APIRouter()
 @router.get(
     "/{snapshot_id}",
     responses={
-        200: {"content": {"image/png": {}}, "description": "Returns a sreenshot.",}
+        200: {"content": {"image/png": {}}, "description": "Returns a sreenshot."}
     },
     response_description="Returns a screenshot",
     summary="Get a screenshot",

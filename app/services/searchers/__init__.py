@@ -6,7 +6,7 @@ from typing import List, Optional, Type
 from tortoise.models import Model, QuerySet
 from tortoise.query_utils import Q
 
-from app.schemas.search import SearchResults
+from app import dataclasses
 
 
 class AbstractSearcher(ABC):
@@ -47,11 +47,11 @@ class AbstractSearcher(ABC):
 
     async def _search(
         self, size: Optional[int] = None, offset: Optional[int] = None, id_only=False,
-    ) -> SearchResults:
+    ) -> dataclasses.SearchResults:
         total = await self._total()
         queryset = self.build_queryset(size=size, offset=offset, id_only=id_only)
         results = await queryset
-        return SearchResults(results=results, total=total)
+        return dataclasses.SearchResults(results=results, total=total)
 
     @classmethod
     @abstractmethod

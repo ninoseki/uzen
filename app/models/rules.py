@@ -5,11 +5,9 @@ from uuid import UUID
 
 from tortoise import fields
 
+from app import models, schemas
 from app.models.base import AbstractBaseModel
 from app.models.mixins import TimestampMixin
-from app.models.snapshots import Snapshot
-from app.schemas.rules import Rule as RuleModel
-from app.schemas.snapshots import Snapshot as SnapshotModel
 
 LIMIT_OF_PREFETCH = 20
 
@@ -20,25 +18,25 @@ class Rule(TimestampMixin, AbstractBaseModel):
     source = fields.TextField()
     updated_at = fields.DatetimeField(auto_now=True)
 
-    _snapshots: fields.ManyToManyRelation[Snapshot]
+    _snapshots: fields.ManyToManyRelation[models.Snapshot]
 
     def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
 
-        self.snapshots_: Optional[List[Snapshot]] = None
+        self.snapshots_: Optional[List[models.Snapshot]] = None
 
     @property
-    def snapshots(self) -> List[SnapshotModel]:
+    def snapshots(self) -> List[schemas.Snapshot]:
         if hasattr(self, "snapshots_") and self.snapshots_ is not None:
             return cast(
-                List[SnapshotModel],
+                List[schemas.Snapshot],
                 [snapshot.to_model() for snapshot in self.snapshots_],
             )
 
         return []
 
-    def to_model(self) -> RuleModel:
-        return RuleModel.from_orm(self)
+    def to_model(self) -> schemas.Rule:
+        return schemas.Rule.from_orm(self)
 
     @classmethod
     async def get_by_id(cls, id_: UUID) -> Rule:

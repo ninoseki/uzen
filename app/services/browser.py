@@ -5,18 +5,16 @@ from playwright import async_playwright
 from playwright.async_api import Browser as PlaywrightBrowser
 from playwright.async_api import Error, Page, Playwright, Response
 
+from app import dataclasses, models, schemas
 from app.core import settings
-from app.models.scripts import File, Script
-from app.models.snapshots import Snapshot
-from app.schemas.utils import ScriptFile, SnapshotResult
 from app.services.certificate import Certificate
-from app.services.utils import (
-    calculate_sha256,
+from app.services.whois import Whois
+from app.utils.hash import calculate_sha256
+from app.utils.network import (
     get_asn_by_ip_address,
     get_hostname_from_url,
     get_ip_address_by_hostname,
 )
-from app.services.whois import Whois
 
 
 async def launch_browser(p: Playwright) -> PlaywrightBrowser:
@@ -38,7 +36,7 @@ class Browser:
         referer: Optional[str] = None,
         timeout: Optional[int] = None,
         user_agent: Optional[str] = None,
-    ) -> SnapshotResult:
+    ) -> dataclasses.SnapshotResult:
         """Take a snapshot of a website by puppeteer
 
         Arguments:
@@ -68,7 +66,7 @@ class Browser:
                 await page.setExtraHTTPHeaders(headers)
 
                 # intercept responses on page to get scripts
-                script_files: List[ScriptFile] = []
+                script_files: List[schemas.ScriptFile] = []
 
                 async def handle_response(response: Response) -> None:
                     content_type: str = response.headers.get("content-type", "")
@@ -76,9 +74,11 @@ class Browser:
                         content = await response.text()
                         sha256 = calculate_sha256(content)
 
-                        script = Script(url=response.url, file_id=sha256)
-                        file = File(id=sha256, content=content)
-                        script_files.append(ScriptFile(script=script, file=file))
+                        script = models.Script(url=response.url, file_id=sha256)
+                        file = models.File(id=sha256, content=content)
+                        script_files.append(
+                            dataclasses.ScriptFile(script=script, file=file)
+                        )
 
                 page.on(
                     "response",
@@ -127,7 +127,7 @@ class Browser:
         asn = get_asn_by_ip_address(ip_address) or ""
         whois = Whois.whois(hostname)
 
-        snapshot = Snapshot(
+        snapshot = models.Snapshot(
             url=url,
             submitted_url=submitted_url,
             status=status,
@@ -145,7 +145,7 @@ class Browser:
             request=request,
         )
 
-        return SnapshotResult(
+        return dataclasses.SnapshotResult(
             screenshot=screenshot, snapshot=snapshot, script_files=script_files,
         )
 

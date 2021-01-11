@@ -5,7 +5,7 @@ from typing import Optional
 import httpx
 
 from app.core import settings
-from app.services.minio import create_bucket_if_not_exists, get_client
+from app.utils.minio import create_bucket_if_not_exists, get_client
 
 SCREENSHOT_BUCKET_NAME: str = "uzen-screenshot"
 

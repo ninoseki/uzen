@@ -1,7 +1,7 @@
 from loguru import logger
 
-from app.services.minio import upload_screenshot
 from app.tasks import AbstractSyncTask
+from app.utils.minio import upload_screenshot
 
 
 class UploadScrenshotTask(AbstractSyncTask):

@@ -7,10 +7,9 @@ import aiometer
 import httpx
 from bs4 import BeautifulSoup
 
-from app.models.scripts import File, Script
-from app.models.snapshots import Snapshot
-from app.schemas.utils import ScriptFile
-from app.services.utils import calculate_sha256
+from app import models, schemas
+from app.dataclasses.utils import ScriptFile
+from app.utils.hash import calculate_sha256
 
 MAX_AT_ONCE = 10
 
@@ -99,9 +98,9 @@ async def get_script_content(
 
 class ScriptFactory:
     @staticmethod
-    async def from_snapshot(snapshot: Snapshot) -> List[ScriptFile]:
+    async def from_snapshot(snapshot: models.Snapshot) -> List[ScriptFile]:
         sources = get_script_sources(url=snapshot.url, body=snapshot.body)
-        script_files: List[ScriptFile] = []
+        script_files: List[schemas.ScriptFile] = []
 
         # Use the same settings as the original request
         headers = {
@@ -130,8 +129,8 @@ class ScriptFactory:
                     continue
 
                 sha256 = calculate_sha256(result.content)
-                file = File(id=sha256, content=result.content)
-                script = Script(
+                file = models.File(id=sha256, content=result.content)
+                script = models.Script(
                     url=result.source,
                     file_id=sha256,
                     # insert a dummy ID if a snapshot doesn't have ID

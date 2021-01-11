@@ -8,7 +8,7 @@ from app.schemas.common import Source, Target
 from app.schemas.snapshots import SimplifiedSnapshot
 
 
-class ScanPayload(Source, Target, APIModel):
+class YaraScanPayload(Source, Target, APIModel):
     pass
 
 
@@ -55,7 +55,7 @@ class YaraResult(APIModel):
     )
 
 
-class ScanResult(SimplifiedSnapshot):
+class YaraScanResult(SimplifiedSnapshot):
     """Simplified version of Pydantic model of Snapshot"""
 
     yara_result: YaraResult

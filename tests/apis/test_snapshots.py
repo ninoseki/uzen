@@ -4,7 +4,7 @@ import pytest
 
 from app.models.snapshots import Snapshot
 from app.services.browser import Browser
-from tests.utils import first_snapshot_id, make_snapshot_result
+from tests.helper import first_snapshot_id, make_snapshot_result
 
 
 @pytest.mark.asyncio

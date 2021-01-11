@@ -1,6 +1,6 @@
 import pytest
 
-from app.factories.domain import DomainInformationFactory
+from app.factories.domain import DomainFactory
 from app.services.whois import Whois
 
 
@@ -12,5 +12,5 @@ def mock_whois(hostname: str):
 async def test_build_from_hostname(monkeypatch):
     monkeypatch.setattr(Whois, "whois", mock_whois)
 
-    information = await DomainInformationFactory.from_hostname("example.com")
+    information = await DomainFactory.from_hostname("example.com")
     assert len(information.dns_records) > 0

@@ -3,7 +3,7 @@ import json
 import pytest
 
 from app.models.rules import Rule
-from tests.utils import first_rule_id
+from tests.helper import first_rule_id
 
 
 @pytest.mark.asyncio

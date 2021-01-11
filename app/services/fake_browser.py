@@ -2,17 +2,16 @@ from typing import List, Optional, cast
 
 import httpx
 
-from app.models.snapshots import Snapshot
-from app.schemas.utils import ScriptFile, SnapshotResult
+from app import dataclasses, models
 from app.services.certificate import Certificate
-from app.services.utils import (
-    calculate_sha256,
+from app.services.whois import Whois
+from app.tasks.scripts import ScriptTask
+from app.utils.hash import calculate_sha256
+from app.utils.network import (
     get_asn_by_ip_address,
     get_hostname_from_url,
     get_ip_address_by_hostname,
 )
-from app.services.whois import Whois
-from app.tasks.scripts import ScriptTask
 
 DEFAULT_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
 DEFAULT_AL = "en-US"
@@ -29,7 +28,7 @@ class FakeBrowser:
         referer: Optional[str] = None,
         timeout: Optional[int] = None,
         user_agent: Optional[str] = None,
-    ) -> SnapshotResult:
+    ) -> dataclasses.SnapshotResult:
         """Take a snapshot of a website by httpx
 
         Arguments:
@@ -94,7 +93,7 @@ class FakeBrowser:
         asn = get_asn_by_ip_address(ip_address) or ""
         whois = Whois.whois(hostname)
 
-        snapshot = Snapshot(
+        snapshot = models.Snapshot(
             url=url,
             submitted_url=submitted_url,
             status=status,
@@ -114,9 +113,10 @@ class FakeBrowser:
 
         # get script files
         script_files = cast(
-            List[ScriptFile], await ScriptTask.process(snapshot, insert_to_db=False)
+            List[dataclasses.ScriptFile],
+            await ScriptTask.process(snapshot, insert_to_db=False),
         )
 
-        return SnapshotResult(
+        return dataclasses.SnapshotResult(
             screenshot=None, snapshot=snapshot, script_files=script_files
         )

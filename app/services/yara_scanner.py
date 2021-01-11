@@ -6,9 +6,7 @@ from uuid import UUID
 import aiometer
 import yara
 
-from app.models.scripts import Script
-from app.models.snapshots import Snapshot
-from app.schemas.yara import ScanResult, YaraMatch, YaraResult
+from app import models, schemas
 from app.services.matches_converter import MatchesConverter
 from app.services.searchers.snapshots import SnapshotSearcher
 
@@ -20,15 +18,19 @@ class YaraScanner:
     def __init__(self, source: str):
         self.rule: yara.Rules = yara.compile(source=source)
 
-    async def partial_scan_for_scripts(self, ids: List[UUID]) -> List[YaraResult]:
-        scripts = await Script.filter(snapshot_id__in=ids).prefetch_related("file")
+    async def partial_scan_for_scripts(
+        self, ids: List[UUID]
+    ) -> List[schemas.YaraResult]:
+        scripts = await models.Script.filter(snapshot_id__in=ids).prefetch_related(
+            "file"
+        )
         matched_results = []
         for script in scripts:
             snapshot_id = script.snapshot_id
             content = script.file.content
             matches = self.match(data=content)
             if len(matches) > 0:
-                result = YaraResult(
+                result = schemas.YaraResult(
                     snapshot_id=snapshot_id,
                     script_id=script.id,
                     target="script",
@@ -38,7 +40,9 @@ class YaraScanner:
 
         return matched_results
 
-    async def partial_scan(self, target: str, ids: List[UUID]) -> List[YaraResult]:
+    async def partial_scan(
+        self, target: str, ids: List[UUID]
+    ) -> List[schemas.YaraResult]:
         """Scan a list of snapshots with a YARA rule
 
         Arguments:
@@ -51,14 +55,14 @@ class YaraScanner:
         if target == "script":
             return await self.partial_scan_for_scripts(ids)
 
-        snapshots = await Snapshot.filter(id__in=ids).values("id", target)
+        snapshots = await models.Snapshot.filter(id__in=ids).values("id", target)
         matched_results = []
         for snapshot in snapshots:
             snapshot_id = snapshot.get("id")
             data = snapshot.get(target, "")
             matches = self.match(data=data)
             if len(matches) > 0:
-                result = YaraResult(
+                result = schemas.YaraResult(
                     snapshot_id=snapshot_id,
                     script_id=None,
                     target=target,
@@ -74,7 +78,7 @@ class YaraScanner:
         filters: Optional[dict] = None,
         size: Optional[int] = None,
         offset: Optional[int] = None,
-    ) -> List[ScanResult]:
+    ) -> List[schemas.YaraScanResult]:
         """Scan snapshots data with a YARA rule
 
         Keyword Arguments:
@@ -106,8 +110,8 @@ class YaraScanner:
         flatten_results = list(itertools.chain.from_iterable(results))
 
         matched_ids = [result.snapshot_id for result in flatten_results]
-        snapshots: List[dict] = await Snapshot.filter(id__in=matched_ids).values(
-            *ScanResult.field_keys()
+        snapshots: List[dict] = await models.Snapshot.filter(id__in=matched_ids).values(
+            *schemas.YaraScanResult.field_keys()
         )
 
         table = self._build_snapshot_table(snapshots)
@@ -116,7 +120,7 @@ class YaraScanner:
             if snapshot is not None:
                 snapshot["yara_result"] = result
 
-        return [ScanResult(**snapshot) for snapshot in snapshots]
+        return [schemas.YaraScanResult(**snapshot) for snapshot in snapshots]
 
     def _build_snapshot_table(self, snapshots: List[dict]) -> Dict[str, dict]:
         table = {}
@@ -125,7 +129,7 @@ class YaraScanner:
             table[id_] = snapshot
         return table
 
-    def match(self, data: Optional[str]) -> List[YaraMatch]:
+    def match(self, data: Optional[str]) -> List[schemas.YaraMatch]:
         """Scan a data with a YARA rule
 
         Arguments:

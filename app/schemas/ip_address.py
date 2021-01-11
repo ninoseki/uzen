@@ -6,7 +6,7 @@ from pydantic import Field, IPvAnyAddress
 from app.schemas.snapshots import Snapshot
 
 
-class IPAddressInformation(APIModel):
+class IPAddress(APIModel):
     """Pydantic model for IP informaiton"""
 
     ip_address: IPvAnyAddress = Field(

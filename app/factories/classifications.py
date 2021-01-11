@@ -3,9 +3,8 @@ from typing import List, Optional
 from pysafebrowsing import SafeBrowsing
 from pysafebrowsing.api import SafeBrowsingInvalidApiKey, SafeBrowsingWeirdError
 
+from app import models
 from app.core import settings
-from app.models.classifications import Classification
-from app.models.snapshots import Snapshot
 
 
 def google_safe_brwosing_lookup(url: str) -> Optional[dict]:
@@ -32,14 +31,14 @@ def google_safe_brwosing_lookup(url: str) -> Optional[dict]:
 
 class ClassificationFactory:
     @staticmethod
-    def from_snapshot(snapshot: Snapshot) -> List[Classification]:
-        classifications = []
+    def from_snapshot(snapshot: models.Snapshot) -> List[models.Classification]:
+        classifications: List[models.Classification] = []
 
         res = google_safe_brwosing_lookup(snapshot.url)
         if res is not None:
             malicious = bool(res.get("malicious"))
             classifications.append(
-                Classification(
+                models.Classification(
                     name="Google Safe Browsing",
                     malicious=malicious,
                     snapshot_id=snapshot.id or -1,

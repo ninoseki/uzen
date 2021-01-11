@@ -4,7 +4,7 @@ from app.models.matches import Match
 from app.models.rules import Rule
 from app.models.scripts import Script
 from app.models.snapshots import Snapshot
-from tests.utils import first_rule_id, first_snapshot_id
+from tests.helper import first_rule_id, first_snapshot_id
 
 
 @pytest.mark.asyncio

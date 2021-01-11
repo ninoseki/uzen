@@ -4,42 +4,35 @@ from uuid import UUID
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from tortoise.exceptions import DoesNotExist
 
+from app import models, schemas
 from app.api.dependencies.snapshots import SearchFilters
 from app.core.exceptions import TakeSnapshotError
-from app.models.snapshots import Snapshot
-from app.schemas.snapshots import (
-    CreateSnapshotPayload,
-    SearchResults,
-    SimplifiedSnapshot,
-)
-from app.schemas.snapshots import Snapshot as SnapshotModel
-from app.schemas.utils import CountResponse
 from app.services.searchers.snapshots import SnapshotSearcher
-from app.services.snapshot import save_snapshot, take_snapshot
 from app.tasks.enrichment import EnrichmentTasks
 from app.tasks.matches import MatchinbgTask
 from app.tasks.screenshot import UploadScrenshotTask
 from app.tasks.snapshots import UpdateProcessingTask
+from app.utils.snapshot import save_snapshot, take_snapshot
 
 router = APIRouter()
 
 
 @router.get(
     "/count",
-    response_model=CountResponse,
+    response_model=schemas.CountResponse,
     response_description="Returns a count of snapshots",
     summary="Count snapshots",
     description="Get a count of snapshots",
     status_code=200,
 )
-async def count() -> CountResponse:
-    count = await Snapshot.count()
-    return CountResponse(count=count)
+async def count() -> schemas.CountResponse:
+    count = await models.Snapshot.count()
+    return schemas.CountResponse(count=count)
 
 
 @router.get(
     "/search",
-    response_model=SearchResults,
+    response_model=schemas.SnapshotsSearchResults,
     response_description="Returns a list of matched snapshots",
     summary="Search snapshots",
     description="Searcn snapshtos with filters",
@@ -48,42 +41,42 @@ async def search(
     size: Optional[int] = None,
     offset: Optional[int] = None,
     filters: SearchFilters = Depends(),
-) -> SearchResults:
+) -> schemas.SnapshotsSearchResults:
     results = await SnapshotSearcher.search(vars(filters), size=size, offset=offset)
-    snapshots = cast(List[SimplifiedSnapshot], results.results)
-    return SearchResults(results=snapshots, total=results.total)
+    snapshots = cast(List[schemas.SimplifiedSnapshot], results.results)
+    return schemas.SnapshotsSearchResults(results=snapshots, total=results.total)
 
 
 @router.get(
     "/{snapshot_id}",
-    response_model=SnapshotModel,
+    response_model=schemas.Snapshot,
     response_description="Returns a snapshot",
     summary="Get a snapshot",
     description="Get a snapshot which has a given id",
 )
-async def get(snapshot_id: UUID) -> SnapshotModel:
+async def get(snapshot_id: UUID) -> schemas.Snapshot:
     try:
-        snapshot: Snapshot = await Snapshot.get_by_id(snapshot_id)
+        snapshot = await models.Snapshot.get_by_id(snapshot_id)
     except DoesNotExist:
         raise HTTPException(
             status_code=404, detail=f"Snapshot:{snapshot_id} is not found"
         )
 
-    model = cast(SnapshotModel, snapshot.to_model())
+    model = cast(schemas.Snapshot, snapshot.to_model())
     return model
 
 
 @router.post(
     "/",
-    response_model=SnapshotModel,
+    response_model=schemas.Snapshot,
     response_description="Returns a created snapshot",
     summary="Create a snapshot",
     description="Create a snapshot of a website by using puppeteer",
     status_code=201,
 )
 async def create(
-    payload: CreateSnapshotPayload, background_tasks: BackgroundTasks
-) -> SnapshotModel:
+    payload: schemas.CreateSnapshotPayload, background_tasks: BackgroundTasks
+) -> schemas.Snapshot:
     try:
         result = await take_snapshot(
             url=payload.url,
@@ -108,7 +101,7 @@ async def create(
     background_tasks.add_task(MatchinbgTask.process, snapshot)
     background_tasks.add_task(UpdateProcessingTask.process, snapshot)
 
-    model = cast(SnapshotModel, snapshot.to_model())
+    model = cast(schemas.Snapshot, snapshot.to_model())
     return model
 
 
@@ -121,7 +114,7 @@ async def create(
 )
 async def delete(snapshot_id: UUID) -> dict:
     try:
-        await Snapshot.delete_by_id(snapshot_id)
+        await models.Snapshot.delete_by_id(snapshot_id)
     except DoesNotExist:
         raise HTTPException(
             status_code=404, detail=f"Snapshot:{snapshot_id} is not found"

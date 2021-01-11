@@ -3,8 +3,7 @@ from typing import cast
 
 import httpx
 
-from app.models.snapshots import Snapshot
-from app.schemas.utils import SnapshotResult
+from app import dataclasses, models
 
 
 class URLScan:
@@ -36,7 +35,7 @@ class URLScan:
             return cast(dict, r.json())
 
     @classmethod
-    async def import_as_snapshot(cls, uuid: str) -> SnapshotResult:
+    async def import_as_snapshot(cls, uuid: str) -> dataclasses.SnapshotResult:
         """Import urlscan.io scan as a snapshot
 
         Arguments:
@@ -73,7 +72,7 @@ class URLScan:
         time = cast(str, result.get("task", {}).get("time"))
         created_at = datetime.datetime.strptime(time, "%Y-%m-%dT%H:%M:%S.%fZ")
 
-        snapshot = Snapshot(
+        snapshot = models.Snapshot(
             url=url,
             submitted_url=submitted_url,
             status=200,
@@ -92,4 +91,6 @@ class URLScan:
 
         screenshot = await instance.screenshot()
 
-        return SnapshotResult(screenshot=screenshot, snapshot=snapshot, script_files=[])
+        return dataclasses.SnapshotResult(
+            screenshot=screenshot, snapshot=snapshot, script_files=[]
+        )

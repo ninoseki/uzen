@@ -5,9 +5,7 @@ import aiometer
 from dns.asyncresolver import Resolver
 from dns.exception import DNSException
 
-from app.models.dns_records import DnsRecord
-from app.models.snapshots import Snapshot
-from app.schemas.dns_records import BaseDnsRecord
+from app import models, schemas
 
 TYPES: List[str] = ["A", "AAAA", "CNAME", "MX", "NS", "PTR", "TXT"]
 
@@ -22,7 +20,7 @@ async def resolve(
     raise_on_no_answer=True,
     source_port=0,
     lifetime=None,
-) -> List[BaseDnsRecord]:
+) -> List[schemas.BaseDnsRecord]:
     try:
         answer = await resolver.resolve(
             hostname,
@@ -35,19 +33,19 @@ async def resolve(
             lifetime,
             True,
         )
-        return [BaseDnsRecord(type=rdtype, value=str(rr)) for rr in answer]
+        return [schemas.BaseDnsRecord(type=rdtype, value=str(rr)) for rr in answer]
     except DNSException:
         return []
 
 
-async def query(hostname: str) -> List[BaseDnsRecord]:
+async def query(hostname: str) -> List[schemas.BaseDnsRecord]:
     """Quqery DNS records
 
     Arguments:
         hostname {str} -- A hostname to query
 
     Returns:
-        List[BaseDnsRecord] -- A list of DNS records
+        List[schemas.dns_records.BaseDnsRecord] -- A list of DNS records
     """
     resolver = Resolver()
     tasks = [partial(resolve, resolver, hostname, record_type) for record_type in TYPES]
@@ -57,9 +55,9 @@ async def query(hostname: str) -> List[BaseDnsRecord]:
 
 class DnsRecordFactory:
     @staticmethod
-    async def from_snapshot(snapshot: Snapshot) -> List[DnsRecord]:
+    async def from_snapshot(snapshot: models.Snapshot,) -> List[models.DnsRecord]:
         return [
-            DnsRecord(
+            models.DnsRecord(
                 type=record.type,
                 value=record.value,
                 # insert a dummy ID if a snapshot doesn't have ID
@@ -69,5 +67,5 @@ class DnsRecordFactory:
         ]
 
     @staticmethod
-    async def from_hostname(hostname: str) -> List[BaseDnsRecord]:
+    async def from_hostname(hostname: str) -> List[schemas.BaseDnsRecord]:
         return await query(hostname)

@@ -4,7 +4,7 @@ import pytest
 
 from app.services.browser import Browser
 from app.services.fake_browser import FakeBrowser
-from app.services.snapshot import take_snapshot
+from app.utils.snapshot import take_snapshot
 
 
 @pytest.mark.asyncio

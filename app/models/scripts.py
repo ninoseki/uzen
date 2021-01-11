@@ -1,10 +1,9 @@
 from tortoise import fields
 from tortoise.models import Model
 
+from app import schemas
 from app.models.base import AbstractBaseModel
 from app.models.mixins import TimestampMixin
-from app.schemas.scripts import File as FileModel
-from app.schemas.scripts import Script as ScriptModel
 
 
 def normalize_url(url: str) -> str:
@@ -35,9 +34,9 @@ class Script(TimestampMixin, AbstractBaseModel):
         "models.File", related_name="scripts", on_delete=fields.RESTRICT
     )
 
-    def to_model(self) -> ScriptModel:
+    def to_model(self) -> schemas.Script:
         self.url = normalize_url(self.url)
-        return ScriptModel.from_orm(self)
+        return schemas.Script.from_orm(self)
 
     class Meta:
         table = "scripts"
@@ -49,8 +48,8 @@ class File(Model):
 
     scripts: fields.ReverseRelation["Script"]
 
-    def to_model(self) -> FileModel:
-        return FileModel.from_orm(self)
+    def to_model(self) -> schemas.File:
+        return schemas.File.from_orm(self)
 
     class Meta:
         table = "files"

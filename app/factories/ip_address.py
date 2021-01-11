@@ -1,21 +1,20 @@
-from app.models.snapshots import Snapshot
-from app.schemas.ip_address import IPAddressInformation
+from app import models, schemas
 from app.services.rdap import RDAP
 from app.services.whois import Whois
 
 
-class IPAddressInformationFactory:
+class IPAddressFactory:
     @staticmethod
-    async def from_ip_address(ip_address: str) -> IPAddressInformation:
+    async def from_ip_address(ip_address: str) -> schemas.IPAddress:
         res = RDAP.lookup(ip_address)
         whois = Whois.whois(ip_address)
-        snapshots = await Snapshot.find_by_ip_address(ip_address)
+        snapshots = await models.Snapshot.find_by_ip_address(ip_address)
 
         asn = res.get("asn", "")
         country = res.get("country", "")
         description = res.get("description", "")
 
-        return IPAddressInformation(
+        return schemas.IPAddress(
             asn=asn,
             country=country,
             description=description,

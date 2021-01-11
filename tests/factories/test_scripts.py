@@ -5,7 +5,7 @@ import respx
 from httpx import Response
 
 from app.factories.scripts import ScriptFactory, get_script_sources
-from tests.utils import make_snapshot
+from tests.helper import make_snapshot
 
 
 @pytest.mark.asyncio

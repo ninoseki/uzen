@@ -1,7 +1,7 @@
 import pytest
 import vcr
 
-from app.factories.ip_address import IPAddressInformationFactory
+from app.factories.ip_address import IPAddressFactory
 from app.services.whois import Whois
 
 
@@ -14,5 +14,5 @@ def mock_whois(hostname: str):
 async def test_build_from_ip_address(monkeypatch):
     monkeypatch.setattr(Whois, "whois", mock_whois)
 
-    information = await IPAddressInformationFactory.from_ip_address("1.1.1.1")
+    information = await IPAddressFactory.from_ip_address("1.1.1.1")
     assert str(information.ip_address) == "1.1.1.1"

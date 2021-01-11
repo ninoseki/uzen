@@ -1,17 +1,17 @@
 from fastapi import APIRouter
 
-from app.factories.domain import DomainInformationFactory
-from app.schemas.domain import DomainInformation
+from app import schemas
+from app.factories.domain import DomainFactory
 
 router = APIRouter()
 
 
 @router.get(
     "/{hostname}",
-    response_model=DomainInformation,
+    response_model=schemas.Domain,
     response_description="Returns information of a domain",
     summary="Get domain information",
     description="Get information related to a domain",
 )
-async def get(hostname: str) -> DomainInformation:
-    return await DomainInformationFactory.from_hostname(hostname)
+async def get(hostname: str) -> schemas.Domain:
+    return await DomainFactory.from_hostname(hostname)

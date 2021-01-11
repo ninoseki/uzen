@@ -6,13 +6,9 @@ from uuid import UUID
 from tortoise import fields
 from tortoise.exceptions import NoValuesFetched
 
+from app import schemas
 from app.models.base import AbstractBaseModel
 from app.models.mixins import TimestampMixin
-from app.schemas.classifications import Classification
-from app.schemas.dns_records import DnsRecord
-from app.schemas.rules import Rule
-from app.schemas.scripts import Script
-from app.schemas.snapshots import Snapshot as SnapshotModel
 
 
 class Snapshot(TimestampMixin, AbstractBaseModel):
@@ -48,28 +44,28 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
     )
 
     @property
-    def rules(self) -> List[Rule]:
+    def rules(self) -> List[schemas.Rule]:
         try:
             return [rule.to_model() for rule in self._rules]
         except NoValuesFetched:
             return []
 
     @property
-    def scripts(self) -> List[Script]:
+    def scripts(self) -> List[schemas.Script]:
         try:
             return [script.to_model() for script in self._scripts]
         except NoValuesFetched:
             return []
 
     @property
-    def dns_records(self) -> List[DnsRecord]:
+    def dns_records(self) -> List[schemas.DnsRecord]:
         try:
             return [record.to_model() for record in self._dns_records]
         except NoValuesFetched:
             return []
 
     @property
-    def classifications(self) -> List[Classification]:
+    def classifications(self) -> List[schemas.Classification]:
         try:
             return [
                 classification.to_model() for classification in self._classifications
@@ -77,8 +73,8 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
         except NoValuesFetched:
             return []
 
-    def to_model(self) -> SnapshotModel:
-        return SnapshotModel.from_orm(self)
+    def to_model(self) -> schemas.Snapshot:
+        return schemas.Snapshot.from_orm(self)
 
     def to_dict(self) -> dict:
         model = self.to_model()

@@ -52,5 +52,5 @@ class MatchResult(APIModel):
     )
 
 
-class SearchResults(BaseSearchResults):
+class MatchesSearchResults(BaseSearchResults):
     results: Union[List[Match], List[UUID]]

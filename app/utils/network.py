@@ -1,5 +1,3 @@
-"""Helper utilities and decorators."""
-import hashlib
 import socket
 from typing import Optional
 from urllib.parse import urlparse
@@ -48,7 +46,3 @@ def get_asn_by_ip_address(ip_address: str) -> Optional[str]:
     """
     res = RDAP.lookup(ip_address)
     return res.get("asn")
-
-
-def calculate_sha256(s: str) -> str:
-    return hashlib.sha256(s.encode("utf-8")).hexdigest()

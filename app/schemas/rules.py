@@ -35,5 +35,5 @@ class UpdateRulePayload(APIModel):
         orm_mode = False
 
 
-class SearchResults(BaseSearchResults):
+class RulesSearchResults(BaseSearchResults):
     results: Union[List[Rule], List[UUID]]

@@ -1,7 +1,7 @@
 import vcr
 
 from app.factories.classifications import ClassificationFactory
-from tests.utils import make_snapshot
+from tests.helper import make_snapshot
 
 
 @vcr.use_cassette(

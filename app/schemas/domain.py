@@ -7,8 +7,8 @@ from app.schemas.dns_records import BaseDnsRecord
 from app.schemas.snapshots import Snapshot
 
 
-class DomainInformation(APIModel):
-    """Pydantic model for domain informaiton"""
+class Domain(APIModel):
+    """Pydantic model for domain"""
 
     hostname: str = Field(..., title="Hostname", description="A hostname")
     dns_records: List[BaseDnsRecord] = Field(

@@ -1,8 +1,8 @@
 from tortoise import fields
 
+from app import schemas
 from app.models.base import AbstractBaseModel
 from app.models.mixins import TimestampMixin
-from app.schemas.classifications import Classification as ClassificationModel
 
 
 class Classification(TimestampMixin, AbstractBaseModel):
@@ -17,8 +17,8 @@ class Classification(TimestampMixin, AbstractBaseModel):
         on_delete=fields.CASCADE,
     )
 
-    def to_model(self) -> ClassificationModel:
-        return ClassificationModel.from_orm(self)
+    def to_model(self) -> schemas.Classification:
+        return schemas.Classification.from_orm(self)
 
     class Meta:
         table = "classifications"

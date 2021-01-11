@@ -2,10 +2,10 @@ from typing import List
 
 import yara
 
-from app.schemas.yara import YaraMatch, YaraMatchString
+from app import schemas
 
 
-def convert_strings(strings) -> List[YaraMatchString]:
+def convert_strings(strings) -> List[schemas.YaraMatchString]:
     # strintgs is a list of tuple
     # (<offset>, <string identifier>, <string data>)
     # e.g. (81L, '$a', 'abc'),
@@ -16,7 +16,7 @@ def convert_strings(strings) -> List[YaraMatchString]:
         identifier = items[1]
         data = items[2].decode()
         models.append(
-            YaraMatchString(
+            schemas.YaraMatchString(
                 offset=offset, string_identifier=identifier, string_data=data
             )
         )
@@ -26,11 +26,11 @@ def convert_strings(strings) -> List[YaraMatchString]:
 
 class MatchesConverter:
     @staticmethod
-    def convert(matches: List[yara.Match]) -> List[YaraMatch]:
+    def convert(matches: List[yara.Match]) -> List[schemas.YaraMatch]:
         _matches = []
         for match in matches:
             _matches.append(
-                YaraMatch(
+                schemas.YaraMatch(
                     rule=match.rule,
                     namespace=match.namespace,
                     tags=match.tags,
