@@ -5,7 +5,7 @@ import pytest
 import respx
 from httpx import Response
 
-from uzen.services.urlscan import URLScan
+from app.services.urlscan import URLScan
 
 path = pathlib.Path(__file__).parent / "../fixtures/urlscan.json"
 with open(path) as f:

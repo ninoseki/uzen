@@ -1,7 +1,7 @@
 import pytest
 
-from tests.utils import make_snapshot_result
-from uzen.services.urlscan import URLScan
+from app.services.urlscan import URLScan
+from tests.helper import make_snapshot_result
 
 
 def mock_import_as_snapshot(url: str):

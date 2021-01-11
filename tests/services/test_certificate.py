@@ -1,4 +1,4 @@
-from uzen.services.certificate import Certificate
+from app.services.certificate import Certificate
 
 
 def test_load_and_dump_from_url():

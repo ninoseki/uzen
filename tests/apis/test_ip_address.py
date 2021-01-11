@@ -1,7 +1,7 @@
 import pytest
 import vcr
 
-from uzen.services.whois import Whois
+from app.services.whois import Whois
 
 
 def mock_whois(hostname: str):

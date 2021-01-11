@@ -1,6 +1,6 @@
 import yara
 
-from uzen.services.matches_converter import MatchesConverter
+from app.services.matches_converter import MatchesConverter
 
 
 def test_convert():

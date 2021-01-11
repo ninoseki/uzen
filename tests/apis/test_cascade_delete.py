@@ -1,10 +1,10 @@
 import pytest
 
-from tests.utils import first_rule_id, first_snapshot_id
-from uzen.models.matches import Match
-from uzen.models.rules import Rule
-from uzen.models.scripts import Script
-from uzen.models.snapshots import Snapshot
+from app.models.matches import Match
+from app.models.rules import Rule
+from app.models.scripts import Script
+from app.models.snapshots import Snapshot
+from tests.helper import first_rule_id, first_snapshot_id
 
 
 @pytest.mark.asyncio

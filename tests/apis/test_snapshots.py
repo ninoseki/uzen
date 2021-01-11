@@ -2,9 +2,9 @@ import json
 
 import pytest
 
-from tests.utils import first_snapshot_id, make_snapshot_result
-from uzen.models.snapshots import Snapshot
-from uzen.services.browser import Browser
+from app.models.snapshots import Snapshot
+from app.services.browser import Browser
+from tests.helper import first_snapshot_id, make_snapshot_result
 
 
 @pytest.mark.asyncio

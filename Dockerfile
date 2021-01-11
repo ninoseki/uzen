@@ -61,23 +61,23 @@ RUN apt-get update \
   && apt-get clean  \
   && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
+WORKDIR /uzen
 
-COPY pyproject.toml /app
-COPY poetry.lock /app
-COPY .env.sample /app/.env
-COPY uzen /app/uzen
-COPY --from=build /frontend /app/frontend
+COPY pyproject.toml /uzen
+COPY poetry.lock /uzen
+COPY .env.sample /uzen/.env
+COPY app /uzen/app
+COPY --from=build /frontend /uzen/frontend
 
 RUN pip3 install poetry && poetry config virtualenvs.create false && poetry install --no-dev
 
-ENV PLAYWRIGHT_BROWSERS_PATH /app/playwright
+ENV PLAYWRIGHT_BROWSERS_PATH /uzen/playwright
 
-RUN mkdir -p /app/playwright && python -m playwright install
-RUN rm -rf /app/playwright/webkit-* && rm -rf /app/playwright/firefox-*
+RUN mkdir -p /uzen/playwright && python -m playwright install
+RUN rm -rf /uzen/playwright/webkit-* && rm -rf /uzen/playwright/firefox-*
 
 ENV PORT 8000
 
 EXPOSE $PORT
 
-CMD uvicorn --host 0.0.0.0 --port $PORT uzen:app
+CMD uvicorn --host 0.0.0.0 --port $PORT app:app

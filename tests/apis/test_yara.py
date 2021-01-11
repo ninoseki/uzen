@@ -2,9 +2,9 @@ import json
 
 import pytest
 
-from uzen.models.scripts import Script
-from uzen.models.snapshots import Snapshot
-from uzen.schemas.utils import SnapshotResult
+from app.dataclasses.utils import SnapshotResult
+from app.models.scripts import Script
+from app.models.snapshots import Snapshot
 
 
 @pytest.mark.asyncio

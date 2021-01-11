@@ -4,8 +4,8 @@ import pytest
 import respx
 from httpx import Response
 
-from tests.utils import make_snapshot
-from uzen.factories.scripts import ScriptFactory, get_script_sources
+from app.factories.scripts import ScriptFactory, get_script_sources
+from tests.helper import make_snapshot
 
 
 @pytest.mark.asyncio

@@ -9,14 +9,14 @@ from tortoise import Tortoise
 from tortoise.backends.base.config_generator import generate_config
 from tortoise.exceptions import DBConnectionError
 
-from uzen import create_app
-from uzen.core import settings
-from uzen.models.classifications import Classification
-from uzen.models.dns_records import DnsRecord
-from uzen.models.matches import Match
-from uzen.models.rules import Rule
-from uzen.models.scripts import File, Script
-from uzen.models.snapshots import Snapshot
+from app import create_app
+from app.core import settings
+from app.models.classifications import Classification
+from app.models.dns_records import DnsRecord
+from app.models.matches import Match
+from app.models.rules import Rule
+from app.models.scripts import File, Script
+from app.models.snapshots import Snapshot
 
 
 @pytest.fixture

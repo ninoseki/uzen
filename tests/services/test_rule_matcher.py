@@ -3,9 +3,9 @@ import uuid
 
 import pytest
 
-from uzen.models.rules import Rule
-from uzen.models.snapshots import Snapshot
-from uzen.services.rule_matcher import RuleMatcher
+from app.models.rules import Rule
+from app.models.snapshots import Snapshot
+from app.services.rule_matcher import RuleMatcher
 
 
 @pytest.fixture

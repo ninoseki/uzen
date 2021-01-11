@@ -1,7 +1,7 @@
 import pytest
 
-from uzen.models.snapshots import Snapshot
-from uzen.services.yara_scanner import YaraScanner
+from app.models.snapshots import Snapshot
+from app.services.yara_scanner import YaraScanner
 
 
 @pytest.mark.asyncio

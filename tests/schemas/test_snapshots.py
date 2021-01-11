@@ -1,6 +1,6 @@
 import pytest
 
-from uzen.schemas.snapshots import (
+from app.schemas.snapshots import (
     BasicAttributes,
     CreateSnapshotPayload,
     remove_sharp_and_question_from_tail,
