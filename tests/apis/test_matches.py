@@ -1,7 +1,7 @@
 import pytest
 
+from app.models.matches import Match
 from tests.utils import first_rule_id, first_snapshot_id
-from uzen.models.matches import Match
 
 
 @pytest.mark.asyncio

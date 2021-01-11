@@ -2,10 +2,10 @@ import pytest
 import respx
 from httpx import Response
 
-from uzen.services.certificate import Certificate
-from uzen.services.fake_browser import FakeBrowser
-from uzen.services.rdap import RDAP
-from uzen.services.whois import Whois
+from app.services.certificate import Certificate
+from app.services.fake_browser import FakeBrowser
+from app.services.rdap import RDAP
+from app.services.whois import Whois
 
 
 def mock_lookup(ip_address: str):

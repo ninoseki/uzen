@@ -2,10 +2,10 @@ import datetime
 import uuid
 from uuid import UUID
 
-from uzen.models.rules import Rule
-from uzen.models.scripts import File, Script
-from uzen.models.snapshots import Snapshot
-from uzen.schemas.utils import ScriptFile, SnapshotResult
+from app.models.rules import Rule
+from app.models.scripts import File, Script
+from app.models.snapshots import Snapshot
+from app.schemas.utils import ScriptFile, SnapshotResult
 
 
 def make_snapshot(hostname: str = "example.com") -> Snapshot:

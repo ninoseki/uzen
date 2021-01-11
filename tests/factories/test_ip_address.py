@@ -1,8 +1,8 @@
 import pytest
 import vcr
 
-from uzen.factories.ip_address import IPAddressInformationFactory
-from uzen.services.whois import Whois
+from app.factories.ip_address import IPAddressInformationFactory
+from app.services.whois import Whois
 
 
 def mock_whois(hostname: str):

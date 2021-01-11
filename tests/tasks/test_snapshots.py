@@ -1,8 +1,8 @@
 import pytest
 
+from app.models.snapshots import Snapshot
+from app.tasks.snapshots import UpdateProcessingTask
 from tests.utils import first_snapshot_id
-from uzen.models.snapshots import Snapshot
-from uzen.tasks.snapshots import UpdateProcessingTask
 
 
 @pytest.mark.asyncio

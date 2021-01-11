@@ -1,4 +1,4 @@
-from uzen.services.screenshot import get_not_found_png, get_screenshot_url
+from app.services.screenshot import get_not_found_png, get_screenshot_url
 
 
 def test_get_not_found_png():

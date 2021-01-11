@@ -1,10 +1,10 @@
 import pytest
 
+from app.models.matches import Match
+from app.models.rules import Rule
+from app.models.snapshots import Snapshot
+from app.tasks.matches import MatchinbgTask
 from tests.utils import first_snapshot_id
-from uzen.models.matches import Match
-from uzen.models.rules import Rule
-from uzen.models.snapshots import Snapshot
-from uzen.tasks.matches import MatchinbgTask
 
 
 @pytest.mark.asyncio

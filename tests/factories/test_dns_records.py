@@ -1,7 +1,7 @@
 import pytest
 
+from app.factories.dns_records import DnsRecordFactory
 from tests.utils import make_snapshot
-from uzen.factories.dns_records import DnsRecordFactory
 
 
 @pytest.mark.asyncio

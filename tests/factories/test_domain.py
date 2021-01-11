@@ -1,7 +1,7 @@
 import pytest
 
-from uzen.factories.domain import DomainInformationFactory
-from uzen.services.whois import Whois
+from app.factories.domain import DomainInformationFactory
+from app.services.whois import Whois
 
 
 def mock_whois(hostname: str):

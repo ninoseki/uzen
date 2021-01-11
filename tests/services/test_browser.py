@@ -2,11 +2,11 @@ import playwright
 import pytest
 from playwright import Error, async_playwright
 
-from uzen.core import settings
-from uzen.services.browser import Browser, launch_browser
-from uzen.services.certificate import Certificate
-from uzen.services.rdap import RDAP
-from uzen.services.whois import Whois
+from app.core import settings
+from app.services.browser import Browser, launch_browser
+from app.services.certificate import Certificate
+from app.services.rdap import RDAP
+from app.services.whois import Whois
 
 
 def mock_lookup(ip_address: str):
@@ -96,7 +96,7 @@ async def test_take_snapshot_with_bad_ssl(monkeypatch):
 @pytest.mark.timeout(10, method="thread")
 async def test_launch_browser(monkeypatch):
     monkeypatch.setattr(
-        "uzen.core.settings.BROWSER_WS_ENDPOINT", "wss://chrome.browserless.io"
+        "app.core.settings.BROWSER_WS_ENDPOINT", "wss://chrome.browserless.io"
     )
     assert settings.BROWSER_WS_ENDPOINT == "wss://chrome.browserless.io"
 

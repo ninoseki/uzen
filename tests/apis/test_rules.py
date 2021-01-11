@@ -2,8 +2,8 @@ import json
 
 import pytest
 
+from app.models.rules import Rule
 from tests.utils import first_rule_id
-from uzen.models.rules import Rule
 
 
 @pytest.mark.asyncio

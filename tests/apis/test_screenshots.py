@@ -1,7 +1,7 @@
 import pytest
 
-from uzen.models.snapshots import Snapshot
-from uzen.services.browser import Browser
+from app.models.snapshots import Snapshot
+from app.services.browser import Browser
 
 
 @pytest.mark.asyncio

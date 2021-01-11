@@ -7,7 +7,7 @@ from pyppeteer.chromium_downloader import check_chromium, chromium_executable
 
 sys.path = ["", ".."] + sys.path[1:]  # noqa # isort:skip
 
-from uzen.core import settings  # noqa # isort:skip
+from app.core import settings  # noqa # isort:skip
 
 
 def check():
