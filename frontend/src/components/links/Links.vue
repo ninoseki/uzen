@@ -8,49 +8,61 @@
 
     <b-dropdown-item
       v-for="link in selectedLinks"
-      v-bind:key="link.name"
+      :key="link.name"
       aria-role="listitem"
       has-link
     >
       <LinkComponent
-        v-if="link.type === 'domain'"
-        v-bind:hostname="hostname"
-        v-bind:link="link"
+        v-if="link.type === 'domain' && hostname"
+        :hostname="hostname"
+        :link="link"
       />
       <LinkComponent
-        v-if="link.type === 'ip_address'"
-        v-bind:hostname="ipAddress"
-        v-bind:link="link"
+        v-if="link.type === 'ip_address' && ipAddress"
+        :hostname="ipAddress"
+        :link="link"
       />
     </b-dropdown-item>
   </b-dropdown>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { computed, defineComponent } from "@vue/composition-api";
 
 import LinkComponent from "@/components/links/Link.vue";
 import { Links } from "@/links";
-import { Link, LinkType } from "@/types";
+import { Link } from "@/types";
 
-@Component({
+export default defineComponent({
+  name: "Links",
   components: {
     LinkComponent,
   },
-})
-export default class LinksComponent extends Vue {
-  @Prop() private hostname: string | undefined;
-  @Prop() private ipAddress: string | undefined;
-  @Prop() private type!: LinkType;
+  props: {
+    hostname: {
+      type: String,
+      required: false,
+    },
+    ipAddress: {
+      type: String,
+      required: false,
+    },
+    type: {
+      type: String,
+      required: false,
+    },
+  },
+  setup(props) {
+    const links = Links;
+    const selectedLinks = computed((): Link[] => {
+      if (props.type === undefined) {
+        return links;
+      }
 
-  private links = Links;
+      return links.filter((link) => link.type === props.type);
+    });
 
-  get selectedLinks(): Link[] {
-    if (this.type === undefined) {
-      return this.links;
-    }
-
-    return this.links.filter((link) => link.type === this.type);
-  }
-}
+    return { selectedLinks };
+  },
+});
 </script>

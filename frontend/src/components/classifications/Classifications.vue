@@ -18,21 +18,26 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { computed, defineComponent, PropType } from "@vue/composition-api";
 
 import NA from "@/components/ui/NA.vue";
 import { Classification } from "@/types";
 
-@Component({
-  components: {
-    NA,
+export default defineComponent({
+  name: "Classifications",
+  props: {
+    classifications: {
+      type: Array as PropType<Classification[]>,
+      required: true,
+    },
   },
-})
-export default class Classifications extends Vue {
-  @Prop() private classifications!: Classification[];
+  components: { NA },
+  setup(props) {
+    const hasClassifications = computed((): boolean => {
+      return props.classifications.length > 0;
+    });
 
-  get hasClassifications(): boolean {
-    return this.classifications.length > 0;
-  }
-}
+    return { hasClassifications };
+  },
+});
 </script>

@@ -1,20 +1,28 @@
 <template>
   <div class="screenshot">
-    <img :src="this.imageSource" alt="screenshot" />
+    <img :src="imageSource" alt="screenshot" />
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { computed, defineComponent } from "@vue/composition-api";
 
-@Component
-export default class Preview extends Vue {
-  @Prop() private hostname!: string;
+export default defineComponent({
+  name: "Preview",
+  props: {
+    hostname: {
+      type: String,
+      required: true,
+    },
+  },
+  setup(props) {
+    const imageSource = computed((): string => {
+      return `/api/screenshots/preview/${props.hostname}`;
+    });
 
-  get imageSource(): string {
-    return `/api/screenshots/preview/${this.hostname}`;
-  }
-}
+    return { imageSource };
+  },
+});
 </script>
 
 <style scoped>

@@ -3,7 +3,7 @@
     <div
       class="table-container"
       v-for="match in yaraResult.matches"
-      v-bind:key="match.rule"
+      :key="match.rule"
     >
       <table class="table is-expanded">
         <tbody>
@@ -24,12 +24,17 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { defineComponent, PropType } from "@vue/composition-api";
 
 import { YaraResult } from "@/types";
 
-@Component
-export default class YaraResultView extends Vue {
-  @Prop() private yaraResult!: YaraResult;
-}
+export default defineComponent({
+  name: "YaraResult",
+  props: {
+    yaraResult: {
+      type: Object as PropType<YaraResult>,
+      required: true,
+    },
+  },
+});
 </script>

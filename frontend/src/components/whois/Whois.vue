@@ -6,20 +6,26 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { computed, defineComponent } from "@vue/composition-api";
 
 import NA from "@/components/ui/NA.vue";
 
-@Component({
+export default defineComponent({
+  name: "Whois",
+  props: {
+    whois: {
+      type: String,
+      required: false,
+    },
+  },
   components: {
     NA,
   },
-})
-export default class Whois extends Vue {
-  @Prop() private whois!: string | null;
-
-  get hasWhois(): boolean {
-    return this.whois !== null;
-  }
-}
+  setup(props) {
+    const hasWhois = computed((): boolean => {
+      return props.whois !== null;
+    });
+    return { hasWhois };
+  },
+});
 </script>

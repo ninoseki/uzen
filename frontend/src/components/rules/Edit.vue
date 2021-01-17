@@ -1,12 +1,25 @@
 <template>
   <div>
+    <Loading v-if="getRuleTask.isRunning || editRuleTask.isRunning"></Loading>
+    <Error
+      :error="getRuleTask.last.error.response.data"
+      v-else-if="getRuleTask.isError && getRuleTask.last !== undefined"
+    ></Error>
+    <Error
+      :error="editRuleTask.last.error.response.data"
+      v-else-if="editRuleTask.isError && editRuleTask.last !== undefined"
+    ></Error>
+
     <div class="box">
       <InputForm
-        v-if="hasRule()"
-        v-bind:name.sync="rule.name"
-        v-bind:target.sync="rule.target"
-        v-bind:source.sync="rule.source"
-      />
+        v-if="hasRule"
+        :name="name"
+        :target="target"
+        :source="source"
+        @update-name="updateName"
+        @update-source="updateSource"
+        @update-target="updateTarget"
+      ></InputForm>
 
       <div class="has-text-centered">
         <b-button
@@ -22,71 +35,89 @@
 </template>
 
 <script lang="ts">
-import axios from "axios";
-import { Component, Mixins } from "vue-mixin-decorator";
-import { Prop } from "vue-property-decorator";
+import { defineComponent, ref } from "@vue/composition-api";
+import { useAsyncTask } from "vue-concurrency";
 
-import { ErrorDialogMixin } from "@/components/mixins";
+import { API } from "@/api";
 import InputForm from "@/components/rules/InputForm.vue";
-import { ErrorData, Rule } from "@/types";
+import Error from "@/components/ui/Error.vue";
+import Loading from "@/components/ui/Loading.vue";
+import { Rule } from "@/types";
 
-@Component({ components: { InputForm } })
-export default class Edit extends Mixins<ErrorDialogMixin>(ErrorDialogMixin) {
-  @Prop() private id!: string;
+export default defineComponent({
+  name: "RuleEdit",
+  components: {
+    Error,
+    InputForm,
+    Loading,
+  },
+  props: {
+    ruleId: {
+      type: String,
+      required: true,
+    },
+  },
+  setup(props) {
+    const name = ref<string | undefined>(undefined);
+    const target = ref<string | undefined>(undefined);
+    const source = ref<string | undefined>(undefined);
 
-  private rule: Rule | undefined = undefined;
+    const hasRule = ref(false);
 
-  async load() {
-    const loadingComponent = this.$buefy.loading.open({
-      container: this.$el.firstElementChild,
+    const getRuleTask = useAsyncTask<Rule, []>(async () => {
+      return API.getRule(props.ruleId);
     });
 
-    try {
-      const response = await axios.get<Rule>(`/api/rules/${this.id}`);
-      this.rule = response.data;
+    const getRule = async () => {
+      const rule = await getRuleTask.perform();
+      name.value = rule.name;
+      target.value = rule.target;
+      source.value = rule.source;
 
-      loadingComponent.close();
+      hasRule.value = true;
+    };
 
-      this.$forceUpdate();
-    } catch (error) {
-      loadingComponent.close();
+    getRule();
 
-      const data = error.response.data as ErrorData;
-      this.alertError(data);
-    }
-  }
+    const editRuleTask = useAsyncTask<Rule, []>(async () => {
+      console.log(name.value);
+      const payload = {
+        name: name.value === "" ? undefined : name.value,
+        target: target.value,
+        source: source.value === "" ? undefined : source.value,
+      };
 
-  async edit() {
-    const loadingComponent = this.$buefy.loading.open({
-      container: this.$el.firstElementChild,
+      return API.editRule(props.ruleId, payload);
     });
 
-    try {
-      const response = await axios.put<Rule>(`/api/rules/${this.rule?.id}`, {
-        name: this.rule?.name === "" ? undefined : this.rule?.name,
-        target: this.rule?.target,
-        source: this.rule?.source === "" ? undefined : this.rule?.source,
-      });
-      const rule = response.data;
+    const edit = async () => {
+      editRuleTask.perform();
+    };
 
-      loadingComponent.close();
+    const updateName = (newName: string) => {
+      name.value = newName;
+    };
 
-      // redirect to the details page
-      this.$router.push({ path: `/rules/${rule.id}` });
-    } catch (error) {
-      loadingComponent.close();
+    const updateSource = (newSource: string) => {
+      source.value = newSource;
+    };
 
-      const data = error.response.data as ErrorData;
-      this.alertError(data);
-    }
-  }
+    const updateTarget = (newTarget: string) => {
+      target.value = newTarget;
+    };
 
-  hasRule(): boolean {
-    return this.rule !== undefined;
-  }
-
-  async mounted() {
-    await this.load();
-  }
-}
+    return {
+      getRuleTask,
+      source,
+      name,
+      target,
+      edit,
+      editRuleTask,
+      hasRule,
+      updateName,
+      updateSource,
+      updateTarget,
+    };
+  },
+});
 </script>

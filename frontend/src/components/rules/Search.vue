@@ -1,11 +1,17 @@
 <template>
   <div>
+    <Loading v-if="searchTask.isRunning"></Loading>
+    <Error
+      :error="searchTask.last.error.response.data"
+      v-else-if="searchTask.isError && searchTask.last !== undefined"
+    ></Error>
+
     <div class="box">
       <Form
         ref="form"
-        v-bind:name="$route.query.name"
-        v-bind:type="$route.query.type"
-        v-bind:source="$route.query.source"
+        :name="$route.query.name"
+        :type="$route.query.type"
+        :source="$route.query.source"
       />
       <br />
 
@@ -20,91 +26,107 @@
       </div>
     </div>
 
-    <h2 v-if="hasCount()">Search results ({{ count }} / {{ totalCount }})</h2>
+    <h2 v-if="count !== undefined">
+      Search results ({{ count }} / {{ totalCount }})
+    </h2>
 
-    <Table v-bind:rules="rules" />
+    <RulesTable v-bind:rules="rules" />
 
-    <b-button v-if="hasLoadMore()" type="is-dark" @click="loadMore"
+    <b-button
+      v-if="hasLoadMore(count, totalCount)"
+      type="is-dark"
+      @click="loadMore"
       >Load more...</b-button
     >
   </div>
 </template>
 
 <script lang="ts">
-import axios from "axios";
-import { Component, Mixins } from "vue-mixin-decorator";
+import { defineComponent, onMounted, ref } from "@vue/composition-api";
+import { useAsyncTask } from "vue-concurrency";
 
-import {
-  ErrorDialogMixin,
-  SearchFormComponentMixin,
-  SearchFormMixin,
-} from "@/components/mixins";
+import { API } from "@/api";
 import Form from "@/components/rules/Form.vue";
-import Table from "@/components/rules/Table.vue";
-import { ErrorData, Rule, RuleSearchResults } from "@/types";
+import RulesTable from "@/components/rules/Table.vue";
+import Error from "@/components/ui/Error.vue";
+import Loading from "@/components/ui/Loading.vue";
+import { Rule, RuleSearchResults } from "@/types";
+import { DEFAULT_OFFSET, DEFAULT_PAGE_SIZE, hasLoadMore } from "@/utils/form";
 
-@Component({
+export default defineComponent({
+  name: "RulesSearch",
   components: {
+    Error,
     Form,
-    Table,
+    Loading,
+    RulesTable,
   },
-})
-export default class Search extends Mixins<SearchFormComponentMixin>(
-  ErrorDialogMixin,
-  SearchFormMixin
-) {
-  private rules: Rule[] = [];
+  setup(_, context) {
+    const rules = ref<Rule[]>([]);
+    const count = ref<number | undefined>(undefined);
+    const totalCount = ref(0);
 
-  resetPagination() {
-    this.rules = [];
-    this.size = this.DEFAULT_PAGE_SIZE;
-    this.offset = this.DEFAULT_OFFSET;
-  }
+    let size = DEFAULT_PAGE_SIZE;
+    let offset = DEFAULT_OFFSET;
 
-  async search(additonalLoading = false) {
-    const loadingComponent = this.$buefy.loading.open({
-      container: this.$el.firstElementChild,
+    const form = ref<InstanceType<typeof Form>>();
+
+    const resetPagination = () => {
+      rules.value = [];
+      totalCount.value = 0;
+      size = DEFAULT_PAGE_SIZE;
+      offset = DEFAULT_OFFSET;
+    };
+
+    const searchTask = useAsyncTask<RuleSearchResults, []>(async () => {
+      const params = form.value?.filtersParams() || {};
+      params["size"] = size;
+      params["offset"] = offset;
+      return await API.searchRules(params);
     });
 
-    if (!additonalLoading) {
-      this.resetPagination();
-    }
+    const search = async (additonalLoading = false) => {
+      if (!additonalLoading) {
+        resetPagination();
+      }
 
-    const params = (this.$refs.form as Form).filtersParams();
-    params["size"] = this.size;
-    params["offset"] = this.offset;
+      const res = await searchTask.perform();
 
-    try {
-      const response = await axios.get<RuleSearchResults>("/api/rules/search", {
-        params: params,
-      });
+      rules.value = rules.value.concat(res.results);
+      count.value = rules.value.length;
 
-      loadingComponent.close();
+      if (!additonalLoading) {
+        totalCount.value = res.total;
+      }
 
-      this.rules = this.rules.concat(response.data.results);
-      this.totalCount = response.data.total;
-      this.count = this.rules.length;
-    } catch (error) {
-      loadingComponent.close();
+      return;
+    };
 
-      const data = error.response.data as ErrorData;
-      this.alertError(data);
-    }
-  }
+    const loadMore = () => {
+      offset += size;
+      search(true);
+    };
 
-  loadMore() {
-    this.offset += this.size;
-    this.search(true);
-  }
+    const initSearch = () => {
+      search(false);
+    };
 
-  initSearch() {
-    this.search();
-  }
+    onMounted(() => {
+      if (Object.keys(context.root.$route.query).length > 0) {
+        initSearch();
+      }
+    });
 
-  mounted() {
-    if (Object.keys(this.$route.query).length > 0) {
-      this.initSearch();
-    }
-  }
-}
+    return {
+      form,
+      initSearch,
+      rules,
+      count,
+      totalCount,
+      loadMore,
+      hasLoadMore,
+      searchTask,
+    };
+  },
+});
 </script>

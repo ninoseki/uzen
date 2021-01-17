@@ -7,16 +7,16 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { defineComponent } from "@vue/composition-api";
 
 import Register from "@/components/rules/Register.vue";
 import Search from "@/components/rules/Search.vue";
 
-@Component({
+export default defineComponent({
+  name: "RulesView",
   components: {
     Register,
     Search,
   },
-})
-export default class Rules extends Vue {}
+});
 </script>

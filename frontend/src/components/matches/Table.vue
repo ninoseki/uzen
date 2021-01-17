@@ -1,5 +1,5 @@
 <template>
-  <div class="box table-container" v-if="hasMatches">
+  <div class="box table-container" v-if="matches.length > 0">
     <b-table :data="matches">
       <b-table-column field="snapshot" label="Snapshot" v-slot="props">
         <router-link
@@ -8,7 +8,7 @@
             params: { id: props.row.snapshot.id },
           }"
         >
-          {{ props.row.snapshot.url | truncate }}
+          {{ truncate(props.row.snapshot.url) }}
         </router-link>
         <p v-if="props.row.script">({{ props.row.script.url }})</p>
       </b-table-column>
@@ -36,27 +36,30 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from "vue-mixin-decorator";
-import { Prop } from "vue-property-decorator";
+import { defineComponent, onUpdated, PropType } from "@vue/composition-api";
 
-import { HighlightMixin } from "@/components/mixins";
 import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
 import { Match } from "@/types";
+import { highlightCodeBlocks } from "@/utils/highlight";
+import { truncate } from "@/utils/truncate";
 
-@Component({
+export default defineComponent({
+  name: "MatchesTable",
   components: {
     DatetimeWithDiff,
   },
-})
-export default class Table extends Mixins<HighlightMixin>(HighlightMixin) {
-  @Prop() private matches!: Match[];
+  props: {
+    matches: {
+      type: Array as PropType<Match[]>,
+      required: true,
+    },
+  },
+  setup(_, context) {
+    onUpdated(() => {
+      highlightCodeBlocks(context);
+    });
 
-  get hasMatches(): boolean {
-    return this.matches.length > 0;
-  }
-
-  updated() {
-    this.highlightCodeBlocks();
-  }
-}
+    return { truncate };
+  },
+});
 </script>

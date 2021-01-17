@@ -1,47 +1,53 @@
 <template>
   <div>
     <b-message type="is-info">
-      Number of scripts: {{ this.scripts.length }}
+      Number of scripts: {{ scripts.length }}
     </b-message>
     <b-field>
       <b-select
         placeholder="Select a script"
         expanded
         v-model="selectedID"
-        @input="showSelectedScript"
+        @input="selectScript()"
       >
         <option v-for="script in scripts" :value="script.id" :key="script.id">
           {{ script.url }}
         </option>
       </b-select>
     </b-field>
-    <ScriptView v-if="hasSelectedScript()" v-bind:script="selectedScript" />
+    <pre
+      v-if="scriptFileContent !== undefined"
+    ><code class="javascript">{{ scriptFileContent }}</code></pre>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { defineComponent, PropType, ref } from "@vue/composition-api";
 
-import ScriptView from "@/components/scripts/Script.vue";
 import { Script } from "@/types";
 
-@Component({
-  components: {
-    ScriptView,
+export default defineComponent({
+  name: "Scripts",
+  props: {
+    scripts: {
+      type: Array as PropType<Script[]>,
+      required: true,
+    },
   },
-})
-export default class ScriptsView extends Vue {
-  @Prop() private scripts!: Script[];
-  private selectedID: string | null = null;
-  private selectedScript: Script | undefined = undefined;
+  setup(props) {
+    const selectedID = ref<string | undefined>(undefined);
+    const scriptFileContent = ref<string | undefined>(undefined);
 
-  showSelectedScript() {
-    const script = this.scripts.find((elem) => elem.id === this.selectedID);
-    this.selectedScript = script;
-  }
+    const selectScript = (): void => {
+      const script = props.scripts.find((elem) => elem.id === selectedID.value);
+      if (script) {
+        scriptFileContent.value = script.file.content;
+      } else {
+        scriptFileContent.value = undefined;
+      }
+    };
 
-  hasSelectedScript(): boolean {
-    return this.selectedScript !== undefined;
-  }
-}
+    return { selectedID, selectScript, scriptFileContent };
+  },
+});
 </script>

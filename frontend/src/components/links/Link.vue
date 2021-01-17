@@ -1,20 +1,28 @@
 <template>
-  <a v-bind:href="link.href(hostname)" class="link" target="_blank">
-    <img v-bind:src="link.favicon" alt="favicon" />
+  <a :href="link.href(hostname)" class="link" target="_blank">
+    <img :src="link.favicon" alt="favicon" />
     <span>{{ link.name }}</span>
   </a>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { defineComponent, PropType } from "@vue/composition-api";
 
 import { Link } from "@/types";
 
-@Component
-export default class LinkComponent extends Vue {
-  @Prop() private hostname!: string;
-  @Prop() private link!: Link;
-}
+export default defineComponent({
+  name: "Link",
+  props: {
+    hostname: {
+      type: String,
+      required: true,
+    },
+    link: {
+      type: Object as PropType<Link>,
+      required: true,
+    },
+  },
+});
 </script>
 
 <style scoped>

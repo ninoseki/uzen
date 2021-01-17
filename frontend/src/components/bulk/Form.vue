@@ -31,16 +31,16 @@
 
       <Options
         v-if="showOptions"
-        v-bind:acceptLanguage.sync="acceptLanguage"
-        v-bind:host.sync="host"
-        v-bind:ignoreHTTPSErrors.sync="ignoreHTTPSErrors"
-        v-bind:referer.sync="referer"
-        v-bind:timeout.sync="timeout"
-        v-bind:userAgent.sync="userAgent"
+        :acceptLanguage.sync="acceptLanguage"
+        :host.sync="host"
+        :ignoreHttpSErrors.sync="ignoreHttpsErrors"
+        :referer.sync="referer"
+        :timeout.sync="timeout"
+        :userAgent.sync="userAgent"
       />
     </div>
 
-    <div class="box" v-if="hasURLs">
+    <div class="box" v-if="hasURLs()">
       <Row
         v-for="(url, index) in urls"
         :key="url + index"
@@ -48,7 +48,7 @@
         :index="index"
         :acceptLanguage="acceptLanguage"
         :host="host"
-        :ignoreHTTPSErrors="ignoreHTTPSErrors"
+        :ignoreHttpsErrors="ignoreHttpsErrors"
         :referer="referer"
         :timeout="timeout"
         :userAgent="userAgent"
@@ -58,31 +58,50 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { defineComponent, ref } from "@vue/composition-api";
 
 import Row from "@/components/bulk/Row.vue";
 import Options from "@/components/snapshots/Options.vue";
 
-@Component({ components: { Options, Row } })
-export default class Form extends Vue {
-  private urlText = "";
-  private showOptions = false;
+export default defineComponent({
+  name: "Form",
+  components: {
+    Options,
+    Row,
+  },
+  setup() {
+    const urlText = ref("");
+    const showOptions = ref(false);
+    const acceptLanguage = ref("");
+    const host = ref("");
+    const ignoreHttpsErrors = ref(false);
+    const referer = ref("");
+    const timeout = ref(30000);
+    const userAgent = ref("");
 
-  private acceptLanguage = "";
-  private host = "";
-  private ignoreHTTPSErrors = false;
-  private referer = "";
-  private timeout = 30000;
-  private userAgent = "";
+    const urls = ref<string[]>([]);
 
-  private urls: string[] = [];
+    const bulkSubmit = () => {
+      urls.value = urlText.value.split("\n");
+    };
 
-  bulkSubmit() {
-    this.urls = this.urlText.split("\n");
-  }
+    const hasURLs = (): boolean => {
+      return urls.value.length > 0;
+    };
 
-  get hasURLs(): boolean {
-    return this.urls.length > 0;
-  }
-}
+    return {
+      urlText,
+      showOptions,
+      acceptLanguage,
+      host,
+      ignoreHttpsErrors,
+      referer,
+      timeout,
+      userAgent,
+      bulkSubmit,
+      hasURLs,
+      urls,
+    };
+  },
+});
 </script>

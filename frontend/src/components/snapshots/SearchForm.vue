@@ -93,55 +93,74 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from "vue-mixin-decorator";
-import { Prop } from "vue-property-decorator";
+import { defineComponent, reactive } from "@vue/composition-api";
 
-import {
-  ErrorDialogMixin,
-  SearchFormComponentMixin,
-  SearchFormMixin,
-} from "@/components/mixins";
 import { SnapshotFilters } from "@/types";
+import { datetimeFormatter, normalizeFilterValue } from "@/utils/form";
 
-@Component
-export default class Search extends Mixins<SearchFormComponentMixin>(
-  ErrorDialogMixin,
-  SearchFormMixin
-) {
-  @Prop() private asn: string | undefined;
-  @Prop() private contentType: string | undefined;
-  @Prop() private hostname: string | undefined;
-  @Prop() private ipAddress: string | undefined;
-  @Prop() private server: string | undefined;
-  @Prop() private sha256: string | undefined;
-  @Prop() private status: number | undefined;
-  @Prop() private url: string | undefined;
-
-  get filters(): SnapshotFilters {
-    return {
-      asn: this.asn,
-      contentType: this.contentType,
-      hostname: this.hostname,
-      ipAddress: this.ipAddress,
-      server: this.server,
-      sha256: this.sha256,
-      status: this.status,
-      url: this.url,
+export default defineComponent({
+  name: "SnapshotSearchForm",
+  props: {
+    asn: {
+      type: String,
+      required: false,
+    },
+    contentType: {
+      type: String,
+      required: false,
+    },
+    hostname: {
+      type: String,
+      required: false,
+    },
+    ipAddress: {
+      type: String,
+      required: false,
+    },
+    server: {
+      type: String,
+      required: false,
+    },
+    status: {
+      type: Number,
+      required: false,
+    },
+    sha256: {
+      type: String,
+      required: false,
+    },
+    url: {
+      type: String,
+      required: false,
+    },
+  },
+  setup(props) {
+    const filters = reactive<SnapshotFilters>({
+      asn: props.asn,
+      contentType: props.contentType,
+      hostname: props.hostname,
+      ipAddress: props.ipAddress,
+      server: props.server,
+      sha256: props.sha256,
+      status: props.status,
+      url: props.url,
       fromAt: undefined,
       toAt: undefined,
-    };
-  }
+    });
 
-  filtersParams() {
-    const obj: { [k: string]: string | number | undefined } = {};
+    const filtersParams = () => {
+      const obj: { [k: string]: string | number | undefined } = {};
 
-    for (const key in this.filters) {
-      if (this.filters[key] !== undefined) {
-        const value = this.filters[key];
-        obj[key] = this.normalizeFilterValue(value);
+      for (const key in filters) {
+        if (filters[key] !== undefined) {
+          const value = filters[key];
+          obj[key] = normalizeFilterValue(value);
+        }
       }
-    }
-    return obj;
-  }
-}
+      return obj;
+    };
+
+    return { filters, filtersParams, datetimeFormatter };
+  },
+});
 </script>

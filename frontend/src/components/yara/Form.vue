@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="box">
-      <BasicForm v-bind:source.sync="source" v-bind:target.sync="target" />
+      <BasicForm :source.sync="source" :target.sync="target" />
       <hr />
       <SnapshotForm ref="form" />
       <br />
@@ -17,88 +17,81 @@
     </div>
     <h2 v-if="hasCount()">{{ count }} snapshots found</h2>
 
-    <SnapshotTable v-bind:snapshots="results" />
+    <Loading v-if="scanTask.isRunning"></Loading>
+    <Error
+      :error="scanTask.last.error.response.data"
+      v-else-if="scanTask.isError && scanTask.last !== undefined"
+    ></Error>
+    <SnapshotTable
+      :snapshots="scanTask.last.value || []"
+      v-else-if="scanTask.last !== undefined"
+    ></SnapshotTable>
   </div>
 </template>
 
 <script lang="ts">
-import axios from "axios";
-import { Component, Mixins } from "vue-mixin-decorator";
+import { defineComponent, ref } from "@vue/composition-api";
+import { useAsyncTask } from "vue-concurrency";
 
-import { ErrorDialogMixin } from "@/components/mixins";
+import { API } from "@/api";
 import SnapshotForm from "@/components/snapshots/SearchForm.vue";
 import SnapshotTable from "@/components/snapshots/Table.vue";
+import Error from "@/components/ui/Error.vue";
+import Loading from "@/components/ui/Loading.vue";
 import BasicForm from "@/components/yara/BasicForm.vue";
-import {
-  CountResponse,
-  ErrorData,
-  SnapshotWithYaraResult,
-  TargetTypes,
-} from "@/types";
+import { SnapshotWithYaraResult, TargetTypes, YaraScanPyalod } from "@/types";
 
-@Component({
+export default defineComponent({
+  name: "YaraForm",
   components: {
+    Error,
+    Loading,
     BasicForm,
     SnapshotForm,
     SnapshotTable,
   },
-})
-export default class YaraForm extends Mixins<ErrorDialogMixin>(
-  ErrorDialogMixin
-) {
-  private source = "";
-  private target: TargetTypes = "body";
-  private count: number | undefined = undefined;
-  private results: SnapshotWithYaraResult[] = [];
+  setup() {
+    const source = ref("");
+    const target = ref<TargetTypes>("body");
+    const count = ref<number | undefined>(undefined);
 
-  async scan() {
-    this.results = [];
-    this.count = undefined;
+    const form = ref<InstanceType<typeof SnapshotForm>>();
 
-    const loadingComponent = this.$buefy.loading.open({
-      container: this.$el.firstElementChild,
+    const scanTask = useAsyncTask<SnapshotWithYaraResult[], []>(async () => {
+      // reset the count
+      count.value = undefined;
+
+      // get parameters from the child component
+      const params = form.value?.filtersParams() || {};
+
+      // get total count of snapshots and set it as a size
+      try {
+        const totalCount = await API.getTotalSnapshotCount();
+        params["size"] = totalCount.count;
+      } catch {
+        // do nothing;
+      }
+
+      const payload: YaraScanPyalod = {
+        source: source.value,
+        target: target.value,
+      };
+
+      const res = await API.yaraScan(payload, params);
+      count.value = res.length;
+
+      return res;
     });
 
-    const params = (this.$refs.form as SnapshotForm).filtersParams();
-    // get total count of snapshots and set it as a size
-    const totalCount = await this.getTotalCount();
-    if (totalCount !== undefined) {
-      params["size"] = totalCount;
-    }
+    const scan = () => {
+      scanTask.perform();
+    };
 
-    try {
-      const response = await axios.post<SnapshotWithYaraResult[]>(
-        "/api/yara/scan",
-        {
-          source: this.source === "" ? undefined : this.source,
-          target: this.target,
-        },
-        { params: params }
-      );
+    const hasCount = () => {
+      return count.value !== undefined;
+    };
 
-      loadingComponent.close();
-
-      this.results = response.data;
-      this.count = this.results.length;
-    } catch (error) {
-      loadingComponent.close();
-
-      const data = error.response.data as ErrorData;
-      this.alertError(data);
-    }
-  }
-
-  hasCount(): boolean {
-    return this.count !== undefined;
-  }
-
-  async getTotalCount(): Promise<number | undefined> {
-    try {
-      const response = await axios.get<CountResponse>("/api/snapshots/count");
-      return response.data.count;
-    } catch (error) {
-      return undefined;
-    }
-  }
-}
+    return { source, target, count, form, scanTask, hasCount, scan };
+  },
+});
 </script>

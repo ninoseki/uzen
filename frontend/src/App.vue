@@ -12,16 +12,16 @@
 <script lang="ts">
 import "highlight.js/styles/androidstudio.css";
 
-import { Component, Vue } from "vue-property-decorator";
+import { defineComponent } from "@vue/composition-api";
 
 import Navbar from "@/components/ui/Navbar.vue";
 
-@Component({
+export default defineComponent({
+  name: "App",
   components: {
     Navbar,
   },
-})
-export default class App extends Vue {}
+});
 </script>
 
 <style>

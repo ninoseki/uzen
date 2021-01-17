@@ -6,20 +6,25 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { computed, defineComponent } from "@vue/composition-api";
 
 import NA from "@/components/ui/NA.vue";
 
-@Component({
-  components: {
-    NA,
+export default defineComponent({
+  name: "Certificate",
+  components: { NA },
+  props: {
+    certificate: {
+      type: String,
+      required: false,
+    },
   },
-})
-export default class Certificate extends Vue {
-  @Prop() private certificate!: string | null;
+  setup(props) {
+    const hasCertificate = computed((): boolean => {
+      return props.certificate !== null;
+    });
 
-  get hasCertificate(): boolean {
-    return this.certificate !== null;
-  }
-}
+    return { hasCertificate };
+  },
+});
 </script>

@@ -1,19 +1,16 @@
 <template>
-  <Search
-    v-bind:ruleId="$route.query.ruleId"
-    v-bind:snapshotId="$route.query.snapshotId"
-  />
+  <Search :ruleId="$route.query.ruleId" :snapshotId="$route.query.snapshotId" />
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { defineComponent } from "@vue/composition-api";
 
 import Search from "@/components/matches/Search.vue";
 
-@Component({
+export default defineComponent({
+  name: "MatchesView",
   components: {
     Search,
   },
-})
-export default class Matches extends Vue {}
+});
 </script>

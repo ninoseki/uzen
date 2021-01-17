@@ -1,5 +1,11 @@
 <template>
   <div>
+    <Loading v-if="importTask.isRunning"></Loading>
+    <Error
+      :error="importTask.last.error.response.data"
+      v-else-if="importTask.isError && importTask.last !== undefined"
+    ></Error>
+
     <b-message type="is-warning">
       Importing data from urlscan.io might be lossy
     </b-message>
@@ -26,36 +32,33 @@
 </template>
 
 <script lang="ts">
-import axios from "axios";
-import { Component, Mixins } from "vue-mixin-decorator";
+import { defineComponent, ref } from "@vue/composition-api";
+import { useAsyncTask } from "vue-concurrency";
 
-import { ErrorDialogMixin } from "@/components/mixins";
-import { ErrorData, Snapshot } from "@/types";
+import { API } from "@/api";
+import Error from "@/components/ui/Error.vue";
+import Loading from "@/components/ui/Loading.vue";
+import { Snapshot } from "@/types";
 
-@Component
-export default class Import extends Mixins<ErrorDialogMixin>(ErrorDialogMixin) {
-  private uuid = "";
+export default defineComponent({
+  name: "Import",
+  components: {
+    Error,
+    Loading,
+  },
+  setup(_, context) {
+    const uuid = ref<string>("");
 
-  async importFromUrlscan() {
-    const loadingComponent = this.$buefy.loading.open({
-      container: this.$el.firstElementChild,
+    const importTask = useAsyncTask<Snapshot, []>(async () => {
+      return await API.importFromUrlscan(uuid.value);
     });
 
-    try {
-      const response = await axios.post<Snapshot>(`/api/import/${this.uuid}`);
+    const importFromUrlscan = async () => {
+      const snapshot = await importTask.perform();
+      context.root.$router.push({ path: `/snapshots/${snapshot.id}` });
+    };
 
-      loadingComponent.close();
-
-      const snapshot = response.data;
-
-      // redirect to the details page
-      this.$router.push({ path: `/snapshots/${snapshot.id}` });
-    } catch (error) {
-      loadingComponent.close();
-
-      const data = error.response.data as ErrorData;
-      this.alertError(data);
-    }
-  }
-}
+    return { uuid, importFromUrlscan, importTask };
+  },
+});
 </script>

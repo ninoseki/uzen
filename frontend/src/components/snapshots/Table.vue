@@ -10,12 +10,12 @@
               params: { id: props.row.id, yaraResult: props.row.yaraResult },
             }"
           >
-            {{ props.row.url | truncate }}
+            {{ truncate(props.row.url) }}
           </router-link>
         </p>
         <p>
           (<strong>Submitted URL:</strong>
-          {{ props.row.submittedUrl | truncate }})
+          {{ truncate(props.row.submittedUrl) }})
         </p>
         <p class="is-size-7">
           <strong>IP address:</strong> {{ props.row.ipAddress }} -
@@ -32,28 +32,36 @@
       </b-table-column>
 
       <b-table-column field="createdAt" label="Created at" v-slot="props">
-        <DatetimeWithDiff v-bind:datetime="props.row.createdAt" />
+        <DatetimeWithDiff :datetime="props.row.createdAt" />
       </b-table-column>
     </b-table>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { computed, defineComponent, PropType } from "@vue/composition-api";
 
 import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
 import { Snapshot, SnapshotWithYaraResult } from "@/types";
+import { truncate } from "@/utils/truncate";
 
-@Component({
+export default defineComponent({
+  name: "SnapshotTable",
+  props: {
+    snapshots: {
+      type: Array as PropType<Snapshot[] | SnapshotWithYaraResult[]>,
+      required: true,
+    },
+  },
   components: {
     DatetimeWithDiff,
   },
-})
-export default class Table extends Vue {
-  @Prop() private snapshots!: Snapshot[] | SnapshotWithYaraResult[];
+  setup(props) {
+    const hasSnapshots = computed((): boolean => {
+      return props.snapshots.length > 0;
+    });
 
-  get hasSnapshots(): boolean {
-    return this.snapshots.length > 0;
-  }
-}
+    return { hasSnapshots, truncate };
+  },
+});
 </script>

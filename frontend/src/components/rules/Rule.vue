@@ -1,136 +1,136 @@
 <template>
-  <div class="box" v-if="hasRule()">
-    <nav class="navbar">
-      <div class="navbar-brand">
-        <H2>
-          {{ rule.name }}
-        </H2>
-      </div>
-      <div class="navbar-menu">
-        <div class="navbar-end">
-          <router-link
-            class="button"
-            :to="{
-              name: 'EditRule',
-              params: { id: rule.id },
-            }"
-            >Edit
-          </router-link>
-        </div>
-      </div>
-    </nav>
+  <div>
+    <Loading v-if="getRuleTask.isRunning"></Loading>
+    <Error
+      :error="getRuleTask.last.error.response.data"
+      v-else-if="getRuleTask.isError && getRuleTask.last !== undefined"
+    ></Error>
 
-    <div class="column is-full">
-      <div class="columns">
-        <div class="column is-half">
-          <div class="table-container">
-            <table class="table">
-              <tbody>
-                <tr>
-                  <th>ID</th>
-                  <td>{{ rule.id }}</td>
-                </tr>
-                <tr>
-                  <th>Target</th>
-                  <td>{{ rule.target }}</td>
-                </tr>
-                <tr>
-                  <th>Created at</th>
-                  <td>{{ rule.createdAt || "N/A" }}</td>
-                </tr>
-                <tr>
-                  <th>Updated at</th>
-                  <td>{{ rule.updatedAt || "N/A" }}</td>
-                </tr>
-              </tbody>
-            </table>
+    <div
+      class="box"
+      v-if="getRuleTask.last && getRuleTask.last.value && !getRuleTask.isError"
+    >
+      <nav class="navbar">
+        <div class="navbar-brand">
+          <H2>
+            {{ getRuleTask.last.value.name }}
+          </H2>
+        </div>
+        <div class="navbar-menu">
+          <div class="navbar-end">
+            <router-link
+              class="button"
+              :to="{
+                name: 'EditRule',
+                params: { id: getRuleTask.last.value.id },
+              }"
+              >Edit
+            </router-link>
           </div>
         </div>
-        <div class="column is-half">
-          <H3>Source</H3>
-          <pre><code class="yara">{{ rule.source || "N/A" }}</code></pre>
+      </nav>
+
+      <div class="column is-full">
+        <div class="columns">
+          <div class="column is-half">
+            <div class="table-container">
+              <table class="table">
+                <tbody>
+                  <tr>
+                    <th>ID</th>
+                    <td>{{ getRuleTask.last.value.id }}</td>
+                  </tr>
+                  <tr>
+                    <th>Target</th>
+                    <td>{{ getRuleTask.last.value.target }}</td>
+                  </tr>
+                  <tr>
+                    <th>Created at</th>
+                    <td>{{ getRuleTask.last.value.createdAt || "N/A" }}</td>
+                  </tr>
+                  <tr>
+                    <th>Updated at</th>
+                    <td>{{ getRuleTask.last.value.updatedAt || "N/A" }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="column is-half">
+            <H3>Source</H3>
+            <pre><code class="yara">{{ getRuleTask.last.value.source || "N/A" }}</code></pre>
+          </div>
         </div>
-      </div>
-      <div class="column">
-        <H3>
-          Recent related snapshots
-          <Counter v-bind:ruleId="rule.id" />
-        </H3>
-        <Table v-if="hasSnapshots()" v-bind:snapshots="rule.snapshots" />
-        <p v-else>N/A</p>
+        <div class="column">
+          <H3>
+            Recent related snapshots
+            <Counter :ruleId="getRuleTask.last.value.id" />
+          </H3>
+          <Table
+            v-if="hasSnapshots(getRuleTask.last.value)"
+            v-bind:snapshots="getRuleTask.last.value.snapshots"
+          />
+          <p v-else>N/A</p>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import axios from "axios";
-import { Component, Mixins } from "vue-mixin-decorator";
-import { Prop } from "vue-property-decorator";
+import { defineComponent, onMounted } from "@vue/composition-api";
+import { useAsyncTask } from "vue-concurrency";
 
+import { API } from "@/api";
 import Counter from "@/components/matches/Counter.vue";
-import {
-  ErrorDialogMixin,
-  HighlightComponentMixin,
-  HighlightMixin,
-} from "@/components/mixins";
 import Table from "@/components/snapshots/TableWithScreenshot.vue";
+import Error from "@/components/ui/Error.vue";
 import H2 from "@/components/ui/H2.vue";
 import H3 from "@/components/ui/H3.vue";
-import { ErrorData, Rule } from "@/types";
+import Loading from "@/components/ui/Loading.vue";
+import { Rule } from "@/types";
+import { highlightCodeBlocks } from "@/utils/highlight";
 
-@Component({
+export default defineComponent({
+  name: "Rule",
   components: {
     Counter,
+    Error,
     H2,
     H3,
+    Loading,
     Table,
   },
-})
-export default class RuleComponent extends Mixins<HighlightComponentMixin>(
-  HighlightMixin,
-  ErrorDialogMixin
-) {
-  @Prop() private id!: string;
-
-  private rule: Rule | undefined = undefined;
-
-  async load() {
-    const loadingComponent = this.$buefy.loading.open({
-      container: this.$el.firstElementChild,
+  props: {
+    ruleId: {
+      type: String,
+      required: true,
+    },
+  },
+  setup(props, context) {
+    const getRuleTask = useAsyncTask<Rule, []>(async () => {
+      return await API.getRule(props.ruleId);
     });
 
-    try {
-      const response = await axios.get<Rule>(`/api/rules/${this.id}`);
-      this.rule = response.data;
+    const updateTitle = (ruleName: string): void => {
+      document.title = `${ruleName} - Uzen`;
+    };
 
-      loadingComponent.close();
-      this.$forceUpdate();
-    } catch (error) {
-      loadingComponent.close();
+    const getRule = async () => {
+      const rule = await getRuleTask.perform();
+      updateTitle(rule.name);
+    };
 
-      const data = error.response.data as ErrorData;
-      this.alertError(data);
-    }
-  }
+    const hasSnapshots = (rule: Rule): boolean => {
+      return (rule?.snapshots || []).length > 0;
+    };
 
-  updateTitle(): void {
-    const name = this.rule?.name || "undefined";
-    document.title = `${name} - Uzen`;
-  }
+    onMounted(async () => {
+      await getRule();
+      highlightCodeBlocks(context);
+    });
 
-  async mounted() {
-    await this.load();
-    this.updateTitle();
-    this.highlightCodeBlocks();
-  }
-
-  hasRule(): boolean {
-    return this.rule !== undefined;
-  }
-
-  hasSnapshots(): boolean {
-    return (this.rule?.snapshots || []).length > 0;
-  }
-}
+    return { getRuleTask, hasSnapshots };
+  },
+});
 </script>

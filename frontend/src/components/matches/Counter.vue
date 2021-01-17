@@ -1,53 +1,51 @@
 <template>
-  <span>
+  <span
+    v-if="
+      !searchTask.isRunning &&
+      searchTask.last &&
+      searchTask.last.value &&
+      !searchTask.isError
+    "
+  >
     (
     <router-link
       :to="{
         name: 'Matches',
         query: { ruleId: ruleId },
       }"
-      >{{ this.totalCount }} in total
+      >{{ searchTask.last.value.total }} in total
     </router-link>
     )</span
   >
 </template>
 
 <script lang="ts">
-import axios from "axios";
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { defineComponent } from "@vue/composition-api";
+import { useAsyncTask } from "vue-concurrency";
 
-import { ErrorData, MatchSearchResults } from "@/types";
+import { API } from "@/api";
+import { MatchSearchResults } from "@/types";
 
-@Component
-export default class Counter extends Vue {
-  @Prop() private ruleId: string | undefined;
+export default defineComponent({
+  name: "MatchesCounter",
+  props: {
+    ruleId: {
+      type: String,
+      required: true,
+    },
+  },
+  setup(props) {
+    const searchTask = useAsyncTask<MatchSearchResults, []>(async () => {
+      const params = {
+        size: 0,
+        ruleId: props.ruleId,
+      };
+      return API.searchMatches(params);
+    });
 
-  private totalCount = 0;
+    searchTask.perform();
 
-  created() {
-    this.load();
-  }
-
-  async load() {
-    const params = {
-      size: 0,
-      ruleId: this.ruleId,
-    };
-
-    try {
-      const response = await axios.get<MatchSearchResults>(
-        "/api/matches/search",
-        {
-          params: params,
-        }
-      );
-
-      this.totalCount = response.data.total;
-    } catch (error) {
-      const data = error.response.data as ErrorData;
-      // eslint-disable-next-line no-console
-      console.error(data);
-    }
-  }
-}
+    return { searchTask };
+  },
+});
 </script>

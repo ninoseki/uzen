@@ -38,43 +38,38 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from "vue-mixin-decorator";
-import { Prop } from "vue-property-decorator";
+import { defineComponent, reactive } from "@vue/composition-api";
 
-import {
-  ErrorDialogMixin,
-  SearchFormComponentMixin,
-  SearchFormMixin,
-} from "@/components/mixins";
 import { MatchFilters } from "@/types";
+import { datetimeFormatter, normalizeFilterValue } from "@/utils/form";
 
-@Component
-export default class SearchForm extends Mixins<SearchFormComponentMixin>(
-  ErrorDialogMixin,
-  SearchFormMixin
-) {
-  @Prop() private ruleId: string | undefined;
-  @Prop() private snapshotId: string | undefined;
-
-  get filters(): MatchFilters {
-    return {
-      ruleId: this.ruleId,
-      snapshotId: this.snapshotId,
+export default defineComponent({
+  name: "MatchesForm",
+  props: {
+    ruleId: String,
+    snapshotId: String,
+  },
+  setup(props) {
+    const filters = reactive<MatchFilters>({
+      ruleId: props.ruleId,
+      snapshotId: props.snapshotId,
       fromAt: undefined,
       toAt: undefined,
-    };
-  }
+    });
 
-  filtersParams() {
-    const obj: { [k: string]: string | number | undefined } = {};
+    const filtersParams = () => {
+      const obj: { [k: string]: string | number | undefined } = {};
 
-    for (const key in this.filters) {
-      if (this.filters[key] !== undefined) {
-        const value = this.filters[key];
-        obj[key] = this.normalizeFilterValue(value);
+      for (const key in filters) {
+        if (filters[key] !== undefined) {
+          const value = filters[key];
+          obj[key] = normalizeFilterValue(value);
+        }
       }
-    }
-    return obj;
-  }
-}
+      return obj;
+    };
+
+    return { filters, filtersParams, datetimeFormatter };
+  },
+});
 </script>

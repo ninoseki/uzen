@@ -1,267 +1,277 @@
 <template>
-  <div v-if="hasSnapshot()">
-    <b-message v-if="snapshot.processing" type="is-warning">
-      <p><strong>Background tasks in progress...</strong></p>
-      <p>
-        The information below may be incomplete. Please reload this page after a
-        while.
-      </p>
-    </b-message>
-    <div class="box">
-      <nav class="navbar">
-        <div class="navbar-brand">
-          <H2>
-            {{ snapshot.url }}
-          </H2>
-        </div>
-        <div class="navbar-menu">
-          <div class="navbar-end">
-            <Links
-              v-bind:hostname="snapshot.hostname"
-              v-bind:ipAddress="snapshot.ipAddress"
-            />
+  <div>
+    <Loading v-if="getSnapshotTask.isRunning"></Loading>
+    <Error
+      :error="getSnapshotTask.last.error.response.data"
+      v-else-if="getSnapshotTask.isError && getSnapshotTask.last !== undefined"
+    ></Error>
+
+    <div
+      v-if="
+        getSnapshotTask.last &&
+        getSnapshotTask.last.value &&
+        !getSnapshotTask.isError
+      "
+    >
+      <b-message v-if="getSnapshotTask.last.value.processing" type="is-warning">
+        <p><strong>Background tasks in progress...</strong></p>
+        <p>
+          The information below may be incomplete. Please reload this page after
+          a while.
+        </p>
+      </b-message>
+      <div class="box">
+        <nav class="navbar">
+          <div class="navbar-brand">
+            <H2>
+              {{ getSnapshotTask.last.value.url }}
+            </H2>
           </div>
-        </div>
-      </nav>
-      <b-tabs type="is-boxed">
-        <b-tab-item label="Summary">
-          <div class="column is-full">
-            <div class="columns">
-              <div class="column is-half">
-                <H3>Info</H3>
-                <div class="table-container">
-                  <table class="table">
-                    <tbody>
-                      <tr>
-                        <th>ID</th>
-                        <td>{{ snapshot.id || "N/A" }}</td>
-                      </tr>
-                      <tr>
-                        <th>Submitted URL</th>
-                        <td>{{ snapshot.submittedUrl }}</td>
-                      </tr>
-                      <tr>
-                        <th>Hostname</th>
-                        <td>
-                          <router-link
-                            :to="{
-                              name: 'Domain',
-                              params: { hostname: snapshot.hostname },
-                            }"
-                            >{{ snapshot.hostname }}
-                          </router-link>
-                        </td>
-                      </tr>
+          <div class="navbar-menu">
+            <div class="navbar-end">
+              <Links
+                :hostname="getSnapshotTask.last.value.hostname"
+                :ipAddress="getSnapshotTask.last.value.ipAddress"
+              />
+            </div>
+          </div>
+        </nav>
+        <b-tabs type="is-boxed">
+          <b-tab-item label="Summary">
+            <div class="column is-full">
+              <div class="columns">
+                <div class="column is-half">
+                  <H3>Info</H3>
+                  <div class="table-container">
+                    <table class="table">
+                      <tbody>
+                        <tr>
+                          <th>ID</th>
+                          <td>{{ getSnapshotTask.last.value.id || "N/A" }}</td>
+                        </tr>
+                        <tr>
+                          <th>Submitted URL</th>
+                          <td>{{ getSnapshotTask.last.value.submittedUrl }}</td>
+                        </tr>
+                        <tr>
+                          <th>Hostname</th>
+                          <td>
+                            <router-link
+                              :to="{
+                                name: 'Domain',
+                                params: {
+                                  hostname: getSnapshotTask.last.value.hostname,
+                                },
+                              }"
+                              >{{ getSnapshotTask.last.value.hostname }}
+                            </router-link>
+                          </td>
+                        </tr>
 
-                      <tr>
-                        <th>IP address</th>
-                        <td>
-                          <router-link
-                            :to="{
-                              name: 'IP address',
-                              params: { ipAddress: snapshot.ipAddress },
-                            }"
-                            >{{ snapshot.ipAddress }}
-                          </router-link>
-                        </td>
-                      </tr>
+                        <tr>
+                          <th>IP address</th>
+                          <td>
+                            <router-link
+                              :to="{
+                                name: 'IP address',
+                                params: {
+                                  ipAddress:
+                                    getSnapshotTask.last.value.ipAddress,
+                                },
+                              }"
+                              >{{ getSnapshotTask.last.value.ipAddress }}
+                            </router-link>
+                          </td>
+                        </tr>
 
-                      <tr>
-                        <th>ASN</th>
-                        <td>
-                          <router-link
-                            :to="{
-                              name: 'Snapshots',
-                              query: { asn: snapshot.asn },
-                            }"
-                            >{{ snapshot.asn }}
-                          </router-link>
-                        </td>
-                      </tr>
+                        <tr>
+                          <th>ASN</th>
+                          <td>
+                            <router-link
+                              :to="{
+                                name: 'Snapshots',
+                                query: { asn: getSnapshotTask.last.value.asn },
+                              }"
+                              >{{ getSnapshotTask.last.value.asn }}
+                            </router-link>
+                          </td>
+                        </tr>
 
-                      <tr>
-                        <th>Server</th>
-                        <td>
-                          <router-link
-                            :to="{
-                              name: 'Snapshots',
-                              query: { server: snapshot.server },
-                            }"
-                            >{{ snapshot.server }}
-                          </router-link>
-                        </td>
-                      </tr>
+                        <tr>
+                          <th>Server</th>
+                          <td>
+                            <router-link
+                              :to="{
+                                name: 'Snapshots',
+                                query: {
+                                  server: getSnapshotTask.last.value.server,
+                                },
+                              }"
+                              >{{ getSnapshotTask.last.value.server }}
+                            </router-link>
+                          </td>
+                        </tr>
 
-                      <tr>
-                        <th>Content-Type</th>
-                        <td>
-                          <router-link
-                            :to="{
-                              name: 'Snapshots',
-                              query: { contentType: snapshot.contentType },
-                            }"
-                            >{{ snapshot.contentType }}
-                          </router-link>
-                        </td>
-                      </tr>
+                        <tr>
+                          <th>Content-Type</th>
+                          <td>
+                            <router-link
+                              :to="{
+                                name: 'Snapshots',
+                                query: {
+                                  contentType:
+                                    getSnapshotTask.last.value.contentType,
+                                },
+                              }"
+                              >{{ getSnapshotTask.last.value.contentType }}
+                            </router-link>
+                          </td>
+                        </tr>
 
-                      <tr>
-                        <th>Created at</th>
-                        <td>
-                          <DatetimeWithDiff
-                            v-bind:datetime="snapshot.createdAt"
-                          />
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                        <tr>
+                          <th>Created at</th>
+                          <td>
+                            <DatetimeWithDiff
+                              v-bind:datetime="
+                                getSnapshotTask.last.value.createdAt
+                              "
+                            />
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="column is-half">
+                  <H3> Screenshot </H3>
+                  <Screenshot :snapshotId="getSnapshotTask.last.value.id" />
                 </div>
               </div>
-              <div class="column is-half">
-                <H3> Screenshot </H3>
-                <Screenshot
-                  v-bind:snapshot_id="snapshot.id"
-                  v-bind:screenshot="snapshot.screenshot"
-                />
+              <div class="column">
+                <H3>SHA256</H3>
+                <router-link
+                  :to="{
+                    name: 'Snapshots',
+                    query: { sha256: getSnapshotTask.last.value.sha256 },
+                  }"
+                  >{{ getSnapshotTask.last.value.sha256 }}
+                </router-link>
+              </div>
+              <div class="column">
+                <H3> Matched rules </H3>
+                <Rules :rules="getSnapshotTask.last.value.rules" />
               </div>
             </div>
-            <div class="column">
-              <H3>SHA256</H3>
-              <router-link
-                :to="{ name: 'Snapshots', query: { sha256: snapshot.sha256 } }"
-                >{{ snapshot.sha256 }}
-              </router-link>
-            </div>
-            <div class="column">
-              <H3> Matched rules </H3>
-              <Rules v-bind:rules="snapshot.rules" />
-            </div>
-          </div>
-        </b-tab-item>
+          </b-tab-item>
 
-        <b-tab-item label="Body">
-          <pre><code class="html">{{ snapshot.body }}</code></pre>
-        </b-tab-item>
+          <b-tab-item label="Body">
+            <pre><code class="html">{{ getSnapshotTask.last.value.body }}</code></pre>
+          </b-tab-item>
 
-        <b-tab-item label="Whois">
-          <Whois v-bind:whois="snapshot.whois" />
-        </b-tab-item>
+          <b-tab-item label="Whois">
+            <Whois :whois="getSnapshotTask.last.value.whois" />
+          </b-tab-item>
 
-        <b-tab-item label="Certificate">
-          <Certificate v-bind:certificate="snapshot.certificate" />
-        </b-tab-item>
+          <b-tab-item label="Certificate">
+            <Certificate
+              :certificate="getSnapshotTask.last.value.certificate"
+            />
+          </b-tab-item>
 
-        <b-tab-item label="Scripts">
-          <Scripts v-bind:scripts="snapshot.scripts" />
-        </b-tab-item>
+          <b-tab-item label="Scripts">
+            <Scripts :scripts="getSnapshotTask.last.value.scripts" />
+          </b-tab-item>
 
-        <b-tab-item label="DNS records">
-          <DnsRecords v-bind:dnsRecords="snapshot.dnsRecords" />
-        </b-tab-item>
+          <b-tab-item label="DNS records">
+            <DnsRecords :dnsRecords="getSnapshotTask.last.value.dnsRecords" />
+          </b-tab-item>
 
-        <b-tab-item label="Classifications">
-          <Classifications v-bind:classifications="snapshot.classifications" />
-        </b-tab-item>
+          <b-tab-item label="Classifications">
+            <Classifications
+              :classifications="getSnapshotTask.last.value.classifications"
+            />
+          </b-tab-item>
 
-        <b-tab-item v-if="hasYaraResult()" label="YARA matches">
-          <YaraResultComponent v-bind:yaraResult="yaraResult" />
-        </b-tab-item>
-      </b-tabs>
+          <b-tab-item v-if="yaraResult !== undefined" label="YARA matches">
+            <YaraResultComponent :yaraResult="yaraResult" />
+          </b-tab-item>
+        </b-tabs>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import axios from "axios";
-import { Component, Mixins } from "vue-mixin-decorator";
-import { Prop } from "vue-property-decorator";
+import { defineComponent, onMounted, PropType } from "@vue/composition-api";
+import { useAsyncTask } from "vue-concurrency";
 
+import { API } from "@/api";
 import Certificate from "@/components/certificate/Certificate.vue";
 import Classifications from "@/components/classifications/Classifications.vue";
 import DnsRecords from "@/components/dns_records/DnsRecords.vue";
 import Links from "@/components/links/Links.vue";
-import {
-  ErrorDialogMixin,
-  HighlightComponentMixin,
-  HighlightMixin,
-} from "@/components/mixins";
 import Rules from "@/components/rules/Buttons.vue";
 import Screenshot from "@/components/screenshots/Screenshot.vue";
 import Scripts from "@/components/scripts/Scripts.vue";
 import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
+import Error from "@/components/ui/Error.vue";
 import H2 from "@/components/ui/H2.vue";
 import H3 from "@/components/ui/H3.vue";
+import Loading from "@/components/ui/Loading.vue";
 import Whois from "@/components/whois/Whois.vue";
 import YaraResultComponent from "@/components/yara/Result.vue";
-import { ErrorData, Snapshot, YaraResult } from "@/types";
+import { Snapshot, YaraResult } from "@/types";
+import { highlightCodeBlocks } from "@/utils/highlight";
 
-@Component({
+export default defineComponent({
+  name: "Snapshot",
   components: {
     Certificate,
     Classifications,
     DatetimeWithDiff,
     DnsRecords,
+    Error,
     H2,
     H3,
     Links,
-    Rules,
+    Loading,
     Screenshot,
     Scripts,
     Whois,
     YaraResultComponent,
+    Rules,
   },
-})
-export default class SnapshotComponent extends Mixins<HighlightComponentMixin>(
-  HighlightMixin,
-  ErrorDialogMixin
-) {
-  @Prop() private id!: string;
-  @Prop() private _snapshot!: Snapshot;
-  @Prop() private yaraResult!: YaraResult;
+  props: {
+    snapshotId: {
+      type: String,
+      required: true,
+    },
+    yaraResult: {
+      type: Object as PropType<YaraResult>,
+      required: false,
+    },
+  },
 
-  private snapshot: Snapshot | undefined = undefined;
-
-  async load() {
-    const loadingComponent = this.$buefy.loading.open({
-      container: this.$el.firstElementChild,
+  setup(props, context) {
+    const getSnapshotTask = useAsyncTask<Snapshot, []>(async () => {
+      return await API.getSnapshot(props.snapshotId);
     });
 
-    try {
-      const response = await axios.get<Snapshot>(`/api/snapshots/${this.id}`);
-      this.snapshot = response.data;
+    const updateTitle = (url: string): void => {
+      document.title = `${url} - Uzen`;
+    };
 
-      loadingComponent.close();
-      this.$forceUpdate();
-    } catch (error) {
-      loadingComponent.close();
+    const getSnapshot = async () => {
+      const snapshot = await getSnapshotTask.perform();
+      updateTitle(snapshot.url);
+    };
 
-      const data = error.response.data as ErrorData;
-      this.alertError(data);
-    }
-  }
+    onMounted(async () => {
+      await getSnapshot();
+      highlightCodeBlocks(context);
+    });
 
-  updateTitle(): void {
-    const url = this.snapshot?.url || "undefined";
-    document.title = `${url} - Uzen`;
-  }
-
-  async mounted() {
-    this.snapshot = this._snapshot;
-    this.$forceUpdate();
-
-    if (this.snapshot === undefined) {
-      await this.load();
-    }
-    this.updateTitle();
-    this.highlightCodeBlocks();
-  }
-
-  hasYaraResult(): boolean {
-    return this.yaraResult !== undefined;
-  }
-
-  hasSnapshot(): boolean {
-    return this.snapshot !== undefined;
-  }
-}
+    return { getSnapshotTask };
+  },
+});
 </script>

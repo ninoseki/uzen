@@ -3,14 +3,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { defineComponent } from "@vue/composition-api";
 
 import SnapshotForm from "@/components/snapshots/Form.vue";
 
-@Component({
+export default defineComponent({
+  name: "HomeView",
   components: {
     SnapshotForm,
   },
-})
-export default class Home extends Vue {}
+});
 </script>
