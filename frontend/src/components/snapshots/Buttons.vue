@@ -3,12 +3,12 @@
     <div v-if="hasSnapshots" class="buttons">
       <b-button
         v-for="snapshot in uniqueSnapshots"
-        v-bind:key="snapshot.id"
+        :key="snapshot.id"
         tag="router-link"
         :to="{ name: 'Snapshot', params: { id: snapshot.id } }"
         type="is-info"
       >
-        {{ snapshot.hostname }} ({{ snapshot.createdAt.split("T")[0] }})
+        {{ snapshot.hostname }} ({{ (snapshot.createdAt || "").split("T")[0] }})
       </b-button>
     </div>
     <div v-else>N/A</div>
@@ -16,28 +16,36 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { computed, defineComponent, PropType } from "@vue/composition-api";
 
 import { Snapshot } from "@/types";
 
-@Component
-export default class Buttons extends Vue {
-  @Prop() private snapshots!: Snapshot[];
-
-  get uniqueSnapshots(): Snapshot[] {
-    let snapshots: Snapshot[] = [];
-    const memo = new Set();
-    for (const snapshot of this.snapshots) {
-      if (!memo.has(snapshot.id)) {
-        snapshots = snapshots.concat(snapshot);
+export default defineComponent({
+  name: "SnapshotButtons",
+  props: {
+    snapshots: {
+      type: Array as PropType<Snapshot[]>,
+      required: true,
+    },
+  },
+  setup(props) {
+    const uniqueSnapshots = computed((): Snapshot[] => {
+      let snapshots: Snapshot[] = [];
+      const memo = new Set();
+      for (const snapshot of props.snapshots) {
+        if (!memo.has(snapshot.id)) {
+          snapshots = snapshots.concat(snapshot);
+        }
+        memo.add(snapshot.id);
       }
-      memo.add(snapshot.id);
-    }
-    return snapshots;
-  }
+      return snapshots;
+    });
 
-  get hasSnapshots(): boolean {
-    return this.snapshots.length > 0;
-  }
-}
+    const hasSnapshots = computed((): boolean => {
+      return props.snapshots.length > 0;
+    });
+
+    return { hasSnapshots, uniqueSnapshots };
+  },
+});
 </script>

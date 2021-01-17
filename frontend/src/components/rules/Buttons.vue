@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div v-if="hasRules" class="buttons">
+    <div v-if="rules.length > 0" class="buttons">
       <b-button
         v-for="rule in uniqueRules"
-        v-bind:key="rule.id"
+        :key="rule.id"
         tag="router-link"
         :to="{ name: 'Rule', params: { id: rule.id } }"
         type="is-info"
@@ -16,28 +16,32 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { computed, defineComponent, PropType } from "@vue/composition-api";
 
 import { Rule } from "@/types";
 
-@Component
-export default class Buttons extends Vue {
-  @Prop() private rules!: Rule[];
-
-  get uniqueRules(): Rule[] {
-    let rules: Rule[] = [];
-    const memo = new Set();
-    for (const rule of this.rules) {
-      if (!memo.has(rule.id)) {
-        rules = rules.concat(rule);
+export default defineComponent({
+  name: "RuleButtons",
+  props: {
+    rules: {
+      type: Array as PropType<Rule[]>,
+      required: true,
+    },
+  },
+  setup(props) {
+    const uniqueRules = computed((): Rule[] => {
+      let rules: Rule[] = [];
+      const memo = new Set();
+      for (const rule of props.rules) {
+        if (!memo.has(rule.id)) {
+          rules = rules.concat(rule);
+        }
+        memo.add(rule.id);
       }
-      memo.add(rule.id);
-    }
-    return rules;
-  }
+      return rules;
+    });
 
-  get hasRules(): boolean {
-    return this.rules.length > 0;
-  }
-}
+    return { uniqueRules };
+  },
+});
 </script>

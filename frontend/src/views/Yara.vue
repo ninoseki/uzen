@@ -3,14 +3,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { defineComponent } from "@vue/composition-api";
 
 import YaraForm from "@/components/yara/Form.vue";
 
-@Component({
+export default defineComponent({
+  name: "YaraFormView",
   components: {
     YaraForm,
   },
-})
-export default class Yara extends Vue {}
+});
 </script>

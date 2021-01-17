@@ -18,21 +18,26 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { computed, defineComponent, PropType } from "@vue/composition-api";
 
 import NA from "@/components/ui/NA.vue";
 import { DnsRecord } from "@/types";
 
-@Component({
-  components: {
-    NA,
+export default defineComponent({
+  name: "DnsRecords",
+  props: {
+    dnsRecords: {
+      type: Array as PropType<DnsRecord[]>,
+      required: true,
+    },
   },
-})
-export default class DnsRecords extends Vue {
-  @Prop() private dnsRecords!: DnsRecord[];
+  components: { NA },
+  setup(props) {
+    const hasDnsRecords = computed((): boolean => {
+      return props.dnsRecords.length > 0;
+    });
 
-  get hasDnsRecords(): boolean {
-    return this.dnsRecords.length > 0;
-  }
-}
+    return { hasDnsRecords };
+  },
+});
 </script>

@@ -1,19 +1,16 @@
 <template>
-  <Edit v-bind:id="this.$route.params.id" />
+  <Edit :ruleId="$root.$route.params.id" />
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from "vue-mixin-decorator";
+import { defineComponent } from "@vue/composition-api";
 
-import { ErrorDialogMixin } from "@/components/mixins";
 import Edit from "@/components/rules/Edit.vue";
 
-@Component({
+export default defineComponent({
+  name: "EditRuleView",
   components: {
     Edit,
   },
-})
-export default class RuleEditView extends Mixins<ErrorDialogMixin>(
-  ErrorDialogMixin
-) {}
+});
 </script>

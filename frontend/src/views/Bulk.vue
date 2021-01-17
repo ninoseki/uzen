@@ -3,14 +3,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { defineComponent } from "@vue/composition-api";
 
 import Form from "@/components/bulk/Form.vue";
 
-@Component({
+export default defineComponent({
+  name: "Bulk",
   components: {
     Form,
   },
-})
-export default class Bulk extends Vue {}
+});
 </script>

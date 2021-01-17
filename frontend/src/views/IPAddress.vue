@@ -3,23 +3,22 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { defineComponent } from "@vue/composition-api";
 
 import IPAddress from "@/components/ip_address/IPAddress.vue";
 
-@Component({
+export default defineComponent({
+  name: "IPAddressView",
   components: {
     IPAddress,
   },
-})
-export default class IPAddressView extends Vue {
-  updateTitle(): void {
-    const ipAddress = this.$route.params.ipAddress;
-    document.title = `${ipAddress} - Uzen`;
-  }
+  setup(_, { root }) {
+    const updateTitle = (): void => {
+      const ipAddress = root.$route.params.ipAddress;
+      document.title = `${ipAddress} - Uzen`;
+    };
 
-  mounted() {
-    this.updateTitle();
-  }
-}
+    updateTitle();
+  },
+});
 </script>

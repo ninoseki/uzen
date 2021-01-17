@@ -1,55 +1,50 @@
 <template>
-  <span>
+  <span
+    v-if="
+      !searchTask.isRunning &&
+      searchTask.last &&
+      searchTask.last.value &&
+      !searchTask.isError
+    "
+  >
     (
     <router-link
       :to="{
         name: 'Snapshots',
         query: { hostname: hostname, ipAddress: ipAddress },
       }"
-      >{{ this.totalCount }} in total
+      >{{ searchTask.last.value.total }} in total
     </router-link>
     )</span
   >
 </template>
 
 <script lang="ts">
-import axios from "axios";
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { defineComponent } from "@vue/composition-api";
+import { useAsyncTask } from "vue-concurrency";
 
-import { ErrorData, SnapshotSearchResults } from "@/types";
+import { API } from "@/api";
+import { SnapshotSearchResults } from "@/types";
 
-@Component
-export default class Counter extends Vue {
-  @Prop() private hostname: string | undefined;
-  @Prop() private ipAddress: string | undefined;
+export default defineComponent({
+  name: "SnapshotsCounter",
+  props: {
+    hostname: String,
+    ipAddress: String,
+  },
+  setup(props) {
+    const searchTask = useAsyncTask<SnapshotSearchResults, []>(async () => {
+      const options = {
+        size: 0,
+        hostname: props.hostname,
+        ipAddress: props.ipAddress,
+      };
+      return API.searchSnapshots(options);
+    });
 
-  private totalCount = 0;
+    searchTask.perform();
 
-  created() {
-    this.load();
-  }
-
-  async load() {
-    const params = {
-      size: 0,
-      hostname: this.hostname,
-      ipAddress: this.ipAddress,
-    };
-
-    try {
-      const response = await axios.get<SnapshotSearchResults>(
-        "/api/snapshots/search",
-        {
-          params: params,
-        }
-      );
-
-      this.totalCount = response.data.total;
-    } catch (error) {
-      const data = error.response.data as ErrorData;
-      // eslint-disable-next-line no-console
-      console.error(data);
-    }
-  }
-}
+    return { searchTask };
+  },
+});
 </script>

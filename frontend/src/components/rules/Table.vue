@@ -1,5 +1,5 @@
 <template>
-  <div class="box table-container" v-if="hasRules">
+  <div class="box table-container" v-if="rules.length > 0">
     <b-table :data="rules">
       <b-table-column field="name" label="Name" v-slot="props">
         <router-link
@@ -28,21 +28,21 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { defineComponent, PropType } from "@vue/composition-api";
 
 import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
 import { Rule } from "@/types";
 
-@Component({
+export default defineComponent({
+  name: "RulesTable",
   components: {
     DatetimeWithDiff,
   },
-})
-export default class Table extends Vue {
-  @Prop() private rules!: Rule[];
-
-  get hasRules(): boolean {
-    return this.rules.length > 0;
-  }
-}
+  props: {
+    rules: {
+      type: Array as PropType<Rule[]>,
+      required: true,
+    },
+  },
+});
 </script>

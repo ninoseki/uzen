@@ -29,36 +29,43 @@
       </b-table-column>
 
       <b-table-column field="createdAt" label="Created at" v-slot="props">
-        <DatetimeWithDiff v-bind:datetime="props.row.createdAt" />
+        <DatetimeWithDiff :datetime="props.row.createdAt" />
       </b-table-column>
 
       <b-table-column field="screenshot" label="Screenshot" v-slot="props">
-        <Screenshot v-bind:snapshot_id="props.row.id" />
+        <Screenshot :snapshotId="props.row.id" />
       </b-table-column>
     </b-table>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { computed, defineComponent, PropType } from "@vue/composition-api";
 
 import Screenshot from "@/components/screenshots/Screenshot.vue";
 import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
 import { Snapshot } from "@/types";
 
-@Component({
-  components: {
-    Screenshot,
-    DatetimeWithDiff,
+export default defineComponent({
+  name: "SnapshotTableWithScreenshot",
+  props: {
+    snapshots: {
+      type: Array as PropType<Snapshot[]>,
+      required: true,
+    },
   },
-})
-export default class TableWithScreenshot extends Vue {
-  @Prop() private snapshots!: Snapshot[];
+  components: {
+    DatetimeWithDiff,
+    Screenshot,
+  },
+  setup(props) {
+    const hasSnapshots = computed((): boolean => {
+      return props.snapshots.length > 0;
+    });
 
-  get hasSnapshots(): boolean {
-    return this.snapshots.length > 0;
-  }
-}
+    return { hasSnapshots };
+  },
+});
 </script>
 
 <style scoped>

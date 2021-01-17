@@ -1,10 +1,19 @@
 <template>
   <div>
+    <Loading v-if="createRuleTask.isRunning"></Loading>
+    <Error
+      :error="createRuleTask.last.error.response.data"
+      v-else-if="createRuleTask.isError && createRuleTask.last !== undefined"
+    ></Error>
+
     <div class="box">
       <InputForm
-        v-bind:name.sync="name"
-        v-bind:target.sync="target"
-        v-bind:source.sync="source"
+        :name="name"
+        :target="target"
+        :source="source"
+        @update-name="updateName"
+        @update-source="updateSource"
+        @update-target="updateTarget"
       />
 
       <div class="has-text-centered">
@@ -21,44 +30,64 @@
 </template>
 
 <script lang="ts">
-import axios from "axios";
-import { Component, Mixins } from "vue-mixin-decorator";
+import { defineComponent, ref } from "@vue/composition-api";
+import { useAsyncTask } from "vue-concurrency";
 
-import { ErrorDialogMixin } from "@/components/mixins";
+import { API } from "@/api";
 import InputForm from "@/components/rules/InputForm.vue";
-import { ErrorData, Rule, TargetTypes } from "@/types";
+import Error from "@/components/ui/Error.vue";
+import Loading from "@/components/ui/Loading.vue";
+import { Rule, TargetTypes } from "@/types";
 
-@Component({ components: { InputForm } })
-export default class Register extends Mixins<ErrorDialogMixin>(
-  ErrorDialogMixin
-) {
-  private name = "";
-  private target: TargetTypes = "body";
-  private source = "";
+export default defineComponent({
+  name: "RuleRegister",
+  components: {
+    Error,
+    InputForm,
+    Loading,
+  },
+  setup(_, context) {
+    const name = ref("");
+    const target = ref<TargetTypes>("body");
+    const source = ref("");
 
-  async register() {
-    const loadingComponent = this.$buefy.loading.open({
-      container: this.$el.firstElementChild,
+    const createRuleTask = useAsyncTask<Rule, []>(async () => {
+      const payload = {
+        name: name.value,
+        target: target.value,
+        source: source.value,
+      };
+
+      return await API.createRule(payload);
     });
 
-    try {
-      const response = await axios.post<Rule>("/api/rules/", {
-        name: this.name === "" ? undefined : this.name,
-        target: this.target,
-        source: this.source === "" ? undefined : this.source,
-      });
-      const rule = response.data;
+    const register = async () => {
+      const rule = await createRuleTask.perform();
+      context.root.$router.push({ path: `/rules/${rule.id}` });
+    };
 
-      loadingComponent.close();
+    const updateName = (newName: string) => {
+      name.value = newName;
+    };
 
-      // redirect to the details page
-      this.$router.push({ path: `/rules/${rule.id}` });
-    } catch (error) {
-      loadingComponent.close();
+    const updateSource = (newSource: string) => {
+      source.value = newSource;
+    };
 
-      const data = error.response.data as ErrorData;
-      this.alertError(data);
-    }
-  }
-}
+    const updateTarget = (newTarget: TargetTypes) => {
+      target.value = newTarget;
+    };
+
+    return {
+      name,
+      target,
+      source,
+      register,
+      createRuleTask,
+      updateName,
+      updateSource,
+      updateTarget,
+    };
+  },
+});
 </script>

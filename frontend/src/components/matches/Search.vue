@@ -1,7 +1,13 @@
 <template>
   <div>
+    <Loading v-if="searchTask.isRunning"></Loading>
+    <Error
+      :error="searchTask.last.error.response.data"
+      v-else-if="searchTask.isError && searchTask.last !== undefined"
+    ></Error>
+
     <div class="box">
-      <Form ref="form" v-bind:ruleId="ruleId" v-bind:snapshotId="snapshotId" />
+      <Form ref="form" :ruleId="ruleId" :snapshotId="snapshotId" />
 
       <br />
 
@@ -16,100 +22,117 @@
       </div>
     </div>
 
-    <h2 v-if="hasCount()">Search results ({{ count }} / {{ totalCount }})</h2>
+    <h2 v-if="count !== undefined">
+      Search results ({{ count }} / {{ totalCount }})
+    </h2>
 
-    <Table v-bind:matches="matches" />
+    <MatchesTable v-bind:matches="matches" />
 
-    <b-button v-if="hasLoadMore()" type="is-dark" @click="loadMore"
+    <b-button
+      v-if="hasLoadMore(count, totalCount)"
+      type="is-dark"
+      @click="loadMore"
       >Load more...</b-button
     >
   </div>
 </template>
 
 <script lang="ts">
-import axios from "axios";
-import { Component, Mixins } from "vue-mixin-decorator";
-import { Prop } from "vue-property-decorator";
+import { defineComponent, onMounted, ref } from "@vue/composition-api";
+import { useAsyncTask } from "vue-concurrency";
 
+import { API } from "@/api";
 import Form from "@/components/matches/Form.vue";
-import Table from "@/components/matches/Table.vue";
+import MatchesTable from "@/components/matches/Table.vue";
+import Error from "@/components/ui/Error.vue";
+import Loading from "@/components/ui/Loading.vue";
+import { Match, MatchSearchResults } from "@/types";
 import {
-  ErrorDialogMixin,
-  SearchFormComponentMixin,
-  SearchFormMixin,
-} from "@/components/mixins";
-import { ErrorData, Match, MatchSearchResults } from "@/types";
+  DEFAULT_PAGE_SIZE,
+  hasLoadMore,
+  minDatetime,
+  nowDatetime,
+} from "@/utils/form";
 
-@Component({
-  components: {
-    Form,
-    Table,
+export default defineComponent({
+  name: "MatchesSearch",
+  props: {
+    ruleId: String,
+    snapshotId: String,
   },
-})
-export default class Search extends Mixins<SearchFormComponentMixin>(
-  ErrorDialogMixin,
-  SearchFormMixin
-) {
-  private matches: Match[] = [];
+  components: {
+    Error,
+    Form,
+    Loading,
+    MatchesTable,
+  },
+  setup(_, context) {
+    const matches = ref<Match[]>([]);
+    const count = ref<number | undefined>(undefined);
+    const totalCount = ref(0);
 
-  @Prop() private ruleId: string | undefined;
-  @Prop() private snapshotId: string | undefined;
+    let oldestCreatedAt: string | undefined = undefined;
+    let size = DEFAULT_PAGE_SIZE;
 
-  resetPagination() {
-    this.matches = [];
-    this.size = this.DEFAULT_PAGE_SIZE;
-    this.oldestCreatedAt = this.nowDatetime();
-  }
+    const form = ref<InstanceType<typeof Form>>();
 
-  async search(additonalLoading = false) {
-    const loadingComponent = this.$buefy.loading.open({
-      container: this.$el.firstElementChild,
+    const resetPagination = () => {
+      matches.value = [];
+      totalCount.value = 0;
+      size = DEFAULT_PAGE_SIZE;
+      oldestCreatedAt = nowDatetime();
+    };
+
+    const searchTask = useAsyncTask<MatchSearchResults, []>(async () => {
+      const params = form.value?.filtersParams() || {};
+      params["size"] = size;
+      params["toAt"] = minDatetime(params["toAt"], oldestCreatedAt);
+
+      return await API.searchMatches(params);
     });
 
-    if (!additonalLoading) {
-      this.resetPagination();
-    }
-
-    const params = (this.$refs.form as Form).filtersParams();
-    params["size"] = this.size;
-    params["toAt"] = this.minDatetime(params["toAt"], this.oldestCreatedAt);
-
-    try {
-      const response = await axios.get<MatchSearchResults>(
-        "/api/matches/search",
-        {
-          params: params,
-        }
-      );
-
-      loadingComponent.close();
-
-      this.matches = this.matches.concat(response.data.results);
-      this.count = this.matches.length;
-      this.oldestCreatedAt = this.matches[this.count - 1].createdAt;
+    const search = async (additonalLoading = false) => {
       if (!additonalLoading) {
-        this.totalCount = response.data.total;
+        resetPagination();
       }
-    } catch (error) {
-      loadingComponent.close();
 
-      const data = error.response.data as ErrorData;
-      this.alertError(data);
-    }
-  }
+      const res = await searchTask.perform();
 
-  loadMore() {
-    this.search(true);
-  }
+      matches.value = matches.value.concat(res.results);
+      count.value = matches.value.length;
+      oldestCreatedAt = matches.value[count.value - 1].createdAt;
 
-  initSearch() {
-    this.search();
-  }
+      if (!additonalLoading) {
+        totalCount.value = res.total;
+      }
 
-  mounted() {
-    if (Object.keys(this.$route.query).length > 0) {
-      this.initSearch();
-    }
-  }
-}
+      return;
+    };
+
+    const loadMore = () => {
+      search(true);
+    };
+
+    const initSearch = () => {
+      search(false);
+    };
+
+    onMounted(() => {
+      if (Object.keys(context.root.$route.query).length > 0) {
+        initSearch();
+      }
+    });
+
+    return {
+      form,
+      initSearch,
+      matches,
+      count,
+      totalCount,
+      loadMore,
+      hasLoadMore,
+      searchTask,
+    };
+  },
+});
 </script>

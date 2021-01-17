@@ -1,16 +1,24 @@
 <template>
-  <img :src="this.imageSource" alt="screenshot" ref="screenshot" />
+  <img :src="imageSource" alt="screenshot" ref="screenshot" />
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { computed, defineComponent } from "@vue/composition-api";
 
-@Component
-export default class ScreenshotComponent extends Vue {
-  @Prop() private snapshot_id!: string;
+export default defineComponent({
+  name: "Screenshot",
+  props: {
+    snapshotId: {
+      type: String,
+      required: true,
+    },
+  },
+  setup(props) {
+    const imageSource = computed((): string => {
+      return `/api/screenshots/${props.snapshotId}`;
+    });
 
-  get imageSource(): string {
-    return `/api/screenshots/${this.snapshot_id}`;
-  }
-}
+    return { imageSource };
+  },
+});
 </script>

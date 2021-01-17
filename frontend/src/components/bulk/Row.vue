@@ -1,96 +1,106 @@
 <template>
   <div class="row">
-    <div v-if="hasResult()">
-      <div v-if="isErrorResult()">
-        <b-message type="is-danger">
-          Failed to take snapshot of {{ url }}
-        </b-message>
-      </div>
-      <div v-else>
+    <div v-if="takeSnapshotTask.isRunning">
+      <b-message>Loading {{ url }}...</b-message>
+    </div>
+    <div v-else-if="takeSnapshotTask.isError">
+      <b-message type="is-danger">
+        Failed to take snapshot of {{ url }}
+      </b-message>
+    </div>
+    <div v-else>
+      <div v-if="takeSnapshotTask.last && takeSnapshotTask.last.value">
         <b-message type="is-success">
           <router-link
             :to="{
               name: 'Snapshot',
               params: {
-                id: result.id,
+                id: takeSnapshotTask.last.value.id,
               },
             }"
           >
-            {{ result.url | truncate }}
+            {{ truncate(takeSnapshotTask.last.value.url) }}
           </router-link>
           <p><strong>Submitted URL:</strong> {{ url }}</p>
-          <p><strong>ID:</strong> {{ result.id }}</p>
+          <p><strong>ID:</strong> {{ takeSnapshotTask.last.value.id }}</p>
         </b-message>
       </div>
-    </div>
-    <div v-else>
-      <b-message>Loading {{ url }}...</b-message>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import axios from "axios";
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { defineComponent } from "@vue/composition-api";
+import { useAsyncTask } from "vue-concurrency";
 
-import { ErrorData, Snapshot } from "@/types";
+import { API } from "@/api";
+import { CreateSnapshotPayload, Snapshot } from "@/types";
+import { truncate } from "@/utils/truncate";
 
-@Component
-export default class Row extends Vue {
-  @Prop() private url!: string;
-  @Prop() private index!: number;
+export default defineComponent({
+  name: "BulkRow",
+  props: {
+    url: {
+      type: String,
+      required: true,
+    },
+    index: {
+      type: Number,
+      required: true,
+    },
+    acceptLanguage: {
+      type: String,
+      required: true,
+    },
+    host: {
+      type: String,
+      required: true,
+    },
+    ignoreHttpsErrors: {
+      type: Boolean,
+      required: true,
+    },
+    referer: {
+      type: String,
+      required: true,
+    },
+    timeout: {
+      type: Number,
+      required: true,
+    },
+    userAgent: {
+      type: String,
+      required: true,
+    },
+  },
+  setup(props) {
+    const sleep = (): Promise<void> => {
+      const timeout = 1000 * props.index;
+      return new Promise((resolve) => setTimeout(resolve, timeout));
+    };
 
-  @Prop() private acceptLanguage!: string;
-  @Prop() private host!: string;
-  @Prop() private ignoreHTTPSErrors!: boolean;
-  @Prop() private referer!: string;
-  @Prop() private timeout!: number;
-  @Prop() private userAgent!: string;
+    const takeSnapshotTask = useAsyncTask<Snapshot, []>(async () => {
+      await sleep();
 
-  private result: Snapshot | ErrorData | undefined = undefined;
-
-  sleep(): Promise<void> {
-    const timeout = 1000 * this.index;
-    return new Promise((resolve) => setTimeout(resolve, timeout));
-  }
-
-  mounted() {
-    this.submit();
-  }
-
-  async submit() {
-    await this.sleep();
-
-    try {
-      const response = await axios.post<Snapshot>("/api/snapshots/", {
-        url: this.url,
+      const payload: CreateSnapshotPayload = {
+        url: props.url,
         acceptLanguage:
-          this.acceptLanguage === "" ? undefined : this.acceptLanguage,
-        host: this.host === "" ? undefined : this.host,
-        ignoreHttpsErrors: this.ignoreHTTPSErrors,
-        referer: this.referer === "" ? undefined : this.referer,
-        timeout: this.timeout,
-        userAgent: this.userAgent === "" ? undefined : this.userAgent,
-      });
-      this.result = response.data;
-    } catch (error) {
-      let data = error.response.data as ErrorData;
-      if (typeof data === "string") {
-        data = { detail: error };
-      }
-      this.result = data;
-    }
-    this.$forceUpdate();
-  }
+          props.acceptLanguage === "" ? undefined : props.acceptLanguage,
+        host: props.host === "" ? undefined : props.host,
+        ignoreHttpsErrors: props.ignoreHttpsErrors,
+        referer: props.referer === "" ? undefined : props.referer,
+        timeout: props.timeout,
+        userAgent: props.userAgent,
+      };
 
-  hasResult(): boolean {
-    return this.result !== undefined;
-  }
+      return await API.takeSnapshot(payload);
+    });
 
-  isErrorResult(): boolean {
-    return this.result !== undefined && "detail" in this.result;
-  }
-}
+    takeSnapshotTask.perform();
+
+    return { takeSnapshotTask, truncate };
+  },
+});
 </script>
 
 <style scoped>

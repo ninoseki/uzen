@@ -1,106 +1,108 @@
 <template>
-  <div class="box" v-if="hasInformation()">
-    <nav class="navbar">
-      <div class="navbar-brand">
-        <H2>Domain: {{ information.hostname }}</H2>
-      </div>
-      <div class="navbar-menu">
-        <div class="navbar-end">
-          <Links v-bind:hostname="information.hostname" type="domain" />
+  <div>
+    <Loading v-if="getDomainTask.isRunning"></Loading>
+    <Error
+      :error="getDomainTask.last.error.response.data"
+      v-else-if="getDomainTask.isError && getDomainTask.last !== undefined"
+    ></Error>
+
+    <div
+      class="box"
+      v-else-if="
+        getDomainTask.last && getDomainTask.last.value && !getDomainTask.isError
+      "
+    >
+      <nav class="navbar">
+        <div class="navbar-brand">
+          <H2>Domain: {{ getDomainTask.last.value.hostname }}</H2>
+        </div>
+        <div class="navbar-menu">
+          <div class="navbar-end">
+            <Links
+              :hostname="getDomainTask.last.value.hostname"
+              type="domain"
+            />
+          </div>
+        </div>
+      </nav>
+
+      <div class="column is-full">
+        <div class="columns">
+          <div class="column is-half">
+            <H3> DNS records </H3>
+            <DnsRecords :dnsRecords="getDomainTask.last.value.dnsRecords" />
+          </div>
+          <div class="column is-half">
+            <H3> Live preview </H3>
+            <Preview :hostname="getDomainTask.last.value.hostname" />
+          </div>
         </div>
       </div>
-    </nav>
 
-    <div class="column is-full">
-      <div class="columns">
-        <div class="column is-half">
-          <H3> DNS records </H3>
-          <DnsRecords v-bind:dnsRecords="information.dnsRecords" />
-        </div>
-        <div class="column is-half">
-          <H3> Live preview </H3>
-          <Preview v-bind:hostname="information.hostname" />
-        </div>
+      <div class="column">
+        <H3>
+          Recent snapshots
+          <Counter :hostname="getDomainTask.last.value.hostname" />
+        </H3>
+
+        <Table
+          v-if="hasSnapshots()"
+          :snapshots="getDomainTask.last.value.snapshots"
+        />
+        <p v-else>N/A</p>
       </div>
-    </div>
 
-    <div class="column">
-      <H3>
-        Recent snapshots
-        <Counter v-bind:hostname="information.hostname" />
-      </H3>
-
-      <Table v-if="hasSnapshots()" v-bind:snapshots="information.snapshots" />
-      <p v-else>N/A</p>
-    </div>
-
-    <div class="column">
-      <H3> Whois </H3>
-      <pre>{{ information.whois || "N/A" }}</pre>
+      <div class="column">
+        <H3> Whois </H3>
+        <pre>{{ getDomainTask.last.value.whois || "N/A" }}</pre>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import axios from "axios";
-import { Component, Mixins } from "vue-mixin-decorator";
+import { defineComponent } from "@vue/composition-api";
+import { useAsyncTask } from "vue-concurrency";
 
+import { API } from "@/api";
 import DnsRecords from "@/components/dns_records/DnsRecords.vue";
 import Links from "@/components/links/Links.vue";
-import { ErrorDialogMixin } from "@/components/mixins";
 import Preview from "@/components/screenshots/Preview.vue";
 import Counter from "@/components/snapshots/Counter.vue";
 import Table from "@/components/snapshots/TableWithScreenshot.vue";
+import Error from "@/components/ui/Error.vue";
 import H2 from "@/components/ui/H2.vue";
 import H3 from "@/components/ui/H3.vue";
-import { DomainInformation, ErrorData } from "@/types";
+import Loading from "@/components/ui/Loading.vue";
+import { DomainInformation } from "@/types";
 
-@Component({
+export default defineComponent({
+  name: "Domain",
   components: {
     Counter,
     DnsRecords,
+    Error,
     H2,
     H3,
     Links,
+    Loading,
     Preview,
     Table,
   },
-})
-export default class Domain extends Mixins<ErrorDialogMixin>(ErrorDialogMixin) {
-  private information: DomainInformation | undefined = undefined;
+  setup(_, context) {
+    const hostname = context.root.$route.params.hostname;
 
-  created() {
-    this.load();
-  }
-
-  async load() {
-    const loadingComponent = this.$buefy.loading.open({
-      container: this.$el,
+    const getDomainTask = useAsyncTask<DomainInformation, []>(async () => {
+      return API.getDomainInformation(hostname);
     });
 
-    try {
-      const hostname = this.$route.params.hostname;
-      const res = await axios.get<DomainInformation>(`/api/domain/${hostname}`);
-      this.information = res.data;
+    getDomainTask.perform();
 
-      loadingComponent.close();
-      this.$forceUpdate();
-    } catch (error) {
-      loadingComponent.close();
+    const hasSnapshots = () => {
+      return (getDomainTask.last?.value?.snapshots.length || 0) > 0;
+    };
 
-      const data = error.response.data as ErrorData;
-      this.alertError(data);
-    }
-  }
-
-  hasInformation(): boolean {
-    return this.information !== undefined;
-  }
-
-  hasSnapshots(): boolean {
-    return (
-      this.information !== undefined && this.information.snapshots.length > 0
-    );
-  }
-}
+    return { getDomainTask, hasSnapshots };
+  },
+});
 </script>

@@ -3,23 +3,23 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { defineComponent } from "@vue/composition-api";
 
 import Domain from "@/components/domain/Domain.vue";
 
-@Component({
+export default defineComponent({
+  name: "DomainView",
   components: {
     Domain,
   },
-})
-export default class DomainView extends Vue {
-  updateTitle(): void {
-    const hostname = this.$route.params.hostname;
-    document.title = `${hostname} - Uzen`;
-  }
 
-  mounted() {
-    this.updateTitle();
-  }
-}
+  setup(_, { root }) {
+    const updateTitle = (): void => {
+      const hostname = root.$route.params.hostname;
+      document.title = `${hostname} - Uzen`;
+    };
+
+    updateTitle();
+  },
+});
 </script>

@@ -23,34 +23,39 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { defineComponent, PropType, reactive } from "@vue/composition-api";
 
 import { RuleFilters, TargetTypes } from "@/types";
 
-@Component
-export default class SearchForm extends Vue {
-  @Prop() private name: string | undefined;
-  @Prop() private target: TargetTypes | undefined;
-  @Prop() private source: string | undefined;
+export default defineComponent({
+  name: "RuleSearchForm",
+  props: {
+    name: String,
+    target: {
+      type: String as PropType<TargetTypes>,
+    },
+    source: String,
+  },
+  setup(props) {
+    const filters = reactive<RuleFilters>({
+      name: props.name,
+      target: props.target,
+      source: props.source,
+    });
 
-  get filters(): RuleFilters {
-    return {
-      name: this.name,
-      target: this.target,
-      source: this.source,
-    };
-  }
+    const filtersParams = () => {
+      const obj: { [k: string]: string | number | undefined } = {};
 
-  filtersParams() {
-    const obj: { [k: string]: string | number | undefined } = {};
-
-    for (const key in this.filters) {
-      if (this.filters[key] !== undefined) {
-        const value = this.filters[key];
-        obj[key] = value;
+      for (const key in filters) {
+        if (filters[key] !== undefined) {
+          const value = filters[key];
+          obj[key] = value;
+        }
       }
-    }
-    return obj;
-  }
-}
+      return obj;
+    };
+
+    return { filters, filtersParams };
+  },
+});
 </script>

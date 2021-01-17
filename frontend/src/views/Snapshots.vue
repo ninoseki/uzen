@@ -3,14 +3,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { defineComponent } from "@vue/composition-api";
 
 import Search from "@/components/snapshots/Search.vue";
 
-@Component({
+export default defineComponent({
+  name: "SearchView",
   components: {
     Search,
   },
-})
-export default class Snapshots extends Vue {}
+});
 </script>

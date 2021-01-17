@@ -1,5 +1,13 @@
 <template>
   <div>
+    <Loading v-if="takeSnapshotTask.isRunning"></Loading>
+    <Error
+      :error="takeSnapshotTask.last.error.response.data"
+      v-else-if="
+        takeSnapshotTask.isError && takeSnapshotTask.last !== undefined
+      "
+    ></Error>
+
     <div class="box">
       <b-field>
         <b-input
@@ -12,7 +20,7 @@
             type="is-light"
             icon-pack="fas"
             icon-left="camera"
-            @click="take"
+            @click="takeSnapshot"
             >Take a snapshot</b-button
           >
           <b-button
@@ -26,66 +34,77 @@
       </b-field>
       <Options
         v-if="showOptions"
-        v-bind:acceptLanguage.sync="acceptLanguage"
-        v-bind:host.sync="host"
-        v-bind:ignoreHTTPSErrors.sync="ignoreHTTPSErrors"
-        v-bind:referer.sync="referer"
-        v-bind:timeout.sync="timeout"
-        v-bind:userAgent.sync="userAgent"
+        :acceptLanguage.sync="acceptLanguage"
+        :host.sync="host"
+        :ignoreHttpsErrors.sync="ignoreHttpsErrors"
+        :referer.sync="referer"
+        :timeout.sync="timeout"
+        :userAgent.sync="userAgent"
       />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import axios from "axios";
-import { Component, Mixins } from "vue-mixin-decorator";
+import { defineComponent, ref } from "@vue/composition-api";
+import { useAsyncTask } from "vue-concurrency";
 
-import { ErrorDialogMixin } from "@/components/mixins";
+import { API } from "@/api";
 import Options from "@/components/snapshots/Options.vue";
-import { ErrorData, Snapshot } from "@/types";
+import Error from "@/components/ui/Error.vue";
+import Loading from "@/components/ui/Loading.vue";
+import { CreateSnapshotPayload, Snapshot } from "@/types";
 
-@Component({ components: { Options } })
-export default class Form extends Mixins<ErrorDialogMixin>(ErrorDialogMixin) {
-  private url = "";
-  private showOptions = false;
-  private snapshot: Snapshot | undefined = undefined;
+export default defineComponent({
+  name: "SnapshotForm",
+  components: {
+    Error,
+    Loading,
+    Options,
+  },
+  setup(_, context) {
+    const url = ref("");
+    const showOptions = ref(false);
 
-  private acceptLanguage = "";
-  private host = "";
-  private ignoreHTTPSErrors = false;
-  private referer = "";
-  private timeout = 30000;
-  private userAgent = "";
+    const acceptLanguage = ref("");
+    const host = ref("");
+    const ignoreHttpsErrors = ref(false);
+    const referer = ref("");
+    const timeout = ref(30000);
+    const userAgent = ref("");
 
-  async take() {
-    const loadingComponent = this.$buefy.loading.open({
-      container: this.$el.firstElementChild,
+    const takeSnapshotTask = useAsyncTask<Snapshot, []>(async () => {
+      const payload: CreateSnapshotPayload = {
+        url: url.value,
+        acceptLanguage:
+          acceptLanguage.value === "" ? undefined : acceptLanguage.value,
+        host: host.value === "" ? undefined : host.value,
+        ignoreHttpsErrors: ignoreHttpsErrors.value,
+        referer: referer.value === "" ? undefined : referer.value,
+        timeout: timeout.value,
+        userAgent: userAgent.value,
+      };
+
+      return await API.takeSnapshot(payload);
     });
 
-    try {
-      const response = await axios.post<Snapshot>("/api/snapshots/", {
-        url: this.url,
-        acceptLanguage:
-          this.acceptLanguage === "" ? undefined : this.acceptLanguage,
-        host: this.host === "" ? undefined : this.host,
-        ignoreHttpsErrors: this.ignoreHTTPSErrors,
-        referer: this.referer === "" ? undefined : this.referer,
-        timeout: this.timeout,
-        userAgent: this.userAgent === "" ? undefined : this.userAgent,
-      });
-      const snapshot = response.data;
+    const takeSnapshot = async () => {
+      const snapshot = await takeSnapshotTask.perform();
+      context.root.$router.push({ path: `/snapshots/${snapshot.id}` });
+    };
 
-      loadingComponent.close();
-
-      // redirect to the details page
-      this.$router.push({ path: `/snapshots/${snapshot.id}` });
-    } catch (error) {
-      loadingComponent.close();
-
-      const data = error.response.data as ErrorData;
-      this.alertError(data);
-    }
-  }
-}
+    return {
+      takeSnapshot,
+      takeSnapshotTask,
+      url,
+      showOptions,
+      acceptLanguage,
+      host,
+      userAgent,
+      ignoreHttpsErrors,
+      referer,
+      timeout,
+    };
+  },
+});
 </script>
