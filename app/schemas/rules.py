@@ -1,6 +1,7 @@
 from typing import List, Optional, Union
 from uuid import UUID
 
+import yara
 from fastapi_utils.api_model import APIModel
 from pydantic import Field, validator
 
@@ -29,6 +30,17 @@ class UpdateRulePayload(APIModel):
     def target_types(cls, v):
         if v not in ["body", "certificate", "script", "whois", None]:
             raise ValueError("Target must be any of body, certificate, script or whois")
+        return v
+
+    @validator("source")
+    def source_compilable(cls, v):
+        if v is None:
+            return v
+
+        try:
+            yara.compile(source=v)
+        except yara.Error as e:
+            raise ValueError(f"YARA compile error: {str(e)}")
         return v
 
     class Config:
