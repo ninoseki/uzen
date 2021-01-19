@@ -11,14 +11,14 @@ from tortoise.exceptions import DBConnectionError
 
 from app import create_app
 from app.core import settings
-from app.models.classifications import Classification
-from app.models.dns_records import DnsRecord
+from app.models.classification import Classification
+from app.models.dns_record import DnsRecord
 from app.models.file import File
 from app.models.html import HTML
-from app.models.matches import Match
-from app.models.rules import Rule
-from app.models.scripts import Script
-from app.models.snapshots import Snapshot
+from app.models.match import Match
+from app.models.rule import Rule
+from app.models.script import Script
+from app.models.snapshot import Snapshot
 from app.models.whois import Whois
 from app.utils.hash import calculate_sha256
 

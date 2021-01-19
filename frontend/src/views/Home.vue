@@ -5,7 +5,7 @@
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
 
-import SnapshotForm from "@/components/snapshots/Form.vue";
+import SnapshotForm from "@/components/snapshot/Form.vue";
 
 export default defineComponent({
   name: "HomeView",

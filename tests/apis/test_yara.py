@@ -3,8 +3,8 @@ import json
 import pytest
 
 from app.dataclasses.utils import SnapshotResult
-from app.models.scripts import Script
-from app.models.snapshots import Snapshot
+from app.models.script import Script
+from app.models.snapshot import Snapshot
 
 
 @pytest.mark.asyncio

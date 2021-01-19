@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from app.models.snapshots import Snapshot
+from app.models.snapshot import Snapshot
 from app.services.browser import Browser
 from tests.helper import first_snapshot_id, make_snapshot_result
 

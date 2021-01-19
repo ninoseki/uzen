@@ -1,6 +1,6 @@
 import pytest
 
-from app.models.snapshots import Snapshot
+from app.models.snapshot import Snapshot
 from app.services.yara_scanner import YaraScanner
 
 

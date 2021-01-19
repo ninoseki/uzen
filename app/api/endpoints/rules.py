@@ -5,8 +5,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from tortoise.exceptions import DoesNotExist
 
 from app import models, schemas
-from app.api.dependencies.rules import SearchFilters
-from app.services.searchers.rules import RuleSearcher
+from app.api.dependencies.rule import SearchFilters
+from app.services.searchers.rule import RuleSearcher
 
 router = APIRouter()
 

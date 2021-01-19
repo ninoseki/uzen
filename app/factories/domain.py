@@ -1,5 +1,5 @@
 from app import models, schemas
-from app.factories.dns_records import DnsRecordFactory
+from app.factories.dns_record import DnsRecordFactory
 from app.services.whois import Whois
 
 

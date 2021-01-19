@@ -6,7 +6,7 @@ from uuid import UUID
 import aiometer
 
 from app import models, schemas
-from app.services.searchers.rules import RuleSearcher
+from app.services.searchers.rule import RuleSearcher
 from app.services.yara_scanner import YaraScanner
 
 CHUNK_SIZE = 100

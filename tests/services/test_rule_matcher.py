@@ -3,8 +3,8 @@ import uuid
 
 import pytest
 
-from app.models.rules import Rule
-from app.models.snapshots import Snapshot
+from app.models.rule import Rule
+from app.models.snapshot import Snapshot
 from app.services.rule_matcher import RuleMatcher
 
 

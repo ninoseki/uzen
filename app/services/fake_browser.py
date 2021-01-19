@@ -5,7 +5,7 @@ import httpx
 from app import dataclasses, models
 from app.services.certificate import Certificate
 from app.services.whois import Whois
-from app.tasks.scripts import ScriptTask
+from app.tasks.script import ScriptTask
 from app.utils.hash import calculate_sha256
 from app.utils.network import (
     get_asn_by_ip_address,

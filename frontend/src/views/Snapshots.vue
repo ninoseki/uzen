@@ -5,7 +5,7 @@
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
 
-import Search from "@/components/snapshots/Search.vue";
+import Search from "@/components/snapshot/Search.vue";
 
 export default defineComponent({
   name: "SearchView",

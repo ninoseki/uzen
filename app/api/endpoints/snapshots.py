@@ -5,13 +5,13 @@ from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from tortoise.exceptions import DoesNotExist
 
 from app import models, schemas
-from app.api.dependencies.snapshots import SearchFilters
+from app.api.dependencies.snapshot import SearchFilters
 from app.core.exceptions import TakeSnapshotError
-from app.services.searchers.snapshots import SnapshotSearcher
+from app.services.searchers.snapshot import SnapshotSearcher
 from app.tasks.enrichment import EnrichmentTasks
-from app.tasks.matches import MatchinbgTask
+from app.tasks.match import MatchinbgTask
 from app.tasks.screenshot import UploadScrenshotTask
-from app.tasks.snapshots import UpdateProcessingTask
+from app.tasks.snapshot import UpdateProcessingTask
 from app.utils.snapshot import save_snapshot, take_snapshot
 
 router = APIRouter()

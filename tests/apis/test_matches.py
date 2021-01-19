@@ -1,6 +1,6 @@
 import pytest
 
-from app.models.matches import Match
+from app.models.match import Match
 from tests.helper import first_rule_id, first_snapshot_id
 
 
