@@ -27,7 +27,10 @@ class Target(APIModel):
 
 class Source(APIModel):
     source: str = Field(
-        ..., title="YARA rule", description="String containing the rules code",
+        ...,
+        title="YARA rule",
+        description="String containing the rules code",
+        min_length=1,
     )
 
     @validator("source")
