@@ -9,8 +9,8 @@
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
 
-import Register from "@/components/rules/Register.vue";
-import Search from "@/components/rules/Search.vue";
+import Register from "@/components/rule/Register.vue";
+import Search from "@/components/rule/Search.vue";
 
 export default defineComponent({
   name: "RulesView",

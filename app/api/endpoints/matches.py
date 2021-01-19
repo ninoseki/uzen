@@ -3,8 +3,8 @@ from typing import Optional
 from fastapi import APIRouter, Depends
 
 from app import schemas
-from app.api.dependencies.matches import SearchFilters
-from app.services.searchers.matches import MatchSearcher
+from app.api.dependencies.match import SearchFilters
+from app.services.searchers.match import MatchSearcher
 
 router = APIRouter()
 

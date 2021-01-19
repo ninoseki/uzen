@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from app.models.rules import Rule
+from app.models.rule import Rule
 from tests.helper import first_rule_id
 
 

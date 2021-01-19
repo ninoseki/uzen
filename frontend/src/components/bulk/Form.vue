@@ -61,7 +61,7 @@
 import { defineComponent, ref } from "@vue/composition-api";
 
 import Row from "@/components/bulk/Row.vue";
-import Options from "@/components/snapshots/Options.vue";
+import Options from "@/components/snapshot/Options.vue";
 
 export default defineComponent({
   name: "Form",

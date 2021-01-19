@@ -5,8 +5,8 @@ from fastapi import APIRouter, BackgroundTasks, HTTPException
 
 from app import models, schemas
 from app.services.urlscan import URLScan
-from app.tasks.matches import MatchinbgTask
-from app.tasks.snapshots import UpdateProcessingTask
+from app.tasks.match import MatchinbgTask
+from app.tasks.snapshot import UpdateProcessingTask
 from app.utils.snapshot import save_snapshot
 
 router = APIRouter()

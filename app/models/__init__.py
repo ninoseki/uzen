@@ -1,45 +1,45 @@
 from app.models import (
     certificate,
-    classifications,
-    dns_records,
+    classification,
+    dns_record,
     file,
     html,
-    matches,
-    rules,
-    scripts,
-    snapshots,
+    match,
+    rule,
+    script,
+    snapshot,
     whois,
 )
 from app.models.certificate import Certificate
-from app.models.classifications import Classification
-from app.models.dns_records import DnsRecord
+from app.models.classification import Classification
+from app.models.dns_record import DnsRecord
 from app.models.file import File
 from app.models.html import HTML
-from app.models.matches import Match
-from app.models.rules import Rule
-from app.models.scripts import Script
-from app.models.snapshots import Snapshot
+from app.models.match import Match
+from app.models.rule import Rule
+from app.models.script import Script
+from app.models.snapshot import Snapshot
 from app.models.whois import Whois
 
 __all__ = [
     "certificate",
     "Certificate",
     "Classification",
-    "classifications",
-    "dns_records",
+    "classification",
+    "dns_record",
     "DnsRecord",
     "file",
     "File",
     "Match",
-    "matches",
+    "match",
     "html",
     "HTML",
     "Rule",
-    "rules",
+    "rule",
     "Script",
-    "scripts",
+    "script",
     "Snapshot",
-    "snapshots",
+    "snapshot",
     "whois",
     "Whois",
 ]

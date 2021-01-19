@@ -1,5 +1,5 @@
 from app.schemas.base import AbstractResourceModel
-from app.schemas.mixins import TimestampMixin
+from app.schemas.mixin import TimestampMixin
 
 
 class Whois(AbstractResourceModel, TimestampMixin):

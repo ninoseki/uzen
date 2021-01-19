@@ -1,20 +1,20 @@
 from app.schemas.certificate import Certificate
-from app.schemas.classifications import Classification
-from app.schemas.dns_records import BaseDnsRecord, DnsRecord
+from app.schemas.classification import Classification
+from app.schemas.dns_record import BaseDnsRecord, DnsRecord
 from app.schemas.domain import Domain
 from app.schemas.file import File
 from app.schemas.html import HTML
 from app.schemas.ip_address import IPAddress
-from app.schemas.matches import Match, MatchesSearchResults, MatchResult
-from app.schemas.rules import (
+from app.schemas.match import Match, MatchesSearchResults, MatchResult
+from app.schemas.rule import (
     CreateRulePayload,
     Rule,
     RulesSearchResults,
     UpdateRulePayload,
 )
-from app.schemas.screenshots import Screenshot
-from app.schemas.scripts import Script
-from app.schemas.snapshots import (
+from app.schemas.screenshot import Screenshot
+from app.schemas.script import Script
+from app.schemas.snapshot import (
     BaseSnapshot,
     CreateSnapshotPayload,
     PlainSnapshot,

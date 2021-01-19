@@ -34,8 +34,8 @@ import { defineComponent, ref } from "@vue/composition-api";
 import { useAsyncTask } from "vue-concurrency";
 
 import { API } from "@/api";
-import SnapshotForm from "@/components/snapshots/SearchForm.vue";
-import SnapshotTable from "@/components/snapshots/Table.vue";
+import SnapshotForm from "@/components/snapshot/SearchForm.vue";
+import SnapshotTable from "@/components/snapshot/Table.vue";
 import Error from "@/components/ui/Error.vue";
 import Loading from "@/components/ui/Loading.vue";
 import BasicForm from "@/components/yara/BasicForm.vue";

@@ -3,7 +3,7 @@ from typing import List, Optional
 from fastapi_utils.api_model import APIModel
 from pydantic import Field, IPvAnyAddress
 
-from app.schemas.snapshots import Snapshot
+from app.schemas.snapshot import Snapshot
 
 
 class IPAddress(APIModel):

@@ -1,9 +1,9 @@
 import pytest
 
-from app.models.matches import Match
-from app.models.rules import Rule
-from app.models.scripts import Script
-from app.models.snapshots import Snapshot
+from app.models.match import Match
+from app.models.rule import Rule
+from app.models.script import Script
+from app.models.snapshot import Snapshot
 from tests.helper import first_rule_id, first_snapshot_id
 
 

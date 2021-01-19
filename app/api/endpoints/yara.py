@@ -3,7 +3,7 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends
 
 from app import schemas
-from app.api.dependencies.snapshots import SearchFilters
+from app.api.dependencies.snapshot import SearchFilters
 from app.services.yara_scanner import YaraScanner
 
 router = APIRouter()

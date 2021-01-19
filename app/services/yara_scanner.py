@@ -8,7 +8,7 @@ import yara
 
 from app import models, schemas
 from app.services.matches_converter import MatchesConverter
-from app.services.searchers.snapshots import SnapshotSearcher
+from app.services.searchers.snapshot import SnapshotSearcher
 
 CHUNK_SIZE = 100
 MAX_AT_ONCE = 10

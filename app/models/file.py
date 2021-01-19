@@ -2,7 +2,7 @@ from tortoise import fields
 
 from app import schemas
 from app.models.base import AbstractResourceModel
-from app.models.mixins import TimestampMixin
+from app.models.mixin import TimestampMixin
 
 
 class File(AbstractResourceModel, TimestampMixin):

@@ -85,10 +85,10 @@ import { defineComponent } from "@vue/composition-api";
 import { useAsyncTask } from "vue-concurrency";
 
 import { API } from "@/api";
-import Links from "@/components/links/Links.vue";
-import Preview from "@/components/screenshots/Preview.vue";
-import Counter from "@/components/snapshots/Counter.vue";
-import Table from "@/components/snapshots/TableWithScreenshot.vue";
+import Links from "@/components/link/Links.vue";
+import Preview from "@/components/screenshot/Preview.vue";
+import Counter from "@/components/snapshot/Counter.vue";
+import Table from "@/components/snapshot/TableWithScreenshot.vue";
 import Error from "@/components/ui/Error.vue";
 import H2 from "@/components/ui/H2.vue";
 import H3 from "@/components/ui/H3.vue";

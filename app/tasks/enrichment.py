@@ -5,8 +5,8 @@ import aiometer
 
 from app import dataclasses, models
 from app.tasks import AbstractAsyncTask
-from app.tasks.classifications import ClassificationTask
-from app.tasks.dns_records import DnsRecordTask
+from app.tasks.classification import ClassificationTask
+from app.tasks.dns_record import DnsRecordTask
 
 
 class EnrichmentTasks(AbstractAsyncTask):

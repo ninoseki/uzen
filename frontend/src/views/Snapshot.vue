@@ -5,7 +5,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from "@vue/composition-api";
 
-import Snapshot from "@/components/snapshots/Snapshot.vue";
+import Snapshot from "@/components/snapshot/Snapshot.vue";
 import { YaraResult } from "@/types";
 
 export default defineComponent({

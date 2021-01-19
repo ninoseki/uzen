@@ -3,10 +3,10 @@ from typing import List, Union
 
 from loguru import logger
 
-from app.models.classifications import Classification
-from app.models.dns_records import DnsRecord
-from app.models.scripts import Script
-from app.models.snapshots import Snapshot
+from app.models.classification import Classification
+from app.models.dns_record import DnsRecord
+from app.models.script import Script
+from app.models.snapshot import Snapshot
 
 
 class AbstractAsyncTask(ABC):
