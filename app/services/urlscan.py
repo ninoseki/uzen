@@ -4,6 +4,7 @@ from typing import cast
 import httpx
 
 from app import dataclasses, models
+from app.utils.hash import calculate_sha256
 
 
 class URLScan:
@@ -67,10 +68,11 @@ class URLScan:
         content_type = headers.get("Content-Type") or headers.get("content-type")
         content_length = headers.get("Content-Length") or headers.get("content-length")
 
-        body = await instance.body()
-        sha256 = result.get("lists", {}).get("hashes", [])[0]
         time = cast(str, result.get("task", {}).get("time"))
         created_at = datetime.datetime.strptime(time, "%Y-%m-%dT%H:%M:%S.%fZ")
+
+        html_content = await instance.body()
+        html = models.HTML(id=calculate_sha256(html_content), content=html_content)
 
         snapshot = models.Snapshot(
             url=url,
@@ -83,8 +85,6 @@ class URLScan:
             content_type=content_type,
             content_length=content_length,
             headers=headers,
-            body=body,
-            sha256=sha256,
             created_at=created_at,
             request={"urlscan.io": uuid},
         )
@@ -92,5 +92,10 @@ class URLScan:
         screenshot = await instance.screenshot()
 
         return dataclasses.SnapshotResult(
-            screenshot=screenshot, snapshot=snapshot, script_files=[]
+            screenshot=screenshot,
+            snapshot=snapshot,
+            html=html,
+            script_files=[],
+            whois=None,
+            certificate=None,
         )

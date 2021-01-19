@@ -8,7 +8,7 @@
       </div>
       <div class="column is-half">
         <b-field label="Target">
-          <b-input placeholder="body" v-model="filters.target"></b-input>
+          <b-input placeholder="html" v-model="filters.target"></b-input>
         </b-field>
       </div>
     </div>

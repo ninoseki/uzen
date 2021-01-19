@@ -17,6 +17,9 @@ class ScriptFile:
 @dataclass
 class SnapshotResult:
     snapshot: models.Snapshot
+    html: models.HTML
+    whois: Optional[models.Whois]
+    certificate: Optional[models.Certificate]
     screenshot: Optional[bytes]
     script_files: List[ScriptFile]
 

@@ -5,14 +5,19 @@ import respx
 from httpx import Response
 
 from app.factories.scripts import ScriptFactory, get_script_sources
-from tests.helper import make_snapshot
+from tests.helper import make_html, make_snapshot
 
 
 @pytest.mark.asyncio
 @respx.mock
 async def test_build_from_snapshot():
     snapshot = make_snapshot()
-    snapshot.body = '<html><body><script type="text/javascript" src="https://www.w3.org/2008/site/js/main"></body></html>'
+    html = make_html()
+
+    html.content = '<html><body><script type="text/javascript" src="https://www.w3.org/2008/site/js/main"></body></html>'
+
+    snapshot.html = html
+
     respx.get("https://www.w3.org/2008/site/js/main").mock(
         Response(status_code=200, content="foo")
     )
@@ -31,8 +36,13 @@ async def test_build_from_snapshot():
 @pytest.mark.asyncio
 async def test_build_from_snapshot_with_relative_src():
     snapshot = make_snapshot()
+    html = make_html()
+
     snapshot.url = "https://www.w3.org"
-    snapshot.body = '<html><body><script type="text/javascript" src="/2008/site/js/main"></body></html>'
+    html.content = '<html><body><script type="text/javascript" src="/2008/site/js/main"></body></html>'
+
+    snapshot.html = html
+
     respx.get("https://www.w3.org/2008/site/js/main").mock(
         Response(status_code=200, content="foo")
     )
@@ -50,7 +60,11 @@ async def test_build_from_snapshot_with_relative_src():
 @pytest.mark.asyncio
 async def test_build_from_snapshot_with_no_src():
     snapshot = make_snapshot()
-    snapshot.body = '<html><body><script type="text/javascript"></body></html>'
+    html = make_html()
+
+    html.content = '<html><body><script type="text/javascript"></body></html>'
+
+    snapshot.html = html
 
     script_files = await ScriptFactory.from_snapshot(snapshot)
     assert len(script_files) == 0

@@ -15,7 +15,7 @@ class MatchinbgTask(AbstractAsyncTask):
         logger.debug("Start matching job...")
 
         snapshot_ = await models.Snapshot.get(id=self.snapshot.id).prefetch_related(
-            "_scripts"
+            "_scripts", "whois", "certificate", "html"
         )
         matcher = RuleMatcher(snapshot_)
         results: List[schemas.MatchResult] = await matcher.scan()

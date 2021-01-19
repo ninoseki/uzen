@@ -15,7 +15,7 @@ async def test_create_rule_with_invalid_target(client):
 
 @pytest.mark.asyncio
 async def test_create_rule_with_invalid_source(client):
-    payload = {"name": "test", "target": "body", "source": "foo; bar;"}
+    payload = {"name": "test", "target": "html", "source": "foo; bar;"}
     response = await client.post("/api/rules/", data=json.dumps(payload))
     assert response.status_code == 422
 
@@ -24,7 +24,7 @@ async def test_create_rule_with_invalid_source(client):
 async def test_create_rule(client):
     payload = {
         "name": "test",
-        "target": "body",
+        "target": "html",
         "source": 'rule foo: bar {strings: $a = "lmn" condition: $a}',
     }
     response = await client.post("/api/rules/", data=json.dumps(payload))
@@ -59,7 +59,7 @@ async def test_rules_search(client):
     assert len(rules) == 1
 
     # it matches with the all rules
-    response = await client.get("/api/rules/search", params={"target": "body"})
+    response = await client.get("/api/rules/search", params={"target": "html"})
     json = response.json()
     rules = json.get("results")
     assert len(rules) == count

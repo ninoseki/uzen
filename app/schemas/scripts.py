@@ -2,14 +2,8 @@ from fastapi_utils.api_model import APIModel
 from pydantic import AnyHttpUrl, Field
 
 from app.schemas.base import AbstractBaseModel
+from app.schemas.file import File
 from app.schemas.mixins import TimestampMixin
-
-
-class File(APIModel):
-    """Full Pydantic model for File"""
-
-    id: str = Field(..., title="ID", description="A SHA256 hash of the content")
-    content: str = Field(..., title="Contnt", description="Content of the script")
 
 
 class BaseScript(APIModel):

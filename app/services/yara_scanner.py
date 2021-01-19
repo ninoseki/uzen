@@ -55,11 +55,16 @@ class YaraScanner:
         if target == "script":
             return await self.partial_scan_for_scripts(ids)
 
-        snapshots = await models.Snapshot.filter(id__in=ids).values("id", target)
+        target_key = f"{target}__content"
+        snapshots = (
+            await models.Snapshot.filter(id__in=ids)
+            .prefetch_related(target)
+            .values("id", target_key)
+        )
         matched_results = []
         for snapshot in snapshots:
             snapshot_id = snapshot.get("id")
-            data = snapshot.get(target, "")
+            data = snapshot.get(target_key, "")
             matches = self.match(data=data)
             if len(matches) > 0:
                 result = schemas.YaraResult(
@@ -74,7 +79,7 @@ class YaraScanner:
 
     async def scan_snapshots(
         self,
-        target: str = "body",
+        target: str = "html",
         filters: Optional[dict] = None,
         size: Optional[int] = None,
         offset: Optional[int] = None,

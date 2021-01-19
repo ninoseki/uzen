@@ -77,8 +77,7 @@ class FakeBrowser:
 
                 url = str(res.url)
                 status = res.status_code
-                body = res.text
-                sha256 = calculate_sha256(body)
+                html_content = res.text
                 headers = {k.lower(): v for (k, v) in res.headers.items()}
         except httpx.HTTPError as e:
             raise (e)
@@ -88,17 +87,16 @@ class FakeBrowser:
         content_length = headers.get("content-length")
 
         hostname = cast(str, get_hostname_from_url(url))
-        certificate = Certificate.load_and_dump_from_url(url)
         ip_address = cast(str, get_ip_address_by_hostname(hostname))
         asn = get_asn_by_ip_address(ip_address) or ""
-        whois = Whois.whois(hostname)
+
+        certificate_content = Certificate.load_and_dump_from_url(url)
+        whois_content = Whois.whois(hostname)
 
         snapshot = models.Snapshot(
             url=url,
             submitted_url=submitted_url,
             status=status,
-            body=body,
-            sha256=sha256,
             headers=headers,
             hostname=hostname,
             ip_address=ip_address,
@@ -106,9 +104,22 @@ class FakeBrowser:
             server=server,
             content_length=content_length,
             content_type=content_type,
-            whois=whois,
-            certificate=certificate,
             request=request,
+        )
+        html = models.HTML(id=calculate_sha256(html_content), content=html_content)
+        snapshot.html = html
+
+        whois = (
+            models.Whois(id=calculate_sha256(whois_content), content=whois_content)
+            if whois_content
+            else None
+        )
+        certificate = (
+            models.Certificate(
+                id=calculate_sha256(certificate_content), content=certificate_content
+            )
+            if certificate_content
+            else None
         )
 
         # get script files
@@ -118,5 +129,10 @@ class FakeBrowser:
         )
 
         return dataclasses.SnapshotResult(
-            screenshot=None, snapshot=snapshot, script_files=script_files
+            screenshot=None,
+            snapshot=snapshot,
+            script_files=script_files,
+            html=html,
+            whois=whois,
+            certificate=certificate,
         )

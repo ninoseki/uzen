@@ -43,7 +43,7 @@ async def search(
     filters: SearchFilters = Depends(),
 ) -> schemas.SnapshotsSearchResults:
     results = await SnapshotSearcher.search(vars(filters), size=size, offset=offset)
-    snapshots = cast(List[schemas.SimplifiedSnapshot], results.results)
+    snapshots = cast(List[schemas.PlainSnapshot], results.results)
     return schemas.SnapshotsSearchResults(results=snapshots, total=results.total)
 
 
@@ -101,6 +101,7 @@ async def create(
     background_tasks.add_task(MatchinbgTask.process, snapshot)
     background_tasks.add_task(UpdateProcessingTask.process, snapshot)
 
+    snapshot = await models.Snapshot.get_by_id(snapshot.id)
     model = cast(schemas.Snapshot, snapshot.to_model())
     return model
 

@@ -58,7 +58,7 @@ class SnapshotSearcher(AbstractSearcher):
 
         sha256 = filters.get("sha256")
         if sha256 is not None:
-            queries.append(Q(sha256=sha256))
+            queries.append(Q(html__id=sha256))
 
         from_at = filters.get("from_at")
         if from_at is not None:
@@ -74,7 +74,7 @@ class SnapshotSearcher(AbstractSearcher):
         instance = cls(
             model=models.Snapshot,
             query=query,
-            values=schemas.SimplifiedSnapshot.field_keys(),
+            values=schemas.PlainSnapshot.field_keys(),
         )
 
         results = await instance._search(size=size, offset=offset, id_only=id_only)
@@ -86,6 +86,6 @@ class SnapshotSearcher(AbstractSearcher):
 
         results_ = cast(List[dict], results.results)
         return schemas.SnapshotsSearchResults(
-            results=[schemas.SimplifiedSnapshot(**result) for result in results_],
+            results=[schemas.PlainSnapshot(**result) for result in results_],
             total=results.total,
         )

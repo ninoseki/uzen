@@ -148,13 +148,13 @@
                 </div>
               </div>
               <div class="column">
-                <H3>SHA256</H3>
+                <H3>SHA256(HTML)</H3>
                 <router-link
                   :to="{
                     name: 'Snapshots',
-                    query: { sha256: getSnapshotTask.last.value.sha256 },
+                    query: { sha256: getSnapshotTask.last.value.html.id },
                   }"
-                  >{{ getSnapshotTask.last.value.sha256 }}
+                  >{{ getSnapshotTask.last.value.html.id }}
                 </router-link>
               </div>
               <div class="column">
@@ -164,17 +164,17 @@
             </div>
           </b-tab-item>
 
-          <b-tab-item label="Body">
-            <pre><code class="html">{{ getSnapshotTask.last.value.body }}</code></pre>
+          <b-tab-item label="HTML">
+            <pre><code class="html">{{ getSnapshotTask.last.value.html.content }}</code></pre>
           </b-tab-item>
 
           <b-tab-item label="Whois">
-            <Whois :whois="getSnapshotTask.last.value.whois" />
+            <Whois :whois="getWhois(getSnapshotTask.last.value)" />
           </b-tab-item>
 
           <b-tab-item label="Certificate">
             <Certificate
-              :certificate="getSnapshotTask.last.value.certificate"
+              :certificate="getCertificate(getSnapshotTask.last.value)"
             />
           </b-tab-item>
 
@@ -266,12 +266,20 @@ export default defineComponent({
       updateTitle(snapshot.url);
     };
 
+    const getWhois = (snapshot: Snapshot) => {
+      return snapshot.whois?.content;
+    };
+
+    const getCertificate = (snapshot: Snapshot) => {
+      return snapshot.certificate?.content;
+    };
+
     onMounted(async () => {
       await getSnapshot();
       highlightCodeBlocks(context);
     });
 
-    return { getSnapshotTask };
+    return { getSnapshotTask, getWhois, getCertificate };
   },
 });
 </script>

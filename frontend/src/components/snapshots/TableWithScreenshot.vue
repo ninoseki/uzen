@@ -25,7 +25,6 @@
           <strong>Content length:</strong>
           {{ props.row.contentLength || "N/A" }}
         </p>
-        <p class="is-size-7"><strong>SHA256:</strong> {{ props.row.sha256 }}</p>
       </b-table-column>
 
       <b-table-column field="createdAt" label="Created at" v-slot="props">

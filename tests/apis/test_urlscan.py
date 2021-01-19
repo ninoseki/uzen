@@ -19,4 +19,4 @@ async def test_snapshot_post(client, monkeypatch):
 
     data = response.json()
     assert data.get("url") == "http://example.com/"
-    assert data.get("body") == "foo bar"
+    assert data.get("html").get("content") == "foo bar"

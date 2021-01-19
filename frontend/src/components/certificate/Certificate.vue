@@ -21,7 +21,7 @@ export default defineComponent({
   },
   setup(props) {
     const hasCertificate = computed((): boolean => {
-      return props.certificate !== null;
+      return props.certificate !== undefined;
     });
 
     return { hasCertificate };

@@ -1,9 +1,28 @@
 import { Dict } from "@/types/common";
 import { Rule } from "@/types/rule";
 
+export interface HTML {
+  id: string;
+  content: string;
+  createdAt: string;
+}
+
+export interface Whois {
+  id: string;
+  content: string;
+  createdAt: string;
+}
+
+export interface Certificate {
+  id: string;
+  content: string;
+  createdAt: string;
+}
+
 export interface File {
   id: string;
   content: string;
+  createdAt: string;
 }
 
 export interface Script {
@@ -52,13 +71,13 @@ export interface Snapshot {
   server: string;
   contentType: string;
   contentLength: number;
-  body: string;
-  sha256: string;
   headers: Dict;
-  whois: string | undefined;
-  certificate: string | undefined;
   processing: boolean;
   createdAt: string;
+
+  html: HTML;
+  whois: Whois | null;
+  certificate: Certificate | null;
 
   scripts: Script[];
   dnsRecords: DnsRecord[];

@@ -59,7 +59,7 @@
         </b-field>
       </div>
       <div class="column is-half">
-        <b-field label="SHA256">
+        <b-field label="SHA256(HTML)">
           <b-input
             placeholder="ea8fac7c65fb589b0d53560f5251f74f9e9b243478dcb6b3ea79b5e36449c8d9"
             v-model="filters.sha256"

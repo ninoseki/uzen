@@ -13,10 +13,14 @@ from app import create_app
 from app.core import settings
 from app.models.classifications import Classification
 from app.models.dns_records import DnsRecord
+from app.models.file import File
+from app.models.html import HTML
 from app.models.matches import Match
 from app.models.rules import Rule
-from app.models.scripts import File, Script
+from app.models.scripts import Script
 from app.models.snapshots import Snapshot
+from app.models.whois import Whois
+from app.utils.hash import calculate_sha256
 
 
 @pytest.fixture
@@ -57,6 +61,12 @@ async def tortoise_db():
 
 @pytest.fixture
 async def snapshots_setup(client):
+    html = HTML(id=calculate_sha256("foo bar"), content="foo bar")
+    await html.save()
+
+    whois = Whois(id=calculate_sha256("foo"), content="foo")
+    await whois.save()
+
     for i in range(1, 11):
         snapshot = Snapshot(
             url=f"http://example{i}.com/",
@@ -69,12 +79,11 @@ async def snapshots_setup(client):
             content_type="text/html; charset=UTF-8",
             content_length=1256,
             headers={},
-            body="foo bar",
-            sha256="fbc1a9f858ea9e177916964bd88c3d37b91a1e84412765e29950777f265c4b75",
-            whois="foo",
             request={},
             created_at=datetime.datetime.now(),
         )
+        snapshot.html_id = html.id
+        snapshot.whois_id = whois.id
         await snapshot.save()
 
 
@@ -126,7 +135,7 @@ async def rules_setup(client):
     for i in range(1, 6):
         rule = Rule(
             name=f"test{i}",
-            target="body",
+            target="html",
             source='rule foo: bar {strings: $a = "lmn" condition: $a}',
             created_at=datetime.datetime.now(),
         )

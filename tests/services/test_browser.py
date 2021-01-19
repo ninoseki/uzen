@@ -38,7 +38,9 @@ async def test_take_snapshot(monkeypatch):
     assert snapshot.status == 200
     assert snapshot.content_type == "text/html; charset=UTF-8"
     assert snapshot.asn == "AS15133"
-    assert snapshot.whois == "foo"
+
+    whois = result.whois
+    assert whois.content == "foo"
 
 
 @pytest.mark.asyncio
