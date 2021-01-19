@@ -30,7 +30,9 @@ class BaseRule(Source, Target):
     Note that this model doesn't have "id" and "created_at" fields.
     """
 
-    name: str = Field(..., title="Name", description="A name of the YARA rule")
+    name: str = Field(
+        ..., title="Name", description="A name of the YARA rule", min_length=1
+    )
 
 
 class Rule(BaseRule, AbstractBaseModel, TimestampMixin):
