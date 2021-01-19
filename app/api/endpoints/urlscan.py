@@ -3,7 +3,7 @@ from typing import cast
 import httpx
 from fastapi import APIRouter, BackgroundTasks, HTTPException
 
-from app import schemas
+from app import models, schemas
 from app.services.urlscan import URLScan
 from app.tasks.matches import MatchinbgTask
 from app.tasks.snapshots import UpdateProcessingTask
@@ -33,5 +33,6 @@ async def import_from_urlscan(
     background_tasks.add_task(MatchinbgTask.process, snapshot)
     background_tasks.add_task(UpdateProcessingTask.process, snapshot)
 
+    snapshot = await models.Snapshot.get_by_id(snapshot.id)
     model = cast(schemas.Snapshot, snapshot.to_model())
     return model

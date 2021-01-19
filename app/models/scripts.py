@@ -1,5 +1,4 @@
 from tortoise import fields
-from tortoise.models import Model
 
 from app import schemas
 from app.models.base import AbstractBaseModel
@@ -40,16 +39,3 @@ class Script(TimestampMixin, AbstractBaseModel):
 
     class Meta:
         table = "scripts"
-
-
-class File(Model):
-    id = fields.CharField(max_length=64, pk=True)
-    content = fields.TextField()
-
-    scripts: fields.ReverseRelation["Script"]
-
-    def to_model(self) -> schemas.File:
-        return schemas.File.from_orm(self)
-
-    class Meta:
-        table = "files"

@@ -5,7 +5,7 @@ from fastapi_utils.api_model import APIModel
 from pydantic import Field
 
 from app.schemas.common import Source, Target
-from app.schemas.snapshots import SimplifiedSnapshot
+from app.schemas.snapshots import PlainSnapshot
 
 
 class YaraScanPayload(Source, Target, APIModel):
@@ -55,9 +55,7 @@ class YaraResult(APIModel):
     )
 
 
-class YaraScanResult(SimplifiedSnapshot):
-    """Simplified version of Pydantic model of Snapshot"""
-
+class YaraScanResult(PlainSnapshot):
     yara_result: YaraResult
 
     @classmethod

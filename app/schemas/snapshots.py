@@ -6,12 +6,15 @@ from fastapi_utils.api_model import APIModel
 from pydantic import AnyHttpUrl, Field, IPvAnyAddress, validator
 
 from app.schemas.base import AbstractBaseModel
+from app.schemas.certificate import Certificate
 from app.schemas.classifications import BaseClassification, Classification
 from app.schemas.common import Source, Target
 from app.schemas.dns_records import BaseDnsRecord, DnsRecord
+from app.schemas.html import HTML
 from app.schemas.mixins import TimestampMixin
 from app.schemas.scripts import BaseScript, Script
 from app.schemas.search import BaseSearchResults
+from app.schemas.whois import Whois
 from app.utils.network import get_hostname_from_url, get_ip_address_by_hostname
 
 # Declare rules related schemas here to prevent circular reference
@@ -57,10 +60,6 @@ class BasicAttributes(APIModel):
     content_length: Optional[int] = Field(
         None, title="Content length", description="Content length"
     )
-    body: str = Field(..., title="Body", description="HTTP response body")
-    sha256: str = Field(
-        ..., title="SHA256", description="SHA256 hash of HTTP response body"
-    )
 
     @validator(
         "url", pre=True,
@@ -82,16 +81,20 @@ class BaseSnapshot(BasicAttributes):
     """
 
     headers: dict = Field(..., title="Headers", description="HTTP response headers")
-    whois: Optional[str] = Field(None, title="Whois", description="Whois record")
-    certificate: Optional[str] = Field(
-        None, title="Certiricate", description="Certificate record"
-    )
     request: dict = Field(..., title="Request", description="Meta data of HTTP request")
     processing: bool = Field(
         ...,
         title="Processing",
         description="A boolean flag to show a status of background tasks",
     )
+
+
+class Snapshot(BaseSnapshot, AbstractBaseModel, TimestampMixin):
+    """Pydantic model of Snapshot"""
+
+    html: HTML = Field(..., title="HTML")
+    certificate: Optional[Certificate] = Field(None, title="Certificate")
+    whois: Whois = Field(None, title="Whois")
 
     scripts: List[Union[Script, BaseScript]] = Field(
         ..., title="Scripts", description="A list of scripts"
@@ -105,12 +108,8 @@ class BaseSnapshot(BasicAttributes):
     rules: List[Rule] = Field(..., title="Rules", description="A list of matched rules")
 
 
-class Snapshot(BaseSnapshot, AbstractBaseModel, TimestampMixin):
-    """Pydantic model of Snapshot"""
-
-
-class SimplifiedSnapshot(BasicAttributes, AbstractBaseModel, TimestampMixin):
-    """Simplified version of Pydantic model of Snapshot"""
+class PlainSnapshot(BasicAttributes, AbstractBaseModel, TimestampMixin):
+    """Plain version of Pydantic model of Snapshot"""
 
     @classmethod
     def field_keys(cls) -> List[str]:
@@ -118,7 +117,7 @@ class SimplifiedSnapshot(BasicAttributes, AbstractBaseModel, TimestampMixin):
 
 
 class SnapshotsSearchResults(BaseSearchResults):
-    results: Union[List[SimplifiedSnapshot], List[UUID]]
+    results: Union[List[PlainSnapshot], List[UUID]]
 
 
 class CountResponse(APIModel):

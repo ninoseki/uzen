@@ -99,7 +99,7 @@ async def get_script_content(
 class ScriptFactory:
     @staticmethod
     async def from_snapshot(snapshot: models.Snapshot) -> List[ScriptFile]:
-        sources = get_script_sources(url=snapshot.url, body=snapshot.body)
+        sources = get_script_sources(url=snapshot.url, body=snapshot.html.content)
         script_files: List[schemas.ScriptFile] = []
 
         # Use the same settings as the original request

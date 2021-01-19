@@ -133,7 +133,7 @@ async def test_snapshot_post(client, monkeypatch):
 
     snapshot = response.json()
     assert snapshot.get("url") == "http://example.com/"
-    assert snapshot.get("body") == "foo bar"
+    assert snapshot.get("html").get("content") == "foo bar"
 
     snapshot = await Snapshot.get(id=snapshot.get("id"))
     await snapshot.fetch_related("_scripts__file")

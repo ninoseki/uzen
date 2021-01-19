@@ -9,7 +9,7 @@ from app.schemas.mixins import TimestampMixin
 from app.schemas.rules import Rule
 from app.schemas.scripts import Script
 from app.schemas.search import BaseSearchResults
-from app.schemas.snapshots import Snapshot
+from app.schemas.snapshots import PlainSnapshot
 from app.schemas.yara import YaraMatch
 
 
@@ -22,7 +22,7 @@ class BaseMatch(APIModel):
     matches: List[YaraMatch] = Field(
         ..., title="Matches", description="A list of YARA mastches",
     )
-    snapshot: Snapshot = Field(
+    snapshot: PlainSnapshot = Field(
         ..., title="Snapshot", description="A matched snapshot",
     )
     rule: Rule = Field(

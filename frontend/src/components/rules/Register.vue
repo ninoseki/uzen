@@ -48,7 +48,7 @@ export default defineComponent({
   },
   setup(_, context) {
     const name = ref("");
-    const target = ref<TargetTypes>("body");
+    const target = ref<TargetTypes>("html");
     const source = ref("");
 
     const createRuleTask = useAsyncTask<Rule, []>(async () => {

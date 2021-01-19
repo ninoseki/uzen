@@ -12,7 +12,7 @@ from tests.helper import first_snapshot_id
 async def test_matching_taskl(client):
     rule = Rule(
         name="test",
-        target="body",
+        target="html",
         source='rule foo: bar {strings: $a = "foo" condition: $a}',
     )
     await rule.save()

@@ -13,15 +13,15 @@ class CountResponse(APIModel):
 
 class Target(APIModel):
     target: str = Field(
-        "body",
+        "html",
         title="Target",
-        description="A target field to scan (body, certificate, script or whois)",
+        description="A target field to scan (html, certificate, script or whois)",
     )
 
     @validator("target")
     def target_types(cls, v):
-        if v not in ["body", "certificate", "script", "whois"]:
-            raise ValueError("Target must be any of body, certificate, script or whois")
+        if v not in ["html", "certificate", "script", "whois"]:
+            raise ValueError("Target must be any of html, certificate, script or whois")
         return v
 
 

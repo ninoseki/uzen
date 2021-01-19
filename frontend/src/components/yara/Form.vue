@@ -52,7 +52,7 @@ export default defineComponent({
   },
   setup() {
     const source = ref("");
-    const target = ref<TargetTypes>("body");
+    const target = ref<TargetTypes>("html");
     const count = ref<number | undefined>(undefined);
 
     const form = ref<InstanceType<typeof SnapshotForm>>();

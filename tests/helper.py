@@ -2,14 +2,17 @@ import datetime
 import uuid
 from uuid import UUID
 
+from app import models
 from app.dataclasses.utils import ScriptFile, SnapshotResult
-from app.models.rules import Rule
-from app.models.scripts import File, Script
-from app.models.snapshots import Snapshot
+from app.utils.hash import calculate_sha256
 
 
-def make_snapshot(hostname: str = "example.com") -> Snapshot:
-    return Snapshot(
+def make_html() -> models.HTML:
+    return models.HTML(id=calculate_sha256("foo bar"), content="foo bar")
+
+
+def make_snapshot(hostname: str = "example.com") -> models.Snapshot:
+    return models.Snapshot(
         id=uuid.uuid4(),
         url=f"http://{hostname}/",
         submitted_url=f"http://{hostname}",
@@ -21,9 +24,6 @@ def make_snapshot(hostname: str = "example.com") -> Snapshot:
         content_type="text/html; charset=UTF-8",
         content_length=1256,
         headers={},
-        body="foo bar",
-        sha256="fbc1a9f858ea9e177916964bd88c3d37b91a1e84412765e29950777f265c4b75",
-        whois="foo",
         request={},
         created_at=datetime.datetime.now(),
     )
@@ -31,21 +31,29 @@ def make_snapshot(hostname: str = "example.com") -> Snapshot:
 
 def make_script_file(hostname: str = "example.com") -> ScriptFile:
     return ScriptFile(
-        script=Script(url="http://{hostname}/test.js", file_id="foo"),
-        file=File(id="foo", content="foo"),
+        script=models.Script(url="http://{hostname}/test.js", file_id="foo"),
+        file=models.File(id="foo", content="foo"),
     )
 
 
 async def make_snapshot_result() -> SnapshotResult:
     snapshot = make_snapshot()
-    return SnapshotResult(snapshot=snapshot, screenshot=None, script_files=[],)
+    html = make_html()
+    return SnapshotResult(
+        snapshot=snapshot,
+        screenshot=None,
+        script_files=[],
+        html=html,
+        whois=None,
+        certificate=None,
+    )
 
 
 async def first_rule_id() -> UUID:
-    rule = await Rule.all().first()
+    rule = await models.Rule.all().first()
     return rule.id
 
 
 async def first_snapshot_id() -> UUID:
-    snapshot = await Snapshot.all().first()
+    snapshot = await models.Snapshot.all().first()
     return snapshot.id

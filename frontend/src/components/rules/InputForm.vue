@@ -44,7 +44,7 @@ export default defineComponent({
     },
   },
   setup(props, context) {
-    const targets: TargetTypes[] = ["body", "whois", "certificate", "script"];
+    const targets: TargetTypes[] = ["html", "whois", "certificate", "script"];
     const name_ = ref(props.name);
     const target_ = ref(props.target);
     const source_ = ref(props.source);

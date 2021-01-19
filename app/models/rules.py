@@ -41,7 +41,12 @@ class Rule(TimestampMixin, AbstractBaseModel):
     @classmethod
     async def get_by_id(cls, id_: UUID) -> Rule:
         rule = await cls.get(id=id_)
-        rule.snapshots_ = await rule._snapshots.all().limit(LIMIT_OF_PREFETCH)
+        rule.snapshots_ = (
+            await rule._snapshots.all()
+            .limit(LIMIT_OF_PREFETCH)
+            .prefetch_related("html", "whois", "certificate",)
+        )
+
         return rule
 
     class Meta:

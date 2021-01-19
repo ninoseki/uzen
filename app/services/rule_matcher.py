@@ -17,15 +17,15 @@ class RuleMatcher:
     def __init__(self, snapshot: models.Snapshot):
         self.snapshot = snapshot
 
-    def _extract_data_from_snapshot(self, target: str = "body") -> str:
-        if target == "body":
-            return self.snapshot.body
+    def _extract_data_from_snapshot(self, target: str = "html") -> str:
+        if target == "html":
+            return self.snapshot.html.content
 
         if target == "whois":
-            return self.snapshot.whois
+            return self.snapshot.whois.content
 
         if target == "certificate":
-            return self.snapshot.certificate
+            return self.snapshot.certificate.content
 
         return ""
 

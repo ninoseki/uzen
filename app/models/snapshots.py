@@ -23,13 +23,24 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
     server = fields.TextField(null=True)
     content_type = fields.TextField(null=True)
     content_length = fields.IntField(null=True)
-    body = fields.TextField()
-    sha256 = fields.CharField(max_length=64)
     headers = fields.JSONField()
-    whois = fields.TextField(null=True)
-    certificate = fields.TextField(null=True)
     request = fields.JSONField()
     processing = fields.BooleanField(default=True)
+
+    html: fields.ForeignKeyRelation["HTML"] = fields.ForeignKeyField(
+        "models.HTML", related_name="snapshots", on_delete=fields.RESTRICT
+    )
+    certificate: fields.ForeignKeyNullableRelation[
+        "Certificate"
+    ] = fields.ForeignKeyField(
+        "models.Certificate",
+        related_name="snapshots",
+        on_delete=fields.RESTRICT,
+        null=True,
+    )
+    whois: fields.ForeignKeyNullableRelation["Whois"] = fields.ForeignKeyField(
+        "models.Whois", related_name="snapshots", on_delete=fields.RESTRICT, null=True
+    )
 
     _scripts: fields.ReverseRelation["Script"]
     _dns_records: fields.ReverseRelation["DnsRecord"]
@@ -76,6 +87,9 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
     def to_model(self) -> schemas.Snapshot:
         return schemas.Snapshot.from_orm(self)
 
+    def to_plain_model(self) -> schemas.PlainSnapshot:
+        return schemas.PlainSnapshot.from_orm(self)
+
     def to_dict(self) -> dict:
         model = self.to_model()
         return model.dict()
@@ -83,7 +97,13 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
     @classmethod
     async def get_by_id(cls, id_: UUID) -> Snapshot:
         return await cls.get(id=id_).prefetch_related(
-            "_scripts__file", "_dns_records", "_classifications", "_rules"
+            "_scripts__file",
+            "_dns_records",
+            "_classifications",
+            "_rules",
+            "html",
+            "whois",
+            "certificate",
         )
 
     @classmethod

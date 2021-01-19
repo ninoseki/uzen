@@ -3,6 +3,8 @@ from typing import Optional
 import httpx
 from loguru import logger
 from playwright import Error
+from tortoise.exceptions import IntegrityError
+from tortoise.models import Model
 from tortoise.transactions import in_transaction
 
 from app import dataclasses, models
@@ -87,11 +89,38 @@ async def take_snapshot(
     raise TakeSnapshotError("\n".join(errors))
 
 
+async def save_ignore_integrity_error(model: Model):
+    try:
+        await model.save()
+    except IntegrityError:
+        # ignore the intergrity error
+        # e.g. tortoise.exceptions.IntegrityError: UNIQUE constraint failed: files.id
+        pass
+
+
 async def save_snapshot(result: dataclasses.SnapshotResult) -> models.Snapshot:
     async with in_transaction():
         snapshot = result.snapshot
+
+        # save html, certificate, whois before saving snapshot
+        html = result.html
+        await save_ignore_integrity_error(html)
+        snapshot.html_id = html.id
+
+        certificate = result.certificate
+        if certificate:
+            await save_ignore_integrity_error(certificate)
+            snapshot.certificate_id = certificate.id
+
+        whois = result.whois
+        if whois:
+            await save_ignore_integrity_error(whois)
+            snapshot.whois_id = whois.id
+
+        # save snapshot
         await snapshot.save()
 
+        # save scripts
         await save_script_files(result.script_files, snapshot.id)
 
         return snapshot

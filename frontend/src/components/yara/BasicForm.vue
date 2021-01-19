@@ -27,8 +27,8 @@ export default defineComponent({
   name: "YaraBasicForom",
   setup(_, context) {
     const source = ref("");
-    const target = ref<TargetTypes>("body");
-    const targets: TargetTypes[] = ["body", "whois", "certificate", "script"];
+    const target = ref<TargetTypes>("html");
+    const targets: TargetTypes[] = ["html", "whois", "certificate", "script"];
 
     watch(
       [source, target],

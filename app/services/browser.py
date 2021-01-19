@@ -109,8 +109,7 @@ class Browser:
                 url = page.url
                 status = res.status
                 screenshot = await page.screenshot()
-                body = await page.content()
-                sha256 = calculate_sha256(body)
+                html_content = await page.content()
                 headers = res.headers
 
                 await browser.close()
@@ -122,17 +121,16 @@ class Browser:
         content_length = headers.get("content-length")
 
         hostname = cast(str, get_hostname_from_url(url))
-        certificate = Certificate.load_and_dump_from_url(url)
         ip_address = cast(str, get_ip_address_by_hostname(hostname))
         asn = get_asn_by_ip_address(ip_address) or ""
-        whois = Whois.whois(hostname)
+
+        certificate_content = Certificate.load_and_dump_from_url(url)
+        whois_content = Whois.whois(hostname)
 
         snapshot = models.Snapshot(
             url=url,
             submitted_url=submitted_url,
             status=status,
-            body=body,
-            sha256=sha256,
             headers=headers,
             hostname=hostname,
             ip_address=ip_address,
@@ -140,13 +138,29 @@ class Browser:
             server=server,
             content_length=content_length,
             content_type=content_type,
-            whois=whois,
-            certificate=certificate,
             request=request,
+        )
+        html = models.HTML(id=calculate_sha256(html_content), content=html_content)
+        whois = (
+            models.Whois(id=calculate_sha256(whois_content), content=whois_content)
+            if whois_content
+            else None
+        )
+        certificate = (
+            models.Certificate(
+                id=calculate_sha256(certificate_content), content=certificate_content
+            )
+            if certificate_content
+            else None
         )
 
         return dataclasses.SnapshotResult(
-            screenshot=screenshot, snapshot=snapshot, script_files=script_files,
+            screenshot=screenshot,
+            html=html,
+            certificate=certificate,
+            whois=whois,
+            snapshot=snapshot,
+            script_files=script_files,
         )
 
     @staticmethod

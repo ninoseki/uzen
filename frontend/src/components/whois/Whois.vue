@@ -23,7 +23,7 @@ export default defineComponent({
   },
   setup(props) {
     const hasWhois = computed((): boolean => {
-      return props.whois !== null;
+      return props.whois !== undefined;
     });
     return { hasWhois };
   },

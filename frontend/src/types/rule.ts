@@ -1,7 +1,7 @@
 import { Script, Snapshot } from "@/types/snapshot";
 import { YaraMatch } from "@/types/yara";
 
-export type TargetTypes = "body" | "whois" | "certificate" | "script";
+export type TargetTypes = "html" | "whois" | "certificate" | "script";
 
 export interface Rule {
   id: string;

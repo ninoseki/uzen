@@ -41,4 +41,6 @@ async def test_take_snapshot(monkeypatch):
     assert snapshot.status == 200
     assert "text/html" in snapshot.content_type
     assert snapshot.asn == "AS15133"
-    assert snapshot.whois == "foo"
+
+    whois = result.whois
+    assert whois.content == "foo"
