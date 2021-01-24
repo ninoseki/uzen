@@ -1,35 +1,19 @@
-from uuid import UUID
-
 from tortoise import fields
 from tortoise.models import Model
 
+from app.models.mixin import CountMixin, DeleteMixin
 
-class AbstractBaseModel(Model):
+
+class AbstractBaseModel(Model, DeleteMixin, CountMixin):
     id = fields.UUIDField(pk=True)
-
-    @classmethod
-    async def delete_by_id(cls, id_: UUID) -> None:
-        await cls.get(id=id_).delete()
-
-    @classmethod
-    async def count(cls) -> int:
-        return await cls.all().count()
 
     class Meta:
         abstract = True
 
 
-class AbstractResourceModel(Model):
+class AbstractResourceModel(Model, DeleteMixin, CountMixin):
     id = fields.CharField(max_length=64, pk=True)
     content = fields.TextField()
-
-    @classmethod
-    async def delete_by_id(cls, id_: str) -> None:
-        await cls.get(id=id_).delete()
-
-    @classmethod
-    async def count(cls) -> int:
-        return await cls.all().count()
 
     class Meta:
         abstract = True

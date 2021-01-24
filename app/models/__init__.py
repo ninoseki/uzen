@@ -3,6 +3,7 @@ from app.models import (
     classification,
     dns_record,
     file,
+    har,
     html,
     match,
     rule,
@@ -14,6 +15,7 @@ from app.models.certificate import Certificate
 from app.models.classification import Classification
 from app.models.dns_record import DnsRecord
 from app.models.file import File
+from app.models.har import HAR
 from app.models.html import HTML
 from app.models.match import Match
 from app.models.rule import Rule
@@ -24,22 +26,24 @@ from app.models.whois import Whois
 __all__ = [
     "certificate",
     "Certificate",
-    "Classification",
     "classification",
+    "Classification",
     "dns_record",
     "DnsRecord",
     "file",
     "File",
-    "Match",
-    "match",
+    "har",
+    "HAR",
     "html",
     "HTML",
-    "Rule",
+    "match",
+    "Match",
     "rule",
-    "Script",
+    "Rule",
     "script",
-    "Snapshot",
+    "Script",
     "snapshot",
+    "Snapshot",
     "whois",
     "Whois",
 ]

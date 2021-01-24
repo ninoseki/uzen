@@ -22,6 +22,7 @@ class SnapshotResult:
     certificate: Optional[models.Certificate]
     screenshot: Optional[bytes]
     script_files: List[ScriptFile]
+    har: Optional[models.HAR]
 
 
 @dataclass

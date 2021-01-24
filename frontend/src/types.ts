@@ -1,5 +1,6 @@
 import { CountResponse, ErrorData, ValidationError } from "@/types/common";
 import { DomainInformation } from "@/types/domain";
+import { HAR } from "@/types/har";
 import { IPAddressInformation } from "@/types/ip_address";
 import { Link, LinkType } from "@/types/link";
 import {
@@ -9,6 +10,7 @@ import {
   Rule,
   RuleFilters,
   TargetTypes,
+  UpdateRulePayload,
 } from "@/types/rule";
 import {
   MatchSearchResults,
@@ -43,6 +45,7 @@ export {
   DnsRecord,
   DomainInformation,
   ErrorData,
+  HAR,
   IPAddressInformation,
   Link,
   LinkType,
@@ -58,6 +61,7 @@ export {
   SnapshotFilters,
   SnapshotSearchResults,
   TargetTypes,
+  UpdateRulePayload,
   ValidationError,
   YaraMatch,
   YaraMatchString,

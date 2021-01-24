@@ -3,6 +3,7 @@ from typing import List, Optional, cast
 import httpx
 
 from app import dataclasses, models
+from app.dataclasses.browser import BrowsingResult
 from app.services.certificate import Certificate
 from app.services.whois import Whois
 from app.tasks.script import ScriptTask
@@ -16,6 +17,46 @@ from app.utils.network import (
 DEFAULT_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
 DEFAULT_AL = "en-US"
 DEFAULT_REFERER = ""
+
+
+async def run_httpx(
+    url: str,
+    host: Optional[str] = None,
+    accept_language: Optional[str] = None,
+    ignore_https_errors: bool = False,
+    referer: Optional[str] = None,
+    timeout: Optional[int] = None,
+    user_agent: Optional[str] = None,
+) -> BrowsingResult:
+    verify = not ignore_https_errors
+
+    # default timeout = 30 seconds
+    timeout = int(timeout / 1000) if timeout is not None else 30
+
+    user_agent = user_agent or DEFAULT_UA
+
+    headers = {
+        "user-agent": user_agent,
+        "accept-language": accept_language or DEFAULT_AL,
+        "referer": referer or DEFAULT_REFERER,
+    }
+    if host is not None:
+        headers["host"] = host
+
+    async with httpx.AsyncClient(verify=verify) as client:
+        res = await client.get(
+            url, headers=headers, timeout=timeout, allow_redirects=True,
+        )
+        headers = {k.lower(): v for (k, v) in res.headers.items()}
+        return BrowsingResult(
+            url=str(res.url),
+            status=res.status_code,
+            screenshot=None,
+            html=res.text,
+            headers=headers,
+            user_agent=user_agent,
+            browser="httpx",
+        )
 
 
 class FakeBrowser:
@@ -46,46 +87,36 @@ class FakeBrowser:
             SnapshotResult
         """
         submitted_url: str = url
-        verify = not ignore_https_errors
 
         try:
-            # default timeout = 30 seconds
-            timeout = int(timeout / 1000) if timeout is not None else 30
-
-            headers = {
-                "user-agent": user_agent or DEFAULT_UA,
-                "accept-language": accept_language or DEFAULT_AL,
-                "referer": referer or DEFAULT_REFERER,
-            }
-            if host is not None:
-                headers["host"] = host
-
-            async with httpx.AsyncClient(verify=verify) as client:
-                res = await client.get(
-                    url, headers=headers, timeout=timeout, allow_redirects=True,
-                )
-
-                request = {
-                    "accept_language": accept_language,
-                    "browser": "httpx",
-                    "host": host,
-                    "ignore_https_errors": ignore_https_errors,
-                    "referer": referer,
-                    "timeout": timeout,
-                    "user_agent": user_agent,
-                }
-
-                url = str(res.url)
-                status = res.status_code
-                html_content = res.text
-                headers = {k.lower(): v for (k, v) in res.headers.items()}
+            result = await run_httpx(
+                url,
+                host=host,
+                accept_language=accept_language,
+                referer=referer,
+                timeout=timeout,
+                ignore_https_errors=ignore_https_errors,
+                user_agent=user_agent,
+            )
         except httpx.HTTPError as e:
             raise (e)
 
+        options = {
+            "accept_language": accept_language,
+            "browser": result.browser,
+            "host": host,
+            "ignore_https_errors": ignore_https_errors,
+            "referer": referer,
+            "timeout": timeout,
+            "user_agent": result.user_agent,
+        }
+
+        headers = result.headers
         server = headers.get("server")
         content_type = headers.get("content-type")
         content_length = headers.get("content-length")
 
+        url = result.url
         hostname = cast(str, get_hostname_from_url(url))
         ip_address = cast(str, get_ip_address_by_hostname(hostname))
         asn = get_asn_by_ip_address(ip_address) or ""
@@ -96,7 +127,7 @@ class FakeBrowser:
         snapshot = models.Snapshot(
             url=url,
             submitted_url=submitted_url,
-            status=status,
+            status=result.status,
             headers=headers,
             hostname=hostname,
             ip_address=ip_address,
@@ -104,9 +135,9 @@ class FakeBrowser:
             server=server,
             content_length=content_length,
             content_type=content_type,
-            request=request,
+            options=options,
         )
-        html = models.HTML(id=calculate_sha256(html_content), content=html_content)
+        html = models.HTML(id=calculate_sha256(result.html), content=result.html)
         snapshot.html = html
 
         whois = (
@@ -130,6 +161,7 @@ class FakeBrowser:
 
         return dataclasses.SnapshotResult(
             screenshot=None,
+            har=None,
             snapshot=snapshot,
             script_files=script_files,
             html=html,

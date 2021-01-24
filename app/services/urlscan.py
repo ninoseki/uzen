@@ -86,7 +86,7 @@ class URLScan:
             content_length=content_length,
             headers=headers,
             created_at=created_at,
-            request={"urlscan.io": uuid},
+            options={"urlscan.io": uuid},
         )
 
         screenshot = await instance.screenshot()
@@ -98,4 +98,5 @@ class URLScan:
             script_files=[],
             whois=None,
             certificate=None,
+            har=None,
         )

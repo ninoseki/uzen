@@ -82,13 +82,9 @@ class BaseSnapshot(BasicAttributes):
     Note that this model doesn't have "id" and "created_at" fields.
     """
 
-    headers: dict = Field(..., title="Headers", description="HTTP response headers")
-    request: dict = Field(..., title="Request", description="Meta data of HTTP request")
-    processing: bool = Field(
-        ...,
-        title="Processing",
-        description="A boolean flag to show a status of background tasks",
-    )
+    headers: dict = Field(..., title="Headers")
+    options: dict = Field(..., title="Options")
+    processing: bool = Field(..., title="Processing")
 
 
 class Snapshot(BaseSnapshot, AbstractBaseModel, TimestampMixin):
@@ -132,6 +128,9 @@ class CountResponse(APIModel):
 
 class CreateSnapshotPayload(APIModel):
     url: AnyHttpUrl = Field(..., title="URL", description="A URL to take a snapshot")
+    enable_har: bool = Field(
+        False, title="Enable HAR", description="Whether to enable HAR recording"
+    )
     user_agent: Optional[str] = Field(
         None, title="User agent", description="Specific user agent to use"
     )

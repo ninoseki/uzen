@@ -24,9 +24,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "@vue/composition-api";
+import { defineComponent, onMounted, PropType } from "@vue/composition-api";
 
 import { YaraResult } from "@/types";
+import { highlightCodeBlocks } from "@/utils/highlight";
 
 export default defineComponent({
   name: "YaraResult",
@@ -35,6 +36,11 @@ export default defineComponent({
       type: Object as PropType<YaraResult>,
       required: true,
     },
+  },
+  setup(_, context) {
+    onMounted(() => {
+      highlightCodeBlocks(context);
+    });
   },
 });
 </script>

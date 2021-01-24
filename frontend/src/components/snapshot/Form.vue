@@ -37,6 +37,7 @@
         :acceptLanguage.sync="acceptLanguage"
         :host.sync="host"
         :ignoreHttpsErrors.sync="ignoreHttpsErrors"
+        :enableHAR.sync="enableHar"
         :referer.sync="referer"
         :timeout.sync="timeout"
         :userAgent.sync="userAgent"
@@ -69,6 +70,7 @@ export default defineComponent({
     const acceptLanguage = ref("");
     const host = ref("");
     const ignoreHttpsErrors = ref(false);
+    const enableHar = ref(false);
     const referer = ref("");
     const timeout = ref(30000);
     const userAgent = ref("");
@@ -80,6 +82,7 @@ export default defineComponent({
           acceptLanguage.value === "" ? undefined : acceptLanguage.value,
         host: host.value === "" ? undefined : host.value,
         ignoreHttpsErrors: ignoreHttpsErrors.value,
+        enableHar: enableHar.value,
         referer: referer.value === "" ? undefined : referer.value,
         timeout: timeout.value,
         userAgent: userAgent.value,
@@ -104,6 +107,7 @@ export default defineComponent({
       ignoreHttpsErrors,
       referer,
       timeout,
+      enableHar,
     };
   },
 });

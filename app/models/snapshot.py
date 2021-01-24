@@ -24,7 +24,7 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
     content_type = fields.TextField(null=True)
     content_length = fields.IntField(null=True)
     headers = fields.JSONField()
-    request = fields.JSONField()
+    options = fields.JSONField()
     processing = fields.BooleanField(default=True)
 
     html: fields.ForeignKeyRelation["HTML"] = fields.ForeignKeyField(
@@ -41,6 +41,8 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
     whois: fields.ForeignKeyNullableRelation["Whois"] = fields.ForeignKeyField(
         "models.Whois", related_name="snapshots", on_delete=fields.RESTRICT, null=True
     )
+
+    har = fields.OneToOneRelation["HAR"]
 
     _scripts: fields.ReverseRelation["Script"]
     _dns_records: fields.ReverseRelation["DnsRecord"]

@@ -24,7 +24,7 @@ def make_snapshot(hostname: str = "example.com") -> models.Snapshot:
         content_type="text/html; charset=UTF-8",
         content_length=1256,
         headers={},
-        request={},
+        options={},
         created_at=datetime.datetime.now(),
     )
 
@@ -46,6 +46,7 @@ async def make_snapshot_result() -> SnapshotResult:
         html=html,
         whois=None,
         certificate=None,
+        har=None,
     )
 
 
