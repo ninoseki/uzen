@@ -20,8 +20,6 @@ const client = axios.create({
   headers: {
     Accept: "application/json",
   },
-  timeout: 10000,
-  maxRedirects: 0,
 });
 
 export const API = {

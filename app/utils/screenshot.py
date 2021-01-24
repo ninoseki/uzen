@@ -47,7 +47,6 @@ async def get_screenshot(uuid: str) -> bytes:
         async with httpx.AsyncClient() as client:
             res = await client.get(url)
             res.raise_for_status()
-            print(url)
             return res.content
     except httpx.HTTPError:
         return get_not_found_png()
