@@ -80,6 +80,7 @@ async def create(
     try:
         result = await take_snapshot(
             url=payload.url,
+            enableHAR=payload.enable_har,
             accept_language=payload.accept_language,
             host=payload.host,
             ignore_https_errors=payload.ignore_https_errors,

@@ -34,6 +34,10 @@
     <b-field label="Ignore HTTPS errors">
       <b-checkbox v-model="ignoreHttpsErrors"></b-checkbox>
     </b-field>
+
+    <b-field label="Enable HAR">
+      <b-checkbox v-model="enableHAR"></b-checkbox>
+    </b-field>
   </div>
 </template>
 
@@ -48,6 +52,7 @@ export default defineComponent({
     const acceptLanguage = ref("");
     const host = ref("");
     const ignoreHttpsErrors = ref(false);
+    const enableHAR = ref(false);
     const referer = ref("");
     const timeout = ref(30000);
     const userAgent = ref(navigator.userAgent);
@@ -55,12 +60,21 @@ export default defineComponent({
     const languagKeys = Object.keys(languages);
 
     watch(
-      [acceptLanguage, host, ignoreHttpsErrors, referer, timeout, userAgent],
+      [
+        acceptLanguage,
+        host,
+        ignoreHttpsErrors,
+        referer,
+        timeout,
+        userAgent,
+        enableHAR,
+      ],
       // eslint-disable-next-line no-unused-vars
       (_first, _second) => {
         context.emit("update:acceptLanguage", acceptLanguage.value);
         context.emit("update:host", host.value);
         context.emit("update:ignoreHttpsErrors", ignoreHttpsErrors.value);
+        context.emit("update:enableHAR", enableHAR.value);
         context.emit("update:referer", referer.value);
         context.emit("update:userAgent", userAgent.value);
 
@@ -81,6 +95,7 @@ export default defineComponent({
       userAgent,
       languages,
       languagKeys,
+      enableHAR,
     };
   },
 });

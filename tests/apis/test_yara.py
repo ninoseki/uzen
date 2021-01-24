@@ -85,7 +85,7 @@ async def mock_take_snapshot(*args, **kwargs):
             body='<html><body><script type="text/javascript" src="/2008/site/js/main"></body></html>',
             sha256="fbc1a9f858ea9e177916964bd88c3d37b91a1e84412765e29950777f265c4b75",
             whois="foo",
-            request={},
+            options={},
         ),
         screenshot=b"",
         scripts=[
@@ -114,7 +114,7 @@ async def mock_take_snapshot_without_script(*args, **kwargs):
             body="<html><body></body></html>",
             sha256="fbc1a9f858ea9e177916964bd88c3d37b91a1e84412765e29950777f265c4b75",
             whois="foo",
-            request={},
+            options={},
         ),
         screenshot=b"",
         scripts=[],

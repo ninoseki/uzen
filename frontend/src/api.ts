@@ -14,9 +14,7 @@ import {
   SnapshotSearchResults,
   SnapshotWithYaraResult,
 } from "@/types";
-
-import { UpdateRulePayload } from "./types/rule";
-import { YaraScanPyalod } from "./types/yara";
+import { HAR, UpdateRulePayload, YaraScanPyalod } from "@/types";
 
 const client = axios.create({
   headers: {
@@ -104,6 +102,11 @@ export const API = {
     const res = await axios.get<IPAddressInformation>(
       `/api/ip_address/${ipAddress}`
     );
+    return res.data;
+  },
+
+  async getHAR(snapshot_id: string): Promise<HAR> {
+    const res = await axios.get<HAR>(`/api/hars/${snapshot_id}`);
     return res.data;
   },
 

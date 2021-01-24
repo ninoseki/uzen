@@ -87,6 +87,7 @@ export interface Snapshot {
 
 export interface CreateSnapshotPayload {
   url: string;
+  enableHar: boolean;
   acceptLanguage: string | undefined;
   host: string | undefined;
   ignoreHttpsErrors: boolean | undefined;

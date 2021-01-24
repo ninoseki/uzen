@@ -27,6 +27,7 @@ def use_httpx(host: Optional[str] = None) -> bool:
 
 async def take_snapshot(
     url: str,
+    enableHAR: bool = False,
     accept_language: Optional[str] = None,
     host: Optional[str] = None,
     ignore_https_errors: Optional[bool] = None,
@@ -48,6 +49,7 @@ async def take_snapshot(
         try:
             result = await Browser.take_snapshot(
                 url,
+                enableHAR=enableHAR,
                 accept_language=accept_language,
                 ignore_https_errors=ignore_https_errors,
                 referer=referer,
@@ -122,5 +124,11 @@ async def save_snapshot(result: dataclasses.SnapshotResult) -> models.Snapshot:
 
         # save scripts
         await save_script_files(result.script_files, snapshot.id)
+
+        # save har
+        har = result.har
+        if har:
+            har.snapshot_id = snapshot.id
+            await har.save()
 
         return snapshot

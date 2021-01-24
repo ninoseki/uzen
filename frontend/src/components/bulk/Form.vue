@@ -47,6 +47,7 @@
         :url="url"
         :index="index"
         :acceptLanguage="acceptLanguage"
+        :enableHar="enableHAR"
         :host="host"
         :ignoreHttpsErrors="ignoreHttpsErrors"
         :referer="referer"
@@ -75,6 +76,7 @@ export default defineComponent({
     const acceptLanguage = ref("");
     const host = ref("");
     const ignoreHttpsErrors = ref(false);
+    const enableHar = ref(false);
     const referer = ref("");
     const timeout = ref(30000);
     const userAgent = ref("");
@@ -101,6 +103,7 @@ export default defineComponent({
       bulkSubmit,
       hasURLs,
       urls,
+      enableHar,
     };
   },
 });

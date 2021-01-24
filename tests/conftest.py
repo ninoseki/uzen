@@ -14,6 +14,7 @@ from app.core import settings
 from app.models.classification import Classification
 from app.models.dns_record import DnsRecord
 from app.models.file import File
+from app.models.har import HAR
 from app.models.html import HTML
 from app.models.match import Match
 from app.models.rule import Rule
@@ -79,12 +80,16 @@ async def snapshots_setup(client):
             content_type="text/html; charset=UTF-8",
             content_length=1256,
             headers={},
-            request={},
+            options={},
             created_at=datetime.datetime.now(),
         )
         snapshot.html_id = html.id
         snapshot.whois_id = whois.id
         await snapshot.save()
+
+        har = HAR(data={"foo": "bar"})
+        har.snapshot_id = snapshot.id
+        await har.save()
 
 
 @pytest.fixture

@@ -2,6 +2,7 @@ from fastapi import APIRouter
 
 from app.api.endpoints import (
     domain,
+    hars,
     ip_address,
     matches,
     rules,
@@ -22,3 +23,4 @@ api_router.include_router(
 api_router.include_router(snapshots.router, prefix="/snapshots", tags=["Snapshots"])
 api_router.include_router(urlscan.router, prefix="/import", tags=["Import"])
 api_router.include_router(yara.router, prefix="/yara", tags=["YARA"])
+api_router.include_router(hars.router, prefix="/hars", tags=["HAR"])

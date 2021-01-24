@@ -104,14 +104,14 @@ class ScriptFactory:
 
         # Use the same settings as the original request
         headers = {
-            "accept_language": snapshot.request.get("accept_language"),
-            "host": snapshot.request.get("host"),
-            "user_agent": snapshot.request.get("user_agent"),
+            "accept_language": snapshot.options.get("accept_language"),
+            "host": snapshot.options.get("host"),
+            "user_agent": snapshot.options.get("user_agent"),
         }
         # Remove none value
         headers = {k: v for k, v in headers.items() if v is not None}
 
-        ignore_https_errors = snapshot.request.get("ignore_https_errors")
+        ignore_https_errors = snapshot.options.get("ignore_https_errors")
         verify = not ignore_https_errors
 
         async with httpx.AsyncClient(verify=verify) as client:

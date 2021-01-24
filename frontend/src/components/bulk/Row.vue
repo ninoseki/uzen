@@ -60,6 +60,10 @@ export default defineComponent({
       type: Boolean,
       required: true,
     },
+    enableHar: {
+      type: Boolean,
+      required: true,
+    },
     referer: {
       type: String,
       required: true,
@@ -84,6 +88,7 @@ export default defineComponent({
 
       const payload: CreateSnapshotPayload = {
         url: props.url,
+        enableHar: props.enableHar,
         acceptLanguage:
           props.acceptLanguage === "" ? undefined : props.acceptLanguage,
         host: props.host === "" ? undefined : props.host,

@@ -165,7 +165,7 @@
           </b-tab-item>
 
           <b-tab-item label="HTML">
-            <pre><code class="html">{{ getSnapshotTask.last.value.html.content }}</code></pre>
+            <HTML :html="getSnapshotTask.last.value.html.content"></HTML>
           </b-tab-item>
 
           <b-tab-item label="Whois">
@@ -192,6 +192,10 @@
             />
           </b-tab-item>
 
+          <b-tab-item label="HAR">
+            <HAR :snapshotId="getSnapshotTask.last.value.id" />
+          </b-tab-item>
+
           <b-tab-item v-if="yaraResult !== undefined" label="YARA matches">
             <YaraResultComponent :yaraResult="yaraResult" />
           </b-tab-item>
@@ -202,17 +206,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, PropType } from "@vue/composition-api";
+import { defineComponent, PropType } from "@vue/composition-api";
 import { useAsyncTask } from "vue-concurrency";
 
 import { API } from "@/api";
 import Certificate from "@/components/certificate/Certificate.vue";
 import Classifications from "@/components/classification/Classifications.vue";
 import DnsRecords from "@/components/dns_record/DnsRecords.vue";
+import HAR from "@/components/har/HAR.vue";
 import Links from "@/components/link/Links.vue";
 import Rules from "@/components/rule/Buttons.vue";
 import Screenshot from "@/components/screenshot/Screenshot.vue";
 import Scripts from "@/components/script/Scripts.vue";
+import HTML from "@/components/snapshot/HTML.vue";
 import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
 import Error from "@/components/ui/Error.vue";
 import H2 from "@/components/ui/H2.vue";
@@ -221,7 +227,6 @@ import Loading from "@/components/ui/Loading.vue";
 import Whois from "@/components/whois/Whois.vue";
 import YaraResultComponent from "@/components/yara/Result.vue";
 import { Snapshot, YaraResult } from "@/types";
-import { highlightCodeBlocks } from "@/utils/highlight";
 
 export default defineComponent({
   name: "Snapshot",
@@ -240,6 +245,8 @@ export default defineComponent({
     Whois,
     YaraResultComponent,
     Rules,
+    HAR,
+    HTML,
   },
   props: {
     snapshotId: {
@@ -252,7 +259,7 @@ export default defineComponent({
     },
   },
 
-  setup(props, context) {
+  setup(props) {
     const getSnapshotTask = useAsyncTask<Snapshot, []>(async () => {
       return await API.getSnapshot(props.snapshotId);
     });
@@ -274,10 +281,7 @@ export default defineComponent({
       return snapshot.certificate?.content;
     };
 
-    onMounted(async () => {
-      await getSnapshot();
-      highlightCodeBlocks(context);
-    });
+    getSnapshot();
 
     return { getSnapshotTask, getWhois, getCertificate };
   },

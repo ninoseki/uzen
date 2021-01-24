@@ -3,6 +3,7 @@ from app.schemas.classification import Classification
 from app.schemas.dns_record import BaseDnsRecord, DnsRecord
 from app.schemas.domain import Domain
 from app.schemas.file import File
+from app.schemas.har import HAR
 from app.schemas.html import HTML
 from app.schemas.ip_address import IPAddress
 from app.schemas.match import Match, MatchesSearchResults, MatchResult
@@ -43,6 +44,7 @@ __all__ = [
     "Domain",
     "EnrichmentResults",
     "File",
+    "HAR",
     "HTML",
     "IPAddress",
     "Match",
