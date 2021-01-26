@@ -2,17 +2,10 @@ from typing import List, Optional, cast
 
 import httpx
 
-from app import dataclasses, models
+from app import dataclasses
 from app.dataclasses.browser import BrowsingResult
-from app.services.certificate import Certificate
-from app.services.whois import Whois
+from app.services.browser import build_snapshot_result
 from app.tasks.script import ScriptTask
-from app.utils.hash import calculate_sha256
-from app.utils.network import (
-    get_asn_by_ip_address,
-    get_hostname_from_url,
-    get_ip_address_by_hostname,
-)
 
 DEFAULT_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
 DEFAULT_AL = "en-US"
@@ -54,8 +47,15 @@ async def run_httpx(
             screenshot=None,
             html=res.text,
             headers=headers,
-            user_agent=user_agent,
-            browser="httpx",
+            options={
+                "accept_language": accept_language,
+                "browser": "httpx",
+                "host": host,
+                "ignore_https_errors": ignore_https_errors,
+                "referer": referer,
+                "timeout": timeout,
+                "user_agent": user_agent,
+            },
         )
 
 
@@ -89,7 +89,7 @@ class FakeBrowser:
         submitted_url: str = url
 
         try:
-            result = await run_httpx(
+            browsing_result = await run_httpx(
                 url,
                 host=host,
                 accept_language=accept_language,
@@ -101,70 +101,17 @@ class FakeBrowser:
         except httpx.HTTPError as e:
             raise (e)
 
-        options = {
-            "accept_language": accept_language,
-            "browser": result.browser,
-            "host": host,
-            "ignore_https_errors": ignore_https_errors,
-            "referer": referer,
-            "timeout": timeout,
-            "user_agent": result.user_agent,
-        }
+        snapshot_result = build_snapshot_result(submitted_url, browsing_result)
 
-        headers = result.headers
-        server = headers.get("server")
-        content_type = headers.get("content-type")
-        content_length = headers.get("content-length")
-
-        url = result.url
-        hostname = cast(str, get_hostname_from_url(url))
-        ip_address = cast(str, get_ip_address_by_hostname(hostname))
-        asn = get_asn_by_ip_address(ip_address) or ""
-
-        certificate_content = Certificate.load_and_dump_from_url(url)
-        whois_content = Whois.whois(hostname)
-
-        snapshot = models.Snapshot(
-            url=url,
-            submitted_url=submitted_url,
-            status=result.status,
-            headers=headers,
-            hostname=hostname,
-            ip_address=ip_address,
-            asn=asn,
-            server=server,
-            content_length=content_length,
-            content_type=content_type,
-            options=options,
-        )
-        html = models.HTML(id=calculate_sha256(result.html), content=result.html)
-        snapshot.html = html
-
-        whois = (
-            models.Whois(id=calculate_sha256(whois_content), content=whois_content)
-            if whois_content
-            else None
-        )
-        certificate = (
-            models.Certificate(
-                id=calculate_sha256(certificate_content), content=certificate_content
-            )
-            if certificate_content
-            else None
-        )
+        # set html to extract scripts
+        snapshot = snapshot_result.snapshot
+        snapshot.html = snapshot_result.html
 
         # get script files
         script_files = cast(
             List[dataclasses.ScriptFile],
             await ScriptTask.process(snapshot, insert_to_db=False),
         )
+        snapshot_result.script_files = script_files
 
-        return dataclasses.SnapshotResult(
-            screenshot=None,
-            har=None,
-            snapshot=snapshot,
-            script_files=script_files,
-            html=html,
-            whois=whois,
-            certificate=certificate,
-        )
+        return snapshot_result

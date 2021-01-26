@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List, Optional, Type, Union
 from uuid import UUID
 
@@ -18,11 +18,11 @@ class ScriptFile:
 class SnapshotResult:
     snapshot: models.Snapshot
     html: models.HTML
-    whois: Optional[models.Whois]
-    certificate: Optional[models.Certificate]
-    screenshot: Optional[bytes]
-    script_files: List[ScriptFile]
-    har: Optional[models.HAR]
+    whois: Optional[models.Whois] = None
+    certificate: Optional[models.Certificate] = None
+    screenshot: Optional[bytes] = None
+    har: Optional[models.HAR] = None
+    script_files: List[ScriptFile] = field(default_factory=lambda: [])
 
 
 @dataclass
