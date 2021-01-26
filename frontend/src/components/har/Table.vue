@@ -8,6 +8,7 @@
           <th>Status</th>
           <th>Size</th>
           <th>MIME type</th>
+          <th>IP address</th>
         </tr>
       </thead>
       <tbody>

@@ -1,15 +1,21 @@
 import json
 import pathlib
 
-from app.services.har import HarReader
+from app.services.har import HarBuilder, HarReader
 
 path = pathlib.Path(__file__).parent / "../fixtures/w3c.har"
 with open(path) as f:
     fixture = json.loads(f.read())
 
 
+def test_builder():
+    har = HarBuilder.from_dict(fixture)
+    assert len(har.log.entries) > 0
+
+
 def test_find_script_files():
-    reader = HarReader(fixture)
+    har = HarBuilder.from_dict(fixture)
+    reader = HarReader(har)
     script_files = reader.find_script_files()
 
     assert len(script_files) == 2
@@ -28,7 +34,8 @@ def test_find_script_files():
 
 
 def test_find_request():
-    reader = HarReader(fixture)
+    har = HarBuilder.from_dict(fixture)
+    reader = HarReader(har)
     request = reader.find_request()
 
-    assert request.get("url") == "https://www.w3.org/"
+    assert request.url == "https://www.w3.org/"
