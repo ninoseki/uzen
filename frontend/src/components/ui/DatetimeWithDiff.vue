@@ -1,7 +1,7 @@
 <template>
   <div>
     <p>{{ createdAtInLocalFormat }}</p>
-    <p>({{ humanreadableTimeDifference }} ago)</p>
+    <p>({{ humanreadableTimeDifference }})</p>
   </div>
 </template>
 

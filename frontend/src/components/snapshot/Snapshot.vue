@@ -13,7 +13,11 @@
         !getSnapshotTask.isError
       "
     >
-      <b-message v-if="getSnapshotTask.last.value.processing" type="is-warning">
+      <b-message
+        v-if="getSnapshotTask.last.value.processing"
+        type="is-warning"
+        has-icon
+      >
         <p><strong>Background tasks in progress...</strong></p>
         <p>
           The information below may be incomplete. Please reload this page after

@@ -47,7 +47,7 @@
         :url="url"
         :index="index"
         :acceptLanguage="acceptLanguage"
-        :enableHar="enableHAR"
+        :enableHar="enableHar"
         :host="host"
         :ignoreHttpsErrors="ignoreHttpsErrors"
         :referer="referer"
@@ -84,7 +84,9 @@ export default defineComponent({
     const urls = ref<string[]>([]);
 
     const bulkSubmit = () => {
-      urls.value = urlText.value.split("\n");
+      if (urlText.value.trim() !== "") {
+        urls.value = urlText.value.split("\n");
+      }
     };
 
     const hasURLs = (): boolean => {

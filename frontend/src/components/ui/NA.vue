@@ -1,5 +1,5 @@
 <template>
-  <b-message> N/A </b-message>
+  <b-message type="is-warning" has-icon>The data is not available.</b-message>
 </template>
 
 <script lang="ts">
