@@ -6,8 +6,8 @@
       v-else-if="importTask.isError && importTask.last !== undefined"
     ></Error>
 
-    <b-message type="is-warning">
-      Importing data from urlscan.io might be lossy
+    <b-message type="is-warning" has-icon>
+      Importing data from urlscan.io is lossy.
     </b-message>
 
     <div class="box">

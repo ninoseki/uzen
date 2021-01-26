@@ -4,13 +4,14 @@
       <b-message>Loading {{ url }}...</b-message>
     </div>
     <div v-else-if="takeSnapshotTask.isError">
-      <b-message type="is-danger">
-        Failed to take snapshot of {{ url }}
+      <b-message type="is-danger" has-icon>
+        Failed to take a snapshot of <strong>{{ url }}</strong
+        >.
       </b-message>
     </div>
     <div v-else>
       <div v-if="takeSnapshotTask.last && takeSnapshotTask.last.value">
-        <b-message type="is-success">
+        <b-message type="is-success" has-icon>
           <router-link
             :to="{
               name: 'Snapshot',

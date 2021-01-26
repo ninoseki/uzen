@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-message type="is-info">
+    <b-message type="is-info" has-icon>
       Number of scripts: {{ scripts.length }}
     </b-message>
     <b-field>
