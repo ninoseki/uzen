@@ -47,10 +47,9 @@ class ResponseReceivedEvent:
 class BrowsingResult:
     url: str
     status: int
-    user_agent: str
     html: str
     headers: dict
-    browser: str
+    options: Dict[str, str]
     screenshot: Optional[bytes] = None
     response_received_events: List[ResponseReceivedEvent] = field(
         default_factory=lambda: []

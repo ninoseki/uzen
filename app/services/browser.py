@@ -4,7 +4,7 @@ from typing import List, Optional, cast
 
 from playwright import async_playwright
 from playwright.async_api import Browser as PlaywrightBrowser
-from playwright.async_api import Error, Playwright, Response
+from playwright.async_api import CDPSession, Error, Playwright, Response
 
 from app import dataclasses, models
 from app.core import settings
@@ -52,7 +52,7 @@ async def run_browser(
         )
         page = await context.newPage()
 
-        client = await page.context.newCDPSession(page)
+        client: CDPSession = await page.context.newCDPSession(page)
         await client.send("Network.enable")
         events: List[dataclasses.ResponseReceivedEvent] = []
         client.on(
@@ -75,6 +75,8 @@ async def run_browser(
             timeout=timeout,
             waitUntil=settings.BROWSER_WAIT_UNTIL,
         )
+        # detech the CDP session
+        await client.detach()
 
         if res is None:
             raise Error("Cannot get the response")
@@ -93,9 +95,15 @@ async def run_browser(
             html=content,
             headers=res.headers,
             status=res.status,
-            user_agent=user_agent,
-            browser=browser.version,
             response_received_events=events,
+            options={
+                "accept_language": accept_language,
+                "browser": browser.version,
+                "ignore_https_errors": ignore_https_errors,
+                "referer": referer,
+                "timeout": timeout,
+                "user_agent": user_agent,
+            },
         )
 
 
@@ -111,6 +119,71 @@ async def preview(hostname: str, protocol="http") -> bytes:
         await browser.close()
 
         return screenshot
+
+
+def build_snapshot_result(
+    submitted_url: str,
+    browsing_result: dataclasses.BrowsingResult,
+    har: Optional[dataclasses.HAR] = None,
+) -> dataclasses.SnapshotResult:
+    headers = browsing_result.headers
+    server = headers.get("server")
+    content_type = headers.get("content-type")
+    content_length = headers.get("content-length")
+
+    url = browsing_result.url
+    ip_address = find_ip_address(url, browsing_result.response_received_events)
+    hostname = cast(str, get_hostname_from_url(url))
+    asn = get_asn_by_ip_address(ip_address) or ""
+
+    script_files: List[dataclasses.ScriptFile] = []
+
+    if har:
+        har_reader = HarReader(har)
+        script_files = har_reader.find_script_files()
+
+    certificate_content = Certificate.load_and_dump_from_url(url)
+    whois_content = Whois.whois(hostname)
+
+    snapshot = models.Snapshot(
+        url=url,
+        submitted_url=submitted_url,
+        status=browsing_result.status,
+        headers=headers,
+        hostname=hostname,
+        ip_address=ip_address,
+        asn=asn,
+        server=server,
+        content_length=content_length,
+        content_type=content_type,
+        options=browsing_result.options,
+    )
+    html = models.HTML(
+        id=calculate_sha256(browsing_result.html), content=browsing_result.html
+    )
+    whois = (
+        models.Whois(id=calculate_sha256(whois_content), content=whois_content)
+        if whois_content
+        else None
+    )
+    certificate = (
+        models.Certificate(
+            id=calculate_sha256(certificate_content), content=certificate_content
+        )
+        if certificate_content
+        else None
+    )
+    har = HarFactory.from_dataclass(har) if har else None
+
+    return dataclasses.SnapshotResult(
+        screenshot=browsing_result.screenshot,
+        html=html,
+        certificate=certificate,
+        whois=whois,
+        snapshot=snapshot,
+        script_files=script_files,
+        har=har,
+    )
 
 
 class Browser:
@@ -144,7 +217,7 @@ class Browser:
         har_data: Optional[dict] = None
         try:
             with tempfile.NamedTemporaryFile() as fp:
-                result = await run_browser(
+                browsing_result = await run_browser(
                     url,
                     har_file_path=fp.name,
                     accept_language=accept_language,
@@ -157,69 +230,14 @@ class Browser:
         except Error as e:
             raise (e)
 
-        options = {
-            "accept_language": accept_language,
-            "browser": result.browser,
-            "ignore_https_errors": ignore_https_errors,
-            "referer": referer,
-            "timeout": timeout,
-            "user_agent": result.user_agent,
-        }
-
-        headers = result.headers
-        server = headers.get("server")
-        content_type = headers.get("content-type")
-        content_length = headers.get("content-length")
-
-        url = result.url
-        ip_address = find_ip_address(url, result.response_received_events)
-        hostname = cast(str, get_hostname_from_url(url))
-        asn = get_asn_by_ip_address(ip_address) or ""
-
-        har = HarBuilder.from_dict(har_data, events=result.response_received_events)
-        har_reader = HarReader(har)
-        script_files = har_reader.find_script_files()
-
-        certificate_content = Certificate.load_and_dump_from_url(url)
-        whois_content = Whois.whois(hostname)
-
-        snapshot = models.Snapshot(
-            url=url,
-            submitted_url=submitted_url,
-            status=result.status,
-            headers=headers,
-            hostname=hostname,
-            ip_address=ip_address,
-            asn=asn,
-            server=server,
-            content_length=content_length,
-            content_type=content_type,
-            options=options,
+        har = HarBuilder.from_dict(
+            har_data, events=browsing_result.response_received_events
         )
-        html = models.HTML(id=calculate_sha256(result.html), content=result.html)
-        whois = (
-            models.Whois(id=calculate_sha256(whois_content), content=whois_content)
-            if whois_content
-            else None
-        )
-        certificate = (
-            models.Certificate(
-                id=calculate_sha256(certificate_content), content=certificate_content
-            )
-            if certificate_content
-            else None
-        )
-        har = HarFactory.from_dataclass(har) if enable_har else None
 
-        return dataclasses.SnapshotResult(
-            screenshot=result.screenshot,
-            html=html,
-            certificate=certificate,
-            whois=whois,
-            snapshot=snapshot,
-            script_files=script_files,
-            har=har,
-        )
+        snapshot_result = build_snapshot_result(submitted_url, browsing_result, har)
+        snapshot_result.har = HarFactory.from_dataclass(har) if enable_har else None
+
+        return snapshot_result
 
     @staticmethod
     async def preview(hostname: str) -> bytes:
