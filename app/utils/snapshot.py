@@ -27,7 +27,7 @@ def use_httpx(host: Optional[str] = None) -> bool:
 
 async def take_snapshot(
     url: str,
-    enableHAR: bool = False,
+    enable_har: bool = False,
     accept_language: Optional[str] = None,
     host: Optional[str] = None,
     ignore_https_errors: Optional[bool] = None,
@@ -49,7 +49,7 @@ async def take_snapshot(
         try:
             result = await Browser.take_snapshot(
                 url,
-                enableHAR=enableHAR,
+                enable_har=enable_har,
                 accept_language=accept_language,
                 ignore_https_errors=ignore_https_errors,
                 referer=referer,

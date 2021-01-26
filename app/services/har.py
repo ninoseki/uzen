@@ -1,7 +1,8 @@
 import base64
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from app import dataclasses, models
+from app.dataclasses.har import HAR, Entry
 from app.utils.hash import calculate_sha256
 
 
@@ -13,36 +14,28 @@ def is_js_content_type(content_type: str) -> bool:
     return False
 
 
-def find_main_entry(data: dict) -> Optional[dict]:
-    log = data.get("log", {})
-    entries = log.get("entries", [])
-    for entry in entries:
-        response = entry.get("response", {})
-        redirecdt_url = response.get("redirectURL")
-        if redirecdt_url == "":
+def find_main_entry(har: HAR) -> Optional[Entry]:
+    for entry in har.log.entries:
+        if entry.response.redirect_url == "":
             return entry
 
 
-def find_request(data: dict):
-    main_entry = find_main_entry(data)
-    return main_entry.get("request", {})
+def find_request(har: HAR):
+    main_entry = find_main_entry(har)
+    return main_entry.request
 
 
-def find_script_files(data: dict) -> None:
+def find_script_files(har: HAR) -> None:
     script_files: List[dataclasses.ScriptFile] = []
 
-    log = data.get("log", {})
-    entries = log.get("entries", [])
-    for entry in entries:
-        url = entry.get("request", {}).get("url", "")
-        response = entry.get("response", {})
-        content = response.get("content", {})
+    for entry in har.log.entries:
+        url = entry.request.url
+        content = entry.response.content
         if not content:
             continue
 
-        content_type: str = content.get("mimeType", "")
-        if is_js_content_type(content_type):
-            encoded_text = content.get("text", "")
+        if is_js_content_type(content.mime_type):
+            encoded_text = content.text
             text = base64.b64decode(encoded_text).decode()
             sha256 = calculate_sha256(text)
 
@@ -53,12 +46,34 @@ def find_script_files(data: dict) -> None:
     return script_files
 
 
+class HarBuilder:
+    @staticmethod
+    def from_dict(
+        data: dict, events: List[dataclasses.ResponseReceivedEvent] = []
+    ) -> dataclasses.HAR:
+        har: dataclasses.HAR = dataclasses.HAR.from_dict(data)
+
+        # url -> ip_address table
+        memo: Dict[str, str] = {}
+        for event in events:
+            key = event.response.url
+            value = event.response.remote_ip_address
+            memo[key] = value
+
+        # set an IP address as a comment
+        for entry in har.log.entries:
+            url = entry.request.url
+            entry.response.comment = memo.get(url)
+
+        return har
+
+
 class HarReader:
-    def __init__(self, data: dict):
-        self.data = data
+    def __init__(self, har: HAR):
+        self.har: HAR = har
 
     def find_script_files(self) -> List[dataclasses.ScriptFile]:
-        return find_script_files(self.data)
+        return find_script_files(self.har)
 
     def find_request(self) -> dict:
-        return find_request(self.data)
+        return find_request(self.har)

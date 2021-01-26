@@ -1,6 +1,6 @@
 import json
 import tempfile
-from typing import Optional, cast
+from typing import List, Optional, cast
 
 from playwright import async_playwright
 from playwright.async_api import Browser as PlaywrightBrowser
@@ -8,9 +8,9 @@ from playwright.async_api import Error, Playwright, Response
 
 from app import dataclasses, models
 from app.core import settings
-from app.dataclasses.browser import BrowsingResult
+from app.factories.har import HarFactory
 from app.services.certificate import Certificate
-from app.services.har import HarReader
+from app.services.har import HarBuilder, HarReader
 from app.services.whois import Whois
 from app.utils.hash import calculate_sha256
 from app.utils.network import (
@@ -18,6 +18,16 @@ from app.utils.network import (
     get_hostname_from_url,
     get_ip_address_by_hostname,
 )
+
+
+def find_ip_address(url: str, events: List[dataclasses.ResponseReceivedEvent]):
+    for event in events:
+        if event.response.url == url:
+            return event.response.remote_ip_address
+
+    hostname = cast(str, get_hostname_from_url(url))
+    ip_address = cast(str, get_ip_address_by_hostname(hostname))
+    return ip_address
 
 
 async def launch_browser(p: Playwright) -> PlaywrightBrowser:
@@ -32,7 +42,7 @@ async def run_browser(
     referer: Optional[str] = None,
     timeout: Optional[int] = None,
     user_agent: Optional[str] = None,
-) -> BrowsingResult:
+) -> dataclasses.BrowsingResult:
     async with async_playwright() as p:
         browser: PlaywrightBrowser = await launch_browser(p)
         context = await browser.newContext(
@@ -41,6 +51,17 @@ async def run_browser(
             userAgent=user_agent,
         )
         page = await context.newPage()
+
+        client = await page.context.newCDPSession(page)
+        await client.send("Network.enable")
+        events: List[dataclasses.ResponseReceivedEvent] = []
+        client.on(
+            "Network.responseReceived",
+            lambda data: events.append(
+                dataclasses.ResponseReceivedEvent.from_dict(data)
+            ),
+        )
+
         headers = {}
         if accept_language is not None:
             headers["Accept-Language"] = accept_language
@@ -66,7 +87,7 @@ async def run_browser(
         await context.close()
         await browser.close()
 
-        return BrowsingResult(
+        return dataclasses.BrowsingResult(
             url=url,
             screenshot=screenshot,
             html=content,
@@ -74,6 +95,7 @@ async def run_browser(
             status=res.status,
             user_agent=user_agent,
             browser=browser.version,
+            response_received_events=events,
         )
 
 
@@ -95,7 +117,7 @@ class Browser:
     @staticmethod
     async def take_snapshot(
         url: str,
-        enableHAR: bool = False,
+        enable_har: bool = False,
         accept_language: Optional[str] = None,
         ignore_https_errors: bool = False,
         referer: Optional[str] = None,
@@ -113,6 +135,7 @@ class Browser:
             referer {Optional[str]} -- Referer header to use (default: {None})
             timeout {Optional[int]} -- Maximum time to wait for in seconds (default: {None})
             user_agent {Optional[str]} -- User-agent header to use (default: {None})
+            enable_har{Optional[str]} -- Whether to enable HAR recording (default: {False})
 
         Returns:
             SnapshotResult
@@ -149,11 +172,12 @@ class Browser:
         content_length = headers.get("content-length")
 
         url = result.url
+        ip_address = find_ip_address(url, result.response_received_events)
         hostname = cast(str, get_hostname_from_url(url))
-        ip_address = cast(str, get_ip_address_by_hostname(hostname))
         asn = get_asn_by_ip_address(ip_address) or ""
 
-        har_reader = HarReader(har_data)
+        har = HarBuilder.from_dict(har_data, events=result.response_received_events)
+        har_reader = HarReader(har)
         script_files = har_reader.find_script_files()
 
         certificate_content = Certificate.load_and_dump_from_url(url)
@@ -185,7 +209,7 @@ class Browser:
             if certificate_content
             else None
         )
-        har = models.HAR(data=har_data) if enableHAR else None
+        har = HarFactory.from_dataclass(har) if enable_har else None
 
         return dataclasses.SnapshotResult(
             screenshot=result.screenshot,

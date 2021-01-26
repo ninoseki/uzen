@@ -1,3 +1,5 @@
+from app.dataclasses.browser import BrowsingResult, ResponseReceivedEvent
+from app.dataclasses.har import HAR
 from app.dataclasses.search import SearchResults
 from app.dataclasses.utils import (
     EnrichmentResults,
@@ -7,9 +9,12 @@ from app.dataclasses.utils import (
 )
 
 __all__ = [
+    "BrowsingResult",
+    "EnrichmentResults",
+    "HAR",
+    "ResponseReceivedEvent",
     "ScriptFile",
     "SearchResults",
-    "SnapshotResult",
-    "EnrichmentResults",
     "SearchResults",
+    "SnapshotResult",
 ]

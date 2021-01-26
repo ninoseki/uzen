@@ -15,6 +15,7 @@
       {{ numeral(getContentLength(entry.response.headers)).format("0b") }}
     </td>
     <td>{{ normalizeMIMEType(entry.response.content.mimeType) }}</td>
+    <td>{{ entry.response.comment }}</td>
   </tr>
 </template>
 
