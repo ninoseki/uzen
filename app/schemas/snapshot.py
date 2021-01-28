@@ -3,6 +3,7 @@ from functools import lru_cache
 from typing import List, Optional, Union, cast
 from uuid import UUID
 
+import playwright
 from fastapi_utils.api_model import APIModel
 from playwright import sync_playwright
 from pydantic import AnyHttpUrl, Field, IPvAnyAddress, validator
@@ -45,14 +46,11 @@ class Device(APIModel):
 def get_devices() -> List[Device]:
     devices: List[Device] = []
 
-    playwright = sync_playwright().start()
+    with sync_playwright() as playwright:
+        for name, descriptor in playwright.devices.items():
+            devices.append(Device.parse_obj({"name": name, "descriptor": descriptor}))
 
-    for name, descriptor in playwright.devices.items():
-        devices.append(Device.parse_obj({"name": name, "descriptor": descriptor}))
-
-    playwright.stop()
-
-    return devices
+        return devices
 
 
 def remove_sharp_and_question_from_tail(v: str) -> str:
@@ -201,7 +199,12 @@ class CreateSnapshotPayload(APIModel):
         if v is None:
             return v
 
-        devices = get_devices()
+        devices: List[Device] = []
+        try:
+            devices = get_devices()
+        except playwright._types.Error:
+            pass
+
         names = [device.name for device in devices]
         if v not in names:
             raise ValueError(f"{v} is not supported.")
