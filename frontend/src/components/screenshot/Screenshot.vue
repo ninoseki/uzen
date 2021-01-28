@@ -1,5 +1,7 @@
 <template>
-  <img :src="imageSource" alt="screenshot" ref="screenshot" />
+  <div class="screenshot">
+    <img :src="imageSource" alt="screenshot" ref="screenshot" />
+  </div>
 </template>
 
 <script lang="ts">
@@ -22,3 +24,19 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.screenshot {
+  text-align: center;
+}
+
+.screenshot img {
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  box-shadow: 5px 5px 5px #eee;
+  max-height: 420px;
+  object-fit: cover;
+  object-position: top;
+  overflow: hidden;
+}
+</style>

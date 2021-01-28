@@ -1,5 +1,6 @@
 from app.schemas.certificate import Certificate
 from app.schemas.classification import Classification
+from app.schemas.device import Device
 from app.schemas.dns_record import BaseDnsRecord, DnsRecord
 from app.schemas.domain import Domain
 from app.schemas.file import File
@@ -40,6 +41,7 @@ __all__ = [
     "CountResponse",
     "CreateRulePayload",
     "CreateSnapshotPayload",
+    "Device",
     "DnsRecord",
     "Domain",
     "EnrichmentResults",

@@ -87,6 +87,7 @@ async def create(
             referer=payload.referer,
             timeout=payload.timeout,
             user_agent=payload.user_agent,
+            device_name=payload.device_name,
         )
     except TakeSnapshotError as e:
         raise HTTPException(status_code=500, detail=str(e))

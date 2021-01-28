@@ -37,6 +37,7 @@
         :referer.sync="referer"
         :timeout.sync="timeout"
         :userAgent.sync="userAgent"
+        :deviceName.sync="deviceName"
       />
     </div>
 
@@ -53,6 +54,7 @@
         :referer="referer"
         :timeout="timeout"
         :userAgent="userAgent"
+        :deviceName="deviceName"
       />
     </div>
   </div>
@@ -80,6 +82,7 @@ export default defineComponent({
     const referer = ref("");
     const timeout = ref(30000);
     const userAgent = ref("");
+    const deviceName = ref("");
 
     const urls = ref<string[]>([]);
 
@@ -106,6 +109,7 @@ export default defineComponent({
       hasURLs,
       urls,
       enableHar,
+      deviceName,
     };
   },
 });

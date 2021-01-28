@@ -1,4 +1,5 @@
 import { CountResponse, ErrorData, ValidationError } from "@/types/common";
+import { Device } from "@/types/devices";
 import { DomainInformation } from "@/types/domain";
 import { HAR } from "@/types/har";
 import { IPAddressInformation } from "@/types/ip_address";
@@ -42,6 +43,7 @@ export {
   CountResponse,
   CreateRulePayload,
   CreateSnapshotPayload,
+  Device,
   DnsRecord,
   DomainInformation,
   ErrorData,
