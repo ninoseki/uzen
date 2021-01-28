@@ -77,6 +77,10 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    deviceName: {
+      type: String,
+      required: true,
+    },
   },
   setup(props) {
     const sleep = (): Promise<void> => {
@@ -90,13 +94,14 @@ export default defineComponent({
       const payload: CreateSnapshotPayload = {
         url: props.url,
         enableHar: props.enableHar,
+        timeout: props.timeout,
+        userAgent: props.userAgent,
+        ignoreHttpsErrors: props.ignoreHttpsErrors,
         acceptLanguage:
           props.acceptLanguage === "" ? undefined : props.acceptLanguage,
         host: props.host === "" ? undefined : props.host,
-        ignoreHttpsErrors: props.ignoreHttpsErrors,
         referer: props.referer === "" ? undefined : props.referer,
-        timeout: props.timeout,
-        userAgent: props.userAgent,
+        deviceName: props.deviceName === "" ? undefined : props.deviceName,
       };
 
       return await API.takeSnapshot(payload);

@@ -1,8 +1,10 @@
 import datetime
+from functools import lru_cache
 from typing import List, Optional, Union, cast
 from uuid import UUID
 
 from fastapi_utils.api_model import APIModel
+from playwright import sync_playwright
 from pydantic import AnyHttpUrl, Field, IPvAnyAddress, validator
 
 from app.schemas.base import AbstractBaseModel
@@ -17,7 +19,40 @@ from app.schemas.search import BaseSearchResults
 from app.schemas.whois import Whois
 from app.utils.network import get_hostname_from_url, get_ip_address_by_hostname
 
-# Declare rules related schemas here to prevent circular reference
+# Declare rules & devices related schemas here to prevent circular reference
+
+
+class Viewport(APIModel):
+    width: int
+    height: int
+
+
+class DeviceDescriptor(APIModel):
+    user_agent: str
+    viewport: Viewport
+    device_scale_factor: float
+    is_mobile: bool
+    has_touch: bool
+    default_browser_type: str
+
+
+class Device(APIModel):
+    name: str
+    descriptor: DeviceDescriptor
+
+
+@lru_cache()
+def get_devices() -> List[Device]:
+    devices: List[Device] = []
+
+    playwright = sync_playwright().start()
+
+    for name, descriptor in playwright.devices.items():
+        devices.append(Device.parse_obj({"name": name, "descriptor": descriptor}))
+
+    playwright.stop()
+
+    return devices
 
 
 def remove_sharp_and_question_from_tail(v: str) -> str:
@@ -149,6 +184,9 @@ class CreateSnapshotPayload(APIModel):
     host: Optional[str] = Field(
         None, title="Host", description="Host HTTP header (it only works with HTTPX)"
     )
+    device_name: Optional[str] = Field(
+        None, title="Device name", description="Name of a device to emulate"
+    )
 
     @validator("url")
     def hostname_must_resolvable(cls, v):
@@ -156,6 +194,17 @@ class CreateSnapshotPayload(APIModel):
         ip_address = get_ip_address_by_hostname(hostname)
         if ip_address is None:
             raise ValueError(f"Cannot resolve hostname: {hostname}.")
+        return v
+
+    @validator("device_name")
+    def device_check(cls, v):
+        if v is None:
+            return v
+
+        devices = get_devices()
+        names = [device.name for device in devices]
+        if v not in names:
+            raise ValueError(f"{v} is not supported.")
         return v
 
 

@@ -14,6 +14,12 @@ def test_create_snapsnot_payload():
     with pytest.raises(ValueError):
         CreateSnapshotPayload(url="http://nope.example.com")
 
+    # with device name
+    CreateSnapshotPayload(url="http://example.com", device_name="iPhone 11")
+
+    with pytest.raises(ValueError):
+        CreateSnapshotPayload(url="http://example.com", device_name="foo")
+
 
 def test_basic_attributes():
     basic = BasicAttributes(

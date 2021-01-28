@@ -4,6 +4,7 @@ import {
   CountResponse,
   CreateRulePayload,
   CreateSnapshotPayload,
+  Device,
   DomainInformation,
   IPAddressInformation,
   MatchSearchResults,
@@ -110,6 +111,11 @@ export const API = {
 
   async importFromUrlscan(uuid: string): Promise<Snapshot> {
     const res = await client.post<Snapshot>(`/api/import/${uuid}`);
+    return res.data;
+  },
+
+  async getDevices(): Promise<Device[]> {
+    const res = await client.get<Device[]>("/api/devices/");
     return res.data;
   },
 };

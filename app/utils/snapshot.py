@@ -34,6 +34,7 @@ async def take_snapshot(
     referer: Optional[str] = None,
     timeout: Optional[int] = None,
     user_agent: Optional[str] = None,
+    device_name: Optional[str] = None,
 ) -> dataclasses.SnapshotResult:
 
     timeout = timeout or 30000
@@ -55,6 +56,7 @@ async def take_snapshot(
                 referer=referer,
                 timeout=timeout,
                 user_agent=user_agent,
+                device_name=device_name,
             )
         except Error as e:
             message = f"Failed to take a snapshot by playwright: {e}."

@@ -41,6 +41,7 @@
         :referer.sync="referer"
         :timeout.sync="timeout"
         :userAgent.sync="userAgent"
+        :deviceName.sync="deviceName"
       />
     </div>
   </div>
@@ -74,18 +75,20 @@ export default defineComponent({
     const referer = ref("");
     const timeout = ref(30000);
     const userAgent = ref("");
+    const deviceName = ref("");
 
     const takeSnapshotTask = useAsyncTask<Snapshot, []>(async () => {
       const payload: CreateSnapshotPayload = {
         url: url.value,
+        enableHar: enableHar.value,
+        timeout: timeout.value,
+        userAgent: userAgent.value,
+        ignoreHttpsErrors: ignoreHttpsErrors.value,
         acceptLanguage:
           acceptLanguage.value === "" ? undefined : acceptLanguage.value,
         host: host.value === "" ? undefined : host.value,
-        ignoreHttpsErrors: ignoreHttpsErrors.value,
-        enableHar: enableHar.value,
         referer: referer.value === "" ? undefined : referer.value,
-        timeout: timeout.value,
-        userAgent: userAgent.value,
+        deviceName: deviceName.value === "" ? undefined : deviceName.value,
       };
 
       return await API.takeSnapshot(payload);
@@ -108,6 +111,7 @@ export default defineComponent({
       referer,
       timeout,
       enableHar,
+      deviceName,
     };
   },
 });

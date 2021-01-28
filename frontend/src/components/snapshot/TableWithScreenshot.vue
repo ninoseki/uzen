@@ -67,8 +67,8 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style>
 .table img {
-  width: 180px;
+  max-width: 180px;
 }
 </style>

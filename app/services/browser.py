@@ -42,13 +42,22 @@ async def run_browser(
     referer: Optional[str] = None,
     timeout: Optional[int] = None,
     user_agent: Optional[str] = None,
+    device_name: Optional[str] = None,
 ) -> dataclasses.BrowsingResult:
-    async with async_playwright() as p:
-        browser: PlaywrightBrowser = await launch_browser(p)
+    async with async_playwright() as playwright:
+        browser: PlaywrightBrowser = await launch_browser(playwright)
+
+        device = (
+            playwright.devices.get(device_name, {}) if device_name is not None else {}
+        )
+        # do not use the user agent if the device is given
+        if device is None:
+            device["userAgent"] = user_agent
+
         context = await browser.newContext(
+            **device,
             recordHar={"path": har_file_path},
             ignoreHTTPSErrors=ignore_https_errors,
-            userAgent=user_agent,
         )
         page = await context.newPage()
 
@@ -84,7 +93,7 @@ async def run_browser(
         url = page.url
         screenshot = await page.screenshot()
         content = await page.content()
-        user_agent = (await page.evaluate("() => navigator.userAgent"),)
+        user_agent: str = await page.evaluate("() => navigator.userAgent")
 
         await context.close()
         await browser.close()
@@ -103,6 +112,7 @@ async def run_browser(
                 "referer": referer,
                 "timeout": timeout,
                 "user_agent": user_agent,
+                "device": device_name,
             },
         )
 
@@ -196,6 +206,7 @@ class Browser:
         referer: Optional[str] = None,
         timeout: Optional[int] = None,
         user_agent: Optional[str] = None,
+        device_name: Optional[str] = None,
     ) -> dataclasses.SnapshotResult:
         """Take a snapshot of a website by puppeteer
 
@@ -225,6 +236,7 @@ class Browser:
                     timeout=timeout,
                     ignore_https_errors=ignore_https_errors,
                     user_agent=user_agent,
+                    device_name=device_name,
                 )
                 har_data = json.loads(fp.read().decode())
         except Error as e:

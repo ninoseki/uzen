@@ -94,4 +94,5 @@ export interface CreateSnapshotPayload {
   referer: string | undefined;
   timeout: number;
   userAgent: string | undefined;
+  deviceName: string | undefined;
 }
