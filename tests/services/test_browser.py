@@ -1,9 +1,17 @@
+from unittest.mock import AsyncMock
+
 import playwright
 import pytest
-from playwright import Error, async_playwright
+from playwright import async_playwright
 
 from app.core import settings
-from app.services.browser import Browser, launch_browser
+from app.core.exceptions import TakeSnapshotError
+from app.services.browser import Browser
+from app.services.browsers.httpx import HttpxBrowser
+from app.services.browsers.playwright import (
+    PlaywrightBrowser,
+    launch_playwright_browser,
+)
 from app.services.certificate import Certificate
 from app.services.rdap import RDAP
 from app.services.whois import Whois
@@ -29,14 +37,14 @@ async def test_take_snapshot(monkeypatch):
         Certificate, "load_and_dump_from_url", mock_load_and_dump_from_url
     )
 
-    result = await Browser.take_snapshot("http://example.com")
+    browser = Browser()
+    result = await browser.take_snapshot("http://example.com")
     snapshot = result.snapshot
     assert snapshot.url == "http://example.com/"
     assert snapshot.submitted_url == "http://example.com"
 
     assert snapshot.hostname == "example.com"
     assert snapshot.status == 200
-    assert snapshot.content_type == "text/html; charset=UTF-8"
     assert snapshot.asn == "AS15133"
 
     whois = result.whois
@@ -51,32 +59,9 @@ async def test_take_snapshot_with_scripts(monkeypatch):
         Certificate, "load_and_dump_from_url", mock_load_and_dump_from_url
     )
 
-    result = await Browser.take_snapshot("https://github.com/")
+    browser = Browser()
+    result = await browser.take_snapshot("https://github.com/")
     assert len(result.script_files) > 0
-
-
-@pytest.mark.asyncio
-async def test_take_snapshot_with_options(monkeypatch):
-    monkeypatch.setattr(RDAP, "lookup", mock_lookup)
-    monkeypatch.setattr(Whois, "whois", mock_whois)
-
-    result = await Browser.take_snapshot("http://example.com", timeout=10000)
-    snapshot = result.snapshot
-    assert snapshot.url == "http://example.com/"
-
-    result = await Browser.take_snapshot("http://example.com", user_agent="foo")
-    snapshot = result.snapshot
-    assert snapshot.url == "http://example.com/"
-
-    result = await Browser.take_snapshot("http://example.com", accept_language="ja-JP")
-    snapshot = result.snapshot
-    assert snapshot.url == "http://example.com/"
-
-    result = await Browser.take_snapshot(
-        "http://example.com", timeout=10000, user_agent="foo"
-    )
-    snapshot = result.snapshot
-    assert snapshot.url == "http://example.com/"
 
 
 @pytest.mark.asyncio
@@ -84,14 +69,29 @@ async def test_take_snapshot_with_bad_ssl(monkeypatch):
     monkeypatch.setattr(RDAP, "lookup", mock_lookup)
     monkeypatch.setattr(Whois, "whois", mock_whois)
 
-    with pytest.raises(Error):
-        result = await Browser.take_snapshot("https://expired.badssl.com")
+    with pytest.raises(TakeSnapshotError):
+        browser = Browser()
+        result = await browser.take_snapshot("https://expired.badssl.com")
 
-    result = await Browser.take_snapshot(
-        "https://expired.badssl.com", ignore_https_errors=True
-    )
+    browser = Browser(ignore_https_errors=True)
+    result = await browser.take_snapshot("https://expired.badssl.com",)
     snapshot = result.snapshot
     assert snapshot.url == "https://expired.badssl.com/"
+
+
+@pytest.mark.asyncio
+async def test_take_snapshot_httpx_fallback(mocker):
+    mocker.patch(
+        "app.services.browsers.playwright.PlaywrightBrowser.take_snapshot", AsyncMock()
+    )
+    mocker.patch("app.services.browsers.httpx.HttpxBrowser.take_snapshot", AsyncMock())
+
+    # it should fallback to HTTPX if a host is given
+    browser = Browser(headers={"host": "example.com"})
+    await browser.take_snapshot("http://example.com")
+
+    PlaywrightBrowser.take_snapshot.assert_not_called()
+    HttpxBrowser.take_snapshot.assert_called_once()
 
 
 @pytest.mark.asyncio
@@ -104,8 +104,8 @@ async def test_launch_browser(monkeypatch):
 
     try:
         async with async_playwright() as p:
-            browser = await launch_browser(p)
-            assert isinstance(browser, playwright.browser.Browser)
+            browser = await launch_playwright_browser(p)
+            assert isinstance(browser, playwright.Browser)
             assert browser.wsEndpoint == "wss://chrome.browserless.io"
             await browser.close()
     except Exception:

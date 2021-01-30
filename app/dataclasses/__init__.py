@@ -1,4 +1,8 @@
-from app.dataclasses.browser import BrowsingResult, ResponseReceivedEvent
+from app.dataclasses.browser import (
+    BrowsingOptions,
+    BrowsingResult,
+    ResponseReceivedEvent,
+)
 from app.dataclasses.har import HAR
 from app.dataclasses.search import SearchResults
 from app.dataclasses.utils import (
@@ -9,6 +13,7 @@ from app.dataclasses.utils import (
 )
 
 __all__ = [
+    "BrowsingOptions",
     "BrowsingResult",
     "EnrichmentResults",
     "HAR",

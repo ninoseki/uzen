@@ -7,12 +7,12 @@ from tortoise.exceptions import DoesNotExist
 from app import models, schemas
 from app.api.dependencies.snapshot import SearchFilters
 from app.core.exceptions import TakeSnapshotError
+from app.services.browser import Browser
 from app.services.searchers.snapshot import SnapshotSearcher
 from app.tasks.enrichment import EnrichmentTasks
 from app.tasks.match import MatchinbgTask
 from app.tasks.screenshot import UploadScrenshotTask
 from app.tasks.snapshot import UpdateProcessingTask
-from app.utils.snapshot import save_snapshot, take_snapshot
 
 router = APIRouter()
 
@@ -78,22 +78,20 @@ async def create(
     payload: schemas.CreateSnapshotPayload, background_tasks: BackgroundTasks
 ) -> schemas.Snapshot:
     try:
-        result = await take_snapshot(
-            url=payload.url,
+        browser = Browser(
             enable_har=payload.enable_har,
-            accept_language=payload.accept_language,
-            host=payload.host,
             ignore_https_errors=payload.ignore_https_errors,
-            referer=payload.referer,
             timeout=payload.timeout,
-            user_agent=payload.user_agent,
             device_name=payload.device_name,
+            headers=payload.headers,
         )
+        result = await browser.take_snapshot(payload.url)
     except TakeSnapshotError as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-    snapshot = await save_snapshot(result)
+    snapshot = await models.Snapshot.save_snapshot_result(result)
 
+    # add background tasks
     if result.screenshot is not None:
         background_tasks.add_task(
             UploadScrenshotTask.process, uuid=snapshot.id, screenshot=result.screenshot

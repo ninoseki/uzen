@@ -48,14 +48,6 @@ class SnapshotSearcher(AbstractSearcher):
         if asn is not None:
             queries.append(Q(asn=asn))
 
-        server = filters.get("server")
-        if server is not None:
-            queries.append(Q(server__contains=server))
-
-        content_type = filters.get("content_type")
-        if content_type is not None:
-            queries.append(Q(content_type__contains=content_type))
-
         sha256 = filters.get("sha256")
         if sha256 is not None:
             queries.append(Q(html__id=sha256))

@@ -5,6 +5,15 @@ from dataclasses_json import config, dataclass_json
 from stringcase import camelcase
 
 
+@dataclass
+class BrowsingOptions:
+    timeout: int = 30000
+    headers: Dict[str, str] = field(default_factory=lambda: {})
+    enable_har: bool = False
+    ignore_https_errors: bool = False
+    device_name: Optional[str] = None
+
+
 @dataclass_json(letter_case=camelcase)
 @dataclass
 class Response:
@@ -48,8 +57,9 @@ class BrowsingResult:
     url: str
     status: int
     html: str
-    headers: dict
-    options: Dict[str, str]
+    response_headers: dict
+    request_headers: dict
+    options: BrowsingOptions
     screenshot: Optional[bytes] = None
     response_received_events: List[ResponseReceivedEvent] = field(
         default_factory=lambda: []

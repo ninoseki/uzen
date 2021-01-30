@@ -1,8 +1,9 @@
 import datetime
 from functools import lru_cache
-from typing import List, Optional, Union, cast
+from typing import Dict, List, Optional, Union, cast
 from uuid import UUID
 
+import httpx
 import playwright
 from fastapi_utils.api_model import APIModel
 from playwright import sync_playwright
@@ -87,14 +88,7 @@ class BasicAttributes(APIModel):
     hostname: str = Field(..., title="Hostname", description="Hostname")
     ip_address: IPvAnyAddress = Field(..., title="IP address", description="IP address")
     asn: str = Field(..., title="ASN", description="AS number")
-    server: Optional[str] = Field(None, title="Server", description="Server header")
-    content_type: Optional[str] = Field(
-        None, title="Content type", description="Content type"
-    )
     status: int = Field(..., title="Status", description="Status code")
-    content_length: Optional[int] = Field(
-        None, title="Content length", description="Content length"
-    )
 
     @validator(
         "url", pre=True,
@@ -115,9 +109,9 @@ class BaseSnapshot(BasicAttributes):
     Note that this model doesn't have "id" and "created_at" fields.
     """
 
-    headers: dict = Field(..., title="Headers")
-    options: dict = Field(..., title="Options")
-    processing: bool = Field(..., title="Processing")
+    request_headers: dict = Field(...)
+    response_headers: dict = Field(...)
+    processing: bool = Field(...)
 
 
 class Snapshot(BaseSnapshot, AbstractBaseModel, TimestampMixin):
@@ -164,23 +158,14 @@ class CreateSnapshotPayload(APIModel):
     enable_har: bool = Field(
         False, title="Enable HAR", description="Whether to enable HAR recording"
     )
-    user_agent: Optional[str] = Field(
-        None, title="User agent", description="Specific user agent to use"
+    headers: Dict[str, str] = Field(
+        {}, title="Headers", description="HTTP request headers to use"
     )
     timeout: Optional[int] = Field(
-        None, title="Timeout", description="Maximum time to wait for in seconds"
+        None, title="Timeout", description="Maximum time to wait for in milliseconds"
     )
     ignore_https_errors: Optional[bool] = Field(
         None, title="Ignore HTTPS erros", description="Whether to ignore HTTPS errors"
-    )
-    accept_language: Optional[str] = Field(
-        None, title="Accept language", description="Accept-Language HTTP header"
-    )
-    referer: Optional[str] = Field(
-        None, title="Referer", description="Referer HTTP header"
-    )
-    host: Optional[str] = Field(
-        None, title="Host", description="Host HTTP header (it only works with HTTPX)"
     )
     device_name: Optional[str] = Field(
         None, title="Device name", description="Name of a device to emulate"
@@ -209,6 +194,12 @@ class CreateSnapshotPayload(APIModel):
         if v not in names:
             raise ValueError(f"{v} is not supported.")
         return v
+
+    @validator("headers", pre=True, always=True)
+    def normalize_headers(cls, headers):
+        # translates header names to lowercase for consistency
+        headers_ = httpx.Headers(headers)
+        return dict(headers_)
 
 
 # Update foward references

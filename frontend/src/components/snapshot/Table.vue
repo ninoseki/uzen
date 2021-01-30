@@ -13,21 +13,15 @@
             {{ truncate(props.row.url) }}
           </router-link>
         </p>
-        <p>
-          (<strong>Submitted URL:</strong>
-          {{ truncate(props.row.submittedUrl) }})
+        <p class="is-size-7">
+          <strong>Submitted URL:</strong>
+          {{ truncate(props.row.submittedUrl) }}
         </p>
         <p class="is-size-7">
           <strong>IP address:</strong> {{ props.row.ipAddress }} -
           <strong>ASN:</strong> {{ props.row.asn.split(" ")[0] }}
         </p>
-        <p class="is-size-7">
-          <strong>Status:</strong> {{ props.row.status }} -
-          <strong>Server:</strong>
-          {{ props.row.server || "N/A" }} -
-          <strong>Content length:</strong>
-          {{ props.row.contentLength || "N/A" }}
-        </p>
+        <p class="is-size-7"><strong>Status:</strong> {{ props.row.status }}</p>
       </b-table-column>
 
       <b-table-column field="createdAt" label="Created at" v-slot="props">

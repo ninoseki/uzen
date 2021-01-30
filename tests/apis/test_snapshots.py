@@ -23,11 +23,6 @@ async def test_snapshot_search(client):
     snapshots = json.get("results")
     assert len(snapshots) == count
 
-    response = await client.get("/api/snapshots/search", params={"server": "ECS"})
-    json = response.json()
-    snapshots = json.get("results")
-    assert len(snapshots) == count
-
     response = await client.get(
         "/api/snapshots/search", params={"from_at": "1970-01-01T15:53:00+05:00"}
     )
@@ -48,12 +43,6 @@ async def test_snapshot_search(client):
     json = response.json()
     snapshots = json.get("results")
     assert len(snapshots) == count
-
-    # it doesn't match any snapshot
-    response = await client.get("/api/snapshots/search", params={"server": "Tomcat"})
-    json = response.json()
-    snapshots = json.get("results")
-    assert len(snapshots) == 0
 
     # it doesn't match any snapshot
     response = await client.get("/api/snapshots/search", params={"status": 404})

@@ -102,37 +102,6 @@
                         </tr>
 
                         <tr>
-                          <th>Server</th>
-                          <td>
-                            <router-link
-                              :to="{
-                                name: 'Snapshots',
-                                query: {
-                                  server: getSnapshotTask.last.value.server,
-                                },
-                              }"
-                              >{{ getSnapshotTask.last.value.server }}
-                            </router-link>
-                          </td>
-                        </tr>
-
-                        <tr>
-                          <th>Content-Type</th>
-                          <td>
-                            <router-link
-                              :to="{
-                                name: 'Snapshots',
-                                query: {
-                                  contentType:
-                                    getSnapshotTask.last.value.contentType,
-                                },
-                              }"
-                              >{{ getSnapshotTask.last.value.contentType }}
-                            </router-link>
-                          </td>
-                        </tr>
-
-                        <tr>
                           <th>Created at</th>
                           <td>
                             <DatetimeWithDiff

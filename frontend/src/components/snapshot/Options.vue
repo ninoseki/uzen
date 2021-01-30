@@ -1,10 +1,18 @@
 <template>
   <div>
     <b-field label="Device">
-      <b-select v-model="deviceName" placeholder="Select a device to emulate">
+      <b-select
+        v-model="deviceName"
+        placeholder="Select a device to emulate"
+        @input="onDeviceChange"
+      >
         <option></option>
-        <option v-for="name in deviceNames" :key="name">
-          {{ name }}
+        <option
+          v-for="device in devices"
+          :value="device.name"
+          :key="device.name"
+        >
+          {{ device.name }}
         </option>
       </b-select>
     </b-field>
@@ -26,7 +34,7 @@
         placeholder="Select Accept Language HTTP header to use"
       >
         <option></option>
-        <option v-for="langKey in languagKeys" :key="langKey">
+        <option v-for="langKey in languagKeys" :value="langKey" :key="langKey">
           {{ langKey }} / {{ languages[langKey] }}
         </option>
       </b-select>
@@ -76,7 +84,7 @@ export default defineComponent({
     const userAgent = ref(navigator.userAgent);
     const deviceName = ref("");
 
-    const deviceNames = ref<string[]>([]);
+    const devices = ref<Device[]>([]);
     const languagKeys = Object.keys(languages);
 
     const getDevicesTask = useAsyncTask<Device[], []>(async () => {
@@ -84,8 +92,16 @@ export default defineComponent({
     });
 
     const getDevices = async () => {
-      const devices = await getDevicesTask.perform();
-      deviceNames.value = devices.map((device) => device.name);
+      devices.value = await getDevicesTask.perform();
+    };
+
+    const onDeviceChange = (newDeviceName: string) => {
+      const newDevice = devices.value.find(
+        (device) => device.name == newDeviceName
+      );
+      if (newDevice !== undefined) {
+        userAgent.value = newDevice.descriptor.userAgent;
+      }
     };
 
     onMounted(async () => {
@@ -132,7 +148,8 @@ export default defineComponent({
       languagKeys,
       enableHAR,
       deviceName,
-      deviceNames,
+      devices,
+      onDeviceChange,
     };
   },
 });
