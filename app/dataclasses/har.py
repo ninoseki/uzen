@@ -40,6 +40,7 @@ class Request:
     query_string: List[dict]
     headers_size: int
     body_size: int
+    post_data: Optional[dict] = None
     comment: Optional[str] = None
 
 
@@ -47,9 +48,10 @@ class Request:
 @dataclass
 class Content:
     size: int
-    mime_type: str
-    text: str
-    encoding: str
+    compression: Optional[int] = None
+    mime_type: Optional[str] = None
+    text: Optional[str] = None
+    encoding: Optional[str] = None
     comment: Optional[str] = None
 
 
@@ -71,33 +73,37 @@ class Response:
 @dataclass_json
 @dataclass
 class Timings:
-    dns: float
-    connect: float
-    ssl: float
     send: int
     wait: float
     receive: int
+    blocked: Optional[int] = None
+    dns: Optional[float] = None
+    connect: Optional[float] = None
+    ssl: Optional[float] = None
     comment: Optional[str] = None
 
 
 @dataclass_json(letter_case=camelcase)
 @dataclass
 class Entry:
-    pageref: str
     started_date_time: str
     time: int
     request: Request
     response: Response
     cache: Cache
     timings: Timings
+    pageref: Optional[str] = None
+    server_ip_address: Optional[str] = field(
+        default=None, metadata=config(field_name="serverIPAddress")
+    )
     comment: Optional[str] = None
 
 
 @dataclass_json(letter_case=camelcase)
 @dataclass
 class PageTimings:
-    on_content_load: int
-    on_load: int
+    on_content_load: Optional[int] = None
+    on_load: Optional[int] = None
     comment: Optional[str] = None
 
 
