@@ -13,18 +13,15 @@
             {{ props.row.url }}
           </router-link>
         </p>
-        <p>(<strong>Submitted URL:</strong> {{ props.row.submittedUrl }})</p>
+        <p class="is-size-7">
+          <strong>Submitted URL:</strong>
+          {{ truncate(props.row.submittedUrl) }}
+        </p>
         <p class="is-size-7">
           <strong>IP address:</strong> {{ props.row.ipAddress }} -
           <strong>ASN:</strong> {{ props.row.asn.split(" ")[0] }}
         </p>
-        <p class="is-size-7">
-          <strong>Status:</strong> {{ props.row.status }} -
-          <strong>Server:</strong>
-          {{ props.row.server || "N/A" }} -
-          <strong>Content length:</strong>
-          {{ props.row.contentLength || "N/A" }}
-        </p>
+        <p class="is-size-7"><strong>Status:</strong> {{ props.row.status }}</p>
       </b-table-column>
 
       <b-table-column field="createdAt" label="Created at" v-slot="props">
@@ -44,6 +41,7 @@ import { computed, defineComponent, PropType } from "@vue/composition-api";
 import Screenshot from "@/components/screenshot/Screenshot.vue";
 import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
 import { Snapshot } from "@/types";
+import { truncate } from "@/utils/truncate";
 
 export default defineComponent({
   name: "SnapshotTableWithScreenshot",
@@ -62,7 +60,7 @@ export default defineComponent({
       return props.snapshots.length > 0;
     });
 
-    return { hasSnapshots };
+    return { hasSnapshots, truncate };
   },
 });
 </script>

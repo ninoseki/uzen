@@ -21,6 +21,12 @@ def test_create_snapsnot_payload():
         CreateSnapshotPayload(url="http://example.com", device_name="foo")
 
 
+def test_create_snapsnot_payload_with_headers():
+    # header keys should be lower cases
+    payload = CreateSnapshotPayload(url="http://example.com", headers={"Foo": "bar"})
+    assert payload.headers == {"foo": "bar"}
+
+
 def test_basic_attributes():
     basic = BasicAttributes(
         url="http://example.com#",

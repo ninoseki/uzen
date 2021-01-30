@@ -62,11 +62,7 @@ class URLScan:
         ip_address = result.get("page", {}).get("ip")
         asn = result.get("page", {}).get("asn")
         asnname = result.get("page", {}).get("asnname")
-
         headers = response.get("headers", {})
-        server = result.get("page", {}).get("server")
-        content_type = headers.get("Content-Type") or headers.get("content-type")
-        content_length = headers.get("Content-Length") or headers.get("content-length")
 
         time = cast(str, result.get("task", {}).get("time"))
         created_at = datetime.datetime.strptime(time, "%Y-%m-%dT%H:%M:%S.%fZ")
@@ -81,12 +77,10 @@ class URLScan:
             hostname=hostname,
             ip_address=ip_address,
             asn=f"{asn} {asnname}",
-            server=server,
-            content_type=content_type,
-            content_length=content_length,
-            headers=headers,
+            response_headers=headers,
+            request_headers={},
+            ignore_https_erros=False,
             created_at=created_at,
-            options={"urlscan.io": uuid},
         )
 
         screenshot = await instance.screenshot()

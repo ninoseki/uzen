@@ -1,5 +1,8 @@
-import { Dict } from "@/types/common";
 import { Rule } from "@/types/rule";
+
+export interface Headers {
+  [header: string]: string | string[] | undefined;
+}
 
 export interface HTML {
   id: string;
@@ -49,10 +52,8 @@ export interface Classification {
 
 export interface SnapshotFilters {
   asn: string | undefined;
-  contentType: string | undefined;
   hostname: string | undefined;
   ipAddress: string | undefined;
-  server: string | undefined;
   sha256: string | undefined;
   status: number | undefined;
   url: string | undefined;
@@ -68,10 +69,8 @@ export interface Snapshot {
   hostname: string;
   ipAddress: string;
   asn: string;
-  server: string;
-  contentType: string;
-  contentLength: number;
-  headers: Dict;
+  requestHeaders: Headers;
+  responseHeaders: Headers;
   processing: boolean;
   createdAt: string;
 
@@ -88,11 +87,8 @@ export interface Snapshot {
 export interface CreateSnapshotPayload {
   url: string;
   enableHar: boolean;
-  acceptLanguage: string | undefined;
-  host: string | undefined;
   ignoreHttpsErrors: boolean | undefined;
-  referer: string | undefined;
   timeout: number;
-  userAgent: string | undefined;
   deviceName: string | undefined;
+  headers: Headers;
 }

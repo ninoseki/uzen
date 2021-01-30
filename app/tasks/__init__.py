@@ -18,9 +18,8 @@ class AbstractAsyncTask(ABC):
         try:
             return await self._process()
         except Exception as e:
-            logger.error(
-                f"Failed to process {self.__class__.__name__} task. Error: {e}"
-            )
+            logger.error(f"Failed to process {self.__class__.__name__} task.")
+            logger.exception(e)
 
 
 class AbstractSyncTask(ABC):

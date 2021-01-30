@@ -11,10 +11,8 @@
         ref="form"
         :sha256="$route.query.sha256"
         :asn="$route.query.asn"
-        :contentType="$route.query.contentType"
         :hostname="$route.query.hostname"
         :ipAddress="$route.query.ipAddress"
-        :server="$route.query.server"
       />
 
       <br />

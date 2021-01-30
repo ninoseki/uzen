@@ -1,125 +1,27 @@
-import json
-import tempfile
-from typing import List, Optional, cast
+from typing import Dict, Optional
 
+import httpx
+from cached_property import cached_property
+from loguru import logger
 from playwright import async_playwright
-from playwright.async_api import Browser as PlaywrightBrowser
-from playwright.async_api import CDPSession, Error, Playwright, Response
+from playwright.async_api import Error
 
-from app import dataclasses, models
+from app import dataclasses
 from app.core import settings
-from app.factories.har import HarFactory
-from app.services.certificate import Certificate
-from app.services.har import HarBuilder, HarReader
-from app.services.whois import Whois
-from app.utils.hash import calculate_sha256
-from app.utils.network import (
-    get_asn_by_ip_address,
-    get_hostname_from_url,
-    get_ip_address_by_hostname,
+from app.core.exceptions import TakeSnapshotError
+from app.services.browsers.httpx import HttpxBrowser
+from app.services.browsers.playwright import (
+    PlaywrightBrowser,
+    launch_playwright_browser,
 )
 
-
-def find_ip_address(url: str, events: List[dataclasses.ResponseReceivedEvent]):
-    for event in events:
-        if event.response.url == url:
-            return event.response.remote_ip_address
-
-    hostname = cast(str, get_hostname_from_url(url))
-    ip_address = cast(str, get_ip_address_by_hostname(hostname))
-    return ip_address
+# default timeout = 30s
+DEFAULT_TIMEOUT = 30000
 
 
-async def launch_browser(p: Playwright) -> PlaywrightBrowser:
-    return await p.chromium.launch(headless=True, chromiumSandbox=False)
-
-
-async def run_browser(
-    url: str,
-    har_file_path: str,
-    accept_language: Optional[str] = None,
-    ignore_https_errors: bool = False,
-    referer: Optional[str] = None,
-    timeout: Optional[int] = None,
-    user_agent: Optional[str] = None,
-    device_name: Optional[str] = None,
-) -> dataclasses.BrowsingResult:
+async def take_screenshot(hostname: str, protocol="http") -> bytes:
     async with async_playwright() as playwright:
-        browser: PlaywrightBrowser = await launch_browser(playwright)
-
-        device = (
-            playwright.devices.get(device_name, {}) if device_name is not None else {}
-        )
-        # do not use the user agent if the device is given
-        if device is None:
-            device["userAgent"] = user_agent
-
-        context = await browser.newContext(
-            **device,
-            recordHar={"path": har_file_path},
-            ignoreHTTPSErrors=ignore_https_errors,
-        )
-        page = await context.newPage()
-
-        client: CDPSession = await page.context.newCDPSession(page)
-        await client.send("Network.enable")
-        events: List[dataclasses.ResponseReceivedEvent] = []
-        client.on(
-            "Network.responseReceived",
-            lambda data: events.append(
-                dataclasses.ResponseReceivedEvent.from_dict(data)
-            ),
-        )
-
-        headers = {}
-        if accept_language is not None:
-            headers["Accept-Language"] = accept_language
-        await page.setExtraHTTPHeaders(headers)
-
-        # default timeout = 30 seconds
-        timeout = timeout or 30 * 1000
-        res: Optional[Response] = await page.goto(
-            url,
-            referer=referer,
-            timeout=timeout,
-            waitUntil=settings.BROWSER_WAIT_UNTIL,
-        )
-        # detech the CDP session
-        await client.detach()
-
-        if res is None:
-            raise Error("Cannot get the response")
-
-        url = page.url
-        screenshot = await page.screenshot()
-        content = await page.content()
-        user_agent: str = await page.evaluate("() => navigator.userAgent")
-
-        await context.close()
-        await browser.close()
-
-        return dataclasses.BrowsingResult(
-            url=url,
-            screenshot=screenshot,
-            html=content,
-            headers=res.headers,
-            status=res.status,
-            response_received_events=events,
-            options={
-                "accept_language": accept_language,
-                "browser": browser.version,
-                "ignore_https_errors": ignore_https_errors,
-                "referer": referer,
-                "timeout": timeout,
-                "user_agent": user_agent,
-                "device": device_name,
-            },
-        )
-
-
-async def preview(hostname: str, protocol="http") -> bytes:
-    async with async_playwright() as p:
-        browser = await launch_browser(p)
+        browser = await launch_playwright_browser(playwright)
         page = await browser.newPage()
 
         await page.goto(
@@ -131,134 +33,91 @@ async def preview(hostname: str, protocol="http") -> bytes:
         return screenshot
 
 
-def build_snapshot_result(
-    submitted_url: str,
-    browsing_result: dataclasses.BrowsingResult,
-    har: Optional[dataclasses.HAR] = None,
-) -> dataclasses.SnapshotResult:
-    headers = browsing_result.headers
-    server = headers.get("server")
-    content_type = headers.get("content-type")
-    content_length = headers.get("content-length")
+def is_unsafe_header(header: str) -> bool:
+    # ref. https://github.com/chromium/chromium/blob/99314be8152e688bafbbf9a615536bdbb289ea87/services/network/public/cpp/header_util.cc#L22-L48
+    return header in [
+        "host",
+        "content-length",
+        "trailer",
+        "te",
+        "upgrade",
+        "cookie2",
+        "keep-alive",
+        "transfer-encoding",
+    ]
 
-    url = browsing_result.url
-    ip_address = find_ip_address(url, browsing_result.response_received_events)
-    hostname = cast(str, get_hostname_from_url(url))
-    asn = get_asn_by_ip_address(ip_address) or ""
 
-    script_files: List[dataclasses.ScriptFile] = []
+def are_headers_safe(headers: Dict[str, str]) -> bool:
+    for header in headers.keys():
+        if is_unsafe_header(header):
+            return False
 
-    if har:
-        har_reader = HarReader(har)
-        script_files = har_reader.find_script_files()
-
-    certificate_content = Certificate.load_and_dump_from_url(url)
-    whois_content = Whois.whois(hostname)
-
-    snapshot = models.Snapshot(
-        url=url,
-        submitted_url=submitted_url,
-        status=browsing_result.status,
-        headers=headers,
-        hostname=hostname,
-        ip_address=ip_address,
-        asn=asn,
-        server=server,
-        content_length=content_length,
-        content_type=content_type,
-        options=browsing_result.options,
-    )
-    html = models.HTML(
-        id=calculate_sha256(browsing_result.html), content=browsing_result.html
-    )
-    whois = (
-        models.Whois(id=calculate_sha256(whois_content), content=whois_content)
-        if whois_content
-        else None
-    )
-    certificate = (
-        models.Certificate(
-            id=calculate_sha256(certificate_content), content=certificate_content
-        )
-        if certificate_content
-        else None
-    )
-    har = HarFactory.from_dataclass(har) if har else None
-
-    return dataclasses.SnapshotResult(
-        screenshot=browsing_result.screenshot,
-        html=html,
-        certificate=certificate,
-        whois=whois,
-        snapshot=snapshot,
-        script_files=script_files,
-        har=har,
-    )
+    return True
 
 
 class Browser:
-    @staticmethod
-    async def take_snapshot(
-        url: str,
+    def __init__(
+        self,
+        headers: Dict[str, str] = {},
         enable_har: bool = False,
-        accept_language: Optional[str] = None,
         ignore_https_errors: bool = False,
-        referer: Optional[str] = None,
-        timeout: Optional[int] = None,
-        user_agent: Optional[str] = None,
         device_name: Optional[str] = None,
-    ) -> dataclasses.SnapshotResult:
-        """Take a snapshot of a website by puppeteer
+        timeout: Optional[int] = None,
+    ):
+        self.headers: Dict[str, str] = headers
+        self.enable_har: bool = enable_har
+        self.ignore_https_errors: bool = ignore_https_errors
+        self.timeout: int = timeout if timeout is not None else DEFAULT_TIMEOUT
+        self.device_name: Optional[str] = device_name
 
-        Arguments:
-            url {str} -- A URL of a website
-
-        Keyword Arguments:
-            accept_language {Optional[str]} -- Accept-language header to use (default: {None})
-            ignore_https_errors {bool} -- Whether to ignore HTTPS errors (default: {False})
-            referer {Optional[str]} -- Referer header to use (default: {None})
-            timeout {Optional[int]} -- Maximum time to wait for in seconds (default: {None})
-            user_agent {Optional[str]} -- User-agent header to use (default: {None})
-            enable_har{Optional[str]} -- Whether to enable HAR recording (default: {False})
-
-        Returns:
-            SnapshotResult
-        """
-        submitted_url: str = url
-        har_data: Optional[dict] = None
-        try:
-            with tempfile.NamedTemporaryFile() as fp:
-                browsing_result = await run_browser(
-                    url,
-                    har_file_path=fp.name,
-                    accept_language=accept_language,
-                    referer=referer,
-                    timeout=timeout,
-                    ignore_https_errors=ignore_https_errors,
-                    user_agent=user_agent,
-                    device_name=device_name,
-                )
-                har_data = json.loads(fp.read().decode())
-        except Error as e:
-            raise (e)
-
-        har = HarBuilder.from_dict(
-            har_data, events=browsing_result.response_received_events
+    @cached_property
+    def options(self) -> dataclasses.BrowsingOptions:
+        return dataclasses.BrowsingOptions(
+            enable_har=self.enable_har,
+            ignore_https_errors=self.ignore_https_errors,
+            timeout=self.timeout,
+            device_name=self.device_name,
+            headers=self.headers,
         )
 
-        snapshot_result = build_snapshot_result(submitted_url, browsing_result, har)
-        snapshot_result.har = HarFactory.from_dataclass(har) if enable_har else None
+    async def take_snapshot(self, url: str) -> dataclasses.SnapshotResult:
+        result: Optional[dataclasses.SnapshotResult] = None
+        errors = []
 
-        return snapshot_result
+        if are_headers_safe(self.headers):
+            try:
+                result = await PlaywrightBrowser.take_snapshot(url, self.options)
+            except Error as e:
+                message = "Failed to take a snapshot by playwright"
+                logger.debug(message)
+                logger.exception(e)
+                errors.append(message)
+
+            if result is not None:
+                return result
+
+        logger.debug("Fallback to HTTPX")
+        try:
+            result = await HttpxBrowser.take_snapshot(url, self.options)
+        except httpx.HTTPError as e:
+            message = "Failed to take a snapshot by HTTPX"
+            logger.debug(message)
+            logger.exception(e)
+            errors.append(message)
+
+        if result is not None:
+            return result
+
+        raise TakeSnapshotError("\n".join(errors))
 
     @staticmethod
     async def preview(hostname: str) -> bytes:
         try:
-            return await preview(hostname, "http")
+            return await take_screenshot(hostname, "http")
         except Error:
             pass
 
         try:
-            return await preview(hostname, "https")
+            return await take_screenshot(hostname, "https")
         except Error:
             return b""

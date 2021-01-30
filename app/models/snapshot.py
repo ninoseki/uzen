@@ -1,14 +1,28 @@
 from __future__ import annotations
 
-from typing import List
+from typing import TYPE_CHECKING, List
 from uuid import UUID
 
-from tortoise import fields
-from tortoise.exceptions import NoValuesFetched
+from tortoise import fields, models
+from tortoise.exceptions import IntegrityError, NoValuesFetched
+from tortoise.transactions import in_transaction
 
 from app import schemas
 from app.models.base import AbstractBaseModel
 from app.models.mixin import TimestampMixin
+from app.models.script import Script
+
+if TYPE_CHECKING:
+    from app.dataclasses import SnapshotResult
+
+
+async def save_ignore_integrity_error(model: models):
+    try:
+        await model.save()
+    except IntegrityError:
+        # ignore the intergrity error
+        # e.g. tortoise.exceptions.IntegrityError: UNIQUE constraint failed: files.id
+        pass
 
 
 class Snapshot(TimestampMixin, AbstractBaseModel):
@@ -20,11 +34,9 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
     hostname = fields.TextField()
     ip_address = fields.CharField(max_length=255)
     asn = fields.TextField()
-    server = fields.TextField(null=True)
-    content_type = fields.TextField(null=True)
-    content_length = fields.IntField(null=True)
-    headers = fields.JSONField()
-    options = fields.JSONField()
+    response_headers = fields.JSONField()
+    request_headers = fields.JSONField()
+    ignore_https_errors = fields.BooleanField(default=False)
     processing = fields.BooleanField(default=True)
 
     html: fields.ForeignKeyRelation["HTML"] = fields.ForeignKeyField(
@@ -123,6 +135,40 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
             .limit(size)
             .prefetch_related("html", "whois", "certificate",)
         )
+
+    @classmethod
+    async def save_snapshot_result(_, result: "SnapshotResult",) -> Snapshot:
+        async with in_transaction():
+            snapshot = result.snapshot
+
+            # save html, certificate, whois before saving snapshot
+            html = result.html
+            await save_ignore_integrity_error(html)
+            snapshot.html_id = html.id
+
+            certificate = result.certificate
+            if certificate:
+                await save_ignore_integrity_error(certificate)
+                snapshot.certificate_id = certificate.id
+
+            whois = result.whois
+            if whois:
+                await save_ignore_integrity_error(whois)
+                snapshot.whois_id = whois.id
+
+            # save snapshot
+            await snapshot.save()
+
+            # save scripts
+            await Script.save_script_files(result.script_files, snapshot.id)
+
+            # save har
+            har = result.har
+            if har:
+                har.snapshot_id = snapshot.id
+                await har.save()
+
+            return snapshot
 
     class Meta:
         table = "snapshots"

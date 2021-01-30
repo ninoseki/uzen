@@ -35,7 +35,7 @@ import { defineComponent } from "@vue/composition-api";
 import { useAsyncTask } from "vue-concurrency";
 
 import { API } from "@/api";
-import { CreateSnapshotPayload, Snapshot } from "@/types";
+import { CreateSnapshotPayload, Headers, Snapshot } from "@/types";
 import { truncate } from "@/utils/truncate";
 
 export default defineComponent({
@@ -91,17 +91,26 @@ export default defineComponent({
     const takeSnapshotTask = useAsyncTask<Snapshot, []>(async () => {
       await sleep();
 
+      const headers: Headers = {};
+      headers["User-Agent"] = props.userAgent;
+
+      if (props.acceptLanguage !== "") {
+        headers["Accept-Language"] = props.acceptLanguage;
+      }
+      if (props.host !== "") {
+        headers["Host"] = props.host;
+      }
+      if (props.referer !== "") {
+        headers["Referer"] = props.referer;
+      }
+
       const payload: CreateSnapshotPayload = {
         url: props.url,
         enableHar: props.enableHar,
         timeout: props.timeout,
-        userAgent: props.userAgent,
         ignoreHttpsErrors: props.ignoreHttpsErrors,
-        acceptLanguage:
-          props.acceptLanguage === "" ? undefined : props.acceptLanguage,
-        host: props.host === "" ? undefined : props.host,
-        referer: props.referer === "" ? undefined : props.referer,
         deviceName: props.deviceName === "" ? undefined : props.deviceName,
+        headers,
       };
 
       return await API.takeSnapshot(payload);

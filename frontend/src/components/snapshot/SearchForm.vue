@@ -41,24 +41,6 @@
         </b-field>
       </div>
       <div class="column is-half">
-        <b-field label="Server">
-          <b-input
-            placeholder="Apache-Coyote/1.1"
-            v-model="filters.server"
-          ></b-input>
-        </b-field>
-      </div>
-    </div>
-    <div class="columns">
-      <div class="column is-half">
-        <b-field label="Content-Type">
-          <b-input
-            placeholder="text/html"
-            v-model="filters.contentType"
-          ></b-input>
-        </b-field>
-      </div>
-      <div class="column is-half">
         <b-field label="SHA256(HTML)">
           <b-input
             placeholder="ea8fac7c65fb589b0d53560f5251f74f9e9b243478dcb6b3ea79b5e36449c8d9"
@@ -105,19 +87,11 @@ export default defineComponent({
       type: String,
       required: false,
     },
-    contentType: {
-      type: String,
-      required: false,
-    },
     hostname: {
       type: String,
       required: false,
     },
     ipAddress: {
-      type: String,
-      required: false,
-    },
-    server: {
       type: String,
       required: false,
     },
@@ -137,10 +111,8 @@ export default defineComponent({
   setup(props) {
     const filters = reactive<SnapshotFilters>({
       asn: props.asn,
-      contentType: props.contentType,
       hostname: props.hostname,
       ipAddress: props.ipAddress,
-      server: props.server,
       sha256: props.sha256,
       status: props.status,
       url: props.url,

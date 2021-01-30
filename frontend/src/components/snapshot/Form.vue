@@ -55,7 +55,7 @@ import { API } from "@/api";
 import Options from "@/components/snapshot/Options.vue";
 import Error from "@/components/ui/Error.vue";
 import Loading from "@/components/ui/Loading.vue";
-import { CreateSnapshotPayload, Snapshot } from "@/types";
+import { CreateSnapshotPayload, Headers, Snapshot } from "@/types";
 
 export default defineComponent({
   name: "SnapshotForm",
@@ -74,21 +74,30 @@ export default defineComponent({
     const enableHar = ref(false);
     const referer = ref("");
     const timeout = ref(30000);
-    const userAgent = ref("");
+    const userAgent = ref(navigator.userAgent);
     const deviceName = ref("");
 
     const takeSnapshotTask = useAsyncTask<Snapshot, []>(async () => {
+      const headers: Headers = {
+        "User-Agent": userAgent.value,
+      };
+      if (acceptLanguage.value !== "") {
+        headers["Accept-Language"] = acceptLanguage.value;
+      }
+      if (host.value !== "") {
+        headers["Host"] = host.value;
+      }
+      if (referer.value !== "") {
+        headers["Referer"] = referer.value;
+      }
+
       const payload: CreateSnapshotPayload = {
         url: url.value,
         enableHar: enableHar.value,
         timeout: timeout.value,
-        userAgent: userAgent.value,
         ignoreHttpsErrors: ignoreHttpsErrors.value,
-        acceptLanguage:
-          acceptLanguage.value === "" ? undefined : acceptLanguage.value,
-        host: host.value === "" ? undefined : host.value,
-        referer: referer.value === "" ? undefined : referer.value,
         deviceName: deviceName.value === "" ? undefined : deviceName.value,
+        headers,
       };
 
       return await API.takeSnapshot(payload);

@@ -103,16 +103,9 @@ class ScriptFactory:
         script_files: List[schemas.ScriptFile] = []
 
         # Use the same settings as the original request
-        headers = {
-            "accept_language": snapshot.options.get("accept_language"),
-            "host": snapshot.options.get("host"),
-            "user_agent": snapshot.options.get("user_agent"),
-        }
-        # Remove none value
-        headers = {k: v for k, v in headers.items() if v is not None}
+        headers = snapshot.request_headers
 
-        ignore_https_errors = snapshot.options.get("ignore_https_errors")
-        verify = not ignore_https_errors
+        verify = not snapshot.ignore_https_errors
 
         async with httpx.AsyncClient(verify=verify) as client:
             # Get sources

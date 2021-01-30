@@ -7,7 +7,6 @@ from app import models, schemas
 from app.services.urlscan import URLScan
 from app.tasks.match import MatchinbgTask
 from app.tasks.snapshot import UpdateProcessingTask
-from app.utils.snapshot import save_snapshot
 
 router = APIRouter()
 
@@ -28,7 +27,7 @@ async def import_from_urlscan(
     except httpx.HTTPError:
         raise HTTPException(status_code=404, detail=f"{uuid} is not found")
 
-    snapshot = await save_snapshot(result)
+    snapshot = await models.Snapshot.save_snapshot_result(result)
 
     background_tasks.add_task(MatchinbgTask.process, snapshot)
     background_tasks.add_task(UpdateProcessingTask.process, snapshot)
