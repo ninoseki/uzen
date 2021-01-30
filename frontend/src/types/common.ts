@@ -1,3 +1,7 @@
+export interface Dict {
+  [key: string]: string | number;
+}
+
 export interface ValidationError {
   loc: string[];
   msg: string;

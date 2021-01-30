@@ -41,10 +41,28 @@
         </b-field>
       </div>
       <div class="column is-half">
-        <b-field label="SHA256(HTML)">
+        <b-field label="HTML hash (SHA256)">
           <b-input
             placeholder="ea8fac7c65fb589b0d53560f5251f74f9e9b243478dcb6b3ea79b5e36449c8d9"
-            v-model="filters.sha256"
+            v-model="filters.htmlHash"
+          ></b-input>
+        </b-field>
+      </div>
+    </div>
+    <div class="columns">
+      <div class="column is-half">
+        <b-field label="Script hash (SHA256)">
+          <b-input
+            placeholder="ea8fac7c65fb589b0d53560f5251f74f9e9b243478dcb6b3ea79b5e36449c8d9"
+            v-model="filters.scriptHash"
+          ></b-input>
+        </b-field>
+      </div>
+      <div class="column is-half">
+        <b-field label="X509 certificate fingerprint (SHA256)">
+          <b-input
+            placeholder="ea8fac7c65fb589b0d53560f5251f74f9e9b243478dcb6b3ea79b5e36449c8d9"
+            v-model="filters.certificateFingerprint"
           ></b-input>
         </b-field>
       </div>
@@ -99,7 +117,15 @@ export default defineComponent({
       type: Number,
       required: false,
     },
-    sha256: {
+    htmlHash: {
+      type: String,
+      required: false,
+    },
+    scriptHash: {
+      type: String,
+      required: false,
+    },
+    certificateFingerprint: {
       type: String,
       required: false,
     },
@@ -113,7 +139,9 @@ export default defineComponent({
       asn: props.asn,
       hostname: props.hostname,
       ipAddress: props.ipAddress,
-      sha256: props.sha256,
+      htmlHash: props.htmlHash,
+      scriptHash: props.scriptHash,
+      certificateFingerprint: props.certificateFingerprint,
       status: props.status,
       url: props.url,
       fromAt: undefined,

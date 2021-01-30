@@ -121,11 +121,11 @@
                 </div>
               </div>
               <div class="column">
-                <H3>SHA256(HTML)</H3>
+                <H3>SHA256 hash (HTML)</H3>
                 <router-link
                   :to="{
                     name: 'Snapshots',
-                    query: { sha256: getSnapshotTask.last.value.html.id },
+                    query: { htmlHash: getSnapshotTask.last.value.html.id },
                   }"
                   >{{ getSnapshotTask.last.value.html.id }}
                 </router-link>
@@ -147,7 +147,7 @@
 
           <b-tab-item label="Certificate">
             <Certificate
-              :certificate="getCertificate(getSnapshotTask.last.value)"
+              :certificate="getSnapshotTask.last.value.certificate || undefined"
             />
           </b-tab-item>
 
@@ -250,13 +250,9 @@ export default defineComponent({
       return snapshot.whois?.content;
     };
 
-    const getCertificate = (snapshot: Snapshot) => {
-      return snapshot.certificate?.content;
-    };
-
     getSnapshot();
 
-    return { getSnapshotTask, getWhois, getCertificate };
+    return { getSnapshotTask, getWhois };
   },
 });
 </script>

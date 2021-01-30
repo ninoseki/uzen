@@ -17,8 +17,8 @@ def mock_whois(hostname: str):
     return "foo"
 
 
-def mock_load_and_dump_from_url(url: str):
-    return "Certificate:"
+def mock_load_from_url(url: str):
+    return None
 
 
 @pytest.mark.asyncio
@@ -26,9 +26,7 @@ def mock_load_and_dump_from_url(url: str):
 async def test_take_snapshot(monkeypatch):
     monkeypatch.setattr(RDAP, "lookup", mock_lookup)
     monkeypatch.setattr(Whois, "whois", mock_whois)
-    monkeypatch.setattr(
-        Certificate, "load_and_dump_from_url", mock_load_and_dump_from_url
-    )
+    monkeypatch.setattr(Certificate, "load_from_url", mock_load_from_url)
     respx.get("http://example.com/",).mock(
         Response(status_code=200, content="foo", headers={"Content-Type": "text/html"})
     )

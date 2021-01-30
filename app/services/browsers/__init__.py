@@ -41,7 +41,13 @@ def build_snapshot_result(
         har_reader = HarReader(har)
         script_files = har_reader.find_script_files()
 
-    certificate_content = Certificate.load_and_dump_from_url(url)
+    certificate = Certificate.load_from_url(url)
+    certificate_content: Optional[str] = None
+    certificate_sha256_fingerprint: Optional[str] = None
+    if certificate:
+        certificate_content = certificate.text
+        certificate_sha256_fingerprint = certificate.fingerprint
+
     whois_content = Whois.whois(hostname)
 
     snapshot = models.Snapshot(
@@ -65,7 +71,7 @@ def build_snapshot_result(
     )
     certificate = (
         models.Certificate(
-            id=calculate_sha256(certificate_content), content=certificate_content
+            id=certificate_sha256_fingerprint, content=certificate_content
         )
         if certificate_content
         else None
