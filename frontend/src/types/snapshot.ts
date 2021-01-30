@@ -54,7 +54,9 @@ export interface SnapshotFilters {
   asn: string | undefined;
   hostname: string | undefined;
   ipAddress: string | undefined;
-  sha256: string | undefined;
+  htmlHash: string | undefined;
+  scriptHash: string | undefined;
+  certificateFingerprint: string | undefined;
   status: number | undefined;
   url: string | undefined;
   fromAt: Date | undefined;

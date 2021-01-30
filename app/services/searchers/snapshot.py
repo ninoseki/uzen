@@ -48,9 +48,17 @@ class SnapshotSearcher(AbstractSearcher):
         if asn is not None:
             queries.append(Q(asn=asn))
 
-        sha256 = filters.get("sha256")
-        if sha256 is not None:
-            queries.append(Q(html__id=sha256))
+        html_hash = filters.get("html_hash")
+        if html_hash is not None:
+            queries.append(Q(html__id=html_hash))
+
+        script_hash = filters.get("script_hash")
+        if script_hash is not None:
+            queries.append(Q(_scripts__file_id=script_hash))
+
+        certificate_fingerprint = filters.get("certificate_fingerprint")
+        if certificate_fingerprint is not None:
+            queries.append(Q(certificate__id=certificate_fingerprint))
 
         from_at = filters.get("from_at")
         if from_at is not None:

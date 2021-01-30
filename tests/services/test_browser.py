@@ -25,17 +25,15 @@ def mock_whois(hostname: str):
     return "foo"
 
 
-def mock_load_and_dump_from_url(url: str):
-    return "Certificate:"
+def mock_load_from_url(url: str):
+    return None
 
 
 @pytest.mark.asyncio
 async def test_take_snapshot(monkeypatch):
     monkeypatch.setattr(RDAP, "lookup", mock_lookup)
     monkeypatch.setattr(Whois, "whois", mock_whois)
-    monkeypatch.setattr(
-        Certificate, "load_and_dump_from_url", mock_load_and_dump_from_url
-    )
+    monkeypatch.setattr(Certificate, "load_from_url", mock_load_from_url)
 
     browser = Browser()
     result = await browser.take_snapshot("http://example.com")
@@ -55,9 +53,7 @@ async def test_take_snapshot(monkeypatch):
 async def test_take_snapshot_with_scripts(monkeypatch):
     monkeypatch.setattr(RDAP, "lookup", mock_lookup)
     monkeypatch.setattr(Whois, "whois", mock_whois)
-    monkeypatch.setattr(
-        Certificate, "load_and_dump_from_url", mock_load_and_dump_from_url
-    )
+    monkeypatch.setattr(Certificate, "load_from_url", mock_load_from_url)
 
     browser = Browser()
     result = await browser.take_snapshot("https://github.com/")
