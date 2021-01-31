@@ -11,13 +11,14 @@ from pydantic import AnyHttpUrl, Field, IPvAnyAddress, validator
 
 from app.schemas.base import AbstractBaseModel
 from app.schemas.certificate import Certificate
-from app.schemas.classification import BaseClassification, Classification
+from app.schemas.classification import Classification
 from app.schemas.common import Source, Target
-from app.schemas.dns_record import BaseDnsRecord, DnsRecord
+from app.schemas.dns_record import DnsRecord
 from app.schemas.html import HTML
 from app.schemas.mixin import TimestampMixin
-from app.schemas.script import BaseScript, Script
+from app.schemas.script import Script
 from app.schemas.search import BaseSearchResults
+from app.schemas.stylesheet import Stylesheet
 from app.schemas.whois import Whois
 from app.utils.network import get_hostname_from_url, get_ip_address_by_hostname
 
@@ -121,13 +122,14 @@ class Snapshot(BaseSnapshot, AbstractBaseModel, TimestampMixin):
     certificate: Optional[Certificate] = Field(None, title="Certificate")
     whois: Whois = Field(None, title="Whois")
 
-    scripts: List[Union[Script, BaseScript]] = Field(
-        ..., title="Scripts", description="A list of scripts"
+    scripts: List[Script] = Field(..., title="Scripts", description="A list of scripts")
+    stylesheets: List[Stylesheet] = Field(
+        ..., title="Stylesheets", description="A list of stylesheets"
     )
-    dns_records: List[Union[DnsRecord, BaseDnsRecord]] = Field(
+    dns_records: List[DnsRecord] = Field(
         ..., title="DNS records", description="A list of DNS records"
     )
-    classifications: List[Union[Classification, BaseClassification]] = Field(
+    classifications: List[Classification] = Field(
         ..., title="Classifications", description="A list of classifications"
     )
     rules: List[Rule] = Field(..., title="Rules", description="A list of matched rules")

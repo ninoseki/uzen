@@ -9,6 +9,7 @@ from app.models import (
     rule,
     script,
     snapshot,
+    stylesheet,
     whois,
 )
 from app.models.certificate import Certificate
@@ -21,6 +22,7 @@ from app.models.match import Match
 from app.models.rule import Rule
 from app.models.script import Script
 from app.models.snapshot import Snapshot
+from app.models.stylesheet import Stylesheet
 from app.models.whois import Whois
 
 __all__ = [
@@ -44,6 +46,8 @@ __all__ = [
     "Script",
     "snapshot",
     "Snapshot",
+    "stylesheet",
+    "Stylesheet",
     "whois",
     "Whois",
 ]

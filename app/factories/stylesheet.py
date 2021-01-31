@@ -5,18 +5,20 @@ import aiometer
 import httpx
 
 from app import dataclasses, models
-from app.dataclasses.utils import ScriptFile
+from app.services.har import is_stylesheet_content_type
 from app.utils.hash import calculate_sha256
-from app.utils.http import get_http_resource, get_script_urls
+from app.utils.http import get_http_resource, get_stylesheet_urls
 
 MAX_AT_ONCE = 10
 
 
-class ScriptFactory:
+class StylesheetFactory:
     @staticmethod
-    async def from_snapshot(snapshot: models.Snapshot) -> List[dataclasses.ScriptFile]:
-        urls = get_script_urls(url=snapshot.url, html=snapshot.html.content,)
-        script_files: List[dataclasses.ScriptFile] = []
+    async def from_snapshot(
+        snapshot: models.Snapshot,
+    ) -> List[dataclasses.StylesheetFile]:
+        urls = get_stylesheet_urls(url=snapshot.url, html=snapshot.html.content,)
+        stylesheet_files: List[dataclasses.StylesheetFile] = []
 
         # Use the same settings as the original request
         headers = snapshot.request_headers
@@ -34,14 +36,22 @@ class ScriptFactory:
                 if result is None:
                     continue
 
+                if result.content_type is None:
+                    continue
+
+                if not is_stylesheet_content_type(result.content_type):
+                    continue
+
                 sha256 = calculate_sha256(result.content)
                 file = models.File(id=sha256, content=result.content)
-                script = models.Script(
+                stylesheet = models.Stylesheet(
                     url=result.url,
                     file_id=sha256,
                     # insert a dummy ID if a snapshot doesn't have ID
                     snapshot_id=snapshot.id or -1,
                 )
-                script_files.append(ScriptFile(script=script, file=file))
+                stylesheet_files.append(
+                    dataclasses.StylesheetFile(stylesheet=stylesheet, file=file)
+                )
 
-        return script_files
+        return stylesheet_files

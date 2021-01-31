@@ -1,17 +1,13 @@
 from typing import Optional
 
-from fastapi_utils.api_model import APIModel
 from pydantic import Field
 
 from app.schemas.base import AbstractBaseModel
 from app.schemas.mixin import TimestampMixin
 
 
-class BaseClassification(APIModel):
-    """Base Pydantic model for Classification
-
-    Note that this model doesn't have "id" and "created_at" fields.
-    """
+class Classification(AbstractBaseModel, TimestampMixin):
+    """Pydantic model for Classification"""
 
     name: str = Field(
         ..., title="Name", description="A name of the classification",
@@ -22,7 +18,3 @@ class BaseClassification(APIModel):
     note: Optional[str] = Field(
         None, title="Note", description="A note of the classification",
     )
-
-
-class Classification(BaseClassification, AbstractBaseModel, TimestampMixin):
-    """Full Pydantic model for Classification"""

@@ -56,6 +56,10 @@ class SnapshotSearcher(AbstractSearcher):
         if script_hash is not None:
             queries.append(Q(_scripts__file_id=script_hash))
 
+        stylesheet_hash = filters.get("stylesheet_hash")
+        if stylesheet_hash is not None:
+            queries.append(Q(_stylesheets__file_id=stylesheet_hash))
+
         certificate_fingerprint = filters.get("certificate_fingerprint")
         if certificate_fingerprint is not None:
             queries.append(Q(certificate__id=certificate_fingerprint))

@@ -36,10 +36,12 @@ def build_snapshot_result(
     asn = get_asn_by_ip_address(ip_address) or ""
 
     script_files: List[dataclasses.ScriptFile] = []
+    stylesheet_files: List[dataclasses.StylesheetFile] = []
 
     if har:
         har_reader = HarReader(har)
         script_files = har_reader.find_script_files()
+        stylesheet_files = har_reader.find_stylesheet_files()
 
     certificate = Certificate.load_from_url(url)
     certificate_content: Optional[str] = None
@@ -85,6 +87,7 @@ def build_snapshot_result(
         whois=whois,
         snapshot=snapshot,
         script_files=script_files,
+        stylesheet_files=stylesheet_files,
         har=har,
     )
 

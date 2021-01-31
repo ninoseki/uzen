@@ -14,6 +14,14 @@ def is_js_content_type(content_type: str) -> bool:
     return False
 
 
+def is_stylesheet_content_type(content_type: str) -> bool:
+    types = ["text/css"]
+    for type_ in types:
+        if content_type.startswith(type_):
+            return True
+    return False
+
+
 def find_main_entry(har: HAR) -> Optional[Entry]:
     for entry in har.log.entries:
         if entry.response.redirect_url == "":
@@ -46,6 +54,29 @@ def find_script_files(har: HAR) -> None:
     return script_files
 
 
+def find_stylesheet_files(har: HAR) -> None:
+    stylesheet_files: List[dataclasses.StylesheetFile] = []
+
+    for entry in har.log.entries:
+        url = entry.request.url
+        content = entry.response.content
+        if not content:
+            continue
+
+        if is_stylesheet_content_type(content.mime_type):
+            encoded_text = content.text
+            text = base64.b64decode(encoded_text).decode()
+            sha256 = calculate_sha256(text)
+
+            stylesheet = models.Stylesheet(url=url, file_id=sha256)
+            file = models.File(id=sha256, content=text)
+            stylesheet_files.append(
+                dataclasses.StylesheetFile(stylesheet=stylesheet, file=file)
+            )
+
+    return stylesheet_files
+
+
 class HarBuilder:
     @staticmethod
     def from_dict(
@@ -74,6 +105,9 @@ class HarReader:
 
     def find_script_files(self) -> List[dataclasses.ScriptFile]:
         return find_script_files(self.har)
+
+    def find_stylesheet_files(self) -> List[dataclasses.StylesheetFile]:
+        return find_stylesheet_files(self.har)
 
     def find_request(self) -> dict:
         return find_request(self.har)

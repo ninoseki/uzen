@@ -10,17 +10,6 @@
         </b-field>
       </div>
       <div class="column is-half">
-        <b-field label="Status">
-          <b-input
-            type="number"
-            placeholder="200"
-            v-model="filters.status"
-          ></b-input>
-        </b-field>
-      </div>
-    </div>
-    <div class="columns">
-      <div class="column is-half">
         <b-field label="Hostname">
           <b-input
             placeholder="example.com"
@@ -28,23 +17,33 @@
           ></b-input>
         </b-field>
       </div>
+    </div>
+    <div class="columns">
       <div class="column is-half">
         <b-field label="IP address">
           <b-input placeholder="1.1.1.1" v-model="filters.ipAddress"></b-input>
         </b-field>
       </div>
-    </div>
-    <div class="columns">
       <div class="column is-half">
         <b-field label="ASN">
           <b-input placeholder="AS15133" v-model="filters.asn"></b-input>
         </b-field>
       </div>
+    </div>
+    <div class="columns">
       <div class="column is-half">
         <b-field label="HTML hash (SHA256)">
           <b-input
             placeholder="ea8fac7c65fb589b0d53560f5251f74f9e9b243478dcb6b3ea79b5e36449c8d9"
             v-model="filters.htmlHash"
+          ></b-input>
+        </b-field>
+      </div>
+      <div class="column is-half">
+        <b-field label="X509 certificate fingerprint (SHA256)">
+          <b-input
+            placeholder="ea8fac7c65fb589b0d53560f5251f74f9e9b243478dcb6b3ea79b5e36449c8d9"
+            v-model="filters.certificateFingerprint"
           ></b-input>
         </b-field>
       </div>
@@ -59,10 +58,10 @@
         </b-field>
       </div>
       <div class="column is-half">
-        <b-field label="X509 certificate fingerprint (SHA256)">
+        <b-field label="Stylesheet hash (SHA256)">
           <b-input
             placeholder="ea8fac7c65fb589b0d53560f5251f74f9e9b243478dcb6b3ea79b5e36449c8d9"
-            v-model="filters.certificateFingerprint"
+            v-model="filters.stylesheetHash"
           ></b-input>
         </b-field>
       </div>
@@ -125,6 +124,10 @@ export default defineComponent({
       type: String,
       required: false,
     },
+    stylesheetHash: {
+      type: String,
+      required: false,
+    },
     certificateFingerprint: {
       type: String,
       required: false,
@@ -141,6 +144,7 @@ export default defineComponent({
       ipAddress: props.ipAddress,
       htmlHash: props.htmlHash,
       scriptHash: props.scriptHash,
+      stylesheetHash: props.stylesheetHash,
       certificateFingerprint: props.certificateFingerprint,
       status: props.status,
       url: props.url,

@@ -15,6 +15,7 @@
         :ipAddress="$route.query.ipAddress"
         :htmlHash="$route.query.htmlHash"
         :scriptHash="$route.query.scriptHash"
+        :stylesheetHash="$route.query.stylesheetHash"
         :certificateFingerprint="$route.query.certificateFingerprint"
       />
 

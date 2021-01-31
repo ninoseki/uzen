@@ -16,6 +16,9 @@ class SearchFilters:
         script_hash: Optional[str] = Query(
             None, title="SHA256 hash of script", alias="scriptHash"
         ),
+        stylesheet_hash: Optional[str] = Query(
+            None, title="SHA256 hash of stylesheet", alias="stylesheetHash"
+        ),
         certificate_fingerprint: Optional[str] = Query(
             None,
             title="SHA256 fingerprint of X509 certificate",
@@ -41,6 +44,7 @@ class SearchFilters:
         self.ip_address = ip_address
         self.html_hash = html_hash
         self.script_hash = script_hash
+        self.stylesheet_hash = stylesheet_hash
         self.certificate_fingerprint = certificate_fingerprint
         self.status = status
         self.url = url

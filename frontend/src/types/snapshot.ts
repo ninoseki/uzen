@@ -35,6 +35,13 @@ export interface Script {
   createdAt: string | null;
 }
 
+export interface Stylesheet {
+  id: string | null;
+  url: string;
+  file: File;
+  createdAt: string | null;
+}
+
 export interface DnsRecord {
   id: string | null;
   type: string;
@@ -56,6 +63,7 @@ export interface SnapshotFilters {
   ipAddress: string | undefined;
   htmlHash: string | undefined;
   scriptHash: string | undefined;
+  stylesheetHash: string | undefined;
   certificateFingerprint: string | undefined;
   status: number | undefined;
   url: string | undefined;
@@ -81,6 +89,7 @@ export interface Snapshot {
   certificate: Certificate | null;
 
   scripts: Script[];
+  stylesheets: Stylesheet[];
   dnsRecords: DnsRecord[];
   classifications: Classification[];
   rules: Rule[];

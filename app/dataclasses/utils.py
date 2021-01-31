@@ -9,8 +9,21 @@ from app import models
 
 
 @dataclass
+class HttpResource:
+    url: str
+    content: str
+    content_type: Optional[str] = None
+
+
+@dataclass
 class ScriptFile:
     script: models.Script
+    file: models.File
+
+
+@dataclass
+class StylesheetFile:
+    stylesheet: models.Stylesheet
     file: models.File
 
 
@@ -23,6 +36,7 @@ class SnapshotResult:
     screenshot: Optional[bytes] = None
     har: Optional[models.HAR] = None
     script_files: List[ScriptFile] = field(default_factory=lambda: [])
+    stylesheet_files: List[StylesheetFile] = field(default_factory=lambda: [])
 
 
 @dataclass
