@@ -2,6 +2,9 @@
   <b-navbar :fixed-top="true">
     <template slot="brand">
       <b-navbar-item>
+        <img src="/images/logo.png" alt="Uzen" />
+      </b-navbar-item>
+      <b-navbar-item>
         <h1 class="title">Uzen</h1>
       </b-navbar-item>
     </template>
