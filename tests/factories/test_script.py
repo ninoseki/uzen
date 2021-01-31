@@ -1,10 +1,8 @@
-import pathlib
-
 import pytest
 import respx
 from httpx import Response
 
-from app.factories.script import ScriptFactory, get_script_sources
+from app.factories.script import ScriptFactory
 from tests.helper import make_html, make_snapshot
 
 
@@ -68,14 +66,3 @@ async def test_build_from_snapshot_with_no_src():
 
     script_files = await ScriptFactory.from_snapshot(snapshot)
     assert len(script_files) == 0
-
-
-def test_get_script_sources():
-    path = pathlib.Path(__file__).parent / "../fixtures/test.html"
-    with open(path) as f:
-        fixture = f.read()
-
-    sources = get_script_sources(url="http://example.com/test.php", body=fixture)
-    assert len(sources) == 2
-    assert "http://example.com/vendor/jquery-3.2.1.min.js" in sources
-    assert "http://example.com/js/main.js" in sources

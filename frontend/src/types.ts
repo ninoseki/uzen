@@ -27,6 +27,7 @@ import {
   Script,
   Snapshot,
   SnapshotFilters,
+  Stylesheet,
 } from "@/types/snapshot";
 import {
   YaraMatch,
@@ -64,6 +65,7 @@ export {
   Snapshot,
   SnapshotFilters,
   SnapshotSearchResults,
+  Stylesheet,
   TargetTypes,
   UpdateRulePayload,
   ValidationError,

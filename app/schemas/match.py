@@ -13,11 +13,8 @@ from app.schemas.snapshot import PlainSnapshot
 from app.schemas.yara import YaraMatch
 
 
-class BaseMatch(APIModel):
-    """Base Pydantic model for Match
-
-    Note that this model doesn't have "id" and "created_at" fields.
-    """
+class Match(AbstractBaseModel, TimestampMixin):
+    """Pydantic model for Match"""
 
     matches: List[YaraMatch] = Field(
         ..., title="Matches", description="A list of YARA mastches",
@@ -34,10 +31,6 @@ class BaseMatch(APIModel):
 
     class Config:
         orm_mode = True
-
-
-class Match(BaseMatch, AbstractBaseModel, TimestampMixin):
-    """Full Pydantic model for Match"""
 
 
 class MatchResult(APIModel):

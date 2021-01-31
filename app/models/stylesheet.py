@@ -10,31 +10,31 @@ from app.models.mixin import TimestampMixin
 from app.utils.url import normalize_url
 
 if TYPE_CHECKING:
-    from app.dataclasses import ScriptFile
+    from app.dataclasses import StylesheetFile
 
 
-class Script(TimestampMixin, AbstractBaseModel):
+class Stylesheet(TimestampMixin, AbstractBaseModel):
     url = fields.TextField()
     snapshot: fields.ForeignKeyRelation["Snapshot"] = fields.ForeignKeyField(
         "models.Snapshot",
-        related_name="_scripts",
+        related_name="_stylesheets",
         to_field="id",
         on_delete=fields.CASCADE,
     )
 
     file: fields.ForeignKeyRelation["File"] = fields.ForeignKeyField(
-        "models.File", related_name="scripts", on_delete=fields.RESTRICT
+        "models.File", related_name="stylesheets", on_delete=fields.RESTRICT
     )
 
-    def to_model(self) -> schemas.Script:
+    def to_model(self) -> schemas.Stylesheet:
         self.url = normalize_url(self.url)
-        return schemas.Script.from_orm(self)
+        return schemas.Stylesheet.from_orm(self)
 
     @classmethod
-    async def save_script_files(
-        cls, script_files: List["ScriptFile"], snapshot_id: UUID
+    async def save_stylesheet_files(
+        cls, stylesheet_files: List["StylesheetFile"], snapshot_id: UUID
     ):
-        files = [script_file.file for script_file in script_files]
+        files = [stylesheet_file.file for stylesheet_file in stylesheet_files]
         for file in files:
             try:
                 await file.save()
@@ -43,10 +43,12 @@ class Script(TimestampMixin, AbstractBaseModel):
                 # e.g. tortoise.exceptions.IntegrityError: UNIQUE constraint failed: files.id
                 pass
 
-        scripts = [script_file.script for script_file in script_files]
-        for script in scripts:
-            script.snapshot_id = snapshot_id
-        await cls.bulk_create(scripts)
+        stylesheets = [
+            stylesheet_file.stylesheet for stylesheet_file in stylesheet_files
+        ]
+        for stylesheet in stylesheets:
+            stylesheet.snapshot_id = snapshot_id
+        await cls.bulk_create(stylesheets)
 
     class Meta:
-        table = "scripts"
+        table = "stylesheets"

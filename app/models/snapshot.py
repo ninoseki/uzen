@@ -11,6 +11,7 @@ from app import schemas
 from app.models.base import AbstractBaseModel
 from app.models.mixin import TimestampMixin
 from app.models.script import Script
+from app.models.stylesheet import Stylesheet
 
 if TYPE_CHECKING:
     from app.dataclasses import SnapshotResult
@@ -57,6 +58,7 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
     har = fields.OneToOneRelation["HAR"]
 
     _scripts: fields.ReverseRelation["Script"]
+    _stylesheets: fields.ReverseRelation["Stylesheet"]
     _dns_records: fields.ReverseRelation["DnsRecord"]
     _classifications: fields.ReverseRelation["Classification"]
 
@@ -79,6 +81,13 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
     def scripts(self) -> List[schemas.Script]:
         try:
             return [script.to_model() for script in self._scripts]
+        except NoValuesFetched:
+            return []
+
+    @property
+    def stylesheets(self) -> List[schemas.Stylesheet]:
+        try:
+            return [stylesheet.to_model() for stylesheet in self._stylesheets]
         except NoValuesFetched:
             return []
 
@@ -112,6 +121,7 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
     async def get_by_id(cls, id_: UUID) -> Snapshot:
         return await cls.get(id=id_).prefetch_related(
             "_scripts__file",
+            "_stylesheets__file",
             "_dns_records",
             "_classifications",
             "_rules",
@@ -161,6 +171,9 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
 
             # save scripts
             await Script.save_script_files(result.script_files, snapshot.id)
+
+            # save stylesheets
+            await Stylesheet.save_stylesheet_files(result.stylesheet_files, snapshot.id)
 
             # save har
             har = result.har

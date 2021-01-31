@@ -155,6 +155,12 @@
             <Scripts :scripts="getSnapshotTask.last.value.scripts" />
           </b-tab-item>
 
+          <b-tab-item label="Stylehseets">
+            <Stylesheets
+              :stylesheets="getSnapshotTask.last.value.stylesheets"
+            />
+          </b-tab-item>
+
           <b-tab-item label="DNS records">
             <DnsRecords :dnsRecords="getSnapshotTask.last.value.dnsRecords" />
           </b-tab-item>
@@ -192,6 +198,7 @@ import Rules from "@/components/rule/Buttons.vue";
 import Screenshot from "@/components/screenshot/Screenshot.vue";
 import Scripts from "@/components/script/Scripts.vue";
 import HTML from "@/components/snapshot/HTML.vue";
+import Stylesheets from "@/components/stylesheet/Stylesheets.vue";
 import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
 import Error from "@/components/ui/Error.vue";
 import H2 from "@/components/ui/H2.vue";
@@ -211,15 +218,16 @@ export default defineComponent({
     Error,
     H2,
     H3,
-    Links,
-    Loading,
-    Screenshot,
-    Scripts,
-    Whois,
-    YaraResultComponent,
-    Rules,
     HAR,
     HTML,
+    Links,
+    Loading,
+    Rules,
+    Screenshot,
+    Scripts,
+    Stylesheets,
+    Whois,
+    YaraResultComponent,
   },
   props: {
     snapshotId: {

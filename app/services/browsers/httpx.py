@@ -5,6 +5,7 @@ import httpx
 from app import dataclasses
 from app.services.browsers import AbstractBrowser, build_snapshot_result
 from app.tasks.script import ScriptTask
+from app.tasks.stylesheet import StylesheetTask
 
 DEFAULT_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
 DEFAULT_AL = "en-US"
@@ -51,9 +52,14 @@ class HttpxBrowser(AbstractBrowser):
 
         # get script files
         script_files = cast(
-            List[dataclasses.ScriptFile],
-            await ScriptTask.process(snapshot, insert_to_db=False),
+            List[dataclasses.ScriptFile], await ScriptTask.process(snapshot),
         )
         snapshot_result.script_files = script_files
+
+        # get stylesheet files
+        stylesheet_files = cast(
+            List[dataclasses.StylesheetFile], await StylesheetTask.process(snapshot),
+        )
+        snapshot_result.stylesheet_files = stylesheet_files
 
         return snapshot_result

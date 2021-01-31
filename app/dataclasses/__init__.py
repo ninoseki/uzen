@@ -8,9 +8,11 @@ from app.dataclasses.har import HAR
 from app.dataclasses.search import SearchResults
 from app.dataclasses.utils import (
     EnrichmentResults,
+    HttpResource,
     ScriptFile,
     SearchResults,
     SnapshotResult,
+    StylesheetFile,
 )
 
 __all__ = [
@@ -19,9 +21,11 @@ __all__ = [
     "Certificate",
     "EnrichmentResults",
     "HAR",
+    "HttpResource",
     "ResponseReceivedEvent",
     "ScriptFile",
     "SearchResults",
     "SearchResults",
     "SnapshotResult",
+    "StylesheetFile",
 ]
