@@ -42,7 +42,7 @@
   "devDependencies": {
     "@types/crypto-js": "4.0.1",
     "@types/highlight.js": "10.1.0",
-    "@types/jest": "26.0.19",
+    "@types/jest": "26.0.20",
     "@types/qs": "6.9.5",
     "@typescript-eslint/eslint-plugin": "4.11.1",
     "@typescript-eslint/parser": "4.11.1",
