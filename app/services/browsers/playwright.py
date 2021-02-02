@@ -7,7 +7,6 @@ from playwright import async_playwright
 from playwright.async_api import Browser, CDPSession, Error, Response
 
 from app import dataclasses
-from app.core import settings
 from app.factories.har import HarFactory
 from app.services.browsers import AbstractBrowser, build_snapshot_result
 from app.services.har import HarBuilder
@@ -64,10 +63,7 @@ async def run_playwright_browser(
             await page.setExtraHTTPHeaders(headers)
 
         res: Optional[Response] = await page.goto(
-            url,
-            referer=referer,
-            timeout=options.timeout,
-            waitUntil=settings.BROWSER_WAIT_UNTIL,
+            url, referer=referer, timeout=options.timeout, waitUntil=options.wait_until
         )
 
         # detech the CDP session

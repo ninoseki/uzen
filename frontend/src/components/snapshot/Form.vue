@@ -42,6 +42,7 @@
         :timeout.sync="timeout"
         :userAgent.sync="userAgent"
         :deviceName.sync="deviceName"
+        :waitUntil.sync="waitUntil"
       />
     </div>
   </div>
@@ -56,6 +57,7 @@ import Options from "@/components/snapshot/Options.vue";
 import Error from "@/components/ui/Error.vue";
 import Loading from "@/components/ui/Loading.vue";
 import { CreateSnapshotPayload, Headers, Snapshot } from "@/types";
+import { WaitUntilType } from "@/types";
 
 export default defineComponent({
   name: "SnapshotForm",
@@ -76,6 +78,7 @@ export default defineComponent({
     const timeout = ref(30000);
     const userAgent = ref(navigator.userAgent);
     const deviceName = ref("");
+    const waitUntil = ref<WaitUntilType>("load");
 
     const takeSnapshotTask = useAsyncTask<Snapshot, []>(async () => {
       const headers: Headers = {
@@ -96,6 +99,7 @@ export default defineComponent({
         enableHar: enableHar.value,
         timeout: timeout.value,
         ignoreHttpsErrors: ignoreHttpsErrors.value,
+        waitUntil: waitUntil.value,
         deviceName: deviceName.value === "" ? undefined : deviceName.value,
         headers,
       };
@@ -121,6 +125,7 @@ export default defineComponent({
       timeout,
       enableHar,
       deviceName,
+      waitUntil,
     };
   },
 });

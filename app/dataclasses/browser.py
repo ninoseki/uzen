@@ -4,6 +4,8 @@ from typing import Dict, List, Optional
 from dataclasses_json import config, dataclass_json
 from stringcase import camelcase
 
+from app.types import WaitUntilType
+
 
 @dataclass
 class BrowsingOptions:
@@ -12,6 +14,7 @@ class BrowsingOptions:
     enable_har: bool = False
     ignore_https_errors: bool = False
     device_name: Optional[str] = None
+    wait_until: WaitUntilType = "load"
 
 
 @dataclass_json(letter_case=camelcase)
