@@ -95,6 +95,8 @@ export interface Snapshot {
   rules: Rule[];
 }
 
+export type WaitUntilType = "domcontentloaded" | "load" | "networkidle";
+
 export interface CreateSnapshotPayload {
   url: string;
   enableHar: boolean;
@@ -102,4 +104,5 @@ export interface CreateSnapshotPayload {
   timeout: number;
   deviceName: string | undefined;
   headers: Headers;
+  waitUntil: WaitUntilType;
 }

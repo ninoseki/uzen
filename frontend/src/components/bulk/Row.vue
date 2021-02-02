@@ -31,11 +31,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent, PropType } from "@vue/composition-api";
 import { useAsyncTask } from "vue-concurrency";
 
 import { API } from "@/api";
-import { CreateSnapshotPayload, Headers, Snapshot } from "@/types";
+import {
+  CreateSnapshotPayload,
+  Headers,
+  Snapshot,
+  WaitUntilType,
+} from "@/types";
 import { truncate } from "@/utils/truncate";
 
 export default defineComponent({
@@ -81,6 +86,10 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    waitUntil: {
+      type: Object as PropType<WaitUntilType>,
+      required: true,
+    },
   },
   setup(props) {
     const sleep = (): Promise<void> => {
@@ -109,6 +118,7 @@ export default defineComponent({
         enableHar: props.enableHar,
         timeout: props.timeout,
         ignoreHttpsErrors: props.ignoreHttpsErrors,
+        waitUntil: props.waitUntil,
         deviceName: props.deviceName === "" ? undefined : props.deviceName,
         headers,
       };

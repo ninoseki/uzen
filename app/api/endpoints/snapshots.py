@@ -84,6 +84,7 @@ async def create(
             timeout=payload.timeout,
             device_name=payload.device_name,
             headers=payload.headers,
+            wait_until=payload.wait_until,
         )
         result = await browser.take_snapshot(payload.url)
     except TakeSnapshotError as e:

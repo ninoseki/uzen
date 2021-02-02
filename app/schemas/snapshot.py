@@ -20,6 +20,7 @@ from app.schemas.script import Script
 from app.schemas.search import BaseSearchResults
 from app.schemas.stylesheet import Stylesheet
 from app.schemas.whois import Whois
+from app.types import WaitUntilType
 from app.utils.network import get_hostname_from_url, get_ip_address_by_hostname
 
 # Declare rules & devices related schemas here to prevent circular reference
@@ -171,6 +172,11 @@ class CreateSnapshotPayload(APIModel):
     )
     device_name: Optional[str] = Field(
         None, title="Device name", description="Name of a device to emulate"
+    )
+    wait_until: WaitUntilType = Field(
+        "load",
+        title="Wait until",
+        description="When to consider operation succeeded, defaults to load",
     )
 
     @validator("url")

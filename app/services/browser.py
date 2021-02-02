@@ -14,6 +14,7 @@ from app.services.browsers.playwright import (
     PlaywrightBrowser,
     launch_playwright_browser,
 )
+from app.types import WaitUntilType
 
 # default timeout = 30s
 DEFAULT_TIMEOUT = 30000
@@ -63,12 +64,14 @@ class Browser:
         ignore_https_errors: bool = False,
         device_name: Optional[str] = None,
         timeout: Optional[int] = None,
+        wait_until: WaitUntilType = "load",
     ):
         self.headers: Dict[str, str] = headers
         self.enable_har: bool = enable_har
         self.ignore_https_errors: bool = ignore_https_errors
         self.timeout: int = timeout if timeout is not None else DEFAULT_TIMEOUT
         self.device_name: Optional[str] = device_name
+        self.wait_until: WaitUntilType = wait_until
 
     @cached_property
     def options(self) -> dataclasses.BrowsingOptions:
@@ -78,6 +81,7 @@ class Browser:
             timeout=self.timeout,
             device_name=self.device_name,
             headers=self.headers,
+            wait_until=self.wait_until,
         )
 
     async def take_snapshot(self, url: str) -> dataclasses.SnapshotResult:

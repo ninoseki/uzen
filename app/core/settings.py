@@ -1,5 +1,4 @@
 import sys
-from typing import Literal, cast
 
 from starlette.config import Config
 from starlette.datastructures import CommaSeparatedStrings, Secret
@@ -23,10 +22,6 @@ GOOGLE_SAFE_BROWSING_API_KEY: str = config(
 )
 
 BROWSER_WS_ENDPOINT: str = config("BROWSER_WS_ENDPOINT", cast=str, default="")
-BROWSER_WAIT_UNTIL = config("BROWSER_WAIT_UNTIL", cast=str, default="load",)
-BROWSER_WAIT_UNTIL: Literal["domcontentloaded", "load", "networkidle"] = cast(
-    Literal["domcontentloaded", "load", "networkidle"], BROWSER_WAIT_UNTIL
-)
 
 HTTPX_FALLBACK: bool = config("HTTPX_FALLBACK", cast=bool, default=True)
 
