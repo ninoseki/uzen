@@ -1,4 +1,4 @@
-from typing import List, Optional, Union
+from typing import List, Literal, Optional, Union
 from uuid import UUID
 
 import yara
@@ -20,17 +20,10 @@ class UpdateRulePayload(APIModel):
     source: Optional[str] = Field(
         None, title="YARA rule", description="String containing the rules code",
     )
-    target: Optional[str] = Field(
-        None,
+    target: Optional[Literal["html", "certificate", "script", "whois"]] = Field(
         title="Target",
         description="A target field to scan (html, certificate, script or whois)",
     )
-
-    @validator("target")
-    def target_types(cls, v):
-        if v not in ["html", "certificate", "script", "whois", None]:
-            raise ValueError("Target must be any of html, certificate, script or whois")
-        return v
 
     @validator("source")
     def source_compilable(cls, v):
