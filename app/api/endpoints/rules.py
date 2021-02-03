@@ -6,6 +6,7 @@ from tortoise.exceptions import DoesNotExist
 
 from app import models, schemas
 from app.api.dependencies.rule import SearchFilters
+from app.api.dependencies.verification import verify_api_key
 from app.services.searchers.rule import RuleSearcher
 
 router = APIRouter()
@@ -49,7 +50,9 @@ async def get(rule_id: UUID) -> schemas.Rule:
     summary="Update a rule",
     description="Update a rule which has a given id",
 )
-async def put(rule_id: UUID, payload: schemas.UpdateRulePayload) -> schemas.Rule:
+async def put(
+    rule_id: UUID, payload: schemas.UpdateRulePayload, _=Depends(verify_api_key)
+) -> schemas.Rule:
     try:
         rule = await models.Rule.get(id=rule_id)
         if payload.name is not None:
@@ -73,7 +76,9 @@ async def put(rule_id: UUID, payload: schemas.UpdateRulePayload) -> schemas.Rule
     description="Create a rule",
     status_code=201,
 )
-async def create(payload: schemas.CreateRulePayload) -> schemas.Rule:
+async def create(
+    payload: schemas.CreateRulePayload, _=Depends(verify_api_key)
+) -> schemas.Rule:
     rule = models.Rule(name=payload.name, target=payload.target, source=payload.source)
     await rule.save()
     return rule.to_model()
@@ -86,7 +91,7 @@ async def create(payload: schemas.CreateRulePayload) -> schemas.Rule:
     description="Delete a rule which has a given ID",
     status_code=204,
 )
-async def delete(rule_id: UUID) -> dict:
+async def delete(rule_id: UUID, _=Depends(verify_api_key)) -> dict:
     try:
         await models.Rule.delete_by_id(rule_id)
     except DoesNotExist:

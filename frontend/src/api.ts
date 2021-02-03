@@ -1,5 +1,6 @@
 import axios from "axios";
 
+import { useGlobalState } from "@/store";
 import {
   CountResponse,
   CreateRulePayload,
@@ -17,11 +18,23 @@ import {
 } from "@/types";
 import { HAR, UpdateRulePayload, YaraScanPyalod } from "@/types";
 
-const client = axios.create({
+const state = useGlobalState();
+
+let client = axios.create({
   headers: {
     Accept: "application/json",
+    "Api-key": state.value.apiKey,
   },
 });
+
+export function updateClient(): void {
+  client = axios.create({
+    headers: {
+      Accept: "application/json",
+      "Api-key": state.value.apiKey,
+    },
+  });
+}
 
 export const API = {
   async takeSnapshot(payload: CreateSnapshotPayload): Promise<Snapshot> {

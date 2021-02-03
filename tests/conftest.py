@@ -27,7 +27,11 @@ from app.utils.hash import calculate_sha256
 @pytest.fixture
 async def client():
     app = create_app()
-    async with httpx.AsyncClient(app=app, base_url="http://testserver") as client:
+    async with httpx.AsyncClient(
+        app=app,
+        base_url="http://testserver",
+        headers={"api-key": settings.GLOBAL_API_KEY},
+    ) as client:
         yield client
 
 

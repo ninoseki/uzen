@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 
 import Bulk from "@/views/Bulk.vue";
+import Configuration from "@/views/Configuration.vue";
 import Domain from "@/views/Domain.vue";
 import EditRule from "@/views/EditRule.vue";
 import Home from "@/views/Home.vue";
@@ -100,6 +101,14 @@ const routes = [
     component: Bulk,
     meta: {
       title: "Bulk - Uzen",
+    },
+  },
+  {
+    path: "/configuration",
+    name: "Configuration",
+    component: Configuration,
+    meta: {
+      title: "Configuration - Uzen",
     },
   },
 ];
