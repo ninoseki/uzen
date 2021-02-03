@@ -6,6 +6,7 @@ from tortoise.exceptions import DoesNotExist
 
 from app import models, schemas
 from app.api.dependencies.snapshot import SearchFilters
+from app.api.dependencies.verification import verify_api_key
 from app.core.exceptions import TakeSnapshotError
 from app.services.browser import Browser
 from app.services.searchers.snapshot import SnapshotSearcher
@@ -75,7 +76,9 @@ async def get(snapshot_id: UUID) -> schemas.Snapshot:
     status_code=201,
 )
 async def create(
-    payload: schemas.CreateSnapshotPayload, background_tasks: BackgroundTasks
+    payload: schemas.CreateSnapshotPayload,
+    background_tasks: BackgroundTasks,
+    _=Depends(verify_api_key),
 ) -> schemas.Snapshot:
     try:
         browser = Browser(
@@ -114,7 +117,7 @@ async def create(
     description="Delete a snapshot which has a given ID",
     status_code=204,
 )
-async def delete(snapshot_id: UUID) -> dict:
+async def delete(snapshot_id: UUID, _=Depends(verify_api_key)) -> dict:
     try:
         await models.Snapshot.delete_by_id(snapshot_id)
     except DoesNotExist:

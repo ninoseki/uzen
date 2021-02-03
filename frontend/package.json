@@ -26,6 +26,7 @@
     "@fortawesome/fontawesome-free": "5.15.2",
     "@mdi/font": "5.9.55",
     "@vue/composition-api": "1.0.0-rc.1",
+    "@vueuse/core": "^4.0.12",
     "axios": "0.21.1",
     "buefy": "0.9.4",
     "core-js": "3.8.3",
