@@ -3,7 +3,7 @@ FROM node:14-alpine as build
 
 COPY ./frontend /frontend
 WORKDIR /frontend
-RUN npm install && npm run build && rm -rf node_modules
+RUN npm install -g npm@7 && npm install && npm run build && rm -rf node_modules
 
 # prod env
 FROM python:3.8-slim-buster
