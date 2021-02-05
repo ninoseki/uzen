@@ -80,7 +80,6 @@ export default defineComponent({
     getRule();
 
     const editRuleTask = useAsyncTask<Rule, []>(async () => {
-      console.log(name.value);
       const payload = {
         name: name.value === "" ? undefined : name.value,
         target: target.value,
