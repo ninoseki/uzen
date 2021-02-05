@@ -37,6 +37,7 @@ import { useAsyncTask } from "vue-concurrency";
 import { API } from "@/api";
 import {
   CreateSnapshotPayload,
+  Header,
   Headers,
   Snapshot,
   WaitUntilType,
@@ -55,10 +56,6 @@ export default defineComponent({
       required: true,
     },
     acceptLanguage: {
-      type: String,
-      required: true,
-    },
-    host: {
       type: String,
       required: true,
     },
@@ -90,6 +87,10 @@ export default defineComponent({
       type: Object as PropType<WaitUntilType>,
       required: true,
     },
+    otherHeaders: {
+      type: Array as PropType<Header[]>,
+      required: true,
+    },
   },
   setup(props) {
     const sleep = (): Promise<void> => {
@@ -106,12 +107,15 @@ export default defineComponent({
       if (props.acceptLanguage !== "") {
         headers["Accept-Language"] = props.acceptLanguage;
       }
-      if (props.host !== "") {
-        headers["Host"] = props.host;
-      }
       if (props.referer !== "") {
         headers["Referer"] = props.referer;
       }
+
+      props.otherHeaders.forEach((header) => {
+        if (header.key !== "" && header.value !== "") {
+          headers[header.key] = header.value;
+        }
+      });
 
       const payload: CreateSnapshotPayload = {
         url: props.url,

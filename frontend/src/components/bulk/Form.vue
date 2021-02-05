@@ -32,7 +32,7 @@
       <Options
         v-if="showOptions"
         :acceptLanguage.sync="acceptLanguage"
-        :host.sync="host"
+        :otherHeaders.sync="otherHeaders"
         :ignoreHttpSErrors.sync="ignoreHttpsErrors"
         :referer.sync="referer"
         :timeout.sync="timeout"
@@ -49,7 +49,7 @@
         :index="index"
         :acceptLanguage="acceptLanguage"
         :enableHar="enableHar"
-        :host="host"
+        :otherHeaders="otherHeaders"
         :ignoreHttpsErrors="ignoreHttpsErrors"
         :referer="referer"
         :timeout="timeout"
@@ -65,6 +65,7 @@ import { defineComponent, ref } from "@vue/composition-api";
 
 import Row from "@/components/bulk/Row.vue";
 import Options from "@/components/snapshot/Options.vue";
+import { Header } from "@/types";
 
 export default defineComponent({
   name: "Form",
@@ -76,13 +77,13 @@ export default defineComponent({
     const urlText = ref("");
     const showOptions = ref(false);
     const acceptLanguage = ref("");
-    const host = ref("");
     const ignoreHttpsErrors = ref(false);
     const enableHar = ref(false);
     const referer = ref("");
     const timeout = ref(30000);
     const userAgent = ref("");
     const deviceName = ref("");
+    const otherHeaders = ref<Header[]>([]);
 
     const urls = ref<string[]>([]);
 
@@ -100,7 +101,6 @@ export default defineComponent({
       urlText,
       showOptions,
       acceptLanguage,
-      host,
       ignoreHttpsErrors,
       referer,
       timeout,
@@ -110,6 +110,7 @@ export default defineComponent({
       urls,
       enableHar,
       deviceName,
+      otherHeaders,
     };
   },
 });

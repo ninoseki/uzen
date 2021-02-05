@@ -17,10 +17,7 @@
       </b-select>
     </b-field>
 
-    <b-field
-      label="User Agent"
-      message="It will be overridden if you set a device"
-    >
+    <b-field label="User agent">
       <b-input placeholder="User agent" v-model="userAgent"></b-input>
     </b-field>
 
@@ -28,7 +25,7 @@
       <b-input placeholder="Referer" v-model="referer"></b-input>
     </b-field>
 
-    <b-field label="Accept Language">
+    <b-field label="Accept language">
       <b-select
         v-model="acceptLanguage"
         placeholder="Select Accept Language HTTP header to use"
@@ -40,12 +37,27 @@
       </b-select>
     </b-field>
 
-    <b-field
-      label="Host"
-      message="Just send a GET request to the URL and record a response if this option is set"
-    >
-      <b-input placeholder="Host" v-model="host"></b-input>
+    <b-field label="Other headers">
+      <div class="columns" v-for="(header, index) in otherHeaders" :key="index">
+        <div class="column is-half">
+          <b-field label="Name">
+            <b-input v-model="header.key"></b-input>
+          </b-field>
+        </div>
+        <div class="column is-half">
+          <b-field label="Value">
+            <b-input v-model="header.value"></b-input>
+          </b-field>
+        </div>
+      </div>
+      <div class="column">
+        <b-button class="is-pulled-right" @click="addEmptyHeader">Add</b-button>
+      </div>
     </b-field>
+
+    <div class="column">
+      <hr />
+    </div>
 
     <b-field
       label="Timeout (milliseconds)"
@@ -61,6 +73,10 @@
         <option value="networkidle">networkidle</option>
       </b-select>
     </b-field>
+
+    <div class="column">
+      <hr />
+    </div>
 
     <b-field label="Ignore HTTPS errors">
       <b-checkbox v-model="ignoreHttpsErrors"></b-checkbox>
@@ -78,14 +94,13 @@ import { useAsyncTask } from "vue-concurrency";
 
 import { API } from "@/api";
 import { languages } from "@/languages";
-import { Device } from "@/types";
+import { Device, Header } from "@/types";
 import { WaitUntilType } from "@/types";
 
 export default defineComponent({
   name: "SnapshotOptions",
   setup(_, context) {
     const acceptLanguage = ref("");
-    const host = ref("");
     const ignoreHttpsErrors = ref(false);
     const enableHAR = ref(false);
     const referer = ref("");
@@ -93,9 +108,13 @@ export default defineComponent({
     const userAgent = ref(navigator.userAgent);
     const deviceName = ref("");
     const waitUntil = ref<WaitUntilType>("load");
-
+    const otherHeaders = ref<Header[]>([]);
     const devices = ref<Device[]>([]);
     const languagKeys = Object.keys(languages);
+
+    const addEmptyHeader = () => {
+      otherHeaders.value.push({ key: "", value: "" });
+    };
 
     const getDevicesTask = useAsyncTask<Device[], []>(async () => {
       return await API.getDevices();
@@ -115,13 +134,15 @@ export default defineComponent({
     };
 
     onMounted(async () => {
+      addEmptyHeader();
+
       await getDevices();
     });
 
     watch(
       [
         acceptLanguage,
-        host,
+        otherHeaders,
         ignoreHttpsErrors,
         referer,
         timeout,
@@ -133,7 +154,7 @@ export default defineComponent({
       // eslint-disable-next-line no-unused-vars
       (_first, _second) => {
         context.emit("update:acceptLanguage", acceptLanguage.value);
-        context.emit("update:host", host.value);
+        context.emit("update:otherHeaders", otherHeaders.value);
         context.emit("update:ignoreHttpsErrors", ignoreHttpsErrors.value);
         context.emit("update:enableHAR", enableHAR.value);
         context.emit("update:referer", referer.value);
@@ -151,7 +172,7 @@ export default defineComponent({
 
     return {
       acceptLanguage,
-      host,
+      otherHeaders,
       ignoreHttpsErrors,
       referer,
       timeout,
@@ -163,6 +184,7 @@ export default defineComponent({
       devices,
       waitUntil,
       onDeviceChange,
+      addEmptyHeader,
     };
   },
 });
