@@ -15,3 +15,7 @@ export interface ErrorData {
 export interface CountResponse {
   count: number;
 }
+export interface Header {
+  key: string;
+  value: string;
+}

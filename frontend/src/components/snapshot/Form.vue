@@ -35,7 +35,7 @@
       <Options
         v-if="showOptions"
         :acceptLanguage.sync="acceptLanguage"
-        :host.sync="host"
+        :otherHeaders.sync="otherHeaders"
         :ignoreHttpsErrors.sync="ignoreHttpsErrors"
         :enableHAR.sync="enableHar"
         :referer.sync="referer"
@@ -56,7 +56,7 @@ import { API } from "@/api";
 import Options from "@/components/snapshot/Options.vue";
 import Error from "@/components/ui/Error.vue";
 import Loading from "@/components/ui/Loading.vue";
-import { CreateSnapshotPayload, Headers, Snapshot } from "@/types";
+import { CreateSnapshotPayload, Header, Headers, Snapshot } from "@/types";
 import { WaitUntilType } from "@/types";
 
 export default defineComponent({
@@ -69,9 +69,7 @@ export default defineComponent({
   setup(_, context) {
     const url = ref("");
     const showOptions = ref(false);
-
     const acceptLanguage = ref("");
-    const host = ref("");
     const ignoreHttpsErrors = ref(false);
     const enableHar = ref(false);
     const referer = ref("");
@@ -79,6 +77,7 @@ export default defineComponent({
     const userAgent = ref(navigator.userAgent);
     const deviceName = ref("");
     const waitUntil = ref<WaitUntilType>("load");
+    const otherHeaders = ref<Header[]>([]);
 
     const takeSnapshotTask = useAsyncTask<Snapshot, []>(async () => {
       const headers: Headers = {
@@ -87,12 +86,15 @@ export default defineComponent({
       if (acceptLanguage.value !== "") {
         headers["Accept-Language"] = acceptLanguage.value;
       }
-      if (host.value !== "") {
-        headers["Host"] = host.value;
-      }
       if (referer.value !== "") {
         headers["Referer"] = referer.value;
       }
+
+      otherHeaders.value.forEach((header) => {
+        if (header.key !== "" && header.value !== "") {
+          headers[header.key] = header.value;
+        }
+      });
 
       const payload: CreateSnapshotPayload = {
         url: url.value,
@@ -118,7 +120,6 @@ export default defineComponent({
       url,
       showOptions,
       acceptLanguage,
-      host,
       userAgent,
       ignoreHttpsErrors,
       referer,
@@ -126,6 +127,7 @@ export default defineComponent({
       enableHar,
       deviceName,
       waitUntil,
+      otherHeaders,
     };
   },
 });

@@ -1,4 +1,9 @@
-import { CountResponse, ErrorData, ValidationError } from "@/types/common";
+import {
+  CountResponse,
+  ErrorData,
+  Header,
+  ValidationError,
+} from "@/types/common";
 import { Device } from "@/types/devices";
 import { DomainInformation } from "@/types/domain";
 import { HAR } from "@/types/har";
@@ -51,6 +56,7 @@ export {
   DomainInformation,
   ErrorData,
   HAR,
+  Header,
   Headers,
   IPAddressInformation,
   Link,
