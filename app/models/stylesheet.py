@@ -15,14 +15,16 @@ if TYPE_CHECKING:
 
 class Stylesheet(TimestampMixin, AbstractBaseModel):
     url = fields.TextField()
-    snapshot: fields.ForeignKeyRelation["Snapshot"] = fields.ForeignKeyField(
+    snapshot: fields.ForeignKeyRelation[
+        "Snapshot"  # noqa F821
+    ] = fields.ForeignKeyField(
         "models.Snapshot",
         related_name="_stylesheets",
         to_field="id",
         on_delete=fields.CASCADE,
     )
 
-    file: fields.ForeignKeyRelation["File"] = fields.ForeignKeyField(
+    file: fields.ForeignKeyRelation["File"] = fields.ForeignKeyField(  # noqa F821
         "models.File", related_name="stylesheets", on_delete=fields.RESTRICT
     )
 

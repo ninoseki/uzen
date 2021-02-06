@@ -7,7 +7,7 @@ from app.models.mixin import TimestampMixin
 
 class Whois(AbstractResourceModel, TimestampMixin):
 
-    snapshots: fields.ReverseRelation["Snapshot"]
+    snapshots: fields.ReverseRelation["Snapshot"]  # noqa F821
 
     def to_model(self) -> schemas.Whois:
         return schemas.Whois.from_orm(self)
