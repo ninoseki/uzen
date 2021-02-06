@@ -9,14 +9,11 @@ import Vue from "vue";
 
 import App from "@/App.vue";
 import router from "@/router";
-import { truncate } from "@/utils/truncate";
 
 Vue.use(Buefy);
 Vue.use(VueCompositionAPI);
 
 Vue.config.productionTip = false;
-
-Vue.filter("truncate", truncate);
 
 new Vue({
   router,

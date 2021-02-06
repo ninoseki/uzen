@@ -28,7 +28,7 @@
         <nav class="navbar">
           <div class="navbar-brand">
             <H2>
-              {{ getSnapshotTask.last.value.url }}
+              {{ truncate(getSnapshotTask.last.value.url) }}
             </H2>
           </div>
           <div class="navbar-menu">
@@ -55,7 +55,14 @@
                         </tr>
                         <tr>
                           <th>Submitted URL</th>
-                          <td>{{ getSnapshotTask.last.value.submittedUrl }}</td>
+                          <td>
+                            {{
+                              truncate(
+                                getSnapshotTask.last.value.submittedUrl,
+                                48
+                              )
+                            }}
+                          </td>
                         </tr>
                         <tr>
                           <th>Hostname</th>
@@ -207,6 +214,7 @@ import Loading from "@/components/ui/Loading.vue";
 import Whois from "@/components/whois/Whois.vue";
 import YaraResultComponent from "@/components/yara/Result.vue";
 import { Snapshot, YaraResult } from "@/types";
+import { truncate } from "@/utils/truncate";
 
 export default defineComponent({
   name: "Snapshot",
@@ -260,7 +268,7 @@ export default defineComponent({
 
     getSnapshot();
 
-    return { getSnapshotTask, getWhois };
+    return { getSnapshotTask, getWhois, truncate };
   },
 });
 </script>

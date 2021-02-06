@@ -5,7 +5,13 @@
         <b-loading :is-full-page="false" v-model="isLoading"> </b-loading>
       </b-notification>
     </div>
-    <img class="loading" :src="imageSource" alt="screenshot" @load="onLoaded" />
+    <img
+      class="loading"
+      :src="imageSource"
+      alt="Failed to load the image"
+      @load="onLoaded"
+      @error="onLoaded"
+    />
   </div>
 </template>
 
