@@ -26,7 +26,6 @@ minio = "^7.0.0"
 playwright = "^0.171.1"
 pydantic = "^1.7.3"
 pyopenssl = "^20.0.1"
-pysafebrowsing = "^0.1.1"
 python-whois = "^0.7.3"
 tortoise-orm = "^0.16.19"
 uvicorn = {extras = ["standard"], version = "^0.13.3"}
