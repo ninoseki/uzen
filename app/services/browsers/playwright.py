@@ -2,9 +2,14 @@ import json
 import tempfile
 from typing import List, Optional
 
-import playwright
-from playwright import async_playwright
-from playwright.async_api import Browser, CDPSession, Error, Response
+from playwright.async_api import (
+    Browser,
+    CDPSession,
+    Error,
+    Playwright,
+    Response,
+    async_playwright,
+)
 
 from app import dataclasses
 from app.factories.har import HarFactory
@@ -12,8 +17,8 @@ from app.services.browsers import AbstractBrowser, build_snapshot_result
 from app.services.har import HarBuilder
 
 
-async def launch_playwright_browser(playwright: playwright) -> Browser:
-    return await playwright.chromium.launch(headless=True, chromiumSandbox=False)
+async def launch_playwright_browser(playwright: Playwright) -> Browser:
+    return await playwright.chromium.launch(headless=True, chromium_sandbox=False)
 
 
 async def run_playwright_browser(
@@ -30,17 +35,17 @@ async def run_playwright_browser(
         # do not use the user agent if the device is given
         user_agent = options.headers.get("user-agent", None)
         if device is None:
-            device["userAgent"] = user_agent
+            device["user_agent"] = user_agent
 
-        context = await browser.newContext(
+        context = await browser.new_context(
             **device,
-            recordHar={"path": har_file_path},
-            ignoreHTTPSErrors=options.ignore_https_errors,
+            record_har_path=har_file_path,
+            ignore_https_errors=options.ignore_https_errors,
         )
-        page = await context.newPage()
+        page = await context.new_page()
 
         # record Network.responseReceived events to enrich HAR
-        client: CDPSession = await page.context.newCDPSession(page)
+        client: CDPSession = await page.context.new_cdp_session(page)
         await client.send("Network.enable")
 
         events: List[dataclasses.ResponseReceivedEvent] = []
@@ -60,10 +65,10 @@ async def run_playwright_browser(
         referer = headers.pop("referer", None)
 
         if headers:
-            await page.setExtraHTTPHeaders(headers)
+            await page.set_extra_http_headers(headers)
 
         res: Optional[Response] = await page.goto(
-            url, referer=referer, timeout=options.timeout, waitUntil=options.wait_until
+            url, referer=referer, timeout=options.timeout, wait_until=options.wait_until
         )
 
         # detech the CDP session

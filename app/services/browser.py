@@ -3,8 +3,7 @@ from typing import Dict, Optional
 import httpx
 from cached_property import cached_property
 from loguru import logger
-from playwright import async_playwright
-from playwright.async_api import Error
+from playwright.async_api import Error, async_playwright
 
 from app import dataclasses
 from app.core import settings
@@ -23,10 +22,10 @@ DEFAULT_TIMEOUT = 30000
 async def take_screenshot(hostname: str, protocol="http") -> bytes:
     async with async_playwright() as playwright:
         browser = await launch_playwright_browser(playwright)
-        page = await browser.newPage()
+        page = await browser.new_page()
 
         await page.goto(
-            f"{protocol}://{hostname}", waitUntil=settings.BROWSER_WAIT_UNTIL,
+            f"{protocol}://{hostname}", wait_until=settings.BROWSER_WAIT_UNTIL,
         )
         screenshot = await page.screenshot()
         await browser.close()

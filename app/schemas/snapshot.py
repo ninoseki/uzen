@@ -4,9 +4,8 @@ from typing import Dict, List, Optional, Union, cast
 from uuid import UUID
 
 import httpx
-import playwright
 from fastapi_utils.api_model import APIModel
-from playwright import sync_playwright
+from playwright.sync_api import Error, sync_playwright
 from pydantic import AnyHttpUrl, Field, IPvAnyAddress, validator
 
 from app.schemas.base import AbstractBaseModel
@@ -37,7 +36,6 @@ class DeviceDescriptor(APIModel):
     device_scale_factor: float
     is_mobile: bool
     has_touch: bool
-    default_browser_type: str
 
 
 class Device(APIModel):
@@ -195,7 +193,7 @@ class CreateSnapshotPayload(APIModel):
         devices: List[Device] = []
         try:
             devices = get_devices()
-        except playwright._types.Error:
+        except Error:
             pass
 
         names = [device.name for device in devices]

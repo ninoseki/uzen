@@ -9,7 +9,6 @@ export interface Descriptor {
   deviceScaleFactor: number;
   isMobile: boolean;
   hasTouch: boolean;
-  defaultBrowserType: string;
 }
 
 export interface Device {
