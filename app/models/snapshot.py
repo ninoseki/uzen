@@ -40,18 +40,20 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
     ignore_https_errors = fields.BooleanField(default=False)
     processing = fields.BooleanField(default=True)
 
-    html: fields.ForeignKeyRelation["HTML"] = fields.ForeignKeyField(
+    html: fields.ForeignKeyRelation["HTML"] = fields.ForeignKeyField(  # noqa F821
         "models.HTML", related_name="snapshots", on_delete=fields.RESTRICT
     )
     certificate: fields.ForeignKeyNullableRelation[
-        "Certificate"
+        "Certificate"  # noqa F821
     ] = fields.ForeignKeyField(
         "models.Certificate",
         related_name="snapshots",
         on_delete=fields.RESTRICT,
         null=True,
     )
-    whois: fields.ForeignKeyNullableRelation["Whois"] = fields.ForeignKeyField(
+    whois: fields.ForeignKeyNullableRelation[
+        "Whois"  # noqa F821
+    ] = fields.ForeignKeyField(
         "models.Whois", related_name="snapshots", on_delete=fields.RESTRICT, null=True
     )
 
@@ -59,10 +61,10 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
 
     _scripts: fields.ReverseRelation["Script"]
     _stylesheets: fields.ReverseRelation["Stylesheet"]
-    _dns_records: fields.ReverseRelation["DnsRecord"]
-    _classifications: fields.ReverseRelation["Classification"]
+    _dns_records: fields.ReverseRelation["DnsRecord"]  # noqa F821
+    _classifications: fields.ReverseRelation["Classification"]  # noqa F821
 
-    _rules: fields.ManyToManyRelation["Rule"] = fields.ManyToManyField(
+    _rules: fields.ManyToManyRelation["Rule"] = fields.ManyToManyField(  # noqa F821
         "models.Rule",
         related_name="_snapshots",
         through="matches",

@@ -9,7 +9,9 @@ class DnsRecord(TimestampMixin, AbstractBaseModel):
     type = fields.CharField(max_length=5)
     value = fields.TextField()
 
-    snapshot: fields.ForeignKeyRelation["Snapshot"] = fields.ForeignKeyField(
+    snapshot: fields.ForeignKeyRelation[
+        "Snapshot"  # noqa F821
+    ] = fields.ForeignKeyField(
         "models.Snapshot",
         related_name="_dns_records",
         to_field="id",

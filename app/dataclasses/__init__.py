@@ -10,7 +10,6 @@ from app.dataclasses.utils import (
     EnrichmentResults,
     HttpResource,
     ScriptFile,
-    SearchResults,
     SnapshotResult,
     StylesheetFile,
 )

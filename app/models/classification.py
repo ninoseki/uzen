@@ -10,7 +10,9 @@ class Classification(TimestampMixin, AbstractBaseModel):
     malicious = fields.BooleanField()
     note = fields.TextField(null=True)
 
-    snapshot: fields.ForeignKeyRelation["Snapshot"] = fields.ForeignKeyField(
+    snapshot: fields.ForeignKeyRelation[
+        "Snapshot"  # noqa F821
+    ] = fields.ForeignKeyField(
         "models.Snapshot",
         related_name="_classifications",
         to_field="id",

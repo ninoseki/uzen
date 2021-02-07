@@ -6,7 +6,7 @@ from app.models.mixin import TimestampMixin
 
 
 class Certificate(AbstractResourceModel, TimestampMixin):
-    snapshots: fields.ReverseRelation["Snapshot"]
+    snapshots: fields.ReverseRelation["Snapshot"]  # noqa F821
 
     def to_model(self) -> schemas.Certificate:
         return schemas.Certificate.from_orm(self)

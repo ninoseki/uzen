@@ -12,7 +12,7 @@ class HAR(Model, TimestampMixin, CountMixin, DeleteMixin):
 
     data = fields.JSONField()
 
-    snapshot: fields.OneToOneRelation["Snapshot"] = fields.OneToOneField(
+    snapshot: fields.OneToOneRelation["Snapshot"] = fields.OneToOneField(  # noqa F821
         "models.Snapshot", related_name="har", on_delete=fields.CASCADE
     )
 
