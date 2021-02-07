@@ -33,7 +33,9 @@ BROWSER_WS_ENDPOINT: str = config("BROWSER_WS_ENDPOINT", cast=str, default="")
 
 HTTPX_FALLBACK: bool = config("HTTPX_FALLBACK", cast=bool, default=True)
 
-# other settings
+# API keys
 GOOGLE_SAFE_BROWSING_API_KEY: str = config(
     "GOOGLE_SAFE_BROWSING_API_KEY", cast=Secret, default=""
 )
+
+VIRUSTOTAL_API_KEY: str = config("VIRUSTOTAL_API_KEY", cast=Secret, default="")

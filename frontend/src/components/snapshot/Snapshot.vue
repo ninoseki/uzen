@@ -138,6 +138,12 @@
                 </router-link>
               </div>
               <div class="column">
+                <H3> Classifications </H3>
+                <ClassificationTags
+                  :classifications="getSnapshotTask.last.value.classifications"
+                />
+              </div>
+              <div class="column">
                 <H3> Matched rules </H3>
                 <Rules :rules="getSnapshotTask.last.value.rules" />
               </div>
@@ -172,12 +178,6 @@
             <DnsRecords :dnsRecords="getSnapshotTask.last.value.dnsRecords" />
           </b-tab-item>
 
-          <b-tab-item label="Classifications">
-            <Classifications
-              :classifications="getSnapshotTask.last.value.classifications"
-            />
-          </b-tab-item>
-
           <b-tab-item label="HAR">
             <HAR :snapshotId="getSnapshotTask.last.value.id" />
           </b-tab-item>
@@ -197,7 +197,7 @@ import { useAsyncTask } from "vue-concurrency";
 
 import { API } from "@/api";
 import Certificate from "@/components/certificate/Certificate.vue";
-import Classifications from "@/components/classification/Classifications.vue";
+import ClassificationTags from "@/components/classification/Tags.vue";
 import DnsRecords from "@/components/dns_record/DnsRecords.vue";
 import HAR from "@/components/har/HAR.vue";
 import Links from "@/components/link/Links.vue";
@@ -220,7 +220,7 @@ export default defineComponent({
   name: "Snapshot",
   components: {
     Certificate,
-    Classifications,
+    ClassificationTags,
     DatetimeWithDiff,
     DnsRecords,
     Error,
