@@ -1,8 +1,9 @@
 import json
 from io import BytesIO
 
-from app.core import settings
 from minio import Minio
+
+from app.core import settings
 
 
 def get_client() -> Minio:

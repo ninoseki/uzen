@@ -1,17 +1,11 @@
 from unittest.mock import AsyncMock
 
-import playwright
 import pytest
-from playwright import async_playwright
 
-from app.core import settings
 from app.core.exceptions import TakeSnapshotError
 from app.services.browser import Browser
 from app.services.browsers.httpx import HttpxBrowser
-from app.services.browsers.playwright import (
-    PlaywrightBrowser,
-    launch_playwright_browser,
-)
+from app.services.browsers.playwright import PlaywrightBrowser
 from app.services.certificate import Certificate
 from app.services.rdap import RDAP
 from app.services.whois import Whois
@@ -88,21 +82,3 @@ async def test_take_snapshot_httpx_fallback(mocker):
 
     PlaywrightBrowser.take_snapshot.assert_not_called()
     HttpxBrowser.take_snapshot.assert_called_once()
-
-
-@pytest.mark.asyncio
-@pytest.mark.timeout(10, method="thread")
-async def test_launch_browser(monkeypatch):
-    monkeypatch.setattr(
-        "app.core.settings.BROWSER_WS_ENDPOINT", "wss://chrome.browserless.io"
-    )
-    assert settings.BROWSER_WS_ENDPOINT == "wss://chrome.browserless.io"
-
-    try:
-        async with async_playwright() as p:
-            browser = await launch_playwright_browser(p)
-            assert isinstance(browser, playwright.Browser)
-            assert browser.wsEndpoint == "wss://chrome.browserless.io"
-            await browser.close()
-    except Exception:
-        pass

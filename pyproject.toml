@@ -23,7 +23,7 @@ httpx = "^0.16.1"
 ipwhois = "^1.2.0"
 loguru = "^0.5.3"
 minio = "^7.0.0"
-playwright = "^0.171.1"
+playwright = {version = "1.8.0a1", allow-prereleases = true}
 pydantic = "^1.7.3"
 pyopenssl = "^20.0.1"
 python-whois = "^0.7.3"
