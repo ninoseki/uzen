@@ -105,7 +105,11 @@ async def create(
     background_tasks.add_task(MatchinbgTask.process, snapshot)
     background_tasks.add_task(UpdateProcessingTask.process, snapshot)
 
-    snapshot = await models.Snapshot.get_by_id(snapshot.id)
+    # set required attributes
+    snapshot.html = result.html
+    snapshot.certificate = result.certificate
+    snapshot.whois = result.whois
+
     model = cast(schemas.Snapshot, snapshot.to_model())
     return model
 
