@@ -37,12 +37,16 @@ services:
     ports:
         - "8000:8000"
     environment:
+      - TESTING=False
+      - DEBUG=False
+      - GLOBAL_API_KEY=${GLOBAL_API_KEY}
       - MINIO_ENDPOINT=minio:9000
       - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
       - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
       - MINIO_SECURE=False
       - DATABASE_URL=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@database:3306/${MYSQL_DATABASE}
-      - TESTING=False
+      - GOOGLE_SAFE_BROWSING_API_KEY=${GOOGLE_SAFE_BROWSING_API_KEY}
+      - VIRUSTOTAL_API_KEY=${VIRUSTOTAL_API_KEY}
     restart: always
     depends_on:
       - minio
