@@ -28,11 +28,6 @@ MINIO_ACCESS_KEY: str = config("MINIO_ACCESS_KEY", cast=str, default="")
 MINIO_SECRET_KEY: str = config("MINIO_SECRET_KEY", cast=str, default="")
 MINIO_SECURE: str = config("MINIO_SECURE", cast=bool, default=False)
 
-# browsing settings
-BROWSER_WS_ENDPOINT: str = config("BROWSER_WS_ENDPOINT", cast=str, default="")
-
-HTTPX_FALLBACK: bool = config("HTTPX_FALLBACK", cast=bool, default=True)
-
 # API keys
 GOOGLE_SAFE_BROWSING_API_KEY: str = config(
     "GOOGLE_SAFE_BROWSING_API_KEY", cast=Secret, default=""
