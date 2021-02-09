@@ -1,4 +1,4 @@
-import axios from "axios";
+import { setup } from "axios-cache-adapter";
 
 import { useGlobalState } from "@/store";
 import {
@@ -20,7 +20,7 @@ import { HAR, UpdateRulePayload, YaraScanPyalod } from "@/types";
 
 const state = useGlobalState();
 
-let client = axios.create({
+let client = setup({
   headers: {
     Accept: "application/json",
     "Api-key": state.value.apiKey,
@@ -28,7 +28,7 @@ let client = axios.create({
 });
 
 export function updateClient(): void {
-  client = axios.create({
+  client = setup({
     headers: {
       Accept: "application/json",
       "Api-key": state.value.apiKey,
@@ -111,14 +111,14 @@ export const API = {
   async getIPAddressInformation(
     ipAddress: string
   ): Promise<IPAddressInformation> {
-    const res = await axios.get<IPAddressInformation>(
+    const res = await client.get<IPAddressInformation>(
       `/api/ip_address/${ipAddress}`
     );
     return res.data;
   },
 
   async getHAR(snapshot_id: string): Promise<HAR> {
-    const res = await axios.get<HAR>(`/api/hars/${snapshot_id}`);
+    const res = await client.get<HAR>(`/api/hars/${snapshot_id}`);
     return res.data;
   },
 
@@ -128,7 +128,11 @@ export const API = {
   },
 
   async getDevices(): Promise<Device[]> {
-    const res = await client.get<Device[]>("/api/devices/");
+    const res = await client.get<Device[]>("/api/devices/", {
+      cache: {
+        maxAge: 60 * 60 * 1000,
+      },
+    });
     return res.data;
   },
 };
