@@ -1,11 +1,11 @@
 <template>
-  <pre><code class="html">{{ html }}</code></pre>
+  <HighlightedCode :data="html"></HighlightedCode>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from "@vue/composition-api";
+import { defineComponent } from "@vue/composition-api";
 
-import { highlightCodeBlocks } from "@/utils/highlight";
+import HighlightedCode from "@/components/ui/HighlightedCode.vue";
 
 export default defineComponent({
   name: "HTML",
@@ -15,10 +15,8 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(_, context) {
-    onMounted(() => {
-      highlightCodeBlocks(context);
-    });
+  components: {
+    HighlightedCode,
   },
 });
 </script>

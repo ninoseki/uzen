@@ -33,7 +33,7 @@
       </div>
       <div class="column">
         <H3>Stylesheet</H3>
-        <pre><code class="css">{{ stylesheetFileContent }}</code></pre>
+        <HighlightedCode :data="stylesheetFileContent"></HighlightedCode>
       </div>
     </div>
   </div>
@@ -43,6 +43,7 @@
 import { defineComponent, PropType, ref } from "@vue/composition-api";
 
 import H3 from "@/components/ui/H3.vue";
+import HighlightedCode from "@/components/ui/HighlightedCode.vue";
 import { Stylesheet } from "@/types";
 
 export default defineComponent({
@@ -55,6 +56,7 @@ export default defineComponent({
   },
   components: {
     H3,
+    HighlightedCode,
   },
   setup(props) {
     const selectedId = ref<string | undefined>(undefined);
@@ -74,7 +76,12 @@ export default defineComponent({
       }
     };
 
-    return { selectedId, selectStylesheet, stylesheetFileContent, hash };
+    return {
+      selectedId,
+      selectStylesheet,
+      stylesheetFileContent,
+      hash,
+    };
   },
 });
 </script>
