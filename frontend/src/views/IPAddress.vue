@@ -4,6 +4,7 @@
 
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
+import { useTitle } from "@vueuse/core";
 
 import IPAddress from "@/components/ip_address/IPAddress.vue";
 
@@ -15,7 +16,7 @@ export default defineComponent({
   setup(_, { root }) {
     const updateTitle = (): void => {
       const ipAddress = root.$route.params.ipAddress;
-      document.title = `${ipAddress} - Uzen`;
+      useTitle(`${ipAddress} - Uzen`);
     };
 
     updateTitle();

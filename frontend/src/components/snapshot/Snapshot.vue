@@ -198,6 +198,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "@vue/composition-api";
+import { useTitle } from "@vueuse/core";
 import { useAsyncTask } from "vue-concurrency";
 
 import { API } from "@/api";
@@ -260,7 +261,7 @@ export default defineComponent({
     });
 
     const updateTitle = (url: string): void => {
-      document.title = `${url} - Uzen`;
+      useTitle(`${url} - Uzen`);
     };
 
     const getSnapshot = async () => {
