@@ -80,6 +80,7 @@ async def snapshots_setup(client):
             hostname="example.com",
             ip_address="1.1.1.1",
             asn="AS15133 MCI Communications Services, Inc. d/b/a Verizon Business",
+            country_code="AU",
             request_headers={},
             response_headers={},
             created_at=datetime.datetime.now(),

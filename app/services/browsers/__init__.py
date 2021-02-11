@@ -35,7 +35,7 @@ def build_snapshot_result(
     ip_address = find_ip_address(url, browsing_result.response_received_events)
     hostname = cast(str, get_hostname_from_url(url))
     asn = get_asn_by_ip_address(ip_address) or ""
-    country_code = get_country_code_by_ip_address(ip_address)
+    country_code = get_country_code_by_ip_address(ip_address) or ""
 
     script_files: List[dataclasses.ScriptFile] = []
     stylesheet_files: List[dataclasses.StylesheetFile] = []
