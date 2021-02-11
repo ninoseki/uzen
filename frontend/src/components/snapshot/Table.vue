@@ -18,7 +18,8 @@
           {{ truncate(props.row.submittedUrl) }}
         </p>
         <p class="is-size-7">
-          <strong>IP address:</strong> {{ props.row.ipAddress }} -
+          <strong>IP address:</strong> {{ props.row.ipAddress }}
+          {{ countryCodeToEmoji(props.row.countryCode) }} -
           <strong>ASN:</strong> {{ props.row.asn.split(" ")[0] }}
         </p>
         <p class="is-size-7"><strong>Status:</strong> {{ props.row.status }}</p>
@@ -36,6 +37,7 @@ import { computed, defineComponent, PropType } from "@vue/composition-api";
 
 import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
 import { Snapshot, SnapshotWithYaraResult } from "@/types";
+import { countryCodeToEmoji } from "@/utils/country";
 import { truncate } from "@/utils/truncate";
 
 export default defineComponent({
@@ -54,7 +56,7 @@ export default defineComponent({
       return props.snapshots.length > 0;
     });
 
-    return { hasSnapshots, truncate };
+    return { hasSnapshots, truncate, countryCodeToEmoji };
   },
 });
 </script>

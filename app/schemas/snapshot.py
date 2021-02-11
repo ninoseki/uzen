@@ -88,6 +88,7 @@ class BasicAttributes(APIModel):
     hostname: str = Field(..., title="Hostname", description="Hostname")
     ip_address: IPvAnyAddress = Field(..., title="IP address", description="IP address")
     asn: str = Field(..., title="ASN", description="AS number")
+    country_code: Optional[str] = Field(None, title="Country code")
     status: int = Field(..., title="Status", description="Status code")
 
     @validator(

@@ -91,6 +91,11 @@
                                 },
                               }"
                               >{{ getSnapshotTask.last.value.ipAddress }}
+                              {{
+                                countryCodeToEmoji(
+                                  getSnapshotTask.last.value.countryCode
+                                )
+                              }}
                             </router-link>
                           </td>
                         </tr>
@@ -214,6 +219,7 @@ import Loading from "@/components/ui/Loading.vue";
 import Whois from "@/components/whois/Whois.vue";
 import YaraResultComponent from "@/components/yara/Result.vue";
 import { Snapshot, YaraResult } from "@/types";
+import { countryCodeToEmoji } from "@/utils/country";
 import { truncate } from "@/utils/truncate";
 
 export default defineComponent({
@@ -268,7 +274,7 @@ export default defineComponent({
 
     getSnapshot();
 
-    return { getSnapshotTask, getWhois, truncate };
+    return { getSnapshotTask, getWhois, truncate, countryCodeToEmoji };
   },
 });
 </script>

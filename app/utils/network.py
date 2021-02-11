@@ -46,3 +46,16 @@ def get_asn_by_ip_address(ip_address: str) -> Optional[str]:
     """
     res = RDAP.lookup(ip_address)
     return res.get("asn")
+
+
+def get_country_code_by_ip_address(ip_address: str) -> Optional[str]:
+    """Get country code by an IP address
+
+    Arguments:
+        ip_address {str} -- IP address
+
+    Returns:
+        Optional[str] -- Country code, returns None if an error occurs
+    """
+    res = RDAP.lookup(ip_address)
+    return res.get("country_code")

@@ -31,6 +31,7 @@
     "axios-cache-adapter": "^2.7.0",
     "buefy": "0.9.4",
     "core-js": "3.8.3",
+    "country-code-emoji": "^2.2.0",
     "crypto-js": "4.0.0",
     "dayjs": "1.10.4",
     "highlight.js": "10.5.0",

@@ -18,7 +18,12 @@
     >
       <nav class="navbar">
         <div class="navbar-brand">
-          <H2>IP address: {{ getIPAddressTask.last.value.ipAddress }}</H2>
+          <H2
+            >IP address: {{ getIPAddressTask.last.value.ipAddress }}
+            {{
+              countryCodeToEmoji(getIPAddressTask.last.value.countryCode)
+            }}</H2
+          >
         </div>
         <div class="navbar-menu">
           <div class="navbar-end">
@@ -45,10 +50,6 @@
                     <th>Description</th>
                     <td>{{ getIPAddressTask.last.value.description }}</td>
                   </tr>
-                  <tr>
-                    <th>Country</th>
-                    <td>{{ getIPAddressTask.last.value.country }}</td>
-                  </tr>
                 </tbody>
               </table>
             </div>
@@ -65,7 +66,7 @@
           Recent snapshots
           <Counter v-bind:ipAddress="getIPAddressTask.last.value.ipAddress" />
         </H3>
-        <Table
+        <ScreenshotTable
           v-if="hasSnapshots()"
           v-bind:snapshots="getIPAddressTask.last.value.snapshots"
         />
@@ -88,12 +89,13 @@ import { API } from "@/api";
 import Links from "@/components/link/Links.vue";
 import Preview from "@/components/screenshot/Preview.vue";
 import Counter from "@/components/snapshot/Counter.vue";
-import Table from "@/components/snapshot/TableWithScreenshot.vue";
+import ScreenshotTable from "@/components/snapshot/TableWithScreenshot.vue";
 import Error from "@/components/ui/Error.vue";
 import H2 from "@/components/ui/H2.vue";
 import H3 from "@/components/ui/H3.vue";
 import Loading from "@/components/ui/Loading.vue";
 import { IPAddressInformation } from "@/types";
+import { countryCodeToEmoji } from "@/utils/country";
 
 export default defineComponent({
   name: "Domain",
@@ -105,7 +107,7 @@ export default defineComponent({
     Links,
     Loading,
     Preview,
-    Table,
+    ScreenshotTable,
   },
   setup(_, context) {
     const hostname = context.root.$route.params.ipAddress;
@@ -122,7 +124,7 @@ export default defineComponent({
       return (getIPAddressTask.last?.value?.snapshots.length || 0) > 0;
     };
 
-    return { getIPAddressTask, hasSnapshots };
+    return { getIPAddressTask, hasSnapshots, countryCodeToEmoji };
   },
 });
 </script>

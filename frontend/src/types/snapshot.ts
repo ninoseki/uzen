@@ -79,6 +79,7 @@ export interface Snapshot {
   hostname: string;
   ipAddress: string;
   asn: string;
+  countryCode: string | null;
   requestHeaders: Headers;
   responseHeaders: Headers;
   processing: boolean;
