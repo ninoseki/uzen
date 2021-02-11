@@ -94,7 +94,7 @@ class Browser:
                 message = "Failed to take a snapshot by playwright"
                 logger.debug(message)
                 logger.exception(e)
-                errors.append(message)
+                errors.append(e)
 
             if result is not None:
                 return result
@@ -106,12 +106,12 @@ class Browser:
             message = "Failed to take a snapshot by HTTPX"
             logger.debug(message)
             logger.exception(e)
-            errors.append(message)
+            errors.append(e)
 
         if result is not None:
             return result
 
-        raise TakeSnapshotError("\n".join(errors))
+        raise TakeSnapshotError(errors[len(errors) - 1])
 
     @staticmethod
     async def preview(hostname: str) -> bytes:
