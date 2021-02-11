@@ -35,6 +35,7 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
     hostname = fields.TextField()
     ip_address = fields.CharField(max_length=255)
     asn = fields.TextField()
+    country_code = fields.CharField(max_length=2)
     response_headers = fields.JSONField()
     request_headers = fields.JSONField()
     ignore_https_errors = fields.BooleanField(default=False)

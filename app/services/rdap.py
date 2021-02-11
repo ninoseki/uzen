@@ -13,12 +13,12 @@ class RDAP:
         try:
             answer = obj.lookup_rdap(depth=1)
             asn = "AS" + answer.get("asn", "")
-            country = answer.get("asn_country_code", "")
+            country_code = answer.get("asn_country_code", "")
             description = answer.get("asn_description", "")
             return {
                 "ip_address": ip_address,
                 "asn": asn,
-                "country": country,
+                "country_code": country_code,
                 "description": description,
             }
         except (BaseIpwhoisException, AttributeError):

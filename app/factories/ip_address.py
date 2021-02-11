@@ -11,12 +11,12 @@ class IPAddressFactory:
         snapshots = await models.Snapshot.find_by_ip_address(ip_address)
 
         asn = res.get("asn", "")
-        country = res.get("country", "")
+        country_code = res.get("country_code", "")
         description = res.get("description", "")
 
         return schemas.IPAddress(
             asn=asn,
-            country=country,
+            country_code=country_code,
             description=description,
             ip_address=ip_address,
             snapshots=snapshots,

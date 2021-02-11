@@ -9,6 +9,7 @@ from app.services.whois import Whois
 from app.utils.hash import calculate_sha256
 from app.utils.network import (
     get_asn_by_ip_address,
+    get_country_code_by_ip_address,
     get_hostname_from_url,
     get_ip_address_by_hostname,
 )
@@ -34,6 +35,7 @@ def build_snapshot_result(
     ip_address = find_ip_address(url, browsing_result.response_received_events)
     hostname = cast(str, get_hostname_from_url(url))
     asn = get_asn_by_ip_address(ip_address) or ""
+    country_code = get_country_code_by_ip_address(ip_address) or ""
 
     script_files: List[dataclasses.ScriptFile] = []
     stylesheet_files: List[dataclasses.StylesheetFile] = []
@@ -61,6 +63,7 @@ def build_snapshot_result(
         hostname=hostname,
         ip_address=ip_address,
         asn=asn,
+        country_code=country_code,
         ignore_https_erros=browsing_result.options.ignore_https_errors,
     )
     html = models.HTML(
