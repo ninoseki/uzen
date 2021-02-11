@@ -79,6 +79,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted } from "@vue/composition-api";
+import { useTitle } from "@vueuse/core";
 import { useAsyncTask } from "vue-concurrency";
 
 import { API } from "@/api";
@@ -113,7 +114,7 @@ export default defineComponent({
     });
 
     const updateTitle = (ruleName: string): void => {
-      document.title = `${ruleName} - Uzen`;
+      useTitle(`${ruleName} - Uzen`);
     };
 
     const getRule = async () => {

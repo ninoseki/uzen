@@ -4,6 +4,7 @@
 
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
+import { useTitle } from "@vueuse/core";
 
 import Domain from "@/components/domain/Domain.vue";
 
@@ -16,7 +17,7 @@ export default defineComponent({
   setup(_, { root }) {
     const updateTitle = (): void => {
       const hostname = root.$route.params.hostname;
-      document.title = `${hostname} - Uzen`;
+      useTitle(`${hostname} - Uzen`);
     };
 
     updateTitle();
