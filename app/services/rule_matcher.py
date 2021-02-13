@@ -33,7 +33,7 @@ class RuleMatcher:
         self, rule: models.Rule, scanner: YaraScanner
     ) -> List[schemas.MatchResult]:
         results = []
-        for script in cast(List[models.Script], self.snapshot.scripts):
+        for script in cast(List[models.Script], self.snapshot._scripts):
             data = script.file.content
             matches = scanner.match(data)
             if len(matches) > 0:
@@ -54,13 +54,12 @@ class RuleMatcher:
                 results.extend(
                     self._partial_scan_for_script(scanner=scanner, rule=rule)
                 )
-            else:
-                data = self._extract_data_from_snapshot(rule.target)
-                matches = scanner.match(data)
-                if len(matches) > 0:
-                    results.append(
-                        schemas.MatchResult(rule_id=rule.id, matches=matches)
-                    )
+                continue
+
+            data = self._extract_data_from_snapshot(rule.target)
+            matches = scanner.match(data)
+            if len(matches) > 0:
+                results.append(schemas.MatchResult(rule_id=rule.id, matches=matches))
 
         return results
 
