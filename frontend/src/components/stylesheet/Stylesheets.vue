@@ -45,6 +45,7 @@ import { defineComponent, PropType, ref } from "@vue/composition-api";
 import H3 from "@/components/ui/H3.vue";
 import HighlightedCode from "@/components/ui/HighlightedCode.vue";
 import { Stylesheet } from "@/types";
+import { generateGetFileTask } from "@/utils/file";
 
 export default defineComponent({
   name: "Stylesheets",
@@ -63,13 +64,17 @@ export default defineComponent({
     const hash = ref<string | undefined>(undefined);
     const stylesheetFileContent = ref<string | undefined>(undefined);
 
-    const selectStylesheet = (): void => {
+    const getFileTask = generateGetFileTask();
+
+    const selectStylesheet = async (): Promise<void> => {
       const script = props.stylesheets.find(
         (elem) => elem.id === selectedId.value
       );
       if (script) {
-        stylesheetFileContent.value = script.file.content;
-        hash.value = script.file.id;
+        const file = await getFileTask.perform(script.sha256);
+
+        stylesheetFileContent.value = file.content;
+        hash.value = file.id;
       } else {
         stylesheetFileContent.value = undefined;
         hash.value = undefined;

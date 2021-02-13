@@ -8,6 +8,10 @@ class AbstractBaseModel(APIModel):
     id: UUID
 
 
+class AbstractParentResourceModel(AbstractBaseModel):
+    file_id: str = Field(..., title="SHA256", alias="sha256")
+
+
 class AbstractResourceModel(APIModel):
     id: str = Field(..., title="ID", description="A SHA256 hash of the content")
     content: str = Field(..., title="Content")

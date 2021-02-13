@@ -17,3 +17,7 @@ class AbstractResourceModel(Model, DeleteMixin, CountMixin):
 
     class Meta:
         abstract = True
+
+    @classmethod
+    async def get_by_id(cls, id_: str):
+        return await cls.get(id=id_)

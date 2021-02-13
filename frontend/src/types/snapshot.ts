@@ -31,14 +31,14 @@ export interface File {
 export interface Script {
   id: string | null;
   url: string;
-  file: File;
+  sha256: string;
   createdAt: string | null;
 }
 
 export interface Stylesheet {
   id: string | null;
   url: string;
-  file: File;
+  sha256: string;
   createdAt: string | null;
 }
 
