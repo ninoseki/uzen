@@ -6,7 +6,6 @@ from loguru import logger
 from playwright.async_api import Error, async_playwright
 
 from app import dataclasses
-from app.core import settings
 from app.core.exceptions import TakeSnapshotError
 from app.services.browsers.httpx import HttpxBrowser
 from app.services.browsers.playwright import (
@@ -24,9 +23,7 @@ async def take_screenshot(hostname: str, protocol="http") -> bytes:
         browser = await launch_playwright_browser(playwright)
         page = await browser.new_page()
 
-        await page.goto(
-            f"{protocol}://{hostname}", wait_until=settings.BROWSER_WAIT_UNTIL,
-        )
+        await page.goto(f"{protocol}://{hostname}",)
         screenshot = await page.screenshot()
         await browser.close()
 
