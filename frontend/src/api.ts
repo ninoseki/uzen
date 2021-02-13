@@ -7,6 +7,7 @@ import {
   CreateSnapshotPayload,
   Device,
   DomainInformation,
+  File,
   IPAddressInformation,
   MatchSearchResults,
   Rule,
@@ -129,6 +130,15 @@ export const API = {
 
   async getDevices(): Promise<Device[]> {
     const res = await client.get<Device[]>("/api/devices/", {
+      cache: {
+        maxAge: 60 * 60 * 1000,
+      },
+    });
+    return res.data;
+  },
+
+  async getFile(sha256: string): Promise<File> {
+    const res = await client.get<File>(`/api/files/${sha256}`, {
       cache: {
         maxAge: 60 * 60 * 1000,
       },

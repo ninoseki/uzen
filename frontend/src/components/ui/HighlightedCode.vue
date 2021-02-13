@@ -1,10 +1,14 @@
 <template>
-  <pre><code class="hljs" v-html="highlightedHTML"></code></pre>
+  <div>
+    <Loading v-if="isLoading"></Loading>
+    <pre v-else><code class="hljs" v-html="highlightedHTML"></code></pre>
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, ref, watch } from "@vue/composition-api";
 
+import Loading from "@/components/ui/Loading.vue";
 import { highlightWorkerFn } from "@/utils/highlight.worker";
 
 export default defineComponent({
@@ -15,8 +19,12 @@ export default defineComponent({
       required: true,
     },
   },
+  components: {
+    Loading,
+  },
   setup(props) {
     const highlightedHTML = ref("");
+    const isLoading = ref(true);
 
     const highlight = async () => {
       highlightedHTML.value = "";
@@ -25,17 +33,24 @@ export default defineComponent({
 
     onMounted(async () => {
       await highlight();
+
+      isLoading.value = false;
     });
 
     watch(
       () => props.data,
       // eslint-disable-next-line no-unused-vars
       async (_first, _second) => {
-        highlight();
+        isLoading.value = true;
+
+        await highlight();
+
+        isLoading.value = false;
       }
     );
 
     return {
+      isLoading,
       highlightedHTML,
     };
   },

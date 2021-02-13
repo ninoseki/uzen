@@ -42,6 +42,7 @@ import { defineComponent, PropType, ref } from "@vue/composition-api";
 import H3 from "@/components/ui/H3.vue";
 import HighlightedCode from "@/components/ui/HighlightedCode.vue";
 import { Script } from "@/types";
+import { generateGetFileTask } from "@/utils/file";
 
 export default defineComponent({
   name: "Scripts",
@@ -60,11 +61,15 @@ export default defineComponent({
     const hash = ref<string | undefined>(undefined);
     const scriptFileContent = ref<string | undefined>(undefined);
 
-    const selectScript = (): void => {
+    const getFileTask = generateGetFileTask();
+
+    const selectScript = async (): Promise<void> => {
       const script = props.scripts.find((elem) => elem.id === selectedId.value);
       if (script) {
-        scriptFileContent.value = script.file.content;
-        hash.value = script.file.id;
+        const file = await getFileTask.perform(script.sha256);
+
+        scriptFileContent.value = file.content;
+        hash.value = file.id;
       } else {
         scriptFileContent.value = undefined;
         hash.value = undefined;
@@ -76,6 +81,7 @@ export default defineComponent({
       selectScript,
       scriptFileContent,
       hash,
+      getFileTask,
     };
   },
 });

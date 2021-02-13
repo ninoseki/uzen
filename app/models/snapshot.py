@@ -123,8 +123,8 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
     @classmethod
     async def get_by_id(cls, id_: UUID) -> Snapshot:
         return await cls.get(id=id_).prefetch_related(
-            "_scripts__file",
-            "_stylesheets__file",
+            "_scripts",
+            "_stylesheets",
             "_dns_records",
             "_classifications",
             "_rules",
