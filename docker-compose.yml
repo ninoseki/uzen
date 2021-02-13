@@ -16,6 +16,7 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 30s
       timeout: 20s
+    restart: always
   database:
     container_name: uzen_db
     image: mysql/mysql-server:8.0
