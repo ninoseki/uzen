@@ -69,12 +69,12 @@ COPY .env.sample /uzen/.env
 COPY app /uzen/app
 COPY --from=build /frontend /uzen/frontend
 
-RUN pip3 install poetry && poetry config virtualenvs.create false && poetry install --no-dev
-
 ENV PLAYWRIGHT_BROWSERS_PATH /uzen/playwright
 
-RUN mkdir -p /uzen/playwright && python -m playwright install
-RUN rm -rf /uzen/playwright/webkit-* && rm -rf /uzen/playwright/firefox-*
+RUN pip3 install poetry && poetry config virtualenvs.create false && poetry install --no-dev \
+  && mkdir -p /uzen/playwright && python -m playwright install \
+  && rm -rf /uzen/playwright/webkit-* \
+  && rm -rf /uzen/playwright/firefox-*
 
 ENV PORT 8000
 
