@@ -26,6 +26,9 @@ let client = setup({
     Accept: "application/json",
     "Api-key": state.value.apiKey,
   },
+  cache: {
+    maxAge: 0,
+  },
 });
 
 export function updateClient(): void {
@@ -33,6 +36,9 @@ export function updateClient(): void {
     headers: {
       Accept: "application/json",
       "Api-key": state.value.apiKey,
+    },
+    cache: {
+      maxAge: 0,
     },
   });
 }
