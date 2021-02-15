@@ -11,9 +11,10 @@ from app.utils.network import (
 
 
 @vcr.use_cassette("tests/fixtures/vcr_cassettes/ip_address.yaml")
-def test_get_asn_by_ip_address():
-    asn = get_asn_by_ip_address("1.1.1.1")
-    assert asn == "AS13335"
+@pytest.mark.asyncio
+async def test_get_asn_by_ip_address():
+    asn = await get_asn_by_ip_address("93.184.216.34")
+    assert asn == "AS15133"
 
 
 @pytest.mark.parametrize(

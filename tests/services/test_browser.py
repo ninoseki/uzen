@@ -7,12 +7,8 @@ from app.services.browser import Browser
 from app.services.browsers.httpx import HttpxBrowser
 from app.services.browsers.playwright import PlaywrightBrowser
 from app.services.certificate import Certificate
-from app.services.rdap import RDAP
+from app.services.ip2asn import IP2ASN
 from app.services.whois import Whois
-
-
-def mock_lookup(ip_address: str):
-    return {"asn": "AS15133"}
 
 
 def mock_whois(hostname: str):
@@ -25,7 +21,7 @@ def mock_load_from_url(url: str):
 
 @pytest.mark.asyncio
 async def test_take_snapshot(monkeypatch):
-    monkeypatch.setattr(RDAP, "lookup", mock_lookup)
+    monkeypatch.setattr(IP2ASN, "lookup", AsyncMock(return_value={"asn": "AS15133"}))
     monkeypatch.setattr(Whois, "whois", mock_whois)
     monkeypatch.setattr(Certificate, "load_from_url", mock_load_from_url)
 
@@ -45,7 +41,7 @@ async def test_take_snapshot(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_take_snapshot_with_scripts(monkeypatch):
-    monkeypatch.setattr(RDAP, "lookup", mock_lookup)
+    monkeypatch.setattr(IP2ASN, "lookup", AsyncMock(return_value={"asn": "AS15133"}))
     monkeypatch.setattr(Whois, "whois", mock_whois)
     monkeypatch.setattr(Certificate, "load_from_url", mock_load_from_url)
 
@@ -56,7 +52,7 @@ async def test_take_snapshot_with_scripts(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_take_snapshot_with_bad_ssl(monkeypatch):
-    monkeypatch.setattr(RDAP, "lookup", mock_lookup)
+    monkeypatch.setattr(IP2ASN, "lookup", AsyncMock(return_value={"asn": "AS15133"}))
     monkeypatch.setattr(Whois, "whois", mock_whois)
 
     with pytest.raises(TakeSnapshotError):

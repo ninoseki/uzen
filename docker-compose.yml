@@ -16,6 +16,7 @@ services:
       interval: 30s
       timeout: 20s
     restart: always
+
   database:
     container_name: uzen_db
     image: mysql/mysql-server:8.0
@@ -29,6 +30,14 @@ services:
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     restart: always
+
+  ip2asn:
+    container_name: uzen_ip2asn
+    image: ninoseki/iptoasn:latest
+    ports:
+      - "53661:53661"
+    restart: always
+
   uzen:
     container_name: uzen_app
     build:
@@ -47,10 +56,13 @@ services:
       - DATABASE_URL=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@database:3306/${MYSQL_DATABASE}
       - GOOGLE_SAFE_BROWSING_API_KEY=${GOOGLE_SAFE_BROWSING_API_KEY}
       - VIRUSTOTAL_API_KEY=${VIRUSTOTAL_API_KEY}
+      - IP2ASN_WEB_SERVICE_URL=http://ip2asn:53661
     restart: always
     depends_on:
       - minio
       - database
+      - ip2asn
+
 volumes:
   minio-data:
   db-data:

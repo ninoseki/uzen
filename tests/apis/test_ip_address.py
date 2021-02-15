@@ -15,7 +15,7 @@ def mock_whois(hostname: str):
 async def test_get(client, monkeypatch):
     monkeypatch.setattr(Whois, "whois", mock_whois)
 
-    ip_address = "1.1.1.1"
+    ip_address = "93.184.216.34"
     response = await client.get(f"/api/ip_address/{ip_address}")
     assert response.status_code == 200
 

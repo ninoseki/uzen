@@ -1,3 +1,5 @@
+from unittest.mock import AsyncMock
+
 import pytest
 import respx
 from httpx import Response
@@ -5,12 +7,8 @@ from httpx import Response
 from app import dataclasses
 from app.services.browsers.httpx import HttpxBrowser
 from app.services.certificate import Certificate
-from app.services.rdap import RDAP
+from app.services.ip2asn import IP2ASN
 from app.services.whois import Whois
-
-
-def mock_lookup(ip_address: str):
-    return {"asn": "AS15133"}
 
 
 def mock_whois(hostname: str):
@@ -24,7 +22,7 @@ def mock_load_from_url(url: str):
 @pytest.mark.asyncio
 @respx.mock
 async def test_take_snapshot(monkeypatch):
-    monkeypatch.setattr(RDAP, "lookup", mock_lookup)
+    monkeypatch.setattr(IP2ASN, "lookup", AsyncMock(return_value={"asn": "AS15133"}))
     monkeypatch.setattr(Whois, "whois", mock_whois)
     monkeypatch.setattr(Certificate, "load_from_url", mock_load_from_url)
     respx.get("http://example.com/",).mock(

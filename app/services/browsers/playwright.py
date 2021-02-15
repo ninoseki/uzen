@@ -116,7 +116,9 @@ class PlaywrightBrowser(AbstractBrowser):
             har_data, events=browsing_result.response_received_events
         )
 
-        snapshot_result = build_snapshot_result(submitted_url, browsing_result, har)
+        snapshot_result = await build_snapshot_result(
+            submitted_url, browsing_result, har
+        )
         snapshot_result.har = (
             HarFactory.from_dataclass(har) if options.enable_har else None
         )
