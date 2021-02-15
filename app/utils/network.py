@@ -2,7 +2,7 @@ import socket
 from typing import Optional
 from urllib.parse import urlparse
 
-from app.services.rdap import RDAP
+from app.services.ip2asn import IP2ASN
 
 
 def get_hostname_from_url(url: str) -> Optional[str]:
@@ -35,7 +35,7 @@ def get_ip_address_by_hostname(hostname: str) -> Optional[str]:
         return None
 
 
-def get_asn_by_ip_address(ip_address: str) -> Optional[str]:
+async def get_asn_by_ip_address(ip_address: str) -> Optional[str]:
     """Get ASN by an IP address
 
     Arguments:
@@ -44,11 +44,11 @@ def get_asn_by_ip_address(ip_address: str) -> Optional[str]:
     Returns:
         Optional[str] -- ASN as a string, returns None if an error occurs
     """
-    res = RDAP.lookup(ip_address)
+    res = await IP2ASN.lookup(ip_address)
     return res.get("asn")
 
 
-def get_country_code_by_ip_address(ip_address: str) -> Optional[str]:
+async def get_country_code_by_ip_address(ip_address: str) -> Optional[str]:
     """Get country code by an IP address
 
     Arguments:
@@ -57,5 +57,5 @@ def get_country_code_by_ip_address(ip_address: str) -> Optional[str]:
     Returns:
         Optional[str] -- Country code, returns None if an error occurs
     """
-    res = RDAP.lookup(ip_address)
+    res = await IP2ASN.lookup(ip_address)
     return res.get("country_code")

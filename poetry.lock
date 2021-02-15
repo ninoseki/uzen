@@ -479,17 +479,6 @@ optional = false
 python-versions = "*"
 
 [[package]]
-name = "ipwhois"
-version = "1.2.0"
-description = "Retrieve and parse whois data for IPv4 and IPv6 addresses."
-category = "main"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-dnspython = "<=2.0.0"
-
-[[package]]
 name = "iso8601"
 version = "0.1.14"
 description = "Simple module to parse ISO 8601 dates"
@@ -835,6 +824,17 @@ pytest = ">=4.6"
 
 [package.extras]
 testing = ["fields", "hunter", "process-tests (==2.0.2)", "six", "pytest-xdist", "virtualenv"]
+
+[[package]]
+name = "pytest-env"
+version = "0.6.2"
+description = "py.test plugin that allows you to add environment variables."
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+pytest = ">=2.6.0"
 
 [[package]]
 name = "pytest-mock"
@@ -1276,7 +1276,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "ecff62145a6633177840890d660e127d8b5579d2494e45b3501494bb1a2926fd"
+content-hash = "060153b34e10b6f439e8ab0d843a9d1f7249e3857c807c01c38d13b8203cf191"
 
 [metadata.files]
 aiofiles = [
@@ -1588,10 +1588,6 @@ iniconfig = [
     {file = "iniconfig-1.1.1-py2.py3-none-any.whl", hash = "sha256:011e24c64b7f47f6ebd835bb12a743f2fbe9a26d4cecaa7f53bc4f35ee9da8b3"},
     {file = "iniconfig-1.1.1.tar.gz", hash = "sha256:bc3af051d7d14b2ee5ef9969666def0cd1a000e121eaea580d4a313df4b37f32"},
 ]
-ipwhois = [
-    {file = "ipwhois-1.2.0-py2.py3-none-any.whl", hash = "sha256:9f14dfafb5d9eb7c7f56ab34cfad9868b5e453ab4161a90d69fb714fe712056a"},
-    {file = "ipwhois-1.2.0.tar.gz", hash = "sha256:831e3fef3b8041201a048e9456e3b80f45c6c8b7174f34ed211f66b596c84bbe"},
-]
 iso8601 = [
     {file = "iso8601-0.1.14-py2.py3-none-any.whl", hash = "sha256:e7e1122f064d626e17d47cd5106bed2c620cb38fe464999e0ddae2b6d2de6004"},
     {file = "iso8601-0.1.14.tar.gz", hash = "sha256:8aafd56fa0290496c5edbb13c311f78fa3a241f0853540da09d9363eae3ebd79"},
@@ -1786,6 +1782,9 @@ pytest-black = [
 pytest-cov = [
     {file = "pytest-cov-2.11.1.tar.gz", hash = "sha256:359952d9d39b9f822d9d29324483e7ba04a3a17dd7d05aa6beb7ea01e359e5f7"},
     {file = "pytest_cov-2.11.1-py2.py3-none-any.whl", hash = "sha256:bdb9fdb0b85a7cc825269a4c56b48ccaa5c7e365054b6038772c32ddcdc969da"},
+]
+pytest-env = [
+    {file = "pytest-env-0.6.2.tar.gz", hash = "sha256:7e94956aef7f2764f3c147d216ce066bf6c42948bb9e293169b1b1c880a580c2"},
 ]
 pytest-mock = [
     {file = "pytest-mock-3.5.1.tar.gz", hash = "sha256:a1e2aba6af9560d313c642dae7e00a2a12b022b80301d9d7fc8ec6858e1dd9fc"},

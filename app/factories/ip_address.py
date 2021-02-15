@@ -1,13 +1,13 @@
 from app import models, schemas
-from app.services.rdap import RDAP
+from app.services.ip2asn import IP2ASN
 from app.services.whois import Whois
 
 
 class IPAddressFactory:
     @staticmethod
     async def from_ip_address(ip_address: str) -> schemas.IPAddress:
-        res = RDAP.lookup(ip_address)
         whois = Whois.whois(ip_address)
+        res = await IP2ASN.lookup(ip_address)
         snapshots = await models.Snapshot.find_by_ip_address(ip_address)
 
         asn = res.get("asn", "")

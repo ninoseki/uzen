@@ -44,7 +44,7 @@ class HttpxBrowser(AbstractBrowser):
         except httpx.HTTPError as e:
             raise (e)
 
-        snapshot_result = build_snapshot_result(submitted_url, browsing_result)
+        snapshot_result = await build_snapshot_result(submitted_url, browsing_result)
 
         # set html to extract scripts
         snapshot = snapshot_result.snapshot

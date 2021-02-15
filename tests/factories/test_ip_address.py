@@ -14,5 +14,5 @@ def mock_whois(hostname: str):
 async def test_build_from_ip_address(monkeypatch):
     monkeypatch.setattr(Whois, "whois", mock_whois)
 
-    information = await IPAddressFactory.from_ip_address("1.1.1.1")
-    assert str(information.ip_address) == "1.1.1.1"
+    information = await IPAddressFactory.from_ip_address("93.184.216.34")
+    assert str(information.ip_address) == "93.184.216.34"
