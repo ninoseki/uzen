@@ -11,10 +11,6 @@ from app.services.ip2asn import IP2ASN
 from app.services.whois import Whois
 
 
-def mock_whois(hostname: str):
-    return "foo"
-
-
 def mock_load_from_url(url: str):
     return None
 
@@ -22,7 +18,7 @@ def mock_load_from_url(url: str):
 @pytest.mark.asyncio
 async def test_take_snapshot(monkeypatch):
     monkeypatch.setattr(IP2ASN, "lookup", AsyncMock(return_value={"asn": "AS15133"}))
-    monkeypatch.setattr(Whois, "whois", mock_whois)
+    monkeypatch.setattr(Whois, "lookup", AsyncMock(return_value="foo"))
     monkeypatch.setattr(Certificate, "load_from_url", mock_load_from_url)
 
     browser = Browser()
@@ -42,7 +38,7 @@ async def test_take_snapshot(monkeypatch):
 @pytest.mark.asyncio
 async def test_take_snapshot_with_scripts(monkeypatch):
     monkeypatch.setattr(IP2ASN, "lookup", AsyncMock(return_value={"asn": "AS15133"}))
-    monkeypatch.setattr(Whois, "whois", mock_whois)
+    monkeypatch.setattr(Whois, "lookup", AsyncMock(return_value="foo"))
     monkeypatch.setattr(Certificate, "load_from_url", mock_load_from_url)
 
     browser = Browser()
@@ -53,7 +49,7 @@ async def test_take_snapshot_with_scripts(monkeypatch):
 @pytest.mark.asyncio
 async def test_take_snapshot_with_bad_ssl(monkeypatch):
     monkeypatch.setattr(IP2ASN, "lookup", AsyncMock(return_value={"asn": "AS15133"}))
-    monkeypatch.setattr(Whois, "whois", mock_whois)
+    monkeypatch.setattr(Whois, "lookup", AsyncMock(return_value="foo"))
 
     with pytest.raises(TakeSnapshotError):
         browser = Browser()

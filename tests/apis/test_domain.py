@@ -1,15 +1,13 @@
+from unittest.mock import AsyncMock
+
 import pytest
 
 from app.services.whois import Whois
 
 
-def mock_whois(hostname: str):
-    return "foo"
-
-
 @pytest.mark.asyncio
 async def test_get(client, monkeypatch):
-    monkeypatch.setattr(Whois, "whois", mock_whois)
+    monkeypatch.setattr(Whois, "lookup", AsyncMock(return_value="foo"))
 
     hostname = "example.com"
     response = await client.get(f"/api/domain/{hostname}")

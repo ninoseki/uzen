@@ -52,7 +52,7 @@ async def build_snapshot_result(
         certificate_content = certificate.text
         certificate_sha256_fingerprint = certificate.fingerprint
 
-    whois_content = Whois.whois(hostname)
+    whois_content = await Whois.lookup(hostname)
 
     snapshot = models.Snapshot(
         url=url,
