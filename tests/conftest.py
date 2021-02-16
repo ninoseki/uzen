@@ -1,26 +1,21 @@
 import datetime
 from typing import List
+from unittest.mock import AsyncMock, Mock
 from uuid import UUID, uuid4
 
 import httpx
 import pytest
+from _pytest.monkeypatch import MonkeyPatch
 from starlette.config import environ
 from tortoise import Tortoise
 from tortoise.backends.base.config_generator import generate_config
 from tortoise.exceptions import DBConnectionError
 
-from app import create_app
+from app import create_app, models
 from app.core import settings
-from app.models.classification import Classification
-from app.models.dns_record import DnsRecord
-from app.models.file import File
-from app.models.har import HAR
-from app.models.html import HTML
-from app.models.match import Match
-from app.models.rule import Rule
-from app.models.script import Script
-from app.models.snapshot import Snapshot
-from app.models.whois import Whois
+from app.services.certificate import Certificate
+from app.services.ip2asn import IP2ASN
+from app.services.whois import Whois
 from app.utils.hash import calculate_sha256
 
 
@@ -66,14 +61,14 @@ async def tortoise_db():
 
 @pytest.fixture
 async def snapshots_setup(client):
-    html = HTML(id=calculate_sha256("foo bar"), content="foo bar")
+    html = models.HTML(id=calculate_sha256("foo bar"), content="foo bar")
     await html.save()
 
-    whois = Whois(id=calculate_sha256("foo"), content="foo")
+    whois = models.Whois(id=calculate_sha256("foo"), content="foo")
     await whois.save()
 
     for i in range(1, 11):
-        snapshot = Snapshot(
+        snapshot = models.Snapshot(
             url=f"http://example{i}.com/",
             submitted_url=f"http://example{i}.com",
             status=200,
@@ -89,20 +84,20 @@ async def snapshots_setup(client):
         snapshot.whois_id = whois.id
         await snapshot.save()
 
-        har = HAR(data={"foo": "bar"})
+        har = models.HAR(data={"foo": "bar"})
         har.snapshot_id = snapshot.id
         await har.save()
 
 
 @pytest.fixture
 async def scripts_setup(client, snapshots_setup):
-    snapshot_ids = await Snapshot().all().values_list("id", flat=True)
+    snapshot_ids = await models.Snapshot().all().values_list("id", flat=True)
     for id_ in snapshot_ids:
         file_id = uuid4().hex
-        file = File(id=file_id, content="foo")
+        file = models.File(id=file_id, content="foo")
         await file.save()
 
-        script = Script(
+        script = models.Script(
             snapshot_id=id_,
             file_id=file_id,
             url=f"http://example{id_}.com/test.js",
@@ -113,9 +108,9 @@ async def scripts_setup(client, snapshots_setup):
 
 @pytest.fixture
 async def dns_records_setup(client, snapshots_setup):
-    snapshot_ids = await Snapshot().all().values_list("id", flat=True)
+    snapshot_ids = await models.Snapshot().all().values_list("id", flat=True)
     for id_ in snapshot_ids:
-        record = DnsRecord(
+        record = models.DnsRecord(
             snapshot_id=id_,
             value="1.1.1.1",
             type="A",
@@ -126,9 +121,9 @@ async def dns_records_setup(client, snapshots_setup):
 
 @pytest.fixture
 async def classifications_setup(client, snapshots_setup):
-    snapshot_ids = await Snapshot().all().values_list("id", flat=True)
+    snapshot_ids = await models.Snapshot().all().values_list("id", flat=True)
     for id_ in snapshot_ids:
-        classification = Classification(
+        classification = models.Classification(
             snapshot_id=id_,
             name="test",
             malicious=True,
@@ -140,7 +135,7 @@ async def classifications_setup(client, snapshots_setup):
 @pytest.fixture
 async def rules_setup(client):
     for i in range(1, 6):
-        rule = Rule(
+        rule = models.Rule(
             name=f"test{i}",
             target="html",
             source='rule foo: bar {strings: $a = "lmn" condition: $a}',
@@ -151,12 +146,12 @@ async def rules_setup(client):
 
 @pytest.fixture
 async def matches_setup(client, snapshots_setup, rules_setup):
-    snapshot_ids = await Snapshot().all().values_list("id", flat=True)
-    rules_ids = await Rule().all().values_list("id", flat=True)
+    snapshot_ids = await models.Snapshot().all().values_list("id", flat=True)
+    rules_ids = await models.Rule().all().values_list("id", flat=True)
     zipped = zip(snapshot_ids, rules_ids)
 
     for (snapshot_id, rule_id) in list(zipped):
-        match = Match(
+        match = models.Match(
             snapshot_id=snapshot_id,
             rule_id=rule_id,
             matches="[]",
@@ -167,18 +162,18 @@ async def matches_setup(client, snapshots_setup, rules_setup):
 
 @pytest.fixture
 async def first_rule_id(client, rules_setup) -> UUID:
-    rule = await Rule.all().first()
+    rule = await models.Rule.all().first()
     return rule.id
 
 
 @pytest.fixture
 async def first_snapshot_id(client, snapshots_setup) -> UUID:
-    snapshot = await Snapshot.all().first()
+    snapshot = await models.Snapshot.all().first()
     return snapshot.id
 
 
 @pytest.fixture
-def patch_datetime_now(monkeypatch):
+def patch_datetime_now(monkeypatch: MonkeyPatch):
     FAKE_TIME = datetime.datetime(2020, 12, 25, 17, 5, 55)
 
     class mydatetime:
@@ -187,3 +182,18 @@ def patch_datetime_now(monkeypatch):
             return FAKE_TIME
 
     monkeypatch.setattr(datetime, "datetime", mydatetime)
+
+
+@pytest.fixture
+def patch_whois_lookup(monkeypatch: MonkeyPatch):
+    monkeypatch.setattr(Whois, "lookup", AsyncMock(return_value="foo"))
+
+
+@pytest.fixture
+def patch_ip2asn_lookup(monkeypatch: MonkeyPatch):
+    monkeypatch.setattr(IP2ASN, "lookup", AsyncMock(return_value={"asn": "AS15133"}))
+
+
+@pytest.fixture
+def patch_certificate_load_from_url(monkeypatch: MonkeyPatch):
+    monkeypatch.setattr(Certificate, "load_from_url", Mock(return_value=None))
