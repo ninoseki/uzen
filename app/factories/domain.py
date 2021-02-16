@@ -10,13 +10,12 @@ from app.services.whois import Whois
 class DomainFactory:
     @staticmethod
     async def from_hostname(hostname: str) -> schemas.Domain:
-        whois = Whois.whois(hostname)
-
         tasks = [
+            partial(Whois.lookup, hostname),
             partial(DnsRecordFactory.from_hostname, hostname),
             partial(models.Snapshot.find_by_hostname, hostname),
         ]
-        records, snapshots = await aiometer.run_all(tasks)
+        whois, records, snapshots = await aiometer.run_all(tasks)
 
         return schemas.Domain(
             hostname=hostname, whois=whois, dns_records=records, snapshots=snapshots

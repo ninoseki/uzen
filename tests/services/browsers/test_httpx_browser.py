@@ -23,7 +23,7 @@ def mock_load_from_url(url: str):
 @respx.mock
 async def test_take_snapshot(monkeypatch):
     monkeypatch.setattr(IP2ASN, "lookup", AsyncMock(return_value={"asn": "AS15133"}))
-    monkeypatch.setattr(Whois, "whois", mock_whois)
+    monkeypatch.setattr(Whois, "lookup", AsyncMock(return_value="foo"))
     monkeypatch.setattr(Certificate, "load_from_url", mock_load_from_url)
     respx.get("http://example.com/",).mock(
         Response(status_code=200, content="foo", headers={"Content-Type": "text/html"})

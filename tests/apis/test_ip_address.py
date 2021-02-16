@@ -1,3 +1,5 @@
+from unittest.mock import AsyncMock
+
 import pytest
 import vcr
 
@@ -13,7 +15,7 @@ def mock_whois(hostname: str):
     "tests/fixtures/vcr_cassettes/ip_address.yaml", ignore_hosts=["testserver"]
 )
 async def test_get(client, monkeypatch):
-    monkeypatch.setattr(Whois, "whois", mock_whois)
+    monkeypatch.setattr(Whois, "lookup", AsyncMock(return_value="foo"))
 
     ip_address = "93.184.216.34"
     response = await client.get(f"/api/ip_address/{ip_address}")

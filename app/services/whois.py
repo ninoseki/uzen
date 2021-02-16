@@ -1,14 +1,15 @@
 import socket
-from functools import lru_cache
 from typing import Optional
 
-import whois
+import asyncwhois
+from async_lru import alru_cache
+from asyncwhois.errors import WhoIsError
 
 
 class Whois:
     @staticmethod
-    @lru_cache()
-    def whois(hostname: str) -> Optional[str]:
+    @alru_cache()
+    async def lookup(hostname: str) -> Optional[str]:
         """Perform Whois lookup
 
         Arguments:
@@ -18,13 +19,13 @@ class Whois:
             Optional[str] -- Whois response as a string, returns None if an error occurs
         """
         try:
-            w = whois.whois(hostname)
+            result = await asyncwhois.aio_lookup(hostname)
         except (
-            whois.parser.PywhoisError,
+            WhoIsError,
             socket.timeout,
             ConnectionError,
             TimeoutError,
         ):
             return None
 
-        return w.text
+        return result.query_output

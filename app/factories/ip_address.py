@@ -6,7 +6,7 @@ from app.services.whois import Whois
 class IPAddressFactory:
     @staticmethod
     async def from_ip_address(ip_address: str) -> schemas.IPAddress:
-        whois = Whois.whois(ip_address)
+        whois = await Whois.lookup(ip_address)
         res = await IP2ASN.lookup(ip_address)
         snapshots = await models.Snapshot.find_by_ip_address(ip_address)
 
