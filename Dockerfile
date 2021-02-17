@@ -58,6 +58,7 @@ RUN apt-get update \
   # Install dependencies for Uzen
   dnsutils \
   procps \
+  whois \
   && apt-get clean  \
   && rm -rf /var/lib/apt/lists/*
 
