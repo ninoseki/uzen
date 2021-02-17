@@ -1,14 +1,8 @@
-from unittest.mock import AsyncMock
-
 import pytest
-
-from app.services.whois import Whois
 
 
 @pytest.mark.asyncio
-async def test_get(client, monkeypatch):
-    monkeypatch.setattr(Whois, "lookup", AsyncMock(return_value="foo"))
-
+async def test_get(client, patch_whois_lookup):
     hostname = "example.com"
     response = await client.get(f"/api/domain/{hostname}")
     assert response.status_code == 200

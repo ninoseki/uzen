@@ -1,30 +1,16 @@
-from unittest.mock import AsyncMock
-
 import pytest
 import respx
 from httpx import Response
 
 from app import dataclasses
 from app.services.browsers.httpx import HttpxBrowser
-from app.services.certificate import Certificate
-from app.services.ip2asn import IP2ASN
-from app.services.whois import Whois
-
-
-def mock_whois(hostname: str):
-    return "foo"
-
-
-def mock_load_from_url(url: str):
-    return None
 
 
 @pytest.mark.asyncio
 @respx.mock
-async def test_take_snapshot(monkeypatch):
-    monkeypatch.setattr(IP2ASN, "lookup", AsyncMock(return_value={"asn": "AS15133"}))
-    monkeypatch.setattr(Whois, "lookup", AsyncMock(return_value="foo"))
-    monkeypatch.setattr(Certificate, "load_from_url", mock_load_from_url)
+async def test_take_snapshot(
+    patch_whois_lookup, patch_ip2asn_lookup, patch_certificate_load_from_url
+):
     respx.get("http://example.com/",).mock(
         Response(status_code=200, content="foo", headers={"Content-Type": "text/html"})
     )

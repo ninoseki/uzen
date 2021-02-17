@@ -6,21 +6,12 @@ from app.core.exceptions import TakeSnapshotError
 from app.services.browser import Browser
 from app.services.browsers.httpx import HttpxBrowser
 from app.services.browsers.playwright import PlaywrightBrowser
-from app.services.certificate import Certificate
-from app.services.ip2asn import IP2ASN
-from app.services.whois import Whois
-
-
-def mock_load_from_url(url: str):
-    return None
 
 
 @pytest.mark.asyncio
-async def test_take_snapshot(monkeypatch):
-    monkeypatch.setattr(IP2ASN, "lookup", AsyncMock(return_value={"asn": "AS15133"}))
-    monkeypatch.setattr(Whois, "lookup", AsyncMock(return_value="foo"))
-    monkeypatch.setattr(Certificate, "load_from_url", mock_load_from_url)
-
+async def test_take_snapshot(
+    patch_whois_lookup, patch_ip2asn_lookup, patch_certificate_load_from_url
+):
     browser = Browser()
     result = await browser.take_snapshot("http://example.com")
     snapshot = result.snapshot
@@ -36,21 +27,16 @@ async def test_take_snapshot(monkeypatch):
 
 
 @pytest.mark.asyncio
-async def test_take_snapshot_with_scripts(monkeypatch):
-    monkeypatch.setattr(IP2ASN, "lookup", AsyncMock(return_value={"asn": "AS15133"}))
-    monkeypatch.setattr(Whois, "lookup", AsyncMock(return_value="foo"))
-    monkeypatch.setattr(Certificate, "load_from_url", mock_load_from_url)
-
+async def test_take_snapshot_with_scripts(
+    patch_whois_lookup, patch_ip2asn_lookup, patch_certificate_load_from_url
+):
     browser = Browser()
     result = await browser.take_snapshot("https://github.com/")
     assert len(result.script_files) > 0
 
 
 @pytest.mark.asyncio
-async def test_take_snapshot_with_bad_ssl(monkeypatch):
-    monkeypatch.setattr(IP2ASN, "lookup", AsyncMock(return_value={"asn": "AS15133"}))
-    monkeypatch.setattr(Whois, "lookup", AsyncMock(return_value="foo"))
-
+async def test_take_snapshot_with_bad_ssl(patch_whois_lookup, patch_ip2asn_lookup):
     with pytest.raises(TakeSnapshotError):
         browser = Browser()
         result = await browser.take_snapshot("https://expired.badssl.com")
