@@ -52,7 +52,8 @@ async def build_snapshot_result(
         certificate_content = certificate.text
         certificate_sha256_fingerprint = certificate.fingerprint
 
-    whois_content = await Whois.lookup(hostname)
+    whois_result = await Whois.lookup(hostname)
+    whois_result = cast(dataclasses.Whois, whois_result)
 
     snapshot = models.Snapshot(
         url=url,
@@ -70,8 +71,17 @@ async def build_snapshot_result(
         id=calculate_sha256(browsing_result.html), content=browsing_result.html
     )
     whois = (
-        models.Whois(id=calculate_sha256(whois_content), content=whois_content)
-        if whois_content
+        models.Whois(
+            id=calculate_sha256(whois_result.content),
+            content=whois_result.content,
+            created=whois_result.created,
+            updated=whois_result.updated,
+            expires=whois_result.expires,
+            registrar=whois_result.registrar,
+            registrant_organization=whois_result.registrant_organization,
+            registrant_name=whois_result.registrant_name,
+        )
+        if whois_result
         else None
     )
     certificate = (

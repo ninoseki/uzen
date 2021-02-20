@@ -13,6 +13,7 @@ from app.dataclasses.utils import (
     SnapshotResult,
     StylesheetFile,
 )
+from app.dataclasses.whois import Whois
 
 __all__ = [
     "BrowsingOptions",
@@ -27,4 +28,5 @@ __all__ = [
     "SearchResults",
     "SnapshotResult",
     "StylesheetFile",
+    "Whois",
 ]

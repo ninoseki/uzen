@@ -160,7 +160,7 @@
           </b-tab-item>
 
           <b-tab-item label="Whois">
-            <Whois :whois="getWhois(getSnapshotTask.last.value)" />
+            <Whois :whois="getSnapshotTask.last.value.whois" />
           </b-tab-item>
 
           <b-tab-item label="Certificate">
@@ -269,13 +269,9 @@ export default defineComponent({
       updateTitle(snapshot.url);
     };
 
-    const getWhois = (snapshot: Snapshot) => {
-      return snapshot.whois?.content;
-    };
-
     getSnapshot();
 
-    return { getSnapshotTask, getWhois, truncate, countryCodeToEmoji };
+    return { getSnapshotTask, truncate, countryCodeToEmoji };
   },
 });
 </script>

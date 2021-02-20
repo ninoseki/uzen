@@ -4,6 +4,7 @@ from fastapi_utils.api_model import APIModel
 from pydantic import Field, IPvAnyAddress
 
 from app.schemas.snapshot import Snapshot
+from app.schemas.whois import BaseWhois
 
 
 class IPAddress(APIModel):
@@ -19,7 +20,7 @@ class IPAddress(APIModel):
     description: str = Field(
         ..., title="Description", description="A dectiption of an IP address"
     )
-    whois: Optional[str] = Field(
+    whois: Optional[BaseWhois] = Field(
         None, title="Whois", description="A whois record of an IP address"
     )
     snapshots: List[Snapshot] = Field(

@@ -54,7 +54,10 @@
 
       <div class="column">
         <H3> Whois </H3>
-        <pre>{{ getDomainTask.last.value.whois || "N/A" }}</pre>
+        <Whois
+          :whois="getDomainTask.last.value.whois"
+          v-if="getDomainTask.last.value.whois"
+        ></Whois>
       </div>
     </div>
   </div>
@@ -74,6 +77,7 @@ import Error from "@/components/ui/Error.vue";
 import H2 from "@/components/ui/H2.vue";
 import H3 from "@/components/ui/H3.vue";
 import Loading from "@/components/ui/Loading.vue";
+import Whois from "@/components/whois/Whois.vue";
 import { DomainInformation } from "@/types";
 
 export default defineComponent({
@@ -88,6 +92,7 @@ export default defineComponent({
     Loading,
     Preview,
     Table,
+    Whois,
   },
   setup(_, context) {
     const hostname = context.root.$route.params.hostname;

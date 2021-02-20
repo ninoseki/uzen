@@ -11,9 +11,15 @@ export interface HTML {
 }
 
 export interface Whois {
-  id: string;
+  id: string | null;
   content: string;
-  createdAt: string;
+  createdAt: string | null;
+  created: string | null;
+  updated: string | null;
+  expires: string | null;
+  registrar: string | null;
+  registrantName: string | null;
+  registrantOrganization: string | null;
 }
 
 export interface Certificate {
