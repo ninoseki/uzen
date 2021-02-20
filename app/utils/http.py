@@ -50,7 +50,10 @@ def parse_html(html: str) -> BeautifulSoup:
     return BeautifulSoup(html, "html.parser")
 
 
-def get_script_urls(url: str, html: str,) -> List[str]:
+def get_script_urls(
+    url: str,
+    html: str,
+) -> List[str]:
     """Get a list of script urls
 
     Arguments:
@@ -71,7 +74,10 @@ def get_script_urls(url: str, html: str,) -> List[str]:
     return list(set(urls))
 
 
-def get_stylesheet_urls(url: str, html: str,) -> List[str]:
+def get_stylesheet_urls(
+    url: str,
+    html: str,
+) -> List[str]:
     """Get a list of stylesheet urls
 
     Arguments:

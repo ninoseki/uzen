@@ -23,7 +23,9 @@ async def take_screenshot(hostname: str, protocol="http") -> bytes:
         browser = await launch_playwright_browser(playwright)
         page = await browser.new_page()
 
-        await page.goto(f"{protocol}://{hostname}",)
+        await page.goto(
+            f"{protocol}://{hostname}",
+        )
         screenshot = await page.screenshot()
         await browser.close()
 

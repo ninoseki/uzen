@@ -11,7 +11,11 @@ from app.services.searchers.utils import convert_to_datetime
 class SnapshotSearcher(AbstractSearcher):
     @classmethod
     async def search(
-        cls, filters: dict, size=None, offset=None, id_only=False,
+        cls,
+        filters: dict,
+        size=None,
+        offset=None,
+        id_only=False,
     ) -> schemas.SnapshotsSearchResults:
         """Search snapshots
 

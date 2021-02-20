@@ -18,7 +18,10 @@ async def run_httpx(
 
     async with httpx.AsyncClient(verify=verify) as client:
         res = await client.get(
-            url, headers=options.headers, timeout=options.timeout, allow_redirects=True,
+            url,
+            headers=options.headers,
+            timeout=options.timeout,
+            allow_redirects=True,
         )
 
         return dataclasses.BrowsingResult(
@@ -35,7 +38,8 @@ async def run_httpx(
 class HttpxBrowser(AbstractBrowser):
     @staticmethod
     async def take_snapshot(
-        url: str, options: dataclasses.BrowsingOptions,
+        url: str,
+        options: dataclasses.BrowsingOptions,
     ) -> dataclasses.SnapshotResult:
         submitted_url: str = url
 
@@ -52,13 +56,15 @@ class HttpxBrowser(AbstractBrowser):
 
         # get script files
         script_files = cast(
-            List[dataclasses.ScriptFile], await ScriptTask.process(snapshot),
+            List[dataclasses.ScriptFile],
+            await ScriptTask.process(snapshot),
         )
         snapshot_result.script_files = script_files
 
         # get stylesheet files
         stylesheet_files = cast(
-            List[dataclasses.StylesheetFile], await StylesheetTask.process(snapshot),
+            List[dataclasses.StylesheetFile],
+            await StylesheetTask.process(snapshot),
         )
         snapshot_result.stylesheet_files = stylesheet_files
 

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING
 from uuid import UUID
 
 from tortoise import fields, models
@@ -74,35 +74,35 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
     )
 
     @property
-    def rules(self) -> List[schemas.Rule]:
+    def rules(self) -> list[schemas.Rule]:
         try:
             return [rule.to_model() for rule in self._rules]
         except NoValuesFetched:
             return []
 
     @property
-    def scripts(self) -> List[schemas.Script]:
+    def scripts(self) -> list[schemas.Script]:
         try:
             return [script.to_model() for script in self._scripts]
         except NoValuesFetched:
             return []
 
     @property
-    def stylesheets(self) -> List[schemas.Stylesheet]:
+    def stylesheets(self) -> list[schemas.Stylesheet]:
         try:
             return [stylesheet.to_model() for stylesheet in self._stylesheets]
         except NoValuesFetched:
             return []
 
     @property
-    def dns_records(self) -> List[schemas.DnsRecord]:
+    def dns_records(self) -> list[schemas.DnsRecord]:
         try:
             return [record.to_model() for record in self._dns_records]
         except NoValuesFetched:
             return []
 
     @property
-    def classifications(self) -> List[schemas.Classification]:
+    def classifications(self) -> list[schemas.Classification]:
         try:
             return [
                 classification.to_model() for classification in self._classifications
@@ -134,23 +134,34 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
         )
 
     @classmethod
-    async def find_by_ip_address(cls, ip_address: str, size=20) -> List[Snapshot]:
+    async def find_by_ip_address(cls, ip_address: str, size=20) -> list[Snapshot]:
         return (
             await cls.filter(ip_address=ip_address)
             .limit(size)
-            .prefetch_related("html", "whois", "certificate",)
+            .prefetch_related(
+                "html",
+                "whois",
+                "certificate",
+            )
         )
 
     @classmethod
-    async def find_by_hostname(cls, hostname: str, size=20) -> List[Snapshot]:
+    async def find_by_hostname(cls, hostname: str, size=20) -> list[Snapshot]:
         return (
             await cls.filter(hostname=hostname)
             .limit(size)
-            .prefetch_related("html", "whois", "certificate",)
+            .prefetch_related(
+                "html",
+                "whois",
+                "certificate",
+            )
         )
 
     @classmethod
-    async def save_snapshot_result(_, result: "SnapshotResult",) -> Snapshot:
+    async def save_snapshot_result(
+        _,
+        result: "SnapshotResult",
+    ) -> Snapshot:
         async with in_transaction():
             snapshot = result.snapshot
 

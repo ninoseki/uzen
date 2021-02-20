@@ -16,12 +16,15 @@ router = APIRouter()
     summary="Get a HAR",
     description="Get a HAR which related to a snapshot",
 )
-async def get_by_snapshot_id(snapshot_id: UUID,) -> schemas.HAR:
+async def get_by_snapshot_id(
+    snapshot_id: UUID,
+) -> schemas.HAR:
     try:
         har = await models.HAR.get_by_snapshot_id(snapshot_id)
     except DoesNotExist:
         raise HTTPException(
-            status_code=404, detail=f"HAR related to {snapshot_id} is not found",
+            status_code=404,
+            detail=f"HAR related to {snapshot_id} is not found",
         )
 
     model = cast(schemas.HAR, har.to_model())

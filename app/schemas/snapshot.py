@@ -92,13 +92,15 @@ class BasicAttributes(APIModel):
     status: int = Field(..., title="Status", description="Status code")
 
     @validator(
-        "url", pre=True,
+        "url",
+        pre=True,
     )
     def normalize_url(cls, v: str):
         return remove_sharp_and_question_from_tail(v)
 
     @validator(
-        "submitted_url", pre=True,
+        "submitted_url",
+        pre=True,
     )
     def normalize_submitted_url(cls, v: str):
         return remove_sharp_and_question_from_tail(v)

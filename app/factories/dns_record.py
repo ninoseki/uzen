@@ -55,7 +55,9 @@ async def query(hostname: str) -> List[schemas.BaseDnsRecord]:
 
 class DnsRecordFactory:
     @staticmethod
-    async def from_snapshot(snapshot: models.Snapshot,) -> List[models.DnsRecord]:
+    async def from_snapshot(
+        snapshot: models.Snapshot,
+    ) -> List[models.DnsRecord]:
         return [
             models.DnsRecord(
                 type=record.type,

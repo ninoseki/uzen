@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, List, Optional, cast
+from typing import Any, List, cast
 from uuid import UUID
 
 from tortoise import fields
@@ -23,10 +23,10 @@ class Rule(TimestampMixin, AbstractBaseModel):
     def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
 
-        self.snapshots_: Optional[List[models.Snapshot]] = None
+        self.snapshots_: list[models.Snapshot] | None = None
 
     @property
-    def snapshots(self) -> List[schemas.Snapshot]:
+    def snapshots(self) -> list[schemas.Snapshot]:
         if hasattr(self, "snapshots_") and self.snapshots_ is not None:
             return cast(
                 List[schemas.Snapshot],
@@ -44,7 +44,11 @@ class Rule(TimestampMixin, AbstractBaseModel):
         rule.snapshots_ = (
             await rule._snapshots.all()
             .limit(LIMIT_OF_PREFETCH)
-            .prefetch_related("html", "whois", "certificate",)
+            .prefetch_related(
+                "html",
+                "whois",
+                "certificate",
+            )
         )
 
         return rule

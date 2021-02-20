@@ -42,7 +42,9 @@ async def test_take_snapshot_with_bad_ssl(patch_whois_lookup, patch_ip2asn_looku
         result = await browser.take_snapshot("https://expired.badssl.com")
 
     browser = Browser(ignore_https_errors=True)
-    result = await browser.take_snapshot("https://expired.badssl.com",)
+    result = await browser.take_snapshot(
+        "https://expired.badssl.com",
+    )
     snapshot = result.snapshot
     assert snapshot.url == "https://expired.badssl.com/"
 

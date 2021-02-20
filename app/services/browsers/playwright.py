@@ -99,7 +99,8 @@ async def run_playwright_browser(
 class PlaywrightBrowser(AbstractBrowser):
     @staticmethod
     async def take_snapshot(
-        url: str, options: dataclasses.BrowsingOptions,
+        url: str,
+        options: dataclasses.BrowsingOptions,
     ) -> dataclasses.SnapshotResult:
         submitted_url: str = url
         har_data: Optional[dict] = None
