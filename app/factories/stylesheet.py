@@ -17,7 +17,10 @@ class StylesheetFactory:
     async def from_snapshot(
         snapshot: models.Snapshot,
     ) -> List[dataclasses.StylesheetFile]:
-        urls = get_stylesheet_urls(url=snapshot.url, html=snapshot.html.content,)
+        urls = get_stylesheet_urls(
+            url=snapshot.url,
+            html=snapshot.html.content,
+        )
         stylesheet_files: List[dataclasses.StylesheetFile] = []
 
         # Use the same settings as the original request

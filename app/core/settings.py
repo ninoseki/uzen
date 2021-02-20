@@ -20,7 +20,11 @@ LOG_BACKTRACE: bool = config("LOG_BACKTRACE", cast=bool, default=True)
 
 # database settings
 DATABASE_URL: str = config("DATABASE_URL", cast=str, default="sqlite://:memory:")
-APP_MODELS = config("APP_MODELS", cast=CommaSeparatedStrings, default="app.models",)
+APP_MODELS = config(
+    "APP_MODELS",
+    cast=CommaSeparatedStrings,
+    default="app.models",
+)
 
 # Minio settings
 MINIO_ENDPOINT: str = config("MINIO_ENDPOINT", cast=str, default="localhost:9000")

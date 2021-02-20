@@ -11,7 +11,9 @@ from app.tasks.dns_record import DnsRecordTask
 
 class EnrichmentTasks(AbstractAsyncTask):
     def __init__(
-        self, snapshot: models.Snapshot, insert_to_db: bool = True,
+        self,
+        snapshot: models.Snapshot,
+        insert_to_db: bool = True,
     ):
         self.tasks = [
             partial(ClassificationTask.process, snapshot, insert_to_db),
@@ -30,7 +32,8 @@ class EnrichmentTasks(AbstractAsyncTask):
                 dns_records.append(result)
 
         return dataclasses.EnrichmentResults(
-            classifications=classifications, dns_records=dns_records,
+            classifications=classifications,
+            dns_records=dns_records,
         )
 
     @classmethod

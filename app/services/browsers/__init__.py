@@ -90,6 +90,7 @@ async def build_snapshot_result(
 class AbstractBrowser(ABC):
     @abstractstaticmethod
     async def take_snapshot(
-        url: str, options: dataclasses.BrowsingOptions,
+        url: str,
+        options: dataclasses.BrowsingOptions,
     ) -> dataclasses.SnapshotResult:
         raise NotImplementedError()

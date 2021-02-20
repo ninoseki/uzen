@@ -18,7 +18,9 @@ class UpdateRulePayload(APIModel):
         None, title="Name", description="A name of the YARA rule"
     )
     source: Optional[str] = Field(
-        None, title="YARA rule", description="String containing the rules code",
+        None,
+        title="YARA rule",
+        description="String containing the rules code",
     )
     target: Optional[Literal["html", "certificate", "script", "whois"]] = Field(
         title="Target",

@@ -12,10 +12,14 @@ class BaseDnsRecord(APIModel):
     """
 
     type: str = Field(
-        ..., title="Type", description="A type of the DNS record",
+        ...,
+        title="Type",
+        description="A type of the DNS record",
     )
     value: str = Field(
-        ..., title="Value", description="A value of the DNS record",
+        ...,
+        title="Value",
+        description="A value of the DNS record",
     )
 
     class Config:

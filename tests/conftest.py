@@ -43,7 +43,9 @@ def get_db_config(app_label: str, db_url: str, modules: List[str]) -> dict:
 async def tortoise_db():
     db_url = environ.get("TORTOISE_TEST_DB", "sqlite://:memory:")
     config = get_db_config(
-        app_label="models", db_url=db_url, modules=settings.APP_MODELS,
+        app_label="models",
+        db_url=db_url,
+        modules=settings.APP_MODELS,
     )
     try:
         await Tortoise.init(config)

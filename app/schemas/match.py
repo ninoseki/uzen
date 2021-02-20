@@ -17,16 +17,24 @@ class Match(AbstractBaseModel, TimestampMixin):
     """Pydantic model for Match"""
 
     matches: List[YaraMatch] = Field(
-        ..., title="Matches", description="A list of YARA mastches",
+        ...,
+        title="Matches",
+        description="A list of YARA mastches",
     )
     snapshot: PlainSnapshot = Field(
-        ..., title="Snapshot", description="A matched snapshot",
+        ...,
+        title="Snapshot",
+        description="A matched snapshot",
     )
     rule: Rule = Field(
-        ..., title="Rule", description="A matched rule",
+        ...,
+        title="Rule",
+        description="A matched rule",
     )
     script: Optional[Script] = Field(
-        None, title="Script", description="A matched script",
+        None,
+        title="Script",
+        description="A matched script",
     )
 
     class Config:
@@ -35,13 +43,19 @@ class Match(AbstractBaseModel, TimestampMixin):
 
 class MatchResult(APIModel):
     rule_id: UUID = Field(
-        ..., title="Matches", description="An ID of the rule",
+        ...,
+        title="Matches",
+        description="An ID of the rule",
     )
     script_id: Optional[UUID] = Field(
-        None, title="Matches", description="An ID of the script",
+        None,
+        title="Matches",
+        description="An ID of the script",
     )
     matches: List[YaraMatch] = Field(
-        ..., title="Matches", description="A list of YARA mastches",
+        ...,
+        title="Matches",
+        description="A list of YARA mastches",
     )
 
 

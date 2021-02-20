@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import List, Optional, Type
 
 from tortoise.models import Model, QuerySet
 from tortoise.query_utils import Q
@@ -12,10 +11,10 @@ from app import dataclasses
 class AbstractSearcher(ABC):
     def __init__(
         self,
-        model: Type[Model],
+        model: type[Model],
         query: Q,
-        values: Optional[List[str]] = None,
-        prefetch_related: Optional[List[str]] = None,
+        values: list[str] | None = None,
+        prefetch_related: list[str] | None = None,
     ):
         if prefetch_related is None:
             prefetch_related = []
@@ -29,8 +28,8 @@ class AbstractSearcher(ABC):
         return await self.model.filter(self.query).count()
 
     def build_queryset(
-        self, size: Optional[int] = None, offset: Optional[int] = None, id_only=False
-    ) -> QuerySet[Type[Model]]:
+        self, size: int | None = None, offset: int | None = None, id_only=False
+    ) -> QuerySet[type[Model]]:
         size = 100 if size is None else size
 
         queryset = self.model.filter(self.query).limit(size)
@@ -46,7 +45,10 @@ class AbstractSearcher(ABC):
         return queryset.prefetch_related(*self.prefetch_related)
 
     async def _search(
-        self, size: Optional[int] = None, offset: Optional[int] = None, id_only=False,
+        self,
+        size: int | None = None,
+        offset: int | None = None,
+        id_only=False,
     ) -> dataclasses.SearchResults:
         total = await self._total()
         queryset = self.build_queryset(size=size, offset=offset, id_only=id_only)
@@ -58,8 +60,8 @@ class AbstractSearcher(ABC):
     async def search(
         cls,
         filters: dict,
-        size: Optional[int] = None,
-        offset: Optional[int] = None,
+        size: int | None = None,
+        offset: int | None = None,
         id_only=False,
     ):
         """Search a table.

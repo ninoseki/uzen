@@ -10,7 +10,11 @@ from app.services.searchers import AbstractSearcher
 class RuleSearcher(AbstractSearcher):
     @classmethod
     async def search(
-        cls, filters: dict, size=None, offset=None, id_only=False,
+        cls,
+        filters: dict,
+        size=None,
+        offset=None,
+        id_only=False,
     ) -> schemas.RulesSearchResults:
         """Search rules.
 

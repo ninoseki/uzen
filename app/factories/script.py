@@ -15,7 +15,10 @@ MAX_AT_ONCE = 10
 class ScriptFactory:
     @staticmethod
     async def from_snapshot(snapshot: models.Snapshot) -> List[dataclasses.ScriptFile]:
-        urls = get_script_urls(url=snapshot.url, html=snapshot.html.content,)
+        urls = get_script_urls(
+            url=snapshot.url,
+            html=snapshot.html.content,
+        )
         script_files: List[dataclasses.ScriptFile] = []
 
         # Use the same settings as the original request

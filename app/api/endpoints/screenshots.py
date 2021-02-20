@@ -19,7 +19,9 @@ router = APIRouter()
     summary="Get a screenshot",
     description="Get a screenshot which related to a snapshot",
 )
-async def get_by_snapshot_id(snapshot_id: UUID,) -> Response:
+async def get_by_snapshot_id(
+    snapshot_id: UUID,
+) -> Response:
     screenshot = await get_screenshot(str(snapshot_id))
     return Response(content=screenshot, media_type="image/png")
 
