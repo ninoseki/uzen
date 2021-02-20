@@ -2,7 +2,9 @@ from abc import ABC, abstractstaticmethod
 from typing import List, Optional, cast
 
 from app import dataclasses, models
+from app.factories.certificate import CertificateFactory
 from app.factories.har import HarFactory
+from app.factories.whois import WhoisFactory
 from app.services.certificate import Certificate
 from app.services.har import HarReader
 from app.services.whois import Whois
@@ -45,10 +47,10 @@ async def build_snapshot_result(
         script_files = har_reader.find_script_files()
         stylesheet_files = har_reader.find_stylesheet_files()
 
-    certificate = Certificate.load_from_url(url)
+    certificate_data = Certificate.load_from_url(url)
 
-    whois_result = await Whois.lookup(hostname)
-    whois_result = cast(dataclasses.Whois, whois_result)
+    whois_data = await Whois.lookup(hostname)
+    whois_data = cast(dataclasses.Whois, whois_data)
 
     snapshot = models.Snapshot(
         url=url,
@@ -65,30 +67,10 @@ async def build_snapshot_result(
     html = models.HTML(
         id=calculate_sha256(browsing_result.html), content=browsing_result.html
     )
-    whois = (
-        models.Whois(
-            id=calculate_sha256(whois_result.content),
-            content=whois_result.content,
-            created=whois_result.created,
-            updated=whois_result.updated,
-            expires=whois_result.expires,
-            registrar=whois_result.registrar,
-            registrant_organization=whois_result.registrant_organization,
-            registrant_name=whois_result.registrant_name,
-        )
-        if whois_result
-        else None
-    )
+    whois = WhoisFactory.from_dataclass(whois_data) if whois_data else None
     certificate = (
-        models.Certificate(
-            id=certificate.fingerprint,
-            content=certificate.text,
-            not_after=certificate.not_after,
-            not_before=certificate.not_before,
-            issuer=certificate.issuer,
-            subject=certificate.subject,
-        )
-        if certificate
+        CertificateFactory.from_dataclass(certificate_data)
+        if certificate_data
         else None
     )
     har = HarFactory.from_dataclass(har) if har else None
