@@ -11,7 +11,7 @@ repos:
           ]
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.7.4
+    rev: v2.10.0
     hooks:
       - id: pyupgrade
         args: [--py37-plus]
@@ -36,7 +36,7 @@ repos:
       - id: black
 
   - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v7.16.0
+    rev: v7.20.0
     hooks:
       - id: eslint
         files: \.(ts|vue)$
