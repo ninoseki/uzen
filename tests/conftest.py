@@ -11,7 +11,7 @@ from tortoise import Tortoise
 from tortoise.backends.base.config_generator import generate_config
 from tortoise.exceptions import DBConnectionError
 
-from app import create_app, models
+from app import create_app, dataclasses, models
 from app.core import settings
 from app.services.certificate import Certificate
 from app.services.ip2asn import IP2ASN
@@ -186,7 +186,9 @@ def patch_datetime_now(monkeypatch: MonkeyPatch):
 
 @pytest.fixture
 def patch_whois_lookup(monkeypatch: MonkeyPatch):
-    monkeypatch.setattr(Whois, "lookup", AsyncMock(return_value="foo"))
+    monkeypatch.setattr(
+        Whois, "lookup", AsyncMock(return_value=dataclasses.Whois(content="foo"))
+    )
 
 
 @pytest.fixture

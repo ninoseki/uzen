@@ -5,6 +5,7 @@ from pydantic import Field
 
 from app.schemas.dns_record import BaseDnsRecord
 from app.schemas.snapshot import Snapshot
+from app.schemas.whois import BaseWhois
 
 
 class Domain(APIModel):
@@ -14,7 +15,7 @@ class Domain(APIModel):
     dns_records: List[BaseDnsRecord] = Field(
         ..., title="DNS records", description="A list of DNS records"
     )
-    whois: Optional[str] = Field(
+    whois: Optional[BaseWhois] = Field(
         None, title="Whois", description="A whois record of an IP address"
     )
     snapshots: List[Snapshot] = Field(
