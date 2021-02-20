@@ -46,11 +46,6 @@ async def build_snapshot_result(
         stylesheet_files = har_reader.find_stylesheet_files()
 
     certificate = Certificate.load_from_url(url)
-    certificate_content: Optional[str] = None
-    certificate_sha256_fingerprint: Optional[str] = None
-    if certificate:
-        certificate_content = certificate.text
-        certificate_sha256_fingerprint = certificate.fingerprint
 
     whois_result = await Whois.lookup(hostname)
     whois_result = cast(dataclasses.Whois, whois_result)
@@ -86,9 +81,14 @@ async def build_snapshot_result(
     )
     certificate = (
         models.Certificate(
-            id=certificate_sha256_fingerprint, content=certificate_content
+            id=certificate.fingerprint,
+            content=certificate.text,
+            not_after=certificate.not_after,
+            not_before=certificate.not_before,
+            issuer=certificate.issuer,
+            subject=certificate.subject,
         )
-        if certificate_content
+        if certificate
         else None
     )
     har = HarFactory.from_dataclass(har) if har else None

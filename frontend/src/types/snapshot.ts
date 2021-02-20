@@ -25,6 +25,10 @@ export interface Whois {
 export interface Certificate {
   id: string;
   content: string;
+  notAfter: string | null;
+  notBefore: string | null;
+  issuer: string;
+  subject: string;
   createdAt: string;
 }
 
