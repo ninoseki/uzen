@@ -9,54 +9,54 @@ from app.schemas.snapshot import PlainSnapshot
 
 
 class YaraScanPayload(Source, Target, APIModel):
-    pass
+    """Playload for YARA scan"""
 
 
 class YaraMatchString(APIModel):
-    offset: int
-    string_identifier: str
-    string_data: str
+    """YARA match string"""
+
+    offset: int = Field(...)
+    string_identifier: str = Field(...)
+    string_data: str = Field(...)
 
 
 class YaraMatch(APIModel):
-    rule: str = Field(..., title="Rule", description="A name of the rule")
+    """YARA match"""
+
+    rule: str = Field(..., description="A name of the rule")
     namespace: str = Field(
         ...,
-        title="Namespace",
         description="A namespace associated to the matching rule",
     )
     tags: List[str] = Field(
         [],
-        title="Tags",
-        description="An array of strings containig the tags associated to the matching rule",
+        description="An array of strings containing the tags associated to the matching rule",
     )
     meta: dict = Field(
         {},
-        title="Meta",
         description="A dictionary containing metadata associated to the matching rule",
     )
     strings: List[YaraMatchString] = Field(
         [],
-        title="Strings",
         description="A list of tuples containing information about the matching strings",
     )
 
 
 class YaraResult(APIModel):
-    snapshot_id: UUID = Field(
-        ..., title="Snapshot ID", description="An ID of the snapshot"
-    )
+    """YARA scan result"""
+
+    snapshot_id: UUID = Field(...)
     script_id: Optional[UUID] = Field(
-        ..., title="Script ID", description="An ID of the script"
+        ...,
     )
-    target: str = Field(..., title="Target", description="The target to scan")
-    matches: List[YaraMatch] = Field(
-        [], title="YARA matches", description="A list of YARA matches"
-    )
+    target: str = Field(..., description="A target to scan")
+    matches: List[YaraMatch] = Field([], description="A list of YARA matches")
 
 
 class YaraScanResult(PlainSnapshot):
-    yara_result: YaraResult
+    """YARA scan result + snapshot"""
+
+    yara_result: YaraResult = Field(...)
 
     @classmethod
     def field_keys(cls) -> List[str]:

@@ -3,4 +3,4 @@ from app.schemas.mixin import TimestampMixin
 
 
 class File(AbstractResourceModel, TimestampMixin):
-    """Pydantic model for File"""
+    """File"""

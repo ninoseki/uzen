@@ -3,4 +3,4 @@ from pydantic import Field
 
 
 class BaseSearchResults(APIModel):
-    total: int = Field(..., title="total", description="Total count of search results")
+    total: int = Field(..., description="A total count of search results")

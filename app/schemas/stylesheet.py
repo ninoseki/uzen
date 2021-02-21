@@ -5,6 +5,6 @@ from app.schemas.mixin import TimestampMixin
 
 
 class Stylesheet(AbstractParentResourceModel, TimestampMixin):
-    """Pydantic model for Stylesheet"""
+    """Stylesheet"""
 
-    url: AnyHttpUrl = Field(..., title="URL", description="A URL of the stylesheet")
+    url: AnyHttpUrl = Field(...)

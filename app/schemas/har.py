@@ -5,6 +5,6 @@ from app.schemas.mixin import TimestampMixin
 
 
 class HAR(AbstractBaseModel, TimestampMixin):
-    """Pydantic model for HAR"""
+    """HAR"""
 
-    data: dict = Field(..., title="data")
+    data: dict = Field(...)

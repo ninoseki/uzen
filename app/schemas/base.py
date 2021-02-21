@@ -5,7 +5,7 @@ from pydantic import Field
 
 
 class AbstractBaseModel(APIModel):
-    id: UUID
+    id: UUID = Field(...)
 
 
 class AbstractParentResourceModel(AbstractBaseModel):
@@ -14,4 +14,4 @@ class AbstractParentResourceModel(AbstractBaseModel):
 
 class AbstractResourceModel(APIModel):
     id: str = Field(..., title="ID", description="A SHA256 hash of the content")
-    content: str = Field(..., title="Content")
+    content: str = Field(...)

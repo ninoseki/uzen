@@ -26,21 +26,27 @@ from app.utils.network import get_hostname_from_url, get_ip_address_by_hostname
 
 
 class Viewport(APIModel):
-    width: int
-    height: int
+    """View port"""
+
+    width: int = Field(...)
+    height: int = Field(...)
 
 
 class DeviceDescriptor(APIModel):
-    user_agent: str
-    viewport: Viewport
-    device_scale_factor: float
-    is_mobile: bool
-    has_touch: bool
+    """Device descriptor"""
+
+    user_agent: str = Field(...)
+    viewport: Viewport = Field(...)
+    device_scale_factor: float = Field(...)
+    is_mobile: bool = Field(...)
+    has_touch: bool = Field(...)
 
 
 class Device(APIModel):
-    name: str
-    descriptor: DeviceDescriptor
+    """Device to be used with a browser"""
+
+    name: str = Field(...)
+    descriptor: DeviceDescriptor = Field(...)
 
 
 @lru_cache()
@@ -59,10 +65,7 @@ def remove_sharp_and_question_from_tail(v: str) -> str:
 
 
 class BaseRule(Source, Target):
-    """Base Pydantic model for Rule
-
-    Note that this model doesn't have "id" and "created_at" fields.
-    """
+    """Base model for Rule"""
 
     name: str = Field(
         ..., title="Name", description="A name of the YARA rule", min_length=1
@@ -70,9 +73,9 @@ class BaseRule(Source, Target):
 
 
 class Rule(BaseRule, AbstractBaseModel, TimestampMixin):
-    """Full Pydantic model for Rule"""
+    """Rule"""
 
-    updated_at: datetime.datetime
+    updated_at: datetime.datetime = Field(...)
     snapshots: List["Snapshot"] = Field(
         ...,
         title="Snapshots",
@@ -80,7 +83,7 @@ class Rule(BaseRule, AbstractBaseModel, TimestampMixin):
     )
 
 
-class BasicAttributes(APIModel):
+class SnapshotBasicAttributes(APIModel):
     url: AnyHttpUrl = Field(..., title="URL", description="A URL of the snapshot")
     submitted_url: AnyHttpUrl = Field(
         ..., title="Submitted URL", description="A submitted URL of the snapshot"
@@ -106,11 +109,8 @@ class BasicAttributes(APIModel):
         return remove_sharp_and_question_from_tail(v)
 
 
-class BaseSnapshot(BasicAttributes):
-    """Base Pydantic model of Snapshot
-
-    Note that this model doesn't have "id" and "created_at" fields.
-    """
+class BaseSnapshot(SnapshotBasicAttributes):
+    """Base model for Snapshot"""
 
     request_headers: dict = Field(...)
     response_headers: dict = Field(...)
@@ -118,27 +118,23 @@ class BaseSnapshot(BasicAttributes):
 
 
 class Snapshot(BaseSnapshot, AbstractBaseModel, TimestampMixin):
-    """Pydantic model of Snapshot"""
+    """Snapshot"""
 
-    html: HTML = Field(..., title="HTML")
-    certificate: Optional[Certificate] = Field(None, title="Certificate")
-    whois: Whois = Field(None, title="Whois")
+    html: HTML = Field(...)
+    certificate: Optional[Certificate] = Field(None)
+    whois: Whois = Field(None)
 
-    scripts: List[Script] = Field(..., title="Scripts", description="A list of scripts")
-    stylesheets: List[Stylesheet] = Field(
-        ..., title="Stylesheets", description="A list of stylesheets"
-    )
-    dns_records: List[DnsRecord] = Field(
-        ..., title="DNS records", description="A list of DNS records"
-    )
+    scripts: List[Script] = Field(..., description="A list of scripts")
+    stylesheets: List[Stylesheet] = Field(..., description="A list of stylesheets")
+    dns_records: List[DnsRecord] = Field(..., description="A list of DNS records")
     classifications: List[Classification] = Field(
-        ..., title="Classifications", description="A list of classifications"
+        ..., description="A list of classifications"
     )
-    rules: List[Rule] = Field(..., title="Rules", description="A list of matched rules")
+    rules: List[Rule] = Field(..., description="A list of matched rules")
 
 
-class PlainSnapshot(BasicAttributes, AbstractBaseModel, TimestampMixin):
-    """Plain version of Pydantic model of Snapshot"""
+class PlainSnapshot(SnapshotBasicAttributes, AbstractBaseModel, TimestampMixin):
+    """Plain model for Snapshot"""
 
     @classmethod
     def field_keys(cls) -> List[str]:
@@ -146,18 +142,14 @@ class PlainSnapshot(BasicAttributes, AbstractBaseModel, TimestampMixin):
 
 
 class SnapshotsSearchResults(BaseSearchResults):
-    results: Union[List[PlainSnapshot], List[UUID]]
+    """Search results of snapshots"""
 
-
-class CountResponse(APIModel):
-    count: int = Field(
-        None,
-        title="A number of snapshots",
-        description="A number of snapshots matched with filters",
-    )
+    results: Union[List[PlainSnapshot], List[UUID]] = Field(...)
 
 
 class CreateSnapshotPayload(APIModel):
+    """Payload to create a snapshot"""
+
     url: AnyHttpUrl = Field(..., title="URL", description="A URL to take a snapshot")
     enable_har: bool = Field(
         False, title="Enable HAR", description="Whether to enable HAR recording"

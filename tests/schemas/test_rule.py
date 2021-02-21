@@ -23,5 +23,8 @@ def test_update_payload_validation():
     with pytest.raises(ValidationError):
         UpdateRulePayload(source="foo")
 
+    with pytest.raises(ValidationError):
+        UpdateRulePayload(target="foo")
+
     payload = UpdateRulePayload(name="dummy")
     payload.name == "dummy"

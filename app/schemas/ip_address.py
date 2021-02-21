@@ -8,21 +8,15 @@ from app.schemas.whois import BaseWhois
 
 
 class IPAddress(APIModel):
-    """Pydantic model for IP informaiton"""
+    """IP address"""
 
     ip_address: IPvAnyAddress = Field(
-        ..., title="IP address", description="An IP address"
+        ...,
     )
-    country_code: str = Field(
-        ..., title="Country code", description="A country code of an IP address"
-    )
-    asn: str = Field(..., title="ASN", description="An ASN of an IP address")
-    description: str = Field(
-        ..., title="Description", description="A dectiption of an IP address"
-    )
+    country_code: str = Field(...)
+    asn: str = Field(...)
+    description: str = Field(...)
     whois: Optional[BaseWhois] = Field(
-        None, title="Whois", description="A whois record of an IP address"
+        None,
     )
-    snapshots: List[Snapshot] = Field(
-        ..., title="Snapshots", description="A list of related snapshots"
-    )
+    snapshots: List[Snapshot] = Field(..., description="A list of related snapshots")

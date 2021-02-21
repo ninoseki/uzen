@@ -2,34 +2,22 @@ import yara
 from fastapi_utils.api_model import APIModel
 from pydantic import Field, validator
 
-
-class CountResponse(APIModel):
-    count: int = Field(
-        ...,
-        title="A number of matched items",
-        description="A number of matched items with filters",
-    )
+from app.schemas.types import TargetTypes
 
 
 class Target(APIModel):
-    target: str = Field(
+    target: TargetTypes = Field(
         "html",
         title="Target",
         description="A target field to scan (html, certificate, script or whois)",
     )
-
-    @validator("target")
-    def target_types(cls, v):
-        if v not in ["html", "certificate", "script", "whois"]:
-            raise ValueError("Target must be any of html, certificate, script or whois")
-        return v
 
 
 class Source(APIModel):
     source: str = Field(
         ...,
         title="YARA rule",
-        description="String containing the rules code",
+        description="String containing the YARA rule code",
         min_length=1,
     )
 
