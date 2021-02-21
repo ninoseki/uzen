@@ -9,15 +9,11 @@ from app.schemas.whois import BaseWhois
 
 
 class Domain(APIModel):
-    """Pydantic model for domain"""
+    """Domain"""
 
-    hostname: str = Field(..., title="Hostname", description="A hostname")
+    hostname: str = Field(...)
     dns_records: List[BaseDnsRecord] = Field(
-        ..., title="DNS records", description="A list of DNS records"
+        ...,
     )
-    whois: Optional[BaseWhois] = Field(
-        None, title="Whois", description="A whois record of an IP address"
-    )
-    snapshots: List[Snapshot] = Field(
-        ..., title="Snapshots", description="A list of related snapshots"
-    )
+    whois: Optional[BaseWhois] = Field(None)
+    snapshots: List[Snapshot] = Field(..., description="A list of related snapshots")

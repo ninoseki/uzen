@@ -1,8 +1,8 @@
 import pytest
 
 from app.schemas.snapshot import (
-    BasicAttributes,
     CreateSnapshotPayload,
+    SnapshotBasicAttributes,
     remove_sharp_and_question_from_tail,
 )
 
@@ -28,7 +28,7 @@ def test_create_snapsnot_payload_with_headers():
 
 
 def test_basic_attributes():
-    basic = BasicAttributes(
+    basic = SnapshotBasicAttributes(
         url="http://example.com#",
         submitted_url="http://example.com#",
         hostname="example.com",
@@ -42,7 +42,7 @@ def test_basic_attributes():
     assert basic.url == "http://example.com"
     assert basic.submitted_url == "http://example.com"
 
-    basic = BasicAttributes(
+    basic = SnapshotBasicAttributes(
         url="http://example.com?",
         submitted_url="http://example.com?",
         hostname="example.com",

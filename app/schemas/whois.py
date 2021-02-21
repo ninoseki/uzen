@@ -9,7 +9,9 @@ from app.schemas.mixin import TimestampMixin
 
 
 class BaseWhois(APIModel):
-    content: str = Field(..., title="Content")
+    """Base model for Whois"""
+
+    content: str = Field(..., description="A text of a whois query result")
     created: Optional[datetime.datetime] = Field(None)
     updated: Optional[datetime.datetime] = Field(None)
     expires: Optional[datetime.datetime] = Field(None)
@@ -19,4 +21,4 @@ class BaseWhois(APIModel):
 
 
 class Whois(AbstractResourceModel, TimestampMixin, BaseWhois):
-    """Pydantic model for Whois"""
+    """Whois"""

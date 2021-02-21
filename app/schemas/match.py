@@ -14,26 +14,22 @@ from app.schemas.yara import YaraMatch
 
 
 class Match(AbstractBaseModel, TimestampMixin):
-    """Pydantic model for Match"""
+    """Match"""
 
     matches: List[YaraMatch] = Field(
         ...,
-        title="Matches",
-        description="A list of YARA mastches",
+        description="A list of YARA matches",
     )
     snapshot: PlainSnapshot = Field(
         ...,
-        title="Snapshot",
         description="A matched snapshot",
     )
     rule: Rule = Field(
         ...,
-        title="Rule",
         description="A matched rule",
     )
     script: Optional[Script] = Field(
         None,
-        title="Script",
         description="A matched script",
     )
 
@@ -42,6 +38,8 @@ class Match(AbstractBaseModel, TimestampMixin):
 
 
 class MatchResult(APIModel):
+    """Match result"""
+
     rule_id: UUID = Field(
         ...,
         title="Matches",
@@ -55,7 +53,7 @@ class MatchResult(APIModel):
     matches: List[YaraMatch] = Field(
         ...,
         title="Matches",
-        description="A list of YARA mastches",
+        description="A list of YARA matches",
     )
 
 

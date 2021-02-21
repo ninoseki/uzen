@@ -3,4 +3,4 @@ from app.schemas.mixin import TimestampMixin
 
 
 class HTML(AbstractResourceModel, TimestampMixin):
-    """Pydantic model for Response"""
+    """HTML"""

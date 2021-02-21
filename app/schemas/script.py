@@ -5,6 +5,6 @@ from app.schemas.mixin import TimestampMixin
 
 
 class Script(AbstractParentResourceModel, TimestampMixin):
-    """Pydantic model for Script"""
+    """Script"""
 
-    url: AnyHttpUrl = Field(..., title="URL", description="A URL of the script")
+    url: AnyHttpUrl = Field(...)

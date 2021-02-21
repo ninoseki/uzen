@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional, Union
+from typing import List, Optional, Union
 from uuid import UUID
 
 import yara
@@ -7,23 +7,23 @@ from pydantic import Field, validator
 
 from app.schemas.search import BaseSearchResults
 from app.schemas.snapshot import BaseRule, Rule  # noqa: F401
+from app.schemas.types import TargetTypes
 
 
 class CreateRulePayload(BaseRule):
-    pass
+    """Payload to create a rule"""
 
 
 class UpdateRulePayload(APIModel):
-    name: Optional[str] = Field(
-        None, title="Name", description="A name of the YARA rule"
-    )
+    """Payload to update a rule"""
+
+    name: Optional[str] = Field(None, description="A name of the YARA rule")
     source: Optional[str] = Field(
         None,
         title="YARA rule",
-        description="String containing the rules code",
+        description="A string containing the YARA rule code",
     )
-    target: Optional[Literal["html", "certificate", "script", "whois"]] = Field(
-        title="Target",
+    target: Optional[TargetTypes] = Field(
         description="A target field to scan (html, certificate, script or whois)",
     )
 
@@ -43,4 +43,4 @@ class UpdateRulePayload(APIModel):
 
 
 class RulesSearchResults(BaseSearchResults):
-    results: Union[List[Rule], List[UUID]]
+    results: Union[List[Rule], List[UUID]] = Field(...)

@@ -6,20 +6,13 @@ from app.schemas.mixin import TimestampMixin
 
 
 class BaseDnsRecord(APIModel):
-    """Base Pydantic model for DnsRecord
-
-    Note that this model doesn't have "id" and "created_at" fields.
-    """
+    """Base model for DNS record"""
 
     type: str = Field(
         ...,
-        title="Type",
-        description="A type of the DNS record",
     )
     value: str = Field(
         ...,
-        title="Value",
-        description="A value of the DNS record",
     )
 
     class Config:
@@ -27,4 +20,4 @@ class BaseDnsRecord(APIModel):
 
 
 class DnsRecord(BaseDnsRecord, AbstractBaseModel, TimestampMixin):
-    """Full Pydantic model for DnsRecord"""
+    """DNS record"""
