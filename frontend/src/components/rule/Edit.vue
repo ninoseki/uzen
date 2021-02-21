@@ -57,7 +57,7 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
+  setup(props, context) {
     const name = ref<string | undefined>(undefined);
     const target = ref<string | undefined>(undefined);
     const source = ref<string | undefined>(undefined);
@@ -90,7 +90,8 @@ export default defineComponent({
     });
 
     const edit = async () => {
-      editRuleTask.perform();
+      await editRuleTask.perform();
+      context.root.$router.push({ path: `/rules/${props.ruleId}` });
     };
 
     const updateName = (newName: string) => {
