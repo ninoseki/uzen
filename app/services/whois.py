@@ -3,7 +3,8 @@ import datetime
 from typing import Dict, Optional, Union, cast
 
 import dateparser
-from async_lru import alru_cache
+from aiocache import Cache, cached
+from aiocache.serializers import PickleSerializer
 from asyncwhois.errors import NotFoundError, QueryError, WhoIsError
 from asyncwhois.parser import WhoIsParser
 
@@ -77,7 +78,7 @@ async def aio_from_whois_cmd(hostname: str, timeout: int) -> dataclasses.Whois:
 
 class Whois:
     @staticmethod
-    @alru_cache()
+    @cached(ttl=60 * 10, cache=Cache.MEMORY, serializer=PickleSerializer())
     async def lookup(hostname: str) -> Optional[dataclasses.Whois]:
         """Perform Whois lookup
 
