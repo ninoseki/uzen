@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 from uuid import UUID
 
 from fastapi_utils.api_model import APIModel
@@ -32,7 +32,7 @@ class YaraMatch(APIModel):
         [],
         description="An array of strings containing the tags associated to the matching rule",
     )
-    meta: dict = Field(
+    meta: Dict[str, Any] = Field(
         {},
         description="A dictionary containing metadata associated to the matching rule",
     )

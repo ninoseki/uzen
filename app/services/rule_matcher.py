@@ -19,13 +19,13 @@ class RuleMatcher:
 
     def _extract_data_from_snapshot(self, target: str = "html") -> str:
         if target == "html":
-            return self.snapshot.html.content
+            return str(self.snapshot.html.content)
 
         if target == "whois":
-            return self.snapshot.whois.content
+            return str(self.snapshot.whois.content)
 
         if target == "certificate":
-            return self.snapshot.certificate.content
+            return str(self.snapshot.certificate.content)
 
         return ""
 

@@ -1,4 +1,4 @@
-from typing import cast
+from typing import Any
 
 import httpx
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
@@ -6,7 +6,7 @@ from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from app import models, schemas
 from app.api.dependencies.verification import verify_api_key
 from app.services.urlscan import URLScan
-from app.tasks.match import MatchinbgTask
+from app.tasks.match import MatchingTask
 from app.tasks.snapshot import UpdateProcessingTask
 
 router = APIRouter()
@@ -21,7 +21,7 @@ router = APIRouter()
     description="Import scan data from urlscan.io as a snapshot",
 )
 async def import_from_urlscan(
-    uuid: str, background_tasks: BackgroundTasks, _=Depends(verify_api_key)
+    uuid: str, background_tasks: BackgroundTasks, _: Any = Depends(verify_api_key)
 ) -> schemas.Snapshot:
     try:
         result = await URLScan.import_as_snapshot(uuid)
@@ -30,9 +30,8 @@ async def import_from_urlscan(
 
     snapshot = await models.Snapshot.save_snapshot_result(result)
 
-    background_tasks.add_task(MatchinbgTask.process, snapshot)
+    background_tasks.add_task(MatchingTask.process, snapshot)
     background_tasks.add_task(UpdateProcessingTask.process, snapshot)
 
     snapshot = await models.Snapshot.get_by_id(snapshot.id)
-    model = cast(schemas.Snapshot, snapshot.to_model())
-    return model
+    return snapshot.to_model()

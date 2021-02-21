@@ -22,7 +22,7 @@ class Source(APIModel):
     )
 
     @validator("source")
-    def source_compilable(cls, v):
+    def source_compilable(cls, v: str) -> str:
         try:
             yara.compile(source=v)
         except yara.Error as e:

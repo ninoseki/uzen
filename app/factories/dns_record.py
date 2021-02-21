@@ -1,5 +1,5 @@
 from functools import partial
-from typing import List
+from typing import List, Optional
 
 import aiometer
 from dns.asyncresolver import Resolver
@@ -13,13 +13,13 @@ TYPES: List[str] = ["A", "AAAA", "CNAME", "MX", "NS", "PTR", "TXT"]
 async def resolve(
     resolver: Resolver,
     hostname: str,
-    rdtype="A",
-    rdclass="IN",
-    tcp=False,
-    source=None,
-    raise_on_no_answer=True,
-    source_port=0,
-    lifetime=None,
+    rdtype: str = "A",
+    rdclass: str = "IN",
+    tcp: bool = False,
+    source: Optional[str] = None,
+    raise_on_no_answer: bool = True,
+    source_port: int = 0,
+    lifetime: Optional[float] = None,
 ) -> List[schemas.BaseDnsRecord]:
     try:
         answer = await resolver.resolve(
@@ -39,7 +39,7 @@ async def resolve(
 
 
 async def query(hostname: str) -> List[schemas.BaseDnsRecord]:
-    """Quqery DNS records
+    """Query DNS records
 
     Arguments:
         hostname {str} -- A hostname to query

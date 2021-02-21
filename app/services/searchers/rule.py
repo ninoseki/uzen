@@ -1,4 +1,4 @@
-from typing import List, cast
+from typing import Any, Dict, List, Optional, cast
 from uuid import UUID
 
 from tortoise.query_utils import Q
@@ -11,10 +11,10 @@ class RuleSearcher(AbstractSearcher):
     @classmethod
     async def search(
         cls,
-        filters: dict,
-        size=None,
-        offset=None,
-        id_only=False,
+        filters: Dict[str, Any],
+        size: Optional[int] = None,
+        offset: Optional[int] = None,
+        id_only: bool = False,
     ) -> schemas.RulesSearchResults:
         """Search rules.
 
@@ -22,7 +22,7 @@ class RuleSearcher(AbstractSearcher):
             filters {dict} -- Filters for rule search
 
         Keyword Arguments:
-            size {[int]} -- Nmber of results returned (default: {None})
+            size {[int]} -- Number of results returned (default: {None})
             offset {[int]} -- Offset of the first result for pagination (default: {None})
             id_only {bool} -- Whether to return only a list of ids (default: {False})
 
@@ -55,7 +55,5 @@ class RuleSearcher(AbstractSearcher):
                 results=cast(List[UUID], results.results), total=results.total
             )
 
-        rules: List[models.Rule] = [
-            rule.to_model() for rule in cast(List[models.Rule], results.results)
-        ]
+        rules = [rule.to_model() for rule in cast(List[models.Rule], results.results)]
         return schemas.RulesSearchResults(results=rules, total=results.total)

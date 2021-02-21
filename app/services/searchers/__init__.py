@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from typing import Any
 
 from tortoise.models import Model, QuerySet
 from tortoise.query_utils import Q
@@ -28,7 +29,7 @@ class AbstractSearcher(ABC):
         return await self.model.filter(self.query).count()
 
     def build_queryset(
-        self, size: int | None = None, offset: int | None = None, id_only=False
+        self, size: int | None = None, offset: int | None = None, id_only: bool = False
     ) -> QuerySet[type[Model]]:
         size = 100 if size is None else size
 
@@ -48,7 +49,7 @@ class AbstractSearcher(ABC):
         self,
         size: int | None = None,
         offset: int | None = None,
-        id_only=False,
+        id_only: bool = False,
     ) -> dataclasses.SearchResults:
         total = await self._total()
         queryset = self.build_queryset(size=size, offset=offset, id_only=id_only)
@@ -59,11 +60,11 @@ class AbstractSearcher(ABC):
     @abstractmethod
     async def search(
         cls,
-        filters: dict,
+        filters: dict[str, Any],
         size: int | None = None,
         offset: int | None = None,
-        id_only=False,
-    ):
+        id_only: bool = False,
+    ) -> Any:
         """Search a table.
 
         Override this method in child classes.

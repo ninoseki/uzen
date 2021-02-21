@@ -3,8 +3,18 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 from uuid import UUID
 
-from tortoise import fields, models
 from tortoise.exceptions import IntegrityError, NoValuesFetched
+from tortoise.fields.base import RESTRICT
+from tortoise.fields.data import BooleanField, CharField, IntField, JSONField, TextField
+from tortoise.fields.relational import (
+    ForeignKeyField,
+    ForeignKeyNullableRelation,
+    ForeignKeyRelation,
+    ManyToManyField,
+    ManyToManyRelation,
+    OneToOneRelation,
+    ReverseRelation,
+)
 from tortoise.transactions import in_transaction
 
 from app import schemas
@@ -15,13 +25,14 @@ from app.models.stylesheet import Stylesheet
 
 if TYPE_CHECKING:
     from app.dataclasses import SnapshotResult
+    from app.models import HTML, Certificate, Classification, DnsRecord, Rule, Whois
 
 
-async def save_ignore_integrity_error(model: models):
+async def save_ignore_integrity_error(model: "HTML" | "Certificate" | "Whois") -> None:
     try:
         await model.save()
     except IntegrityError:
-        # ignore the intergrity error
+        # ignore the integrity error
         # e.g. tortoise.exceptions.IntegrityError: UNIQUE constraint failed: files.id
         pass
 
@@ -29,43 +40,39 @@ async def save_ignore_integrity_error(model: models):
 class Snapshot(TimestampMixin, AbstractBaseModel):
     """An ORM class for snapshots table"""
 
-    url = fields.TextField()
-    submitted_url = fields.TextField()
-    status = fields.IntField()
-    hostname = fields.TextField()
-    ip_address = fields.CharField(max_length=255)
-    asn = fields.CharField(max_length=255)
-    country_code = fields.CharField(max_length=2)
-    response_headers = fields.JSONField()
-    request_headers = fields.JSONField()
-    ignore_https_errors = fields.BooleanField(default=False)
-    processing = fields.BooleanField(default=True)
+    url = TextField()
+    submitted_url = TextField()
+    status = IntField()
+    hostname = TextField()
+    ip_address = CharField(max_length=255)
+    asn = CharField(max_length=255)
+    country_code = CharField(max_length=2)
+    response_headers = JSONField()
+    request_headers = JSONField()
+    ignore_https_errors = BooleanField(default=False)
+    processing = BooleanField(default=True)
 
-    html: fields.ForeignKeyRelation["HTML"] = fields.ForeignKeyField(  # noqa F821
-        "models.HTML", related_name="snapshots", on_delete=fields.RESTRICT
+    html: ForeignKeyRelation["HTML"] = ForeignKeyField(
+        "models.HTML", related_name="snapshots", on_delete=RESTRICT
     )
-    certificate: fields.ForeignKeyNullableRelation[
-        "Certificate"  # noqa F821
-    ] = fields.ForeignKeyField(
+    certificate: ForeignKeyNullableRelation["Certificate"] = ForeignKeyField(
         "models.Certificate",
         related_name="snapshots",
-        on_delete=fields.RESTRICT,
+        on_delete=RESTRICT,
         null=True,
     )
-    whois: fields.ForeignKeyNullableRelation[
-        "Whois"  # noqa F821
-    ] = fields.ForeignKeyField(
-        "models.Whois", related_name="snapshots", on_delete=fields.RESTRICT, null=True
+    whois: ForeignKeyNullableRelation["Whois"] = ForeignKeyField(
+        "models.Whois", related_name="snapshots", on_delete=RESTRICT, null=True
     )
 
-    har = fields.OneToOneRelation["HAR"]
+    har = OneToOneRelation["HAR"]
 
-    _scripts: fields.ReverseRelation["Script"]
-    _stylesheets: fields.ReverseRelation["Stylesheet"]
-    _dns_records: fields.ReverseRelation["DnsRecord"]  # noqa F821
-    _classifications: fields.ReverseRelation["Classification"]  # noqa F821
+    _scripts: ReverseRelation["Script"]
+    _stylesheets: ReverseRelation["Stylesheet"]
+    _dns_records: ReverseRelation["DnsRecord"]
+    _classifications: ReverseRelation["Classification"]
 
-    _rules: fields.ManyToManyRelation["Rule"] = fields.ManyToManyField(  # noqa F821
+    _rules: ManyToManyRelation["Rule"] = ManyToManyField(
         "models.Rule",
         related_name="_snapshots",
         through="matches",
@@ -121,8 +128,8 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
         return model.dict()
 
     @classmethod
-    async def get_by_id(cls, id_: UUID) -> Snapshot:
-        return await cls.get(id=id_).prefetch_related(
+    async def get_by_id(cls, id_: str | UUID) -> Snapshot:
+        return await cls.get(id=str(id_)).prefetch_related(
             "_scripts",
             "_stylesheets",
             "_dns_records",
@@ -134,7 +141,9 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
         )
 
     @classmethod
-    async def find_by_ip_address(cls, ip_address: str, size=20) -> list[Snapshot]:
+    async def find_by_ip_address(
+        cls, ip_address: str, size: int = 20
+    ) -> list[Snapshot]:
         return (
             await cls.filter(ip_address=ip_address)
             .limit(size)
@@ -146,7 +155,7 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
         )
 
     @classmethod
-    async def find_by_hostname(cls, hostname: str, size=20) -> list[Snapshot]:
+    async def find_by_hostname(cls, hostname: str, size: int = 20) -> list[Snapshot]:
         return (
             await cls.filter(hostname=hostname)
             .limit(size)

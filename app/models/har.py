@@ -1,19 +1,25 @@
+from typing import TYPE_CHECKING
 from uuid import UUID
 
-from tortoise import fields
+from tortoise.fields.base import CASCADE
+from tortoise.fields.data import JSONField, UUIDField
+from tortoise.fields.relational import OneToOneField, OneToOneRelation
 from tortoise.models import Model
 
 from app import schemas
 from app.models.mixin import CountMixin, DeleteMixin, TimestampMixin
 
+if TYPE_CHECKING:
+    from app.models import Snapshot
+
 
 class HAR(Model, TimestampMixin, CountMixin, DeleteMixin):
-    id = fields.UUIDField(pk=True)
+    id = UUIDField(pk=True)
 
-    data = fields.JSONField()
+    data = JSONField()
 
-    snapshot: fields.OneToOneRelation["Snapshot"] = fields.OneToOneField(  # noqa F821
-        "models.Snapshot", related_name="har", on_delete=fields.CASCADE
+    snapshot: OneToOneRelation["Snapshot"] = OneToOneField(
+        "models.Snapshot", related_name="har", on_delete=CASCADE
     )
 
     def to_model(self) -> schemas.HAR:

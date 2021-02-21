@@ -17,9 +17,9 @@ from app.utils.network import (
 )
 
 
-def find_ip_address(url: str, events: List[dataclasses.ResponseReceivedEvent]):
+def find_ip_address(url: str, events: List[dataclasses.ResponseReceivedEvent]) -> str:
     for event in events:
-        if event.response.url == url:
+        if event.response.url == url and event.response.remote_ip_address is not None:
             return event.response.remote_ip_address
 
     hostname = cast(str, get_hostname_from_url(url))
@@ -73,7 +73,7 @@ async def build_snapshot_result(
         if certificate_data
         else None
     )
-    har = HarFactory.from_dataclass(har) if har else None
+    har_model = HarFactory.from_dataclass(har) if har else None
 
     return dataclasses.SnapshotResult(
         screenshot=browsing_result.screenshot,
@@ -83,11 +83,12 @@ async def build_snapshot_result(
         snapshot=snapshot,
         script_files=script_files,
         stylesheet_files=stylesheet_files,
-        har=har,
+        har=har_model,
     )
 
 
 class AbstractBrowser(ABC):
+    @staticmethod
     @abstractstaticmethod
     async def take_snapshot(
         url: str,

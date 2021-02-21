@@ -7,16 +7,16 @@ from app.services.rule_matcher import RuleMatcher
 from app.tasks import AbstractAsyncTask
 
 
-class MatchinbgTask(AbstractAsyncTask):
+class MatchingTask(AbstractAsyncTask):
     def __init__(self, snapshot: models.Snapshot):
         self.snapshot = snapshot
 
-    async def _process(self):
+    async def _process(self) -> None:
         logger.debug("Start matching job...")
 
-        snapshot_ = await models.Snapshot.get(id=self.snapshot.id).prefetch_related(
-            "_scripts__file", "whois", "certificate", "html"
-        )
+        snapshot_: models.Snapshot = await models.Snapshot.get(
+            id=self.snapshot.id
+        ).prefetch_related("_scripts__file", "whois", "certificate", "html")
 
         matcher = RuleMatcher(snapshot_)
         results: List[schemas.MatchResult] = await matcher.scan()
@@ -36,6 +36,6 @@ class MatchinbgTask(AbstractAsyncTask):
         logger.debug("Matching job is finished")
 
     @classmethod
-    async def process(cls, snapshot: models.Snapshot):
+    async def process(cls, snapshot: models.Snapshot) -> None:
         instance = cls(snapshot)
         return await instance.safe_process()

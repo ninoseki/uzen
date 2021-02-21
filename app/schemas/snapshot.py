@@ -1,6 +1,6 @@
 import datetime
 from functools import lru_cache
-from typing import Dict, List, Optional, Union, cast
+from typing import Any, Dict, List, Optional, Union, cast
 from uuid import UUID
 
 import httpx
@@ -98,22 +98,22 @@ class SnapshotBasicAttributes(APIModel):
         "url",
         pre=True,
     )
-    def normalize_url(cls, v: str):
+    def normalize_url(cls, v: str) -> str:
         return remove_sharp_and_question_from_tail(v)
 
     @validator(
         "submitted_url",
         pre=True,
     )
-    def normalize_submitted_url(cls, v: str):
+    def normalize_submitted_url(cls, v: str) -> str:
         return remove_sharp_and_question_from_tail(v)
 
 
 class BaseSnapshot(SnapshotBasicAttributes):
     """Base model for Snapshot"""
 
-    request_headers: dict = Field(...)
-    response_headers: dict = Field(...)
+    request_headers: Dict[str, Any] = Field(...)
+    response_headers: Dict[str, Any] = Field(...)
     processing: bool = Field(...)
 
 
@@ -161,7 +161,7 @@ class CreateSnapshotPayload(APIModel):
         None, title="Timeout", description="Maximum time to wait for in milliseconds"
     )
     ignore_https_errors: Optional[bool] = Field(
-        None, title="Ignore HTTPS erros", description="Whether to ignore HTTPS errors"
+        None, title="Ignore HTTPS errors", description="Whether to ignore HTTPS errors"
     )
     device_name: Optional[str] = Field(
         None, title="Device name", description="Name of a device to emulate"
@@ -173,15 +173,16 @@ class CreateSnapshotPayload(APIModel):
     )
 
     @validator("url")
-    def hostname_must_resolvable(cls, v):
+    def hostname_must_resolvable(cls, v: str) -> str:
         hostname = cast(str, get_hostname_from_url(v))
         ip_address = get_ip_address_by_hostname(hostname)
         if ip_address is None:
             raise ValueError(f"Cannot resolve hostname: {hostname}.")
+
         return v
 
     @validator("device_name")
-    def device_check(cls, v):
+    def device_check(cls, v: Optional[str]) -> Optional[str]:
         if v is None:
             return v
 
@@ -194,14 +195,15 @@ class CreateSnapshotPayload(APIModel):
         names = [device.name for device in devices]
         if v not in names:
             raise ValueError(f"{v} is not supported.")
+
         return v
 
     @validator("headers", pre=True, always=True)
-    def normalize_headers(cls, headers):
+    def normalize_headers(cls, headers: Dict[str, Any]) -> Dict[str, Any]:
         # translates header names to lowercase for consistency
         headers_ = httpx.Headers(headers)
         return dict(headers_)
 
 
-# Update foward references
+# Update forward references
 Rule.update_forward_refs()

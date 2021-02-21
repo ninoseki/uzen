@@ -8,7 +8,7 @@ from app.core import settings
 from app.core.events import create_start_app_handler, create_stop_app_handler
 
 
-def create_app():
+def create_app() -> FastAPI:
     logger.add(
         settings.LOG_FILE, level=settings.LOG_LEVEL, backtrace=settings.LOG_BACKTRACE
     )

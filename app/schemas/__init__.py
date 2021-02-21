@@ -1,6 +1,5 @@
 from app.schemas.certificate import Certificate
 from app.schemas.classification import Classification
-from app.schemas.device import Device
 from app.schemas.dns_record import BaseDnsRecord, DnsRecord
 from app.schemas.domain import Domain
 from app.schemas.file import File
@@ -8,18 +7,15 @@ from app.schemas.har import HAR
 from app.schemas.html import HTML
 from app.schemas.ip_address import IPAddress
 from app.schemas.match import Match, MatchesSearchResults, MatchResult
-from app.schemas.rule import (
-    CreateRulePayload,
-    Rule,
-    RulesSearchResults,
-    UpdateRulePayload,
-)
+from app.schemas.rule import CreateRulePayload, RulesSearchResults, UpdateRulePayload
 from app.schemas.screenshot import Screenshot
 from app.schemas.script import Script
 from app.schemas.snapshot import (
     BaseSnapshot,
     CreateSnapshotPayload,
+    Device,
     PlainSnapshot,
+    Rule,
     Snapshot,
     SnapshotsSearchResults,
 )

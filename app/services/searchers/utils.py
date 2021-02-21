@@ -1,9 +1,9 @@
 from datetime import date, datetime
-from typing import Union, cast
+from typing import Union
 
 
 def convert_to_datetime(d: Union[datetime, date]) -> datetime:
     if isinstance(d, datetime):
-        return cast(datetime, d)
+        return d
 
-    return datetime.combine(cast(date, d), datetime.min.time())
+    return datetime.combine(d, datetime.min.time())

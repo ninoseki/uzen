@@ -1,12 +1,17 @@
-from tortoise import fields
+from typing import TYPE_CHECKING
+
+from tortoise.fields.relational import ReverseRelation
 
 from app import schemas
 from app.models.base import AbstractResourceModel
 from app.models.mixin import TimestampMixin
 
+if TYPE_CHECKING:
+    from app.models import Snapshot
+
 
 class Certificate(AbstractResourceModel, TimestampMixin):
-    snapshots: fields.ReverseRelation["Snapshot"]  # noqa F821
+    snapshots: ReverseRelation["Snapshot"]
 
     def to_model(self) -> schemas.Certificate:
         return schemas.Certificate.from_orm(self)

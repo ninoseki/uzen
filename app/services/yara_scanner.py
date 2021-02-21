@@ -1,6 +1,6 @@
 import itertools
 from functools import partial
-from typing import Dict, List, Optional, cast
+from typing import Any, Dict, List, Optional, cast
 from uuid import UUID
 
 import aiometer
@@ -80,7 +80,7 @@ class YaraScanner:
     async def scan_snapshots(
         self,
         target: str = "html",
-        filters: Optional[dict] = None,
+        filters: Optional[Dict[str, Any]] = None,
         size: Optional[int] = None,
         offset: Optional[int] = None,
     ) -> List[schemas.YaraScanResult]:
@@ -115,9 +115,9 @@ class YaraScanner:
         flatten_results = list(itertools.chain.from_iterable(results))
 
         matched_ids = [result.snapshot_id for result in flatten_results]
-        snapshots: List[dict] = await models.Snapshot.filter(id__in=matched_ids).values(
-            *schemas.YaraScanResult.field_keys()
-        )
+        snapshots: List[Dict[str, Any]] = await models.Snapshot.filter(
+            id__in=matched_ids
+        ).values(*schemas.YaraScanResult.field_keys())
 
         table = self._build_snapshot_table(snapshots)
         for result in flatten_results:
@@ -127,11 +127,12 @@ class YaraScanner:
 
         return [schemas.YaraScanResult(**snapshot) for snapshot in snapshots]
 
-    def _build_snapshot_table(self, snapshots: List[dict]) -> Dict[str, dict]:
-        table = {}
+    def _build_snapshot_table(self, snapshots: List[Dict[str, Any]]) -> Dict[str, Any]:
+        table: Dict[str, Any] = {}
         for snapshot in snapshots:
             id_ = str(snapshot.get("id"))
             table[id_] = snapshot
+
         return table
 
     def match(self, data: Optional[str]) -> List[schemas.YaraMatch]:

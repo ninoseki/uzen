@@ -1,7 +1,8 @@
 from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
-from dataclasses_json import config, dataclass_json
+from dataclasses_json.api import dataclass_json
+from dataclasses_json.cfg import config
 from stringcase import camelcase
 
 
@@ -24,8 +25,8 @@ class Creator:
 @dataclass_json(letter_case=camelcase)
 @dataclass
 class Cache:
-    before_request: Optional[dict] = None
-    after_request: Optional[dict] = None
+    before_request: Optional[Dict[str, Any]] = None
+    after_request: Optional[Dict[str, Any]] = None
     comment: Optional[str] = None
 
 
@@ -35,12 +36,12 @@ class Request:
     method: str
     url: str
     http_version: str
-    cookies: List[dict]
-    headers: List[dict]
-    query_string: List[dict]
+    cookies: List[Dict[str, Any]]
+    headers: List[Dict[str, Any]]
+    query_string: List[Dict[str, Any]]
     headers_size: int
     body_size: int
-    post_data: Optional[dict] = None
+    post_data: Optional[Dict[str, Any]] = None
     comment: Optional[str] = None
 
 
@@ -61,8 +62,8 @@ class Response:
     status: int
     status_text: str
     http_version: str
-    cookies: List[dict]
-    headers: List[dict]
+    cookies: List[Dict[str, Any]]
+    headers: List[Dict[str, Any]]
     content: Content
     headers_size: int
     body_size: int
