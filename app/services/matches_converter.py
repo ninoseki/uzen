@@ -6,7 +6,7 @@ from app import schemas
 
 
 def convert_strings(strings) -> List[schemas.YaraMatchString]:
-    # strintgs is a list of tuple
+    # strings is a list of tuple
     # (<offset>, <string identifier>, <string data>)
     # e.g. (81L, '$a', 'abc'),
     models = []

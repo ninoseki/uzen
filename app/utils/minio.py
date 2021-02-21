@@ -2,6 +2,7 @@ import json
 from io import BytesIO
 
 from minio import Minio
+from minio.helpers import ObjectWriteResult
 
 from app.core import settings
 
@@ -15,7 +16,7 @@ def get_client() -> Minio:
     )
 
 
-def create_bucket_if_not_exists(client: Minio, bucket_name: str):
+def create_bucket_if_not_exists(client: Minio, bucket_name: str) -> None:
     policy = {
         "Version": "2012-10-17",
         "Statement": [
@@ -35,7 +36,9 @@ def create_bucket_if_not_exists(client: Minio, bucket_name: str):
     client.set_bucket_policy(bucket_name, json.dumps(policy))
 
 
-def upload_screenshot(bucket_name: str, file_name: str, screenshot: bytes):
+def upload_screenshot(
+    bucket_name: str, file_name: str, screenshot: bytes
+) -> ObjectWriteResult:
     client = get_client()
 
     create_bucket_if_not_exists(client, bucket_name)

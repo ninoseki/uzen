@@ -1,7 +1,8 @@
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
-from dataclasses_json import config, dataclass_json
+from dataclasses_json.api import dataclass_json
+from dataclasses_json.cfg import config
 from stringcase import camelcase
 
 from app.types import WaitUntilType
@@ -23,14 +24,14 @@ class Response:
     url: str
     status: int
     status_text: str
-    headers: dict
+    headers: Dict[str, Any]
     mime_type: str
     connection_reused: bool
     connection_id: int
     encoded_data_length: int
     security_state: str
     response_time: Optional[float] = None
-    request_headers: Optional[dict] = None
+    request_headers: Optional[Dict[str, Any]] = None
     request_headers_text: Optional[str] = None
     remote_ip_address: Optional[str] = field(
         default=None, metadata=config(field_name="remoteIPAddress")
@@ -60,8 +61,8 @@ class BrowsingResult:
     url: str
     status: int
     html: str
-    response_headers: dict
-    request_headers: dict
+    response_headers: Dict[str, Any]
+    request_headers: Dict[str, Any]
     options: BrowsingOptions
     screenshot: Optional[bytes] = None
     response_received_events: List[ResponseReceivedEvent] = field(

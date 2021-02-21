@@ -3,7 +3,7 @@ import pytest
 from app.models.match import Match
 from app.models.rule import Rule
 from app.models.snapshot import Snapshot
-from app.tasks.match import MatchinbgTask
+from app.tasks.match import MatchingTask
 from tests.helper import first_snapshot_id
 
 
@@ -22,7 +22,7 @@ async def test_matching_taskl(client):
 
     assert await Match.all().count() == 0
 
-    await MatchinbgTask.process(snapshot)
+    await MatchingTask.process(snapshot)
 
     assert await Match.all().count() == 1
 
@@ -42,6 +42,6 @@ async def test_matching_task_with_zero_matches(client):
 
     assert await Match.all().count() == 0
 
-    await MatchinbgTask.process(snapshot)
+    await MatchingTask.process(snapshot)
 
     assert await Match.all().count() == 0

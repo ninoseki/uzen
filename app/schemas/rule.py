@@ -6,7 +6,7 @@ from fastapi_utils.api_model import APIModel
 from pydantic import Field, validator
 
 from app.schemas.search import BaseSearchResults
-from app.schemas.snapshot import BaseRule, Rule  # noqa: F401
+from app.schemas.snapshot import BaseRule, Rule
 from app.schemas.types import TargetTypes
 
 
@@ -28,7 +28,7 @@ class UpdateRulePayload(APIModel):
     )
 
     @validator("source")
-    def source_compilable(cls, v):
+    def source_compilable(cls, v: Optional[str]) -> Optional[str]:
         if v is None:
             return v
 

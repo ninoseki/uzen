@@ -18,7 +18,7 @@ from app.types import WaitUntilType
 DEFAULT_TIMEOUT = 30000
 
 
-async def take_screenshot(hostname: str, protocol="http") -> bytes:
+async def take_screenshot(hostname: str, protocol: str = "http") -> bytes:
     async with async_playwright() as playwright:
         browser = await launch_playwright_browser(playwright)
         page = await browser.new_page()

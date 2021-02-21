@@ -15,7 +15,7 @@ def asn1time_to_datetime(asn1: Optional[bytes]) -> Optional[datetime.datetime]:
     return datetime.datetime.strptime(asn1.decode(), "%Y%m%d%H%M%SZ")
 
 
-def components_to_string(components: List[Tuple[bytes, bytes]]):
+def components_to_string(components: List[Tuple[bytes, bytes]]) -> str:
     return ",".join(f"/{name.decode()}={value.decode()}" for name, value in components)
 
 

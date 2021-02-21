@@ -9,11 +9,11 @@ class UploadScrenshotTask(AbstractSyncTask):
         self.screenshot = screenshot
         self.uuid = uuid
 
-    def _process(self):
+    def _process(self) -> None:
         upload_screenshot("uzen-screenshot", self.uuid, self.screenshot)
         logger.debug(f"Screenshot is uploadted as {self.uuid}.png")
 
     @classmethod
-    def process(cls, uuid: str, screenshot: bytes):
+    def process(cls, uuid: str, screenshot: bytes) -> None:
         instance = cls(uuid, screenshot)
         return instance.safe_process()

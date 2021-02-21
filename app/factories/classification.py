@@ -2,7 +2,7 @@ import base64
 import json
 from dataclasses import dataclass
 from functools import partial
-from typing import List, Optional, cast
+from typing import Any, Dict, List, Optional, cast
 
 import aiometer
 import httpx
@@ -72,7 +72,9 @@ async def virustotal_lookup(client: httpx.AsyncClient, url: str) -> Optional[Res
 
     data = res.json().get("data", {})
     attributes = data.get("attributes", {})
-    last_analysis_stats = cast(dict, attributes.get("last_analysis_stats", {}))
+    last_analysis_stats = cast(
+        Dict[str, Any], attributes.get("last_analysis_stats", {})
+    )
 
     total = 0
     malicious = 0

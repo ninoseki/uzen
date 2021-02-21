@@ -1,6 +1,6 @@
 import asyncio
 import datetime
-from typing import Dict, Optional, Union
+from typing import Dict, Optional, Union, cast
 
 import dateparser
 from async_lru import alru_cache
@@ -40,14 +40,18 @@ def parse(raw: str, hostname: str) -> dataclasses.Whois:
     updated = normalize_datetime(output.get("updated"))
     expires = normalize_datetime(output.get("expires"))
 
+    registrar = cast(Optional[str], output.get("registrar"))
+    registrant_name = cast(Optional[str], output.get("registrant_name"))
+    registrant_organization = cast(Optional[str], output.get("registrant_organization"))
+
     return dataclasses.Whois(
         content=raw,
         created=created,
         updated=updated,
         expires=expires,
-        registrar=output.get("registrar"),
-        registrant_name=output.get("registrant_name"),
-        registrant_organization=output.get("registrant_organization"),
+        registrar=registrar,
+        registrant_name=registrant_name,
+        registrant_organization=registrant_organization,
     )
 
 
@@ -61,8 +65,8 @@ async def aio_from_whois_cmd(hostname: str, timeout: int) -> dataclasses.Whois:
 
     try:
         # block for query_result
-        query_result, _ = await asyncio.wait_for(proc.communicate(), timeout=timeout)
-        query_result = query_result.decode(errors="ignore")
+        query_result_, _ = await asyncio.wait_for(proc.communicate(), timeout=timeout)
+        query_result = query_result_.decode(errors="ignore")
     except asyncio.TimeoutError:
         raise QueryError(
             f'The shell command "whois {hostname}" exceeded timeout of {timeout} seconds'

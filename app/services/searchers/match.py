@@ -1,4 +1,4 @@
-from typing import List, cast
+from typing import Any, Dict, List, Optional, cast
 from uuid import UUID
 
 from tortoise.query_utils import Q
@@ -11,7 +11,11 @@ from app.services.searchers.utils import convert_to_datetime
 class MatchSearcher(AbstractSearcher):
     @classmethod
     async def search(
-        cls, filters: dict, size=None, offset=None, id_only=False
+        cls,
+        filters: Dict[str, Any],
+        size: Optional[int] = None,
+        offset: Optional[int] = None,
+        id_only: bool = False,
     ) -> schemas.MatchesSearchResults:
         """Search matches
 
@@ -19,7 +23,7 @@ class MatchSearcher(AbstractSearcher):
             filters {dict} -- Filters for match search
 
         Keyword Arguments:
-            size {[int]} -- Nmber of results returned (default: {None})
+            size {[int]} -- Number of results returned (default: {None})
             offset {[int]} -- Offset of the first result for pagination (default: {None})
             id_only {bool} -- Whether to return only a list of ids (default: {False})
 

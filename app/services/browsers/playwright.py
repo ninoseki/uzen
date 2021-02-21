@@ -1,6 +1,6 @@
 import json
 import tempfile
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 from playwright.async_api import (
     Browser,
@@ -27,14 +27,14 @@ async def run_playwright_browser(
     async with async_playwright() as playwright:
         browser: Browser = await launch_playwright_browser(playwright)
 
-        device: dict = (
+        device: Dict[str, Any] = (
             playwright.devices.get(options.device_name, {})
             if options.device_name is not None
             else {}
         )
         # do not use the user agent if the device is given
         user_agent = options.headers.get("user-agent", None)
-        if device is None:
+        if not device:
             device["user_agent"] = user_agent
 
         context = await browser.new_context(
@@ -103,7 +103,7 @@ class PlaywrightBrowser(AbstractBrowser):
         options: dataclasses.BrowsingOptions,
     ) -> dataclasses.SnapshotResult:
         submitted_url: str = url
-        har_data: Optional[dict] = None
+
         try:
             with tempfile.NamedTemporaryFile() as fp:
                 browsing_result = await run_playwright_browser(

@@ -1,4 +1,4 @@
-from typing import List, cast
+from typing import Any, Dict, List, Optional, cast
 from uuid import UUID
 
 from tortoise.query_utils import Q
@@ -12,10 +12,10 @@ class SnapshotSearcher(AbstractSearcher):
     @classmethod
     async def search(
         cls,
-        filters: dict,
-        size=None,
-        offset=None,
-        id_only=False,
+        filters: Dict[str, Any],
+        size: Optional[int] = None,
+        offset: Optional[int] = None,
+        id_only: bool = False,
     ) -> schemas.SnapshotsSearchResults:
         """Search snapshots
 
@@ -92,7 +92,7 @@ class SnapshotSearcher(AbstractSearcher):
                 results=cast(List[UUID], results.results), total=results.total
             )
 
-        results_ = cast(List[dict], results.results)
+        results_ = cast(List[Dict[str, Any]], results.results)
         return schemas.SnapshotsSearchResults(
             results=[schemas.PlainSnapshot(**result) for result in results_],
             total=results.total,

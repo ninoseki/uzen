@@ -13,7 +13,7 @@ router = APIRouter()
 @router.get(
     "/{snapshot_id}",
     responses={
-        200: {"content": {"image/png": {}}, "description": "Returns a sreenshot."}
+        200: {"content": {"image/png": {}}, "description": "Returns a screenshot."}
     },
     response_description="Returns a screenshot",
     summary="Get a screenshot",
@@ -31,7 +31,7 @@ async def get_by_snapshot_id(
     responses={
         200: {
             "content": {"image/png": {}},
-            "description": "Returns a sreenshot or an image.",
+            "description": "Returns a screenshot or an image.",
         }
     },
     response_description="Returns a screenshot",

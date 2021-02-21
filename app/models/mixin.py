@@ -1,14 +1,17 @@
-from tortoise import fields
+from typing import Union
+from uuid import UUID
+
+from tortoise.fields.data import DatetimeField
 
 
 class TimestampMixin:
-    created_at = fields.DatetimeField(auto_now_add=True)
+    created_at = DatetimeField(auto_now_add=True)
 
 
 class DeleteMixin:
     @classmethod
-    async def delete_by_id(cls, id_: str) -> None:
-        await cls.get(id=id_).delete()
+    async def delete_by_id(cls, id_: Union[str, UUID]) -> None:
+        await cls.get(id=str(id_)).delete()
 
 
 class CountMixin:

@@ -1,4 +1,4 @@
-from typing import List, Optional, cast
+from typing import Any, Dict, List, Optional, cast
 from uuid import UUID
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
@@ -11,7 +11,7 @@ from app.core.exceptions import TakeSnapshotError
 from app.services.browser import Browser
 from app.services.searchers.snapshot import SnapshotSearcher
 from app.tasks.enrichment import EnrichmentTasks
-from app.tasks.match import MatchinbgTask
+from app.tasks.match import MatchingTask
 from app.tasks.screenshot import UploadScrenshotTask
 from app.tasks.snapshot import UpdateProcessingTask
 
@@ -36,7 +36,7 @@ async def count() -> schemas.CountResponse:
     response_model=schemas.SnapshotsSearchResults,
     response_description="Returns a list of matched snapshots",
     summary="Search snapshots",
-    description="Searcn snapshtos with filters",
+    description="Search snapshots with filters",
 )
 async def search(
     size: Optional[int] = None,
@@ -63,8 +63,7 @@ async def get(snapshot_id: UUID) -> schemas.Snapshot:
             status_code=404, detail=f"Snapshot:{snapshot_id} is not found"
         )
 
-    model = cast(schemas.Snapshot, snapshot.to_model())
-    return model
+    return snapshot.to_model()
 
 
 @router.post(
@@ -78,12 +77,13 @@ async def get(snapshot_id: UUID) -> schemas.Snapshot:
 async def create(
     payload: schemas.CreateSnapshotPayload,
     background_tasks: BackgroundTasks,
-    _=Depends(verify_api_key),
+    _: Any = Depends(verify_api_key),
 ) -> schemas.Snapshot:
     try:
+        ignore_https_error = payload.ignore_https_errors or False
         browser = Browser(
             enable_har=payload.enable_har,
-            ignore_https_errors=payload.ignore_https_errors,
+            ignore_https_errors=ignore_https_error,
             timeout=payload.timeout,
             device_name=payload.device_name,
             headers=payload.headers,
@@ -102,7 +102,7 @@ async def create(
         )
 
     background_tasks.add_task(EnrichmentTasks.process, snapshot)
-    background_tasks.add_task(MatchinbgTask.process, snapshot)
+    background_tasks.add_task(MatchingTask.process, snapshot)
     background_tasks.add_task(UpdateProcessingTask.process, snapshot)
 
     # set required attributes
@@ -110,8 +110,7 @@ async def create(
     snapshot.certificate = result.certificate
     snapshot.whois = result.whois
 
-    model = cast(schemas.Snapshot, snapshot.to_model())
-    return model
+    return snapshot.to_model()
 
 
 @router.delete(
@@ -121,7 +120,7 @@ async def create(
     description="Delete a snapshot which has a given ID",
     status_code=204,
 )
-async def delete(snapshot_id: UUID, _=Depends(verify_api_key)) -> dict:
+async def delete(snapshot_id: UUID, _: Any = Depends(verify_api_key)) -> Dict[str, Any]:
     try:
         await models.Snapshot.delete_by_id(snapshot_id)
     except DoesNotExist:

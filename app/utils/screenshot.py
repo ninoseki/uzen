@@ -3,6 +3,7 @@ from io import BytesIO
 from typing import Optional
 
 import httpx
+from minio.helpers import ObjectWriteResult
 
 from app.core import settings
 from app.utils.minio import create_bucket_if_not_exists, get_client
@@ -11,8 +12,10 @@ SCREENSHOT_BUCKET_NAME: str = "uzen-screenshot"
 
 
 def upload_screenshot(
-    file_name: str, screenshot: Optional[bytes], bucket_name=SCREENSHOT_BUCKET_NAME
-):
+    file_name: str,
+    screenshot: Optional[bytes],
+    bucket_name: str = SCREENSHOT_BUCKET_NAME,
+) -> ObjectWriteResult:
     if screenshot is None:
         return
 
@@ -29,7 +32,7 @@ def upload_screenshot(
     )
 
 
-def get_screenshot_url(uuid: str, bucket_name=SCREENSHOT_BUCKET_NAME) -> str:
+def get_screenshot_url(uuid: str, bucket_name: str = SCREENSHOT_BUCKET_NAME) -> str:
     scheme = "https" if settings.MINIO_SECURE else "http"
     return f"{scheme}://{settings.MINIO_ENDPOINT}/{bucket_name}/{uuid}.png"
 

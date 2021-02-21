@@ -1,5 +1,3 @@
-from typing import List, cast
-
 import httpx
 
 from app import dataclasses
@@ -55,17 +53,12 @@ class HttpxBrowser(AbstractBrowser):
         snapshot.html = snapshot_result.html
 
         # get script files
-        script_files = cast(
-            List[dataclasses.ScriptFile],
-            await ScriptTask.process(snapshot),
-        )
+        script_files = await ScriptTask.process(snapshot)
         snapshot_result.script_files = script_files
 
         # get stylesheet files
-        stylesheet_files = cast(
-            List[dataclasses.StylesheetFile],
-            await StylesheetTask.process(snapshot),
-        )
+        stylesheet_files = await StylesheetTask.process(snapshot)
+
         snapshot_result.stylesheet_files = stylesheet_files
 
         return snapshot_result

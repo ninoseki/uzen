@@ -1,21 +1,26 @@
-from tortoise import fields
+from typing import TYPE_CHECKING
+
+from tortoise.fields.base import CASCADE
+from tortoise.fields.data import CharField, TextField
+from tortoise.fields.relational import ForeignKeyField, ForeignKeyRelation
 
 from app import schemas
 from app.models.base import AbstractBaseModel
 from app.models.mixin import TimestampMixin
 
+if TYPE_CHECKING:
+    from app.models.snapshot import Snapshot
+
 
 class DnsRecord(TimestampMixin, AbstractBaseModel):
-    type = fields.CharField(max_length=5)
-    value = fields.TextField()
+    type = CharField(max_length=5)
+    value = TextField()
 
-    snapshot: fields.ForeignKeyRelation[
-        "Snapshot"  # noqa F821
-    ] = fields.ForeignKeyField(
+    snapshot: ForeignKeyRelation["Snapshot"] = ForeignKeyField(
         "models.Snapshot",
         related_name="_dns_records",
         to_field="id",
-        on_delete=fields.CASCADE,
+        on_delete=CASCADE,
     )
 
     def to_model(self) -> schemas.DnsRecord:

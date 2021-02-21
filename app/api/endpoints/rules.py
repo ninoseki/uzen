@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Any, Dict, Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -17,7 +17,7 @@ router = APIRouter()
     response_model=schemas.RulesSearchResults,
     response_description="Returns a list of matched rules",
     summary="Search rules",
-    description="Searcn rules with filters",
+    description="Search rules with filters",
 )
 async def search(
     size: Optional[int] = None,
@@ -51,16 +51,20 @@ async def get(rule_id: UUID) -> schemas.Rule:
     description="Update a rule which has a given id",
 )
 async def put(
-    rule_id: UUID, payload: schemas.UpdateRulePayload, _=Depends(verify_api_key)
+    rule_id: UUID, payload: schemas.UpdateRulePayload, _: Any = Depends(verify_api_key)
 ) -> schemas.Rule:
     try:
         rule = await models.Rule.get(id=rule_id)
+
         if payload.name is not None:
             rule.name = payload.name
+
         if payload.target is not None:
             rule.target = payload.target
+
         if payload.source is not None:
             rule.source = payload.source
+
         await rule.save()
     except DoesNotExist:
         raise HTTPException(status_code=404, detail=f"Rule:{rule_id} is not found")
@@ -77,7 +81,7 @@ async def put(
     status_code=201,
 )
 async def create(
-    payload: schemas.CreateRulePayload, _=Depends(verify_api_key)
+    payload: schemas.CreateRulePayload, _: Any = Depends(verify_api_key)
 ) -> schemas.Rule:
     rule = models.Rule(name=payload.name, target=payload.target, source=payload.source)
     await rule.save()
@@ -91,7 +95,7 @@ async def create(
     description="Delete a rule which has a given ID",
     status_code=204,
 )
-async def delete(rule_id: UUID, _=Depends(verify_api_key)) -> dict:
+async def delete(rule_id: UUID, _: Any = Depends(verify_api_key)) -> Dict[str, Any]:
     try:
         await models.Rule.delete_by_id(rule_id)
     except DoesNotExist:

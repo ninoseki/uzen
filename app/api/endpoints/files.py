@@ -1,3 +1,5 @@
+from typing import cast
+
 from fastapi import APIRouter, HTTPException
 from tortoise.exceptions import DoesNotExist
 
@@ -16,6 +18,7 @@ router = APIRouter()
 async def get(sha256: str) -> schemas.File:
     try:
         file = await models.File.get_by_id(sha256)
+        file = cast(models.File, file)
     except DoesNotExist:
         raise HTTPException(status_code=404, detail=f"File:{sha256} is not found")
 

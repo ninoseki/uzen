@@ -3,7 +3,8 @@ from __future__ import annotations
 from typing import Any, List, cast
 from uuid import UUID
 
-from tortoise import fields
+from tortoise.fields.data import CharField, DatetimeField, TextField
+from tortoise.fields.relational import ManyToManyRelation
 
 from app import models, schemas
 from app.models.base import AbstractBaseModel
@@ -13,12 +14,12 @@ LIMIT_OF_PREFETCH = 20
 
 
 class Rule(TimestampMixin, AbstractBaseModel):
-    name = fields.CharField(max_length=255)
-    target = fields.CharField(max_length=255)
-    source = fields.TextField()
-    updated_at = fields.DatetimeField(auto_now=True)
+    name = CharField(max_length=255)
+    target = CharField(max_length=255)
+    source = TextField()
+    updated_at = DatetimeField(auto_now=True)
 
-    _snapshots: fields.ManyToManyRelation[models.Snapshot]
+    _snapshots: ManyToManyRelation[models.Snapshot]
 
     def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
@@ -39,8 +40,8 @@ class Rule(TimestampMixin, AbstractBaseModel):
         return schemas.Rule.from_orm(self)
 
     @classmethod
-    async def get_by_id(cls, id_: UUID) -> Rule:
-        rule = await cls.get(id=id_)
+    async def get_by_id(cls, id_: str | UUID) -> Rule:
+        rule = await cls.get(id=str(id_))
         rule.snapshots_ = (
             await rule._snapshots.all()
             .limit(LIMIT_OF_PREFETCH)

@@ -1,5 +1,5 @@
 from functools import lru_cache
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 from urllib.parse import urlparse
 
 import httpx
@@ -63,10 +63,10 @@ def get_script_urls(
     Returns:
         List[str] -- A list of script urls
     """
-    html = parse_html(html)
+    soup = parse_html(html)
 
     urls: List[str] = []
-    for element in html.find_all("script"):
+    for element in soup.find_all("script"):
         src: str = element.attrs.get("src")
         if src is not None:
             urls.append(convert_to_absolute_url(url, src))
@@ -87,10 +87,10 @@ def get_stylesheet_urls(
     Returns:
         List[str] -- A list of stylesheet urls
     """
-    html = parse_html(html)
+    soup = parse_html(html)
 
     urls: List[str] = []
-    for element in html.find_all("link"):
+    for element in soup.find_all("link"):
         href: Optional[str] = element.attrs.get("href")
         type_: Optional[str] = element.attrs.get("type")
         if href is not None and type_ is not None:
@@ -100,7 +100,7 @@ def get_stylesheet_urls(
 
 
 async def get_http_resource(
-    client: httpx.AsyncClient, url: str, headers: Dict
+    client: httpx.AsyncClient, url: str, headers: Dict[str, Any]
 ) -> Optional[dataclasses.HttpResource]:
     """Get an http resource
 

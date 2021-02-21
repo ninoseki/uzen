@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List, Union
+from typing import Any, List, Union
 
 from loguru import logger
 
@@ -11,10 +11,10 @@ from app.models.snapshot import Snapshot
 
 class AbstractAsyncTask(ABC):
     @abstractmethod
-    async def _process(self):
+    async def _process(self) -> Any:
         raise NotImplementedError()
 
-    async def safe_process(self):
+    async def safe_process(self) -> Any:
         try:
             return await self._process()
         except Exception as e:
@@ -24,10 +24,10 @@ class AbstractAsyncTask(ABC):
 
 class AbstractSyncTask(ABC):
     @abstractmethod
-    def _process(self):
+    def _process(self) -> Any:
         raise NotImplementedError()
 
-    def safe_process(self):
+    def safe_process(self) -> Any:
         try:
             return self._process()
         except Exception as e:

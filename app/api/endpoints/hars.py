@@ -1,4 +1,3 @@
-from typing import cast
 from uuid import UUID
 
 from fastapi import APIRouter, HTTPException
@@ -27,5 +26,4 @@ async def get_by_snapshot_id(
             detail=f"HAR related to {snapshot_id} is not found",
         )
 
-    model = cast(schemas.HAR, har.to_model())
-    return model
+    return har.to_model()
