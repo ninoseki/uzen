@@ -1,4 +1,5 @@
 import json
+from functools import lru_cache
 from io import BytesIO
 
 from minio import Minio
@@ -16,6 +17,7 @@ def get_client() -> Minio:
     )
 
 
+@lru_cache()
 def create_bucket_if_not_exists(client: Minio, bucket_name: str) -> None:
     policy = {
         "Version": "2012-10-17",

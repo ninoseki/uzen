@@ -1,14 +1,15 @@
 from typing import Dict
 
 import httpx
-from async_lru import alru_cache
+from aiocache import Cache, cached
+from aiocache.serializers import JsonSerializer
 
 from app.core import settings
 
 
 class IP2ASN:
     @staticmethod
-    @alru_cache()
+    @cached(ttl=60 * 10, cache=Cache.MEMORY, serializer=JsonSerializer())
     async def lookup(ip_address: str) -> Dict[str, str]:
         if settings.IP2ASN_WEB_SERVICE_URL == "":
             return {}
