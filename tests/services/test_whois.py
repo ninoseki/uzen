@@ -7,4 +7,4 @@ from app.services.whois import Whois
 async def test_lookup_cached() -> None:
     res = await Whois.lookup("example.com")
     if res is not None:
-        assert res.content
+        assert res.content is not None
