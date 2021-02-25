@@ -4,3 +4,11 @@ class UzenError(Exception):
 
 class TakeSnapshotError(UzenError):
     pass
+
+
+class InvalidIPAddressError(UzenError):
+    pass
+
+
+class InvalidDomainError(UzenError):
+    pass

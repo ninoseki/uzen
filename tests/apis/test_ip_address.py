@@ -20,3 +20,9 @@ async def test_get(client, patch_whois_lookup):
 
     whois = json.get("whois", "")
     assert whois == whois
+
+
+@pytest.mark.asyncio
+async def test_get_with_invalid_input(client):
+    response = await client.get("/api/ip_address/example.com")
+    assert response.status_code == 404
