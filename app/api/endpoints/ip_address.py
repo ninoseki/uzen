@@ -1,7 +1,8 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 from app import schemas
 from app.factories.ip_address import IPAddressFactory
+from app.utils.validator import is_ip_address
 
 router = APIRouter()
 
@@ -14,4 +15,10 @@ router = APIRouter()
     description="Get an information related to an IP address",
 )
 async def get(ip_address: str) -> schemas.IPAddress:
+    if not is_ip_address(ip_address):
+        raise HTTPException(
+            status_code=404,
+            detail=f"{ip_address} is not valid",
+        )
+
     return await IPAddressFactory.from_ip_address(ip_address)
