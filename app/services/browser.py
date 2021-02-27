@@ -110,7 +110,7 @@ class Browser:
         if result is not None:
             return result
 
-        raise TakeSnapshotError(errors[len(errors) - 1])
+        raise TakeSnapshotError(errors[-1])
 
     @staticmethod
     async def preview(hostname: str) -> bytes:
