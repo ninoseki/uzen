@@ -14,6 +14,15 @@ CHUNK_SIZE = 100
 MAX_AT_ONCE = 10
 
 
+def build_snapshot_table(snapshots: List[Dict[str, Any]]) -> Dict[str, Any]:
+    table: Dict[str, Any] = {}
+    for snapshot in snapshots:
+        id_ = str(snapshot.get("id"))
+        table[id_] = snapshot
+
+    return table
+
+
 class YaraScanner:
     def __init__(self, source: str):
         self.rule: yara.Rules = yara.compile(source=source)
@@ -119,21 +128,13 @@ class YaraScanner:
             id__in=matched_ids
         ).values(*schemas.YaraScanResult.field_keys())
 
-        table = self._build_snapshot_table(snapshots)
+        table = build_snapshot_table(snapshots)
         for result in flatten_results:
             snapshot = table.get(str(result.snapshot_id))
             if snapshot is not None:
                 snapshot["yara_result"] = result
 
         return [schemas.YaraScanResult(**snapshot) for snapshot in snapshots]
-
-    def _build_snapshot_table(self, snapshots: List[Dict[str, Any]]) -> Dict[str, Any]:
-        table: Dict[str, Any] = {}
-        for snapshot in snapshots:
-            id_ = str(snapshot.get("id"))
-            table[id_] = snapshot
-
-        return table
 
     def match(self, data: Optional[str]) -> List[schemas.YaraMatch]:
         """Scan a data with a YARA rule

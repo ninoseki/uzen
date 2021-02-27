@@ -93,9 +93,13 @@ def find_stylesheet_files(har: HAR) -> List[dataclasses.StylesheetFile]:
 class HarBuilder:
     @staticmethod
     def from_dict(
-        data: Dict[str, Any], events: List[dataclasses.ResponseReceivedEvent] = []
+        data: Dict[str, Any],
+        events: Optional[List[dataclasses.ResponseReceivedEvent]] = None,
     ) -> dataclasses.HAR:
         har: dataclasses.HAR = dataclasses.HAR.from_dict(data)
+
+        if events is None:
+            events = []
 
         # url -> ip_address table
         memo: Dict[str, Optional[str]] = {}

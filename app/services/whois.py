@@ -17,15 +17,15 @@ def build_parser(hostname: str) -> WhoIsParser:
 
 
 def normalize_datetime(
-    input: Optional[Union[datetime.datetime, str]]
+    datetime_input: Optional[Union[datetime.datetime, str]]
 ) -> Optional[datetime.datetime]:
-    if input is None:
-        return input
+    if datetime_input is None:
+        return datetime_input
 
-    if isinstance(input, datetime.datetime):
-        return input
+    if isinstance(datetime_input, datetime.datetime):
+        return datetime_input
 
-    return dateparser.parse(input)
+    return dateparser.parse(datetime_input)
 
 
 def parse(raw: str, hostname: str) -> dataclasses.Whois:
