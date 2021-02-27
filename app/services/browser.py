@@ -57,14 +57,14 @@ def are_headers_safe(headers: Dict[str, str]) -> bool:
 class Browser:
     def __init__(
         self,
-        headers: Dict[str, str] = {},
+        headers: Optional[Dict[str, str]] = None,
         enable_har: bool = False,
         ignore_https_errors: bool = False,
         device_name: Optional[str] = None,
         timeout: Optional[int] = None,
         wait_until: WaitUntilType = "load",
     ):
-        self.headers: Dict[str, str] = headers
+        self.headers: Dict[str, str] = headers or {}
         self.enable_har: bool = enable_har
         self.ignore_https_errors: bool = ignore_https_errors
         self.timeout: int = timeout if timeout is not None else DEFAULT_TIMEOUT
