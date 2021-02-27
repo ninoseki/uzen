@@ -8,7 +8,7 @@ from app.core import settings
 
 def create_start_app_handler(
     app: FastAPI,
-) -> Callable[[FastAPI], Coroutine[Any, Any, None]]:
+) -> Callable[[], Coroutine[Any, Any, None]]:
     async def start_app() -> None:
         await Tortoise.init(
             db_url=settings.DATABASE_URL, modules={"models": settings.APP_MODELS}
@@ -20,7 +20,7 @@ def create_start_app_handler(
 
 def create_stop_app_handler(
     app: FastAPI,
-) -> Callable[[FastAPI], Coroutine[Any, Any, None]]:
+) -> Callable[[], Coroutine[Any, Any, None]]:
     async def stop_app() -> None:
         await Tortoise.close_connections()
 
