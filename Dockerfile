@@ -10,7 +10,7 @@ FROM python:3.9-slim-buster
 
 RUN apt-get update \
   && apt-get install -y \
-  # Install dependencies for puppeteer
+  # Install chromium dependencies
   # Ref. https://github.com/puppeteer/puppeteer/blob/master/docs/troubleshooting.md#chrome-headless-doesnt-launch-on-unix
   fonts-liberation \
   libappindicator3-1 \
@@ -48,14 +48,15 @@ RUN apt-get update \
   lsb-release \
   wget \
   xdg-utils \
-  # Install dependencies for YARA
+  fonts-noto-color-emoji \
+  # Install YARA dependencies
   # Ref. https://yara.readthedocs.io/en/latest/gettingstarted.html
   automake \
   libtool \
   make \
   gcc \
   pkg-config \
-  # Install dependencies for Uzen
+  # Install Uzen dependencies
   dnsutils \
   procps \
   whois \
@@ -66,14 +67,17 @@ WORKDIR /uzen
 
 COPY pyproject.toml /uzen
 COPY poetry.lock /uzen
-COPY .env.sample /uzen/.env
 COPY app /uzen/app
 COPY --from=build /frontend /uzen/frontend
 
+RUN pip3 install poetry \
+  && poetry config virtualenvs.create false \
+  && poetry install --no-dev
+
 ENV PLAYWRIGHT_BROWSERS_PATH /uzen/playwright
 
-RUN pip3 install poetry && poetry config virtualenvs.create false && poetry install --no-dev \
-  && mkdir -p /uzen/playwright && python -m playwright install \
+RUN mkdir -p /uzen/playwright \
+  && python -m playwright install \
   && rm -rf /uzen/playwright/webkit-* \
   && rm -rf /uzen/playwright/firefox-*
 
