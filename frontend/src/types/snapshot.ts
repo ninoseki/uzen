@@ -12,7 +12,7 @@ export interface HTML {
 
 export interface Whois {
   id: string | null;
-  content: string;
+  content: string | null;
   createdAt: string | null;
   created: string | null;
   updated: string | null;

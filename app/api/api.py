@@ -11,6 +11,7 @@ from app.api.endpoints import (
     screenshots,
     snapshots,
     urlscan,
+    whois,
     yara,
 )
 
@@ -28,3 +29,4 @@ api_router.include_router(snapshots.router, prefix="/snapshots", tags=["Snapshot
 api_router.include_router(urlscan.router, prefix="/import", tags=["Import"])
 api_router.include_router(yara.router, prefix="/yara", tags=["YARA"])
 api_router.include_router(hars.router, prefix="/hars", tags=["HAR"])
+api_router.include_router(whois.router, prefix="/whoises", tags=["Whois"])
