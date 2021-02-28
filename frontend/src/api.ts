@@ -8,6 +8,8 @@ import {
   Device,
   DomainInformation,
   File,
+  HAR,
+  HTML,
   IPAddressInformation,
   MatchSearchResults,
   Rule,
@@ -16,9 +18,10 @@ import {
   Snapshot,
   SnapshotSearchResults,
   SnapshotWithYaraResult,
+  UpdateRulePayload,
   Whois,
+  YaraScanPayload,
 } from "@/types";
-import { HAR, UpdateRulePayload, YaraScanPayload } from "@/types";
 
 const state = useGlobalState();
 
@@ -155,6 +158,15 @@ export const API = {
 
   async getWhois(sha256: string): Promise<Whois> {
     const res = await client.get<Whois>(`/api/whoises/${sha256}`, {
+      cache: {
+        maxAge: 60 * 60 * 1000,
+      },
+    });
+    return res.data;
+  },
+
+  async getHTML(sha256: string): Promise<HTML> {
+    const res = await client.get<HTML>(`/api/htmls/${sha256}`, {
       cache: {
         maxAge: 60 * 60 * 1000,
       },

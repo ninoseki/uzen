@@ -5,9 +5,9 @@ export interface Headers {
 }
 
 export interface HTML {
-  id: string;
-  content: string;
-  createdAt: string;
+  sha256: string;
+  content: string | null;
+  createdAt: string | null;
 }
 
 export interface Whois {

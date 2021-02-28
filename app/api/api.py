@@ -5,6 +5,7 @@ from app.api.endpoints import (
     domain,
     files,
     hars,
+    htmls,
     ip_address,
     matches,
     rules,
@@ -30,3 +31,4 @@ api_router.include_router(urlscan.router, prefix="/import", tags=["Import"])
 api_router.include_router(yara.router, prefix="/yara", tags=["YARA"])
 api_router.include_router(hars.router, prefix="/hars", tags=["HAR"])
 api_router.include_router(whois.router, prefix="/whoises", tags=["Whois"])
+api_router.include_router(htmls.router, prefix="/htmls", tags=["HTML"])

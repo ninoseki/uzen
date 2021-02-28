@@ -137,9 +137,9 @@
                 <router-link
                   :to="{
                     name: 'Snapshots',
-                    query: { htmlHash: getSnapshotTask.last.value.html.id },
+                    query: { htmlHash: getSnapshotTask.last.value.html.sha256 },
                   }"
-                  >{{ getSnapshotTask.last.value.html.id }}
+                  >{{ getSnapshotTask.last.value.html.sha256 }}
                 </router-link>
               </div>
               <div class="column">
@@ -156,7 +156,7 @@
           </b-tab-item>
 
           <b-tab-item label="HTML">
-            <HTML :html="getSnapshotTask.last.value.html.content"></HTML>
+            <HTML :sha256="getSnapshotTask.last.value.html.sha256"></HTML>
           </b-tab-item>
 
           <b-tab-item label="Whois">
@@ -212,11 +212,11 @@ import Certificate from "@/components/certificate/Certificate.vue";
 import ClassificationTags from "@/components/classification/Tags.vue";
 import DnsRecords from "@/components/dns_record/DnsRecords.vue";
 import HAR from "@/components/har/HAR.vue";
+import HTML from "@/components/html/HTMLWrapper.vue";
 import Links from "@/components/link/Links.vue";
 import Rules from "@/components/rule/Buttons.vue";
 import Screenshot from "@/components/screenshot/Screenshot.vue";
 import Scripts from "@/components/script/Scripts.vue";
-import HTML from "@/components/snapshot/HTML.vue";
 import Stylesheets from "@/components/stylesheet/Stylesheets.vue";
 import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
 import Error from "@/components/ui/Error.vue";

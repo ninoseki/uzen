@@ -13,7 +13,7 @@ from app.schemas.certificate import Certificate
 from app.schemas.classification import Classification
 from app.schemas.common import Source, Target
 from app.schemas.dns_record import DnsRecord
-from app.schemas.html import HTML
+from app.schemas.html import BaseHTML
 from app.schemas.mixin import TimestampMixin
 from app.schemas.script import Script
 from app.schemas.search import BaseSearchResults
@@ -120,7 +120,7 @@ class BaseSnapshot(SnapshotBasicAttributes):
 class Snapshot(BaseSnapshot, AbstractBaseModel, TimestampMixin):
     """Snapshot"""
 
-    html: HTML = Field(...)
+    html: BaseHTML = Field(...)
     certificate: Optional[Certificate] = Field(None)
     whois: WhoisMetaData = Field(None)
 

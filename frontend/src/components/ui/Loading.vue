@@ -12,6 +12,7 @@ export default defineComponent({
     let loadingComponent: BLoadingComponent | undefined = undefined;
 
     onMounted(() => {
+      console.log(context.parent?.$el);
       loadingComponent = context.root.$buefy.loading.open({
         container: context.root.$parent,
       });
