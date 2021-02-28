@@ -171,8 +171,10 @@
 
           <b-tab-item label="Certificate">
             <Certificate
-              :certificate="getSnapshotTask.last.value.certificate || undefined"
+              :sha256="getSnapshotTask.last.value.certificate.sha256"
+              v-if="getSnapshotTask.last.value.certificate"
             />
+            <NA v-else></NA>
           </b-tab-item>
 
           <b-tab-item label="Scripts">
@@ -208,7 +210,7 @@ import { useTitle } from "@vueuse/core";
 import { useAsyncTask } from "vue-concurrency";
 
 import { API } from "@/api";
-import Certificate from "@/components/certificate/Certificate.vue";
+import Certificate from "@/components/certificate/CertificateWrapper.vue";
 import ClassificationTags from "@/components/classification/Tags.vue";
 import DnsRecords from "@/components/dns_record/DnsRecords.vue";
 import HAR from "@/components/har/HAR.vue";
@@ -223,6 +225,7 @@ import Error from "@/components/ui/Error.vue";
 import H2 from "@/components/ui/H2.vue";
 import H3 from "@/components/ui/H3.vue";
 import Loading from "@/components/ui/Loading.vue";
+import NA from "@/components/ui/NA.vue";
 import Whois from "@/components/whois/WhoisWrapper.vue";
 import YaraResultComponent from "@/components/yara/Result.vue";
 import { Snapshot, YaraResult } from "@/types";
@@ -243,6 +246,7 @@ export default defineComponent({
     HTML,
     Links,
     Loading,
+    NA,
     Rules,
     Screenshot,
     Scripts,

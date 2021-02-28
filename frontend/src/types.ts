@@ -25,6 +25,7 @@ import {
   SnapshotSearchResults,
 } from "@/types/search";
 import {
+  Certificate,
   Classification,
   CreateSnapshotPayload,
   DnsRecord,
@@ -50,6 +51,7 @@ export interface SnapshotWithYaraResult extends Snapshot {
 }
 
 export {
+  Certificate,
   Classification,
   CountResponse,
   CreateRulePayload,

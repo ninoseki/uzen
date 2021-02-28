@@ -2,6 +2,7 @@ import { setup } from "axios-cache-adapter";
 
 import { useGlobalState } from "@/store";
 import {
+  Certificate,
   CountResponse,
   CreateRulePayload,
   CreateSnapshotPayload,
@@ -167,6 +168,15 @@ export const API = {
 
   async getHTML(sha256: string): Promise<HTML> {
     const res = await client.get<HTML>(`/api/htmls/${sha256}`, {
+      cache: {
+        maxAge: 60 * 60 * 1000,
+      },
+    });
+    return res.data;
+  },
+
+  async getCertificate(sha256: string): Promise<Certificate> {
+    const res = await client.get<Certificate>(`/api/certificates/${sha256}`, {
       cache: {
         maxAge: 60 * 60 * 1000,
       },
