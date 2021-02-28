@@ -18,7 +18,7 @@ from app.schemas.mixin import TimestampMixin
 from app.schemas.script import Script
 from app.schemas.search import BaseSearchResults
 from app.schemas.stylesheet import Stylesheet
-from app.schemas.whois import Whois
+from app.schemas.whois import WhoisMetaData
 from app.types import WaitUntilType
 from app.utils.network import get_hostname_from_url, get_ip_address_by_hostname
 
@@ -122,7 +122,7 @@ class Snapshot(BaseSnapshot, AbstractBaseModel, TimestampMixin):
 
     html: HTML = Field(...)
     certificate: Optional[Certificate] = Field(None)
-    whois: Whois = Field(None)
+    whois: WhoisMetaData = Field(None)
 
     scripts: List[Script] = Field(..., description="A list of scripts")
     stylesheets: List[Stylesheet] = Field(..., description="A list of stylesheets")

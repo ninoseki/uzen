@@ -16,6 +16,7 @@ import {
   Snapshot,
   SnapshotSearchResults,
   SnapshotWithYaraResult,
+  Whois,
 } from "@/types";
 import { HAR, UpdateRulePayload, YaraScanPyalod } from "@/types";
 
@@ -145,6 +146,15 @@ export const API = {
 
   async getFile(sha256: string): Promise<File> {
     const res = await client.get<File>(`/api/files/${sha256}`, {
+      cache: {
+        maxAge: 60 * 60 * 1000,
+      },
+    });
+    return res.data;
+  },
+
+  async getWhois(sha256: string): Promise<Whois> {
+    const res = await client.get<Whois>(`/api/whoises/${sha256}`, {
       cache: {
         maxAge: 60 * 60 * 1000,
       },

@@ -35,6 +35,7 @@ import {
   SnapshotFilters,
   Stylesheet,
   WaitUntilType,
+  Whois,
 } from "@/types/snapshot";
 import {
   YaraMatch,
@@ -79,6 +80,7 @@ export {
   UpdateRulePayload,
   ValidationError,
   WaitUntilType,
+  Whois,
   YaraMatch,
   YaraMatchString,
   YaraResult,

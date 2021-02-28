@@ -160,7 +160,13 @@
           </b-tab-item>
 
           <b-tab-item label="Whois">
-            <Whois :whois="getSnapshotTask.last.value.whois" />
+            <Whois
+              :whoisId="getSnapshotTask.last.value.whois.id"
+              v-if="
+                getSnapshotTask.last.value.whois &&
+                getSnapshotTask.last.value.whois.id
+              "
+            />
           </b-tab-item>
 
           <b-tab-item label="Certificate">
@@ -217,7 +223,7 @@ import Error from "@/components/ui/Error.vue";
 import H2 from "@/components/ui/H2.vue";
 import H3 from "@/components/ui/H3.vue";
 import Loading from "@/components/ui/Loading.vue";
-import Whois from "@/components/whois/Whois.vue";
+import Whois from "@/components/whois/WhoisWrapper.vue";
 import YaraResultComponent from "@/components/yara/Result.vue";
 import { Snapshot, YaraResult } from "@/types";
 import { countryCodeToEmoji } from "@/utils/country";
