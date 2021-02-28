@@ -33,6 +33,9 @@ MINIO_ACCESS_KEY: str = config("MINIO_ACCESS_KEY", cast=str, default="")
 MINIO_SECRET_KEY: str = config("MINIO_SECRET_KEY", cast=str, default="")
 MINIO_SECURE: bool = config("MINIO_SECURE", cast=bool, default=False)
 
+# Redis settings
+REDIS_URL: str = config("REDIS_URL", cast=str, default="")
+
 # IP to ASN web service settings
 IP2ASN_WEB_SERVICE_URL: str = config("IP2ASN_WEB_SERVICE_URL", cast=str, default="")
 

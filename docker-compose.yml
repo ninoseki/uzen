@@ -17,6 +17,17 @@ services:
       timeout: 20s
     restart: always
 
+  redis:
+    container_name: uzen_redis
+    image: bitnami/redis:6.2
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    restart: always
+    volumes:
+      - "redis-data:/data"
+
   database:
     container_name: uzen_db
     image: mysql/mysql-server:8.0
@@ -53,6 +64,7 @@ services:
       - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
       - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
       - MINIO_SECURE=False
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/
       - DATABASE_URL=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@database:3306/${MYSQL_DATABASE}
       - GOOGLE_SAFE_BROWSING_API_KEY=${GOOGLE_SAFE_BROWSING_API_KEY}
       - VIRUSTOTAL_API_KEY=${VIRUSTOTAL_API_KEY}
@@ -60,9 +72,11 @@ services:
     restart: always
     depends_on:
       - minio
+      - redis
       - database
       - ip2asn
 
 volumes:
   minio-data:
+  redis-data:
   db-data:
