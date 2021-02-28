@@ -9,7 +9,7 @@ from playwright.sync_api import Error, sync_playwright
 from pydantic import AnyHttpUrl, Field, IPvAnyAddress, validator
 
 from app.schemas.base import AbstractBaseModel
-from app.schemas.certificate import Certificate
+from app.schemas.certificate import CertificateMetaData
 from app.schemas.classification import Classification
 from app.schemas.common import Source, Target
 from app.schemas.dns_record import DnsRecord
@@ -121,7 +121,7 @@ class Snapshot(BaseSnapshot, AbstractBaseModel, TimestampMixin):
     """Snapshot"""
 
     html: BaseHTML = Field(...)
-    certificate: Optional[Certificate] = Field(None)
+    certificate: Optional[CertificateMetaData] = Field(None)
     whois: WhoisMetaData = Field(None)
 
     scripts: List[Script] = Field(..., description="A list of scripts")
