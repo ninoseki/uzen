@@ -21,7 +21,7 @@ export interface YaraResult {
   matches: YaraMatch[];
 }
 
-export interface YaraScanPyalod {
+export interface YaraScanPayload {
   target: string;
   source: string;
 }

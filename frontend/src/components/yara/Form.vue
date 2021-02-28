@@ -39,7 +39,7 @@ import SnapshotTable from "@/components/snapshot/Table.vue";
 import Error from "@/components/ui/Error.vue";
 import Loading from "@/components/ui/Loading.vue";
 import BasicForm from "@/components/yara/BasicForm.vue";
-import { SnapshotWithYaraResult, TargetTypes, YaraScanPyalod } from "@/types";
+import { SnapshotWithYaraResult, TargetTypes, YaraScanPayload } from "@/types";
 
 export default defineComponent({
   name: "YaraForm",
@@ -72,7 +72,7 @@ export default defineComponent({
         // do nothing;
       }
 
-      const payload: YaraScanPyalod = {
+      const payload: YaraScanPayload = {
         source: source.value,
         target: target.value,
       };

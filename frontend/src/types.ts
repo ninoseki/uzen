@@ -41,7 +41,7 @@ import {
   YaraMatch,
   YaraMatchString,
   YaraResult,
-  YaraScanPyalod,
+  YaraScanPayload,
 } from "@/types/yara";
 
 export interface SnapshotWithYaraResult extends Snapshot {
@@ -84,5 +84,5 @@ export {
   YaraMatch,
   YaraMatchString,
   YaraResult,
-  YaraScanPyalod,
+  YaraScanPayload,
 };
