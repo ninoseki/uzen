@@ -17,7 +17,7 @@ import {
   SnapshotSearchResults,
   SnapshotWithYaraResult,
 } from "@/types";
-import { HAR, UpdateRulePayload, YaraScanPyalod } from "@/types";
+import { HAR, UpdateRulePayload, YaraScanPayload } from "@/types";
 
 const state = useGlobalState();
 
@@ -99,7 +99,7 @@ export const API = {
   },
 
   async yaraScan(
-    payload: YaraScanPyalod,
+    payload: YaraScanPayload,
     params: SearchParams
   ): Promise<SnapshotWithYaraResult[]> {
     const res = await client.post<SnapshotWithYaraResult[]>(
