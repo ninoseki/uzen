@@ -1,6 +1,8 @@
 <template>
   <div>
-    <Loading v-if="isLoading"></Loading>
+    <b-progress size="is-medium" show-value v-if="isLoading">
+      Loading...
+    </b-progress>
     <pre v-else><code class="hljs" v-html="highlightedHTML"></code></pre>
   </div>
 </template>
@@ -8,7 +10,6 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref, watch } from "@vue/composition-api";
 
-import Loading from "@/components/ui/Loading.vue";
 import { highlightWorkerFn } from "@/utils/highlight.worker";
 
 export default defineComponent({
@@ -18,9 +19,6 @@ export default defineComponent({
       type: String,
       required: true,
     },
-  },
-  components: {
-    Loading,
   },
   setup(props) {
     const highlightedHTML = ref("");
