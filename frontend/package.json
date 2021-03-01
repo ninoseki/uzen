@@ -32,7 +32,7 @@
     "crypto-js": "4.0.0",
     "dayjs": "1.9.8",
     "highlight.js": "10.5.0",
-    "qs": "6.9.4",
+    "qs": "6.9.6",
     "vue": "2.6.12",
     "vue-class-component": "7.2.6",
     "vue-json-pretty": "2.0.1",
