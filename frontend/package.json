@@ -31,7 +31,7 @@
     "core-js": "3.8.1",
     "crypto-js": "4.0.0",
     "dayjs": "1.9.8",
-    "highlight.js": "10.5.0",
+    "highlight.js": "10.6.0",
     "qs": "6.9.4",
     "vue": "2.6.12",
     "vue-class-component": "7.2.6",
