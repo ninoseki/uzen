@@ -49,6 +49,17 @@ RUN apt-get update \
   wget \
   xdg-utils \
   fonts-noto-color-emoji \
+  # Install language fonts
+  locales \
+  fonts-arphic-ukai \
+  fonts-arphic-uming \
+  fonts-ipafont \
+  fonts-ipaexfont \
+  fonts-unfonts-core \
+  fonts-wqy-zenhei \
+  fonts-thai-tlwg \
+  fonts-kacst \
+  fonts-freefont-ttf \
   # Install YARA dependencies
   # Ref. https://yara.readthedocs.io/en/latest/gettingstarted.html
   automake \
