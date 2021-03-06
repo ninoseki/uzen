@@ -40,8 +40,8 @@
             </div>
           </div>
         </nav>
-        <b-tabs type="is-boxed">
-          <b-tab-item label="Summary">
+        <b-tabs type="is-boxed" v-model="activeTab">
+          <b-tab-item label="Summary" :value="'summary'">
             <div class="column is-full">
               <div class="columns">
                 <div class="column is-half">
@@ -158,26 +158,32 @@
             </div>
           </b-tab-item>
 
-          <b-tab-item label="HTML">
-            <HTML :sha256="getSnapshotTask.last.value.html.sha256"></HTML>
+          <b-tab-item label="HTML" :value="'html'">
+            <div v-if="isHTMLActivated">
+              <HTML :sha256="getSnapshotTask.last.value.html.sha256"></HTML>
+            </div>
           </b-tab-item>
 
-          <b-tab-item label="Whois">
-            <Whois
-              :whoisId="getSnapshotTask.last.value.whois.id"
-              v-if="
-                getSnapshotTask.last.value.whois &&
-                getSnapshotTask.last.value.whois.id
-              "
-            />
+          <b-tab-item label="Whois" :value="'whois'">
+            <div v-if="isWhoisActivated">
+              <Whois
+                :whoisId="getSnapshotTask.last.value.whois.id"
+                v-if="
+                  getSnapshotTask.last.value.whois &&
+                  getSnapshotTask.last.value.whois.id
+                "
+              />
+            </div>
           </b-tab-item>
 
-          <b-tab-item label="Certificate">
-            <Certificate
-              :sha256="getSnapshotTask.last.value.certificate.sha256"
-              v-if="getSnapshotTask.last.value.certificate"
-            />
-            <NA v-else></NA>
+          <b-tab-item label="Certificate" :value="'certificate'">
+            <div v-if="isCertificateActivated">
+              <Certificate
+                :sha256="getSnapshotTask.last.value.certificate.sha256"
+                v-if="getSnapshotTask.last.value.certificate"
+              />
+              <NA v-else></NA>
+            </div>
           </b-tab-item>
 
           <b-tab-item label="Scripts">
@@ -194,8 +200,10 @@
             <DnsRecords :dnsRecords="getSnapshotTask.last.value.dnsRecords" />
           </b-tab-item>
 
-          <b-tab-item label="HAR">
-            <HAR :snapshotId="getSnapshotTask.last.value.id" />
+          <b-tab-item label="HAR" :value="'har'">
+            <div v-if="isHARActivated">
+              <HAR :snapshotId="getSnapshotTask.last.value.id" />
+            </div>
           </b-tab-item>
 
           <b-tab-item v-if="yaraResult !== undefined" label="YARA matches">
@@ -208,7 +216,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "@vue/composition-api";
+import { defineComponent, PropType, ref, watch } from "@vue/composition-api";
 import { useTitle } from "@vueuse/core";
 import { useAsyncTask } from "vue-concurrency";
 
@@ -271,13 +279,15 @@ export default defineComponent({
   },
 
   setup(props) {
-    const getSnapshotTask = useAsyncTask<Snapshot, []>(async () => {
-      return await API.getSnapshot(props.snapshotId);
-    });
-
+    // update title
     const updateTitle = (url: string): void => {
       useTitle(`${url} - Uzen`);
     };
+
+    // get snapshot
+    const getSnapshotTask = useAsyncTask<Snapshot, []>(async () => {
+      return await API.getSnapshot(props.snapshotId);
+    });
 
     const getSnapshot = async () => {
       const snapshot = await getSnapshotTask.perform();
@@ -286,7 +296,44 @@ export default defineComponent({
 
     getSnapshot();
 
-    return { getSnapshotTask, truncate, countryCodeToEmoji };
+    // set active tab
+    const activeTab = ref("summary");
+    const isHTMLActivated = ref(false);
+    const isWhoisActivated = ref(false);
+    const isHARActivated = ref(false);
+    const isCertificateActivated = ref(false);
+    watch(
+      activeTab,
+      // eslint-disable-next-line no-unused-vars
+      (active, _last) => {
+        if (active === "certificate") {
+          isCertificateActivated.value = true;
+        }
+
+        if (active === "html") {
+          isHTMLActivated.value = true;
+        }
+
+        if (active === "whois") {
+          isWhoisActivated.value = true;
+        }
+
+        if (active === "har") {
+          isHARActivated.value = true;
+        }
+      }
+    );
+
+    return {
+      activeTab,
+      countryCodeToEmoji,
+      getSnapshotTask,
+      isCertificateActivated,
+      isHARActivated,
+      isHTMLActivated,
+      isWhoisActivated,
+      truncate,
+    };
   },
 });
 </script>
