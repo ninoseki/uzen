@@ -1,6 +1,8 @@
 import json
 
+import httpx
 import pytest
+from _pytest.monkeypatch import MonkeyPatch
 
 from app.models.snapshot import Snapshot
 from app.services.browser import Browser
@@ -9,7 +11,7 @@ from tests.helper import first_snapshot_id, make_snapshot_result
 
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("snapshots_setup")
-async def test_snapshot_search(client):
+async def test_snapshot_search(client: httpx.AsyncClient):
     count = await Snapshot.all().count()
     response = await client.get("/api/snapshots/search")
     json = response.json()
@@ -53,7 +55,7 @@ async def test_snapshot_search(client):
 
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("snapshots_setup")
-async def test_snapshot_list_with_size(client):
+async def test_snapshot_list_with_size(client: httpx.AsyncClient):
     payload = {"size": 1}
     response = await client.get("/api/snapshots/search", params=payload)
     json = response.json()
@@ -65,7 +67,7 @@ async def test_snapshot_list_with_size(client):
 
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("snapshots_setup")
-async def test_snapshot_list_with_offset_and_size(client):
+async def test_snapshot_list_with_offset_and_size(client: httpx.AsyncClient):
     payload = {"offset": 0, "size": 1}
     response = await client.get("/api/snapshots/search", params=payload)
     json = response.json()
@@ -94,7 +96,7 @@ async def test_snapshot_list_with_offset_and_size(client):
 
 
 @pytest.mark.asyncio
-async def test_snapshot_post_without_url(client):
+async def test_snapshot_post_without_url(client: httpx.AsyncClient):
     payload = {}
     response = await client.post("/api/snapshots/", data=json.dumps(payload))
     assert response.status_code == 422
@@ -112,7 +114,7 @@ def mock_take_snapshot(*args, **kwargs):
 
 
 @pytest.mark.asyncio
-async def test_snapshot_post(client, monkeypatch):
+async def test_snapshot_post(client: httpx.AsyncClient, monkeypatch: MonkeyPatch):
     monkeypatch.setattr(Browser, "take_snapshot", mock_take_snapshot)
 
     payload = {"url": "http://example.com"}
@@ -131,7 +133,7 @@ async def test_snapshot_post(client, monkeypatch):
 
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("snapshots_setup")
-async def test_snapshot_get(client):
+async def test_snapshot_get(client: httpx.AsyncClient):
     id_ = await first_snapshot_id()
     response = await client.get(f"/api/snapshots/{id_}")
     assert response.status_code == 200
@@ -140,7 +142,7 @@ async def test_snapshot_get(client):
 
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("dns_records_setup")
-async def test_snapshot_get_with_dns_records(client):
+async def test_snapshot_get_with_dns_records(client: httpx.AsyncClient):
     id_ = await first_snapshot_id()
     response = await client.get(f"/api/snapshots/{id_}")
     assert response.status_code == 200
@@ -153,7 +155,7 @@ async def test_snapshot_get_with_dns_records(client):
 
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("classifications_setup")
-async def test_snapshot_get_with_classifications(client):
+async def test_snapshot_get_with_classifications(client: httpx.AsyncClient):
     id_ = await first_snapshot_id()
     response = await client.get(f"/api/snapshots/{id_}")
     assert response.status_code == 200
@@ -166,7 +168,7 @@ async def test_snapshot_get_with_classifications(client):
 
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("scripts_setup")
-async def test_snapshot_get_with_scripts(client):
+async def test_snapshot_get_with_scripts(client: httpx.AsyncClient):
     id_ = await first_snapshot_id()
     response = await client.get(f"/api/snapshots/{id_}")
     assert response.status_code == 200
@@ -179,7 +181,7 @@ async def test_snapshot_get_with_scripts(client):
 
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("snapshots_setup")
-async def test_count(client):
+async def test_count(client: httpx.AsyncClient):
     count = await Snapshot.all().count()
 
     response = await client.get("/api/snapshots/count")
