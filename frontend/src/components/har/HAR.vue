@@ -1,6 +1,11 @@
 <template>
   <div>
-    <div v-if="getHARTask.last && getHARTask.last.value && !getHARTask.isError">
+    <div v-if="getHARTask.isRunning">Loading...</div>
+    <div
+      v-else-if="
+        getHARTask.last && getHARTask.last.value && !getHARTask.isError
+      "
+    >
       <nav class="level">
         <div class="level-left"></div>
         <div class="level-right">

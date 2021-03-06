@@ -1,7 +1,8 @@
 <template>
   <div>
+    <div v-if="getCertificateTask.isRunning">Loading...</div>
     <div
-      v-if="
+      v-else-if="
         !getCertificateTask.isError &&
         getCertificateTask.last &&
         getCertificateTask.last.value

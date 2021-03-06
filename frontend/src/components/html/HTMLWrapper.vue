@@ -1,7 +1,10 @@
 <template>
   <div>
+    <div v-if="getHTMLTask.isRunning">Loading...</div>
     <div
-      v-if="!getHTMLTask.isError && getHTMLTask.last && getHTMLTask.last.value"
+      v-else-if="
+        !getHTMLTask.isError && getHTMLTask.last && getHTMLTask.last.value
+      "
     >
       <HTMLComponent
         :html="getHTMLTask.last.value.content"

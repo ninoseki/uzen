@@ -1,7 +1,8 @@
 <template>
   <div>
+    <div v-if="getWhoisTask.isRunning">Loading...</div>
     <div
-      v-if="
+      v-else-if="
         !getWhoisTask.isError && getWhoisTask.last && getWhoisTask.last.value
       "
     >
