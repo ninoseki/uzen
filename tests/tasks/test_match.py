@@ -9,7 +9,8 @@ from tests.helper import first_snapshot_id
 
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("snapshots_setup")
-async def test_matching_taskl(client):
+@pytest.mark.usefixtures("client")
+async def test_matching_taskl():
     rule = Rule(
         name="test",
         target="html",

@@ -1,5 +1,6 @@
 import json
 
+import httpx
 import pytest
 
 from app.models.rule import Rule
@@ -7,21 +8,21 @@ from tests.helper import first_rule_id
 
 
 @pytest.mark.asyncio
-async def test_create_rule_with_invalid_target(client):
+async def test_create_rule_with_invalid_target(client: httpx.AsyncClient):
     payload = {"name": "test", "target": "foo", "source": "foo"}
     response = await client.post("/api/rules/", data=json.dumps(payload))
     assert response.status_code == 422
 
 
 @pytest.mark.asyncio
-async def test_create_rule_with_invalid_source(client):
+async def test_create_rule_with_invalid_source(client: httpx.AsyncClient):
     payload = {"name": "test", "target": "html", "source": "foo; bar;"}
     response = await client.post("/api/rules/", data=json.dumps(payload))
     assert response.status_code == 422
 
 
 @pytest.mark.asyncio
-async def test_create_rule(client):
+async def test_create_rule(client: httpx.AsyncClient):
     payload = {
         "name": "test",
         "target": "html",
@@ -36,7 +37,7 @@ async def test_create_rule(client):
 
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("rules_setup")
-async def test_delete_rule(client):
+async def test_delete_rule(client: httpx.AsyncClient):
     id_ = await first_rule_id()
     response = await client.delete(f"/api/rules/{id_}")
     assert response.status_code == 204
@@ -44,7 +45,7 @@ async def test_delete_rule(client):
 
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("rules_setup")
-async def test_rules_search(client):
+async def test_rules_search(client: httpx.AsyncClient):
     count = await Rule.all().count()
 
     response = await client.get("/api/rules/search")
@@ -73,7 +74,7 @@ async def test_rules_search(client):
 
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("rules_setup")
-async def test_update(client):
+async def test_update(client: httpx.AsyncClient):
     id_ = await first_rule_id()
 
     payload = {"name": "woweee"}

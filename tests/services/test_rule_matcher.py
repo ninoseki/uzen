@@ -9,7 +9,8 @@ from app.services.rule_matcher import RuleMatcher
 
 
 @pytest.fixture
-async def rule_setup(client):
+@pytest.mark.usefixtures("client")
+async def rule_setup():
     rule = Rule(
         id=uuid.uuid4(),
         name="test",

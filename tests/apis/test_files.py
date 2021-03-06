@@ -1,3 +1,4 @@
+import httpx
 import pytest
 
 from app.models.script import Script
@@ -5,7 +6,7 @@ from app.models.script import Script
 
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("scripts_setup")
-async def test_files(client):
+async def test_files(client: httpx.AsyncClient):
     first = await Script.all().first()
     sha256 = first.file_id
 
@@ -14,6 +15,6 @@ async def test_files(client):
 
 
 @pytest.mark.asyncio
-async def test_files_404(client):
+async def test_files_404(client: httpx.AsyncClient):
     response = await client.get("/api/files/404")
     assert response.status_code == 404

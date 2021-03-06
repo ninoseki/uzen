@@ -1,6 +1,7 @@
 from unittest.mock import AsyncMock
 
 import pytest
+from pytest_mock.plugin import MockerFixture
 
 from app.core.exceptions import TakeSnapshotError
 from app.services.browser import Browser
@@ -9,9 +10,10 @@ from app.services.browsers.playwright import PlaywrightBrowser
 
 
 @pytest.mark.asyncio
-async def test_take_snapshot(
-    patch_whois_lookup, patch_ip2asn_lookup, patch_certificate_load_from_url
-):
+@pytest.mark.usefixtures("patch_whois_lookup")
+@pytest.mark.usefixtures("patch_ip2asn_lookup")
+@pytest.mark.usefixtures("patch_certificate_load_from_url")
+async def test_take_snapshot():
     browser = Browser()
     result = await browser.take_snapshot("http://example.com")
     snapshot = result.snapshot
@@ -27,16 +29,19 @@ async def test_take_snapshot(
 
 
 @pytest.mark.asyncio
-async def test_take_snapshot_with_scripts(
-    patch_whois_lookup, patch_ip2asn_lookup, patch_certificate_load_from_url
-):
+@pytest.mark.usefixtures("patch_whois_lookup")
+@pytest.mark.usefixtures("patch_ip2asn_lookup")
+@pytest.mark.usefixtures("patch_certificate_load_from_url")
+async def test_take_snapshot_with_scripts():
     browser = Browser()
     result = await browser.take_snapshot("https://github.com/")
     assert len(result.script_files) > 0
 
 
 @pytest.mark.asyncio
-async def test_take_snapshot_with_bad_ssl(patch_whois_lookup, patch_ip2asn_lookup):
+@pytest.mark.usefixtures("patch_whois_lookup")
+@pytest.mark.usefixtures("patch_ip2asn_lookup")
+async def test_take_snapshot_with_bad_ssl():
     with pytest.raises(TakeSnapshotError):
         browser = Browser()
         result = await browser.take_snapshot("https://expired.badssl.com")
@@ -50,7 +55,7 @@ async def test_take_snapshot_with_bad_ssl(patch_whois_lookup, patch_ip2asn_looku
 
 
 @pytest.mark.asyncio
-async def test_take_snapshot_httpx_fallback(mocker):
+async def test_take_snapshot_httpx_fallback(mocker: MockerFixture):
     mocker.patch(
         "app.services.browsers.playwright.PlaywrightBrowser.take_snapshot", AsyncMock()
     )

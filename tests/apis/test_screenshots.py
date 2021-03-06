@@ -1,4 +1,6 @@
+import httpx
 import pytest
+from _pytest.monkeypatch import MonkeyPatch
 
 from app.models.snapshot import Snapshot
 from app.services.browser import Browser
@@ -6,7 +8,7 @@ from app.services.browser import Browser
 
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("snapshots_setup")
-async def test_screenshots(client):
+async def test_screenshots(client: httpx.AsyncClient):
     first = await Snapshot.all().first()
     snapshot_id = first.id
 
@@ -20,7 +22,7 @@ async def mock_preview(hostname: str):
 
 
 @pytest.mark.asyncio
-async def test_preview(client, monkeypatch):
+async def test_preview(client: httpx.AsyncClient, monkeypatch: MonkeyPatch):
     monkeypatch.setattr(Browser, "preview", mock_preview)
 
     response = await client.get("/api/screenshots/preview/example.com")

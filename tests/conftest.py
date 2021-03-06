@@ -175,18 +175,6 @@ async def first_snapshot_id(client, snapshots_setup) -> UUID:
 
 
 @pytest.fixture
-def patch_datetime_now(monkeypatch: MonkeyPatch):
-    FAKE_TIME = datetime.datetime(2020, 12, 25, 17, 5, 55)
-
-    class mydatetime:
-        @classmethod
-        def now(cls):
-            return FAKE_TIME
-
-    monkeypatch.setattr(datetime, "datetime", mydatetime)
-
-
-@pytest.fixture
 def patch_whois_lookup(monkeypatch: MonkeyPatch):
     monkeypatch.setattr(
         Whois, "lookup", AsyncMock(return_value=dataclasses.Whois(content="foo"))

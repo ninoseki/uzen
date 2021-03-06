@@ -1,4 +1,6 @@
+import httpx
 import pytest
+from _pytest.monkeypatch import MonkeyPatch
 
 from app.services.urlscan import URLScan
 from tests.helper import make_snapshot_result
@@ -10,7 +12,7 @@ def mock_import_as_snapshot(url: str):
 
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("snapshots_setup")
-async def test_snapshot_post(client, monkeypatch):
+async def test_snapshot_post(client: httpx.AsyncClient, monkeypatch: MonkeyPatch):
     monkeypatch.setattr(URLScan, "import_as_snapshot", mock_import_as_snapshot)
 
     response = await client.post("/api/import/foo")

@@ -1,8 +1,9 @@
+import httpx
 import pytest
 
 
 @pytest.mark.asyncio
-async def test_get(client, patch_whois_lookup):
+async def test_get(client: httpx.AsyncClient, patch_whois_lookup):
     hostname = "example.com"
     response = await client.get(f"/api/domain/{hostname}")
     assert response.status_code == 200
@@ -18,6 +19,6 @@ async def test_get(client, patch_whois_lookup):
 
 
 @pytest.mark.asyncio
-async def test_get_with_invalid_input(client):
+async def test_get_with_invalid_input(client: httpx.AsyncClient):
     response = await client.get("/api/domain/1.1.1.1")
     assert response.status_code == 404

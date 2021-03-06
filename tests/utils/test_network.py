@@ -1,7 +1,9 @@
 import socket
+from typing import Optional
 
 import pytest
 import vcr
+from _pytest.monkeypatch import MonkeyPatch
 
 from app.utils.network import (
     get_asn_by_ip_address,
@@ -20,17 +22,17 @@ async def test_get_asn_by_ip_address():
 @pytest.mark.parametrize(
     "hostname,expected",
     [
-        pytest.param("http://example.com", "example.com"),
-        pytest.param("http://1.1.1.1", "1.1.1.1"),
-        pytest.param("http://127.0.0.1:8080", "127.0.0.1"),
-        pytest.param("example.com", None),
+        ("http://example.com", "example.com"),
+        ("http://1.1.1.1", "1.1.1.1"),
+        ("http://127.0.0.1:8080", "127.0.0.1"),
+        ("example.com", None),
     ],
 )
-def test_get_hostname_from_url(hostname, expected):
+def test_get_hostname_from_url(hostname: str, expected: Optional[str]):
     assert get_hostname_from_url(hostname) == expected
 
 
-def test_get_ip_address_by_hostname(monkeypatch):
+def test_get_ip_address_by_hostname(monkeypatch: MonkeyPatch):
     def mockreturn(arg):
         if arg == "one.one.one.one":
             return "1.1.1.1"

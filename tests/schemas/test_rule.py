@@ -1,30 +1,49 @@
+from typing import Optional
+
 import pytest
 from pydantic import ValidationError
 
-from app.schemas.rule import BaseRule, UpdateRulePayload
+from app.schemas.rule import UpdateRulePayload
+from app.schemas.snapshot import BaseRule
+
+source = 'rule foo: bar {strings: $a = "lmn" condition: $a}'
 
 
-def test_validation():
-    source = 'rule foo: bar {strings: $a = "lmn" condition: $a}'
+@pytest.mark.parametrize(
+    "name,source,target,error",
+    [
+        ("", source, "html", ValidationError),
+        ("foo", "", "html", ValidationError),
+        ("foo", source, "foo", ValidationError),
+        ("foo", source, "html", None),
+    ],
+)
+def test_validation(name: str, source: str, target: str, error):
+    if error is not None:
+        with pytest.raises(error):
+            BaseRule(name=name, source=source, target=target)
+    else:
+        rule = BaseRule(name=name, source=source, target=target)
+        assert rule.name == name
+        assert rule.source == source
+        assert rule.target == target
 
-    with pytest.raises(ValidationError):
-        BaseRule(name="", source=source, target="html")
 
-    with pytest.raises(ValidationError):
-        BaseRule(name="foo", source="", target="html")
+@pytest.mark.parametrize(
+    "name,source,target,error",
+    [
+        (None, "foo", None, ValidationError),
+        (None, None, "foo", ValidationError),
+        ("foo", None, None, None),
+    ],
+)
+def test_update_payload_validation(
+    name: Optional[str], source: Optional[str], target: Optional[str], error
+):
+    input = {"name": name, "source": source, "target": target}
 
-    with pytest.raises(ValidationError):
-        BaseRule(name="foo", source=source, target="foo")
-
-    BaseRule(name="foo", source=source, target="html")
-
-
-def test_update_payload_validation():
-    with pytest.raises(ValidationError):
-        UpdateRulePayload(source="foo")
-
-    with pytest.raises(ValidationError):
-        UpdateRulePayload(target="foo")
-
-    payload = UpdateRulePayload(name="dummy")
-    payload.name == "dummy"
+    if error is not None:
+        with pytest.raises(error):
+            UpdateRulePayload.parse_obj(input)
+    else:
+        UpdateRulePayload.parse_obj(input)
