@@ -126,6 +126,9 @@
                       </tbody>
                     </table>
                   </div>
+                  <Request
+                    :requestHeaders="getSnapshotTask.last.value.requestHeaders"
+                  ></Request>
                 </div>
                 <div class="column is-half">
                   <H3> Screenshot </H3>
@@ -219,6 +222,7 @@ import Links from "@/components/link/Links.vue";
 import Rules from "@/components/rule/Buttons.vue";
 import Screenshot from "@/components/screenshot/Screenshot.vue";
 import Scripts from "@/components/script/Scripts.vue";
+import Request from "@/components/snapshot/Request.vue";
 import Stylesheets from "@/components/stylesheet/Stylesheets.vue";
 import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
 import Error from "@/components/ui/Error.vue";
@@ -247,6 +251,7 @@ export default defineComponent({
     Links,
     Loading,
     NA,
+    Request,
     Rules,
     Screenshot,
     Scripts,
