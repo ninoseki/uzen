@@ -6,7 +6,7 @@
 import { defineComponent } from "@vue/composition-api";
 import { useTitle } from "@vueuse/core";
 
-import IPAddress from "@/components/ip_address/IPAddress.vue";
+import IPAddress from "@/components/ip_address/IPAddressWrapper.vue";
 
 export default defineComponent({
   name: "IPAddressView",

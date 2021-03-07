@@ -6,7 +6,7 @@
 import { defineComponent } from "@vue/composition-api";
 import { useTitle } from "@vueuse/core";
 
-import Domain from "@/components/domain/Domain.vue";
+import Domain from "@/components/domain/DomainWrapper.vue";
 
 export default defineComponent({
   name: "DomainView",
