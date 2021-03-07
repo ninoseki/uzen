@@ -2,6 +2,7 @@
   <div>
     <Loading v-if="getDomainTask.isRunning"></Loading>
     <Error
+      :backToRoute="true"
       :error="getDomainTask.last.error.response.data"
       v-else-if="getDomainTask.isError && getDomainTask.last !== undefined"
     ></Error>

@@ -2,6 +2,7 @@
   <div>
     <Loading v-if="getIPAddressTask.isRunning"></Loading>
     <Error
+      :backToRoute="true"
       :error="getIPAddressTask.last.error.response.data"
       v-else-if="
         getIPAddressTask.isError && getIPAddressTask.last !== undefined
