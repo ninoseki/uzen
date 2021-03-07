@@ -7,20 +7,21 @@ import vcr
 @vcr.use_cassette(
     "tests/fixtures/vcr_cassettes/ip_address.yaml", ignore_hosts=["testserver"]
 )
-async def test_get(client: httpx.AsyncClient, patch_whois_lookup):
+@pytest.mark.usefixtures("patch_whois_lookup")
+async def test_get(client: httpx.AsyncClient):
     ip_address = "93.184.216.34"
     response = await client.get(f"/api/ip_address/{ip_address}")
     assert response.status_code == 200
 
-    json = response.json()
-    ip_address_ = json.get("ipAddress", "")
+    data = response.json()
+    ip_address_ = data.get("ipAddress", "")
     assert ip_address_ == ip_address
 
-    snapshots = json.get("snapshots", [])
+    snapshots = data.get("snapshots", [])
     assert len(snapshots) == 0
 
-    whois = json.get("whois", "")
-    assert whois == whois
+    whois = data.get("whois", "")
+    assert whois
 
 
 @pytest.mark.asyncio

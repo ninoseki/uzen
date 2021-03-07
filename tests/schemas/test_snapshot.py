@@ -58,12 +58,12 @@ def test_basic_attributes(url: str, expected: str):
 
 
 @pytest.mark.parametrize(
-    "input,expected",
+    "string,expected",
     [
         ("foo#", "foo"),
         ("foo?", "foo"),
         ("foo", "foo"),
     ],
 )
-def test_remove_sharp_and_question_from_tail(input: str, expected: str):
-    assert remove_sharp_and_question_from_tail(input) == expected
+def test_remove_sharp_and_question_from_tail(string: str, expected: str):
+    assert remove_sharp_and_question_from_tail(string) == expected

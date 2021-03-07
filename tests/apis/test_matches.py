@@ -13,15 +13,15 @@ async def test_matches_search(client: httpx.AsyncClient):
     response = await client.get("/api/matches/search")
     assert response.status_code == 200
 
-    json = response.json()
-    matches = json.get("results")
+    data = response.json()
+    matches = data.get("results")
     assert len(matches) == count
 
     first = matches[0]
     assert isinstance(first.get("snapshot"), dict)
     assert isinstance(first.get("rule"), dict)
 
-    total = json.get("total")
+    total = data.get("total")
     assert total == count
 
 
@@ -33,23 +33,23 @@ async def test_matches_search_with_filters(client: httpx.AsyncClient):
         "/api/matches/search", params={"snapshot_id": snapshot_id}
     )
     assert response.status_code == 200
-    json = response.json()
-    matches = json.get("results")
+    data = response.json()
+    matches = data.get("results")
     assert len(matches) == 1
 
     rule_id = await first_rule_id()
     response = await client.get("/api/matches/search", params={"rule_id": rule_id})
     assert response.status_code == 200
-    json = response.json()
-    matches = json.get("results")
+    data = response.json()
+    matches = data.get("results")
     assert len(matches) == 1
 
     response = await client.get(
         "/api/matches/search", params={"rule_id": rule_id, "snapshot_id": snapshot_id}
     )
     assert response.status_code == 200
-    json = response.json()
-    matches = json.get("results")
+    data = response.json()
+    matches = data.get("results")
     assert len(matches) == 1
 
 
@@ -58,12 +58,12 @@ async def test_matches_search_with_filters(client: httpx.AsyncClient):
 async def test_matches_search_with_daterange(client: httpx.AsyncClient):
     response = await client.get("/api/matches/search", params={"from_at": "1970-01-01"})
     assert response.status_code == 200
-    json = response.json()
-    matches = json.get("results")
+    data = response.json()
+    matches = data.get("results")
     assert len(matches) == await Match.all().count()
 
     response = await client.get("/api/matches/search", params={"to_at": "1970-01-01"})
     assert response.status_code == 200
-    json = response.json()
-    matches = json.get("results")
+    data = response.json()
+    matches = data.get("results")
     assert len(matches) == 0

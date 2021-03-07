@@ -3,19 +3,20 @@ import pytest
 
 
 @pytest.mark.asyncio
-async def test_get(client: httpx.AsyncClient, patch_whois_lookup):
+@pytest.mark.usefixtures("patch_whois_lookup")
+async def test_get(client: httpx.AsyncClient):
     hostname = "example.com"
     response = await client.get(f"/api/domain/{hostname}")
     assert response.status_code == 200
 
-    json = response.json()
-    assert json.get("hostname") == hostname
+    data = response.json()
+    assert data.get("hostname") == hostname
 
-    snapshots = json.get("snapshots", [])
+    snapshots = data.get("snapshots", [])
     assert len(snapshots) == 0
 
-    whois = json.get("whois", "")
-    assert whois == whois
+    whois = data.get("whois", "")
+    assert whois
 
 
 @pytest.mark.asyncio

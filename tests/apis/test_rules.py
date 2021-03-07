@@ -49,26 +49,26 @@ async def test_rules_search(client: httpx.AsyncClient):
     count = await Rule.all().count()
 
     response = await client.get("/api/rules/search")
-    json = response.json()
-    rules = json.get("results")
+    data = response.json()
+    rules = data.get("results")
     assert len(rules) == count
 
     # it matches with a rule
     response = await client.get("/api/rules/search", params={"name": "test1"})
-    json = response.json()
-    rules = json.get("results")
+    data = response.json()
+    rules = data.get("results")
     assert len(rules) == 1
 
     # it matches with the all rules
     response = await client.get("/api/rules/search", params={"target": "html"})
-    json = response.json()
-    rules = json.get("results")
+    data = response.json()
+    rules = data.get("results")
     assert len(rules) == count
 
     # it matches with the all rules
     response = await client.get("/api/rules/search", params={"source": "lmn"})
-    json = response.json()
-    rules = json.get("results")
+    data = response.json()
+    rules = data.get("results")
     assert len(rules) == count
 
 

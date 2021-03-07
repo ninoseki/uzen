@@ -26,8 +26,8 @@ async def client():
         app=app,
         base_url="http://testserver",
         headers={"api-key": settings.GLOBAL_API_KEY},
-    ) as client:
-        yield client
+    ) as client_:
+        yield client_
 
 
 def get_db_config(app_label: str, db_url: str, modules: List[str]) -> dict:

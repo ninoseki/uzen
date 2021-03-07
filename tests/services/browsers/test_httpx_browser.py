@@ -8,9 +8,10 @@ from app.services.browsers.httpx import HttpxBrowser
 
 @pytest.mark.asyncio
 @respx.mock
-async def test_take_snapshot(
-    patch_whois_lookup, patch_ip2asn_lookup, patch_certificate_load_from_url
-):
+@pytest.mark.usefixtures("patch_whois_lookup")
+@pytest.mark.usefixtures("patch_ip2asn_lookup")
+@pytest.mark.usefixtures("patch_certificate_load_from_url")
+async def test_take_snapshot():
     respx.get("http://example.com/",).mock(
         Response(status_code=200, content="foo", headers={"Content-Type": "text/html"})
     )
