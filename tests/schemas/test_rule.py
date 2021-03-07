@@ -40,10 +40,10 @@ def test_validation(name: str, source: str, target: str, error):
 def test_update_payload_validation(
     name: Optional[str], source: Optional[str], target: Optional[str], error
 ):
-    input = {"name": name, "source": source, "target": target}
+    input_ = {"name": name, "source": source, "target": target}
 
     if error is not None:
         with pytest.raises(error):
-            UpdateRulePayload.parse_obj(input)
+            UpdateRulePayload.parse_obj(input_)
     else:
-        UpdateRulePayload.parse_obj(input)
+        UpdateRulePayload.parse_obj(input_)
