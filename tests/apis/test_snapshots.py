@@ -14,42 +14,42 @@ from tests.helper import first_snapshot_id, make_snapshot_result
 async def test_snapshot_search(client: httpx.AsyncClient):
     count = await Snapshot.all().count()
     response = await client.get("/api/snapshots/search")
-    json = response.json()
-    snapshots = json.get("results")
+    data = response.json()
+    snapshots = data.get("results")
     assert len(snapshots) == count
 
     response = await client.get(
         "/api/snapshots/search", params={"hostname": "example.com"}
     )
-    json = response.json()
-    snapshots = json.get("results")
+    data = response.json()
+    snapshots = data.get("results")
     assert len(snapshots) == count
 
     response = await client.get(
         "/api/snapshots/search", params={"from_at": "1970-01-01T15:53:00+05:00"}
     )
-    json = response.json()
-    snapshots = json.get("results")
+    data = response.json()
+    snapshots = data.get("results")
     assert len(snapshots) == count
 
     response = await client.get(
         "/api/snapshots/search", params={"from_at": "1970-01-01"}
     )
-    json = response.json()
-    snapshots = json.get("results")
+    data = response.json()
+    snapshots = data.get("results")
     assert len(snapshots) == count
 
     response = await client.get(
         "/api/snapshots/search", params={"to_at": "3000-01-01T15:53:00+05:00"}
     )
-    json = response.json()
-    snapshots = json.get("results")
+    data = response.json()
+    snapshots = data.get("results")
     assert len(snapshots) == count
 
     # it doesn't match any snapshot
     response = await client.get("/api/snapshots/search", params={"status": 404})
-    json = response.json()
-    snapshots = json.get("results")
+    data = response.json()
+    snapshots = data.get("results")
     assert len(snapshots) == 0
 
 
@@ -58,8 +58,8 @@ async def test_snapshot_search(client: httpx.AsyncClient):
 async def test_snapshot_list_with_size(client: httpx.AsyncClient):
     payload = {"size": 1}
     response = await client.get("/api/snapshots/search", params=payload)
-    json = response.json()
-    snapshots = json.get("results")
+    data = response.json()
+    snapshots = data.get("results")
     assert len(snapshots) == 1
     first = snapshots[0]
     assert first.get("url") == "http://example10.com/"
@@ -70,16 +70,16 @@ async def test_snapshot_list_with_size(client: httpx.AsyncClient):
 async def test_snapshot_list_with_offset_and_size(client: httpx.AsyncClient):
     payload = {"offset": 0, "size": 1}
     response = await client.get("/api/snapshots/search", params=payload)
-    json = response.json()
-    snapshots = json.get("results")
+    data = response.json()
+    snapshots = data.get("results")
     assert len(snapshots) == 1
 
     offset = 0
     size = 10
     payload = {"offset": offset, "size": size}
     response = await client.get("/api/snapshots/search", params=payload)
-    json = response.json()
-    snapshots = json.get("results")
+    data = response.json()
+    snapshots = data.get("results")
     assert len(snapshots) == size - offset
     first = snapshots[0]
     assert first.get("url") == f"http://example{size - offset}.com/"
@@ -88,8 +88,8 @@ async def test_snapshot_list_with_offset_and_size(client: httpx.AsyncClient):
     size = 100000
     payload = {"offset": offset, "size": size}
     response = await client.get("/api/snapshots/search", params=payload)
-    json = response.json()
-    snapshots = json.get("results")
+    data = response.json()
+    snapshots = data.get("results")
     assert len(snapshots) == await Snapshot.all().count() - offset
     first = snapshots[0]
     assert first.get("url") == f"http://example{offset}.com/"
@@ -187,6 +187,6 @@ async def test_count(client: httpx.AsyncClient):
     response = await client.get("/api/snapshots/count")
     assert response.status_code == 200
 
-    json = response.json()
-    count_ = json.get("count")
+    data = response.json()
+    count_ = data.get("count")
     assert count == count_
