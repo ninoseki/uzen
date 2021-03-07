@@ -14,6 +14,10 @@ export default defineComponent({
       type: Object as PropType<ErrorData>,
       required: true,
     },
+    backToRoute: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup(props, context) {
     const buildMessage = (error: ErrorData): string => {
@@ -27,6 +31,12 @@ export default defineComponent({
         messages.push(`Validation error in ${attr} - ${detail.msg}`);
       }
       return messages.join("<br />");
+    };
+
+    const onConfirm = (): void => {
+      if (props.backToRoute) {
+        context.root.$router.push({ path: "/" });
+      }
     };
 
     const alertError = () => {
@@ -44,6 +54,7 @@ export default defineComponent({
         type: "is-danger",
         ariaRole: "alertdialog",
         ariaModal: true,
+        onConfirm,
       });
     };
 
