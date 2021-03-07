@@ -3,7 +3,8 @@ import pytest
 
 
 @pytest.mark.asyncio
-async def test_get(client: httpx.AsyncClient, patch_whois_lookup):
+@pytest.mark.usefixtures("patch_whois_lookup")
+async def test_get(client: httpx.AsyncClient):
     hostname = "example.com"
     response = await client.get(f"/api/domain/{hostname}")
     assert response.status_code == 200

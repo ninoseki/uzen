@@ -29,7 +29,7 @@ def make_snapshot(hostname: str = "example.com") -> models.Snapshot:
 
 def make_script_file(hostname: str = "example.com") -> ScriptFile:
     return ScriptFile(
-        script=models.Script(url="http://{hostname}/test.js", file_id="foo"),
+        script=models.Script(url=f"http://{hostname}/test.js", file_id="foo"),
         file=models.File(id="foo", content="foo"),
     )
 

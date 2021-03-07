@@ -10,7 +10,7 @@ from tests.helper import first_snapshot_id
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("snapshots_setup")
 @pytest.mark.usefixtures("client")
-async def test_matching_taskl():
+async def test_matching_task():
     rule = Rule(
         name="test",
         target="html",
@@ -30,7 +30,8 @@ async def test_matching_taskl():
 
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("snapshots_setup")
-async def test_matching_task_with_zero_matches(client):
+@pytest.mark.usefixtures("client")
+async def test_matching_task_with_zero_matches():
     rule = Rule(
         name="test",
         target="whois",
