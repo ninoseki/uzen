@@ -21,7 +21,7 @@ async def test_get(client: httpx.AsyncClient):
     assert len(snapshots) == 0
 
     whois = data.get("whois", "")
-    assert whois == whois
+    assert whois
 
 
 @pytest.mark.asyncio
