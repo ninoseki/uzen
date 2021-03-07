@@ -1,7 +1,6 @@
-from fastapi_utils.api_model import APIModel
 from pydantic import Field
 
-from app.schemas.base import AbstractBaseModel
+from app.schemas.base import AbstractBaseModel, APIModel
 from app.schemas.mixin import TimestampMixin
 
 

@@ -1,7 +1,14 @@
 from uuid import UUID
 
-from fastapi_utils.api_model import APIModel
-from pydantic import Field
+from humps import camelize
+from pydantic import BaseModel, Field
+
+
+class APIModel(BaseModel):
+    class Config:
+        orm_mode = True
+        alias_generator = camelize
+        allow_population_by_field_name = True
 
 
 class AbstractBaseModel(APIModel):

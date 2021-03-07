@@ -1,10 +1,9 @@
 import datetime
 from typing import Optional
 
-from fastapi_utils.api_model import APIModel
 from pydantic import Field
 
-from app.schemas.base import AbstractResourceModel
+from app.schemas.base import AbstractResourceModel, APIModel
 from app.schemas.mixin import TimestampMixin
 
 

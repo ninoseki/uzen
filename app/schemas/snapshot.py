@@ -4,11 +4,10 @@ from typing import Any, Dict, List, Optional, Union, cast
 from uuid import UUID
 
 import httpx
-from fastapi_utils.api_model import APIModel
 from playwright.sync_api import Error, sync_playwright
 from pydantic import AnyHttpUrl, Field, IPvAnyAddress, validator
 
-from app.schemas.base import AbstractBaseModel
+from app.schemas.base import AbstractBaseModel, APIModel
 from app.schemas.certificate import CertificateMetaData
 from app.schemas.classification import Classification
 from app.schemas.common import Source, Target

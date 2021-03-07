@@ -1,5 +1,6 @@
-from fastapi_utils.api_model import APIModel
 from pydantic import Field
+
+from app.schemas.base import APIModel
 
 
 class Screenshot(APIModel):

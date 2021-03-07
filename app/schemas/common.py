@@ -1,7 +1,7 @@
 import yara
-from fastapi_utils.api_model import APIModel
 from pydantic import Field, validator
 
+from app.schemas.base import APIModel
 from app.schemas.types import TargetTypes
 
 
