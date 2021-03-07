@@ -1,9 +1,9 @@
 from typing import Any, Dict, List, Optional
 from uuid import UUID
 
-from fastapi_utils.api_model import APIModel
 from pydantic import Field
 
+from app.schemas.base import APIModel
 from app.schemas.common import Source, Target
 from app.schemas.snapshot import PlainSnapshot
 

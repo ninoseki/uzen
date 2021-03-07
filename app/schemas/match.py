@@ -1,10 +1,9 @@
 from typing import List, Optional, Union
 from uuid import UUID
 
-from fastapi_utils.api_model import APIModel
 from pydantic import Field
 
-from app.schemas.base import AbstractBaseModel
+from app.schemas.base import AbstractBaseModel, APIModel
 from app.schemas.mixin import TimestampMixin
 from app.schemas.script import Script
 from app.schemas.search import BaseSearchResults
