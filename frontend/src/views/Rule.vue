@@ -5,7 +5,7 @@
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
 
-import Rule from "@/components/rule/Rule.vue";
+import Rule from "@/components/rule/RuleWrapper.vue";
 
 export default defineComponent({
   name: "RuleView",

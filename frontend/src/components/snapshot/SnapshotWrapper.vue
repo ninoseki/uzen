@@ -2,6 +2,7 @@
   <div>
     <Loading v-if="getSnapshotTask.isRunning"></Loading>
     <Error
+      :backToRoute="true"
       :error="getSnapshotTask.last.error.response.data"
       v-else-if="getSnapshotTask.isError && getSnapshotTask.last !== undefined"
     ></Error>
