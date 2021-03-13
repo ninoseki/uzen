@@ -74,6 +74,10 @@ export const API = {
     return res.data;
   },
 
+  async deleteSnapshot(snapshotId: string): Promise<void> {
+    await client.delete(`/api/snapshots/${snapshotId}`);
+  },
+
   async searchMatches(params: SearchParams): Promise<MatchSearchResults> {
     const res = await client.get<MatchSearchResults>("/api/matches/search", {
       params,
