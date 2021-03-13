@@ -8,21 +8,8 @@
       </p>
     </b-message>
     <div class="box">
-      <nav class="navbar">
-        <div class="navbar-brand">
-          <H2>
-            {{ truncate(snapshot.url) }}
-          </H2>
-        </div>
-        <div class="navbar-menu">
-          <div class="navbar-end">
-            <Links
-              :hostname="snapshot.hostname"
-              :ipAddress="snapshot.ipAddress"
-            />
-          </div>
-        </div>
-      </nav>
+      <Navbar :snapshot="snapshot"></Navbar>
+
       <b-tabs type="is-boxed" v-model="activeTab">
         <b-tab-item label="Summary" :value="'summary'">
           <div class="column is-full">
@@ -184,14 +171,13 @@ import ClassificationTags from "@/components/classification/Tags.vue";
 import DnsRecords from "@/components/dns_record/DnsRecords.vue";
 import HAR from "@/components/har/HARWrapper.vue";
 import HTML from "@/components/html/HTMLWrapper.vue";
-import Links from "@/components/link/Links.vue";
 import Rules from "@/components/rule/Buttons.vue";
 import Screenshot from "@/components/screenshot/Screenshot.vue";
 import Scripts from "@/components/script/Scripts.vue";
+import Navbar from "@/components/snapshot/Navbar.vue";
 import Request from "@/components/snapshot/Request.vue";
 import Stylesheets from "@/components/stylesheet/Stylesheets.vue";
 import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
-import H2 from "@/components/ui/H2.vue";
 import H3 from "@/components/ui/H3.vue";
 import NA from "@/components/ui/NA.vue";
 import Whois from "@/components/whois/WhoisWrapper.vue";
@@ -207,12 +193,11 @@ export default defineComponent({
     ClassificationTags,
     DatetimeWithDiff,
     DnsRecords,
-    H2,
     H3,
     HAR,
     HTML,
-    Links,
     NA,
+    Navbar,
     Request,
     Rules,
     Screenshot,
