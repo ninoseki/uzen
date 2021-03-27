@@ -10,9 +10,8 @@ jobs:
           TORTOISE_TEST_DB: mysql://root:rootpass@127.0.0.1:3306/ci_test
       - image: circleci/mysql:8
         environment:
-          MYSQL_DATABASE: 'ci_test'
-          MYSQL_USER: 'root'
-          MYSQL_ROOT_PASSWORD: 'rootpass'
+          MYSQL_DATABASE: "ci_test"
+          MYSQL_ROOT_PASSWORD: "rootpass"
     steps:
       - checkout
       - restore_cache:
