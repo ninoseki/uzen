@@ -11,20 +11,20 @@ repos:
           ]
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.10.0
+    rev: v2.12.0
     hooks:
       - id: pyupgrade
         args: [--py37-plus]
 
   - repo: https://gitlab.com/pycqa/flake8
-    rev: 3.8.4
+    rev: 3.9.0
     hooks:
       - id: flake8
         additional_dependencies: [flake8-print]
-        args: ['--ignore=E501,W503,E203']
+        args: ["--ignore=E501,W503,E203"]
 
   - repo: https://github.com/timothycrosley/isort
-    rev: 5.7.0
+    rev: 5.8.0
     hooks:
       - id: isort
         additional_dependencies: [toml]
@@ -36,7 +36,7 @@ repos:
       - id: black
 
   - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v7.20.0
+    rev: v7.24.0
     hooks:
       - id: eslint
         files: \.(ts|vue)$
