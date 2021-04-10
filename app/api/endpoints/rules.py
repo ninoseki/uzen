@@ -32,7 +32,7 @@ async def search(
     response_model=schemas.Rule,
     response_description="Returns a rule",
     summary="Get a rule",
-    description="Get a rule which has a given id",
+    description="Get a rule which has a given ID",
 )
 async def get(rule_id: UUID) -> schemas.Rule:
     try:
@@ -48,7 +48,7 @@ async def get(rule_id: UUID) -> schemas.Rule:
     response_model=schemas.Rule,
     response_description="Returns a rule",
     summary="Update a rule",
-    description="Update a rule which has a given id",
+    description="Update a rule which has a given ID",
 )
 async def put(
     rule_id: UUID, payload: schemas.UpdateRulePayload, _: Any = Depends(verify_api_key)

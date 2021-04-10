@@ -13,8 +13,8 @@ router = APIRouter()
     "/scan",
     response_model=List[schemas.YaraScanResult],
     response_description="Returns a list of matched snapshots",
-    summary="Perform YARA scans against snapshtos",
-    description="Perform YARA scans against snapshtos (which can be narrowed down by filters)",
+    summary="Perform YARA scans against snapshots",
+    description="Perform YARA scans against snapshots (which can be narrowed down by filters)",
 )
 async def scan(
     payload: schemas.YaraScanPayload,
