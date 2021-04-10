@@ -52,27 +52,27 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
     ignore_https_errors = BooleanField(default=False)
     processing = BooleanField(default=True)
 
-    html: ForeignKeyRelation["HTML"] = ForeignKeyField(
+    html: ForeignKeyRelation[HTML] = ForeignKeyField(
         "models.HTML", related_name="snapshots", on_delete=RESTRICT
     )
-    certificate: ForeignKeyNullableRelation["Certificate"] = ForeignKeyField(
+    certificate: ForeignKeyNullableRelation[Certificate] = ForeignKeyField(
         "models.Certificate",
         related_name="snapshots",
         on_delete=RESTRICT,
         null=True,
     )
-    whois: ForeignKeyNullableRelation["Whois"] = ForeignKeyField(
+    whois: ForeignKeyNullableRelation[Whois] = ForeignKeyField(
         "models.Whois", related_name="snapshots", on_delete=RESTRICT, null=True
     )
 
     har = OneToOneRelation["HAR"]
 
-    _scripts: ReverseRelation["Script"]
-    _stylesheets: ReverseRelation["Stylesheet"]
-    _dns_records: ReverseRelation["DnsRecord"]
-    _classifications: ReverseRelation["Classification"]
+    _scripts: ReverseRelation[Script]
+    _stylesheets: ReverseRelation[Stylesheet]
+    _dns_records: ReverseRelation[DnsRecord]
+    _classifications: ReverseRelation[Classification]
 
-    _rules: ManyToManyRelation["Rule"] = ManyToManyField(
+    _rules: ManyToManyRelation[Rule] = ManyToManyField(
         "models.Rule",
         related_name="_snapshots",
         through="matches",
