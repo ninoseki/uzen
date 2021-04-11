@@ -53,7 +53,7 @@ async def search(
     response_model=schemas.Snapshot,
     response_description="Returns a snapshot",
     summary="Get a snapshot",
-    description="Get a snapshot which has a given id",
+    description="Get a snapshot which has a given ID",
 )
 async def get(snapshot_id: UUID) -> schemas.Snapshot:
     try:
@@ -71,7 +71,7 @@ async def get(snapshot_id: UUID) -> schemas.Snapshot:
     response_model=schemas.Snapshot,
     response_description="Returns a created snapshot",
     summary="Create a snapshot",
-    description="Create a snapshot of a website by using puppeteer",
+    description="Create a snapshot of a website",
     status_code=201,
 )
 async def create(

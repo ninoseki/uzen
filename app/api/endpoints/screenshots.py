@@ -24,7 +24,7 @@ async def _get_screenshot_by_snapshot_id(snapshot_id: str) -> bytes:
     },
     response_description="Returns a screenshot",
     summary="Get a screenshot",
-    description="Get a screenshot which related to a snapshot",
+    description="Get a screenshot which is related to a snapshot",
 )
 async def get_screenshot_by_snapshot_id(
     snapshot_id: UUID,

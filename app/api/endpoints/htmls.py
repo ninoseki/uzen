@@ -21,7 +21,7 @@ async def _get_html_by_sha256(sha256: str) -> schemas.HTML:
     "/{sha256}",
     response_model=schemas.HTML,
     response_description="Returns an html",
-    summary="Get a html",
+    summary="Get an html",
     description="Get an html which has a given SHA256 hash",
 )
 async def get_html_by_sha256(sha256: str) -> schemas.HTML:
