@@ -32,6 +32,9 @@
           >
         </p>
       </b-field>
+
+      <Status></Status>
+
       <Options
         v-if="showOptions"
         :acceptLanguage.sync="acceptLanguage"
@@ -54,6 +57,7 @@ import { useAsyncTask } from "vue-concurrency";
 
 import { API } from "@/api";
 import Options from "@/components/snapshot/Options.vue";
+import Status from "@/components/snapshot/Status.vue";
 import Error from "@/components/ui/Error.vue";
 import Loading from "@/components/ui/Loading.vue";
 import { CreateSnapshotPayload, Header, Headers, Snapshot } from "@/types";
@@ -65,6 +69,7 @@ export default defineComponent({
     Error,
     Loading,
     Options,
+    Status,
   },
   setup(_, context) {
     const url = ref("");

@@ -50,6 +50,11 @@ export interface SnapshotWithYaraResult extends Snapshot {
   yaraResult: YaraResult | null;
 }
 
+export interface Status {
+  ipAddress: string;
+  countryCode: string;
+}
+
 export {
   Certificate,
   Classification,
