@@ -19,6 +19,7 @@ import {
   Snapshot,
   SnapshotSearchResults,
   SnapshotWithYaraResult,
+  Status,
   UpdateRulePayload,
   Whois,
   YaraScanPayload,
@@ -181,6 +182,15 @@ export const API = {
 
   async getCertificate(sha256: string): Promise<Certificate> {
     const res = await client.get<Certificate>(`/api/certificates/${sha256}`, {
+      cache: {
+        maxAge: 60 * 60 * 1000,
+      },
+    });
+    return res.data;
+  },
+
+  async getStatus(): Promise<Status> {
+    const res = await client.get<Status>("/api/status/", {
       cache: {
         maxAge: 60 * 60 * 1000,
       },

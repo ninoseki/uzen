@@ -19,6 +19,7 @@ from app.schemas.snapshot import (
     Snapshot,
     SnapshotsSearchResults,
 )
+from app.schemas.status import Status
 from app.schemas.stylesheet import Stylesheet
 from app.schemas.utils import CountResponse
 from app.schemas.whois import Whois
@@ -55,6 +56,7 @@ __all__ = [
     "Script",
     "Snapshot",
     "SnapshotsSearchResults",
+    "Status",
     "Stylesheet",
     "UpdateRulePayload",
     "Whois",
