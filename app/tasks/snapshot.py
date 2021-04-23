@@ -1,5 +1,10 @@
-from app import models
+from app import models, schemas
+from app.core.exceptions import TakeSnapshotError
+from app.services.browser import Browser
 from app.tasks import AbstractAsyncTask
+from app.tasks.enrichment import EnrichmentTasks
+from app.tasks.match import MatchingTask
+from app.tasks.screenshot import UploadScrenshotTask
 
 
 class UpdateProcessingTask(AbstractAsyncTask):
@@ -14,3 +19,33 @@ class UpdateProcessingTask(AbstractAsyncTask):
     async def process(cls, snapshot: models.Snapshot) -> None:
         instance = cls(snapshot)
         return await instance.safe_process()
+
+
+async def take_snapshot_task(ctx: dict, payload: schemas.CreateSnapshotPayload):
+    ignore_https_error = payload.ignore_https_errors or False
+    browser = Browser(
+        enable_har=payload.enable_har,
+        ignore_https_errors=ignore_https_error,
+        timeout=payload.timeout,
+        device_name=payload.device_name,
+        headers=payload.headers,
+        wait_until=payload.wait_until,
+    )
+    try:
+        result = await browser.take_snapshot(payload.url)
+    except TakeSnapshotError as e:
+        return {"error": str(e), "snapshot_id": None}
+
+    snapshot = await models.Snapshot.save_snapshot_result(result)
+
+    # execute other tasks
+    if result.screenshot is not None:
+        UploadScrenshotTask.process(uuid=snapshot.id, screenshot=result.screenshot)
+
+    await EnrichmentTasks.process(snapshot)
+
+    await MatchingTask.process(snapshot)
+
+    await UpdateProcessingTask.process(snapshot)
+
+    return {"snapshot_id": str(snapshot.id), "error": None}

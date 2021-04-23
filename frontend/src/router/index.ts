@@ -12,6 +12,7 @@ import Matches from "@/views/Matches.vue";
 import Rule from "@/views/Rule.vue";
 import Rules from "@/views/Rules.vue";
 import Snapshot from "@/views/Snapshot.vue";
+import SnapshotJob from "@/views/SnapshotJob.vue";
 import Snapshots from "@/views/Snapshots.vue";
 import Yara from "@/views/Yara.vue";
 
@@ -38,6 +39,12 @@ const routes = [
     path: "/snapshots/:id",
     name: "Snapshot",
     component: Snapshot,
+    props: true,
+  },
+  {
+    path: "/jobs/snapshots/:id",
+    name: "SnapshotJob",
+    component: SnapshotJob,
     props: true,
   },
   {

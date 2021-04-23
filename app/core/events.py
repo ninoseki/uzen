@@ -9,6 +9,7 @@ from loguru import logger
 from tortoise import Tortoise
 
 from app.core import settings
+from app.database import init_db
 
 
 def create_start_app_handler(
@@ -16,10 +17,7 @@ def create_start_app_handler(
 ) -> Callable[[], Coroutine[Any, Any, None]]:
     async def start_app() -> None:
         # initialize Tortoise ORM
-        await Tortoise.init(
-            db_url=settings.DATABASE_URL, modules={"models": settings.APP_MODELS}
-        )
-        await Tortoise.generate_schemas()
+        await init_db()
 
         # initialize FastAPI cache
         backend: Union[InMemoryBackend, RedisBackend] = InMemoryBackend()
@@ -40,6 +38,7 @@ def create_stop_app_handler(
     app: FastAPI,
 ) -> Callable[[], Coroutine[Any, Any, None]]:
     async def stop_app() -> None:
+        # close DB connections
         await Tortoise.close_connections()
 
     return stop_app

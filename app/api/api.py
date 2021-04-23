@@ -8,6 +8,7 @@ from app.api.endpoints import (
     hars,
     htmls,
     ip_address,
+    jobs,
     matches,
     rules,
     screenshots,
@@ -29,6 +30,7 @@ api_router.include_router(files.router, prefix="/files", tags=["Files"])
 api_router.include_router(hars.router, prefix="/hars", tags=["HAR"])
 api_router.include_router(htmls.router, prefix="/htmls", tags=["HTML"])
 api_router.include_router(ip_address.router, prefix="/ip_address", tags=["IP address"])
+api_router.include_router(jobs.router, prefix="/jobs", tags=["Jobs"])
 api_router.include_router(matches.router, prefix="/matches", tags=["Matches"])
 api_router.include_router(rules.router, prefix="/rules", tags=["Rules"])
 api_router.include_router(

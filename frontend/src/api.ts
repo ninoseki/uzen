@@ -12,11 +12,13 @@ import {
   HAR,
   HTML,
   IPAddressInformation,
+  Job,
   MatchSearchResults,
   Rule,
   RuleSearchResults,
   SearchParams,
   Snapshot,
+  SnapshotJobStatus,
   SnapshotSearchResults,
   SnapshotWithYaraResult,
   Status,
@@ -50,8 +52,8 @@ export function updateClient(): void {
 }
 
 export const API = {
-  async takeSnapshot(payload: CreateSnapshotPayload): Promise<Snapshot> {
-    const res = await client.post<Snapshot>("/api/snapshots/", payload);
+  async takeSnapshot(payload: CreateSnapshotPayload): Promise<Job> {
+    const res = await client.post<Job>("/api/snapshots/", payload);
     return res.data;
   },
 
@@ -195,6 +197,13 @@ export const API = {
         maxAge: 60 * 60 * 1000,
       },
     });
+    return res.data;
+  },
+
+  async getSnapshotJobStatus(jobId: string): Promise<SnapshotJobStatus> {
+    const res = await client.get<SnapshotJobStatus>(
+      `/api/jobs/snapshots/${jobId}`
+    );
     return res.data;
   },
 };

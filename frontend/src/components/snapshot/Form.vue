@@ -60,7 +60,7 @@ import Options from "@/components/snapshot/Options.vue";
 import Status from "@/components/snapshot/Status.vue";
 import Error from "@/components/ui/Error.vue";
 import Loading from "@/components/ui/Loading.vue";
-import { CreateSnapshotPayload, Header, Headers, Snapshot } from "@/types";
+import { CreateSnapshotPayload, Header, Headers, Job } from "@/types";
 import { WaitUntilType } from "@/types";
 
 export default defineComponent({
@@ -84,7 +84,7 @@ export default defineComponent({
     const waitUntil = ref<WaitUntilType>("load");
     const otherHeaders = ref<Header[]>([]);
 
-    const takeSnapshotTask = useAsyncTask<Snapshot, []>(async () => {
+    const takeSnapshotTask = useAsyncTask<Job, []>(async () => {
       const headers: Headers = {
         "User-Agent": userAgent.value,
       };
@@ -115,8 +115,8 @@ export default defineComponent({
     });
 
     const takeSnapshot = async () => {
-      const snapshot = await takeSnapshotTask.perform();
-      context.root.$router.push({ path: `/snapshots/${snapshot.id}` });
+      const job = await takeSnapshotTask.perform();
+      context.root.$router.push({ path: `/jobs/snapshots/${job.id}` });
     };
 
     return {

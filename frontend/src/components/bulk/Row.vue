@@ -12,18 +12,20 @@
     <div v-else>
       <div v-if="takeSnapshotTask.last && takeSnapshotTask.last.value">
         <b-message type="is-success" has-icon>
-          <router-link
-            :to="{
-              name: 'Snapshot',
-              params: {
-                id: takeSnapshotTask.last.value.id,
-              },
-            }"
-          >
-            {{ truncate(takeSnapshotTask.last.value.url) }}
-          </router-link>
           <p><strong>Submitted URL:</strong> {{ url }}</p>
-          <p><strong>ID:</strong> {{ takeSnapshotTask.last.value.id }}</p>
+          <p>
+            <strong>Job ID:</strong>
+            <router-link
+              :to="{
+                name: 'SnapshotJob',
+                params: {
+                  id: takeSnapshotTask.last.value.id,
+                },
+              }"
+            >
+              {{ takeSnapshotTask.last.value.id }}
+            </router-link>
+          </p>
         </b-message>
       </div>
     </div>
@@ -39,10 +41,9 @@ import {
   CreateSnapshotPayload,
   Header,
   Headers,
-  Snapshot,
+  Job,
   WaitUntilType,
 } from "@/types";
-import { truncate } from "@/utils/truncate";
 
 export default defineComponent({
   name: "BulkRow",
@@ -84,7 +85,7 @@ export default defineComponent({
       required: true,
     },
     waitUntil: {
-      type: Object as PropType<WaitUntilType>,
+      type: String as PropType<WaitUntilType>,
       required: true,
     },
     otherHeaders: {
@@ -98,7 +99,7 @@ export default defineComponent({
       return new Promise((resolve) => setTimeout(resolve, timeout));
     };
 
-    const takeSnapshotTask = useAsyncTask<Snapshot, []>(async () => {
+    const takeSnapshotTask = useAsyncTask<Job, []>(async () => {
       await sleep();
 
       const headers: Headers = {};
@@ -132,7 +133,7 @@ export default defineComponent({
 
     takeSnapshotTask.perform();
 
-    return { takeSnapshotTask, truncate };
+    return { takeSnapshotTask };
   },
 });
 </script>

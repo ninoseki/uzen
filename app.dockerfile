@@ -88,9 +88,7 @@ RUN pip3 install poetry \
 ENV PLAYWRIGHT_BROWSERS_PATH /uzen/playwright
 
 RUN mkdir -p /uzen/playwright \
-  && python -m playwright install \
-  && rm -rf /uzen/playwright/webkit-* \
-  && rm -rf /uzen/playwright/firefox-*
+  && python -m playwright install chromium
 
 ENV PORT 8000
 

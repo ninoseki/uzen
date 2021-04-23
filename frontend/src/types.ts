@@ -8,6 +8,7 @@ import { Device } from "@/types/devices";
 import { DomainInformation } from "@/types/domain";
 import { HAR } from "@/types/har";
 import { IPAddressInformation } from "@/types/ip_address";
+import { Job, SnapshotJobStatus } from "@/types/job";
 import { Link, LinkType } from "@/types/link";
 import {
   CreateRulePayload,
@@ -71,6 +72,7 @@ export {
   Headers,
   HTML,
   IPAddressInformation,
+  Job,
   Link,
   LinkType,
   Match,
@@ -83,6 +85,7 @@ export {
   SearchParams,
   Snapshot,
   SnapshotFilters,
+  SnapshotJobStatus,
   SnapshotSearchResults,
   Stylesheet,
   TargetTypes,

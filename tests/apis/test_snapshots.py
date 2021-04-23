@@ -123,12 +123,7 @@ async def test_snapshot_post(client: httpx.AsyncClient, monkeypatch: MonkeyPatch
     assert response.status_code == 201
 
     snapshot = response.json()
-    assert snapshot.get("url") == "http://example.com/"
-    assert snapshot.get("html").get("sha256")
-
-    snapshot = await Snapshot.get(id=snapshot.get("id"))
-    await snapshot.fetch_related("_scripts__file")
-    assert len(snapshot.scripts) == 0
+    assert snapshot.get("type") == "snapshot"
 
 
 @pytest.mark.asyncio
