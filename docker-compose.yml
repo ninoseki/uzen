@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 services:
   minio:
     container_name: uzen_minio
@@ -6,7 +6,7 @@ services:
     volumes:
       - minio-data:/data
     ports:
-      - '9000:9000'
+      - "9000:9000"
     environment:
       - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
       - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
@@ -49,13 +49,10 @@ services:
       - "53661:53661"
     restart: always
 
-  uzen:
-    container_name: uzen_app
+  worker:
     build:
       context: ./
-      dockerfile: Dockerfile
-    ports:
-        - "8000:8000"
+      dockerfile: worker.dockerfile
     environment:
       - TESTING=False
       - DEBUG=False
@@ -75,6 +72,33 @@ services:
       - redis
       - database
       - ip2asn
+    deploy:
+      mode: replicated
+      replicas: 2
+
+  uzen:
+    container_name: uzen_app
+    build:
+      context: ./
+      dockerfile: app.dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - TESTING=False
+      - DEBUG=False
+      - GLOBAL_API_KEY=${GLOBAL_API_KEY}
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+      - MINIO_SECURE=False
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/
+      - DATABASE_URL=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@database:3306/${MYSQL_DATABASE}
+      - GOOGLE_SAFE_BROWSING_API_KEY=${GOOGLE_SAFE_BROWSING_API_KEY}
+      - VIRUSTOTAL_API_KEY=${VIRUSTOTAL_API_KEY}
+      - IP2ASN_WEB_SERVICE_URL=http://ip2asn:53661
+    restart: always
+    depends_on:
+      - worker
 
 volumes:
   minio-data:

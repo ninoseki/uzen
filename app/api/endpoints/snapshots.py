@@ -1,19 +1,16 @@
 from typing import Any, Dict, List, Optional, cast
 from uuid import UUID
 
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
+from arq.connections import create_pool
+from fastapi import APIRouter, Depends, HTTPException
 from tortoise.exceptions import DoesNotExist
 
 from app import models, schemas
 from app.api.dependencies.snapshot import SearchFilters
 from app.api.dependencies.verification import verify_api_key
-from app.core.exceptions import TakeSnapshotError
-from app.services.browser import Browser
+from app.arq.settings import get_redis_settings
+from app.core.constants import snapshot_task_name
 from app.services.searchers.snapshot import SnapshotSearcher
-from app.tasks.enrichment import EnrichmentTasks
-from app.tasks.match import MatchingTask
-from app.tasks.screenshot import UploadScrenshotTask
-from app.tasks.snapshot import UpdateProcessingTask
 
 router = APIRouter()
 
@@ -68,7 +65,7 @@ async def get(snapshot_id: UUID) -> schemas.Snapshot:
 
 @router.post(
     "/",
-    response_model=schemas.Snapshot,
+    response_model=schemas.Job,
     response_description="Returns a created snapshot",
     summary="Create a snapshot",
     description="Create a snapshot of a website",
@@ -76,41 +73,11 @@ async def get(snapshot_id: UUID) -> schemas.Snapshot:
 )
 async def create(
     payload: schemas.CreateSnapshotPayload,
-    background_tasks: BackgroundTasks,
     _: Any = Depends(verify_api_key),
-) -> schemas.Snapshot:
-    try:
-        ignore_https_error = payload.ignore_https_errors or False
-        browser = Browser(
-            enable_har=payload.enable_har,
-            ignore_https_errors=ignore_https_error,
-            timeout=payload.timeout,
-            device_name=payload.device_name,
-            headers=payload.headers,
-            wait_until=payload.wait_until,
-        )
-        result = await browser.take_snapshot(payload.url)
-    except TakeSnapshotError as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-    snapshot = await models.Snapshot.save_snapshot_result(result)
-
-    # add background tasks
-    if result.screenshot is not None:
-        background_tasks.add_task(
-            UploadScrenshotTask.process, uuid=snapshot.id, screenshot=result.screenshot
-        )
-
-    background_tasks.add_task(EnrichmentTasks.process, snapshot)
-    background_tasks.add_task(MatchingTask.process, snapshot)
-    background_tasks.add_task(UpdateProcessingTask.process, snapshot)
-
-    # set required attributes
-    snapshot.html = result.html
-    snapshot.certificate = result.certificate
-    snapshot.whois = result.whois
-
-    return snapshot.to_model()
+) -> schemas.Job:
+    redis = await create_pool(settings_=get_redis_settings())
+    job = await redis.enqueue_job(snapshot_task_name, payload)
+    return schemas.Job(id=job.job_id, type="snapshot")
 
 
 @router.delete(

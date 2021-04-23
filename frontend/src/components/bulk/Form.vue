@@ -38,6 +38,7 @@
         :timeout.sync="timeout"
         :userAgent.sync="userAgent"
         :deviceName.sync="deviceName"
+        :waitUntil.sync="waitUntil"
       />
     </div>
 
@@ -55,6 +56,7 @@
         :timeout="timeout"
         :userAgent="userAgent"
         :deviceName="deviceName"
+        :waitUntil="waitUntil"
       />
     </div>
   </div>
@@ -65,7 +67,7 @@ import { defineComponent, ref } from "@vue/composition-api";
 
 import Row from "@/components/bulk/Row.vue";
 import Options from "@/components/snapshot/Options.vue";
-import { Header } from "@/types";
+import { Header, WaitUntilType } from "@/types";
 
 export default defineComponent({
   name: "Form",
@@ -84,6 +86,7 @@ export default defineComponent({
     const userAgent = ref("");
     const deviceName = ref("");
     const otherHeaders = ref<Header[]>([]);
+    const waitUntil = ref<WaitUntilType>("load");
 
     const urls = ref<string[]>([]);
 
@@ -111,6 +114,7 @@ export default defineComponent({
       enableHar,
       deviceName,
       otherHeaders,
+      waitUntil,
     };
   },
 });

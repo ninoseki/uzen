@@ -8,10 +8,12 @@ jobs:
           TESTING: "true"
           GOOGLE_SAFE_BROWSING_API_KEY: foo
           TORTOISE_TEST_DB: mysql://root:rootpass@127.0.0.1:3306/ci_test
+          REDIS_URL: redis://localhost:6379
       - image: circleci/mysql:8
         environment:
           MYSQL_DATABASE: "ci_test"
           MYSQL_ROOT_PASSWORD: "rootpass"
+      - image: redis:6.2
     steps:
       - checkout
       - restore_cache:
@@ -23,7 +25,7 @@ jobs:
             pip install poetry
             poetry config virtualenvs.create false
             poetry install
-            python -m playwright install
+            python -m playwright install chromium
       - save_cache:
           key: deps-{{ checksum "poetry.lock" }}
           paths:
