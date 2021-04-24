@@ -4,10 +4,21 @@
       :error="getJobStatusTask.last.error.response.data"
       v-if="getJobStatusTask.isError && getJobStatusTask.last !== undefined"
     ></SimpleError>
-    <b-message type="is-info" has-icon v-else>
-      <p>Taking a snapshot...</p>
-      <b-progress class="mt-5"></b-progress>
-    </b-message>
+    <div v-else>
+      <b-message type="is-info" has-icon>
+        <p>Taking a snapshot...</p>
+        <div class="buttons">
+          <b-button type="is-ghost" size="is-large" expanded loading></b-button>
+        </div>
+      </b-message>
+      <SnapshotJob
+        :jobStatus="getJobStatusTask.last.value"
+        v-if="
+          getJobStatusTask.last !== undefined &&
+          getJobStatusTask.last.value !== null
+        "
+      ></SnapshotJob>
+    </div>
   </div>
 </template>
 
@@ -17,13 +28,15 @@ import { useTitle } from "@vueuse/core";
 import { useAsyncTask } from "vue-concurrency";
 
 import { API } from "@/api";
+import SnapshotJob from "@/components/job/SnapshotJob.vue";
 import SimpleError from "@/components/ui/SimpleError.vue";
 import { SnapshotJobStatus } from "@/types";
 
 export default defineComponent({
-  name: "JobWrapper",
+  name: "SnapshotJobWrapper",
   components: {
     SimpleError,
+    SnapshotJob,
   },
   props: {
     jobId: {
@@ -62,7 +75,7 @@ export default defineComponent({
         } catch (error) {
           clearInterval(refreshId);
         }
-      }, 1000);
+      }, 3000);
     });
 
     return {

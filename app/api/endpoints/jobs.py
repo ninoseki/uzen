@@ -1,67 +1,56 @@
-from typing import List, Optional
+from typing import List
 
 from arq.connections import ArqRedis
-from arq.constants import job_key_prefix, result_key_prefix
-from arq.jobs import JobDef, JobResult
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Path
 
 from app import schemas
 from app.api.dependencies.arq import get_arq_redis
 from app.core.constants import snapshot_task_name
+from app.core.exceptions import JobExecutionError, JobNotFoundError
+from app.factories.job_status import SnapshotJobStatusFactory
 
 router = APIRouter()
 
 
-async def is_running_job(arq_redis: ArqRedis, id: str) -> bool:
-    key = job_key_prefix + id
-    return await arq_redis.exists(key) == 1
-
-
-async def is_finished_job(arq_redis: ArqRedis, id: str) -> bool:
-    key = result_key_prefix + id
-    return await arq_redis.exists(key) == 1
-
-
-async def get_result(arq_redis: ArqRedis, id: str) -> JobResult:
-    key = result_key_prefix + id
-    return await arq_redis._get_job_result(key)
-
-
 @router.get(
     "/snapshots/running",
+    response_model=List[schemas.SnapshotJobDefinition],
+    response_description="Returns a list of snapshot job definitions",
+    summary="Get a list of snapshot job definitions",
+    description="Get a list of snapshot job definitions which are running",
 )
 async def get_running_snapshot_jobs(
     arq_redis: ArqRedis = Depends(get_arq_redis),
-) -> schemas.SnapshotJobStatus:
+) -> List[schemas.SnapshotJobDefinition]:
     jobs = await arq_redis.queued_jobs()
 
-    snapshot_jobs: List[JobDef] = []
+    snapshot_job_definitions: List[schemas.SnapshotJobDefinition] = []
     for job in jobs:
         if job.function == snapshot_task_name:
-            snapshot_jobs.append(job)
+            snapshot_job_definitions.append(
+                schemas.SnapshotJobDefinition.from_job_definition(job)
+            )
 
-    return [job for job in snapshot_jobs]
+    return snapshot_job_definitions
 
 
 @router.get(
-    "/snapshots/{id}",
+    "/snapshots/{job_id}",
+    response_model=schemas.SnapshotJobStatus,
+    response_description="Returns a snapshot job status",
+    summary="Get a snapshot job status",
+    description="Get a snapshot job status which has a given job ID",
 )
 async def get_snapshot_job(
-    id: str, arq_redis: ArqRedis = Depends(get_arq_redis)
+    job_id: str = Path(..., min_length=32),
+    arq_redis: ArqRedis = Depends(get_arq_redis),
 ) -> schemas.SnapshotJobStatus:
-    is_running: bool = False
-    if await is_running_job(arq_redis=arq_redis, id=id):
-        is_running = True
-
-    job_result: Optional[JobResult] = None
-    result: Optional[schemas.SnapshotJobResult] = None
-    if await is_finished_job(arq_redis=arq_redis, id=id):
-        job_result = await get_result(arq_redis=arq_redis, id=id)
-
-        error = job_result.result.get("error")
-        if error is not None:
-            raise HTTPException(status_code=404, detail=error)
-
-        result = schemas.SnapshotJobResult.parse_obj(job_result.result)
-
-    return schemas.SnapshotJobStatus(id=id, is_running=is_running, result=result)
+    try:
+        status = await SnapshotJobStatusFactory.from_job_id(
+            arq_redis=arq_redis, job_id=job_id
+        )
+        return status
+    except JobExecutionError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except JobNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
