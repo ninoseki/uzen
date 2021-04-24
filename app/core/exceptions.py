@@ -12,3 +12,11 @@ class InvalidIPAddressError(UzenError):
 
 class InvalidDomainError(UzenError):
     pass
+
+
+class JobExecutionError(UzenError):
+    pass
+
+
+class JobNotFoundError(UzenError):
+    pass

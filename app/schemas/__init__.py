@@ -6,7 +6,12 @@ from app.schemas.file import File
 from app.schemas.har import HAR
 from app.schemas.html import HTML
 from app.schemas.ip_address import IPAddress
-from app.schemas.job import Job, SnapshotJobResult, SnapshotJobStatus
+from app.schemas.job import (
+    Job,
+    SnapshotJobDefinition,
+    SnapshotJobResult,
+    SnapshotJobStatus,
+)
 from app.schemas.match import Match, MatchesSearchResults, MatchResult
 from app.schemas.rule import CreateRulePayload, RulesSearchResults, UpdateRulePayload
 from app.schemas.screenshot import Screenshot
@@ -57,6 +62,7 @@ __all__ = [
     "Screenshot",
     "Script",
     "Snapshot",
+    "SnapshotJobDefinition",
     "SnapshotJobStatus",
     "SnapshotJobResult",
     "SnapshotsSearchResults",

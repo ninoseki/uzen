@@ -1,0 +1,53 @@
+<template>
+  <div class="table-container" v-if="jobStatus.definition !== null">
+    <table class="table">
+      <tbody>
+        <tr>
+          <th>Submitted URL</th>
+          <td>
+            {{ truncate(jobStatus.definition.payload.url, 48) }}
+          </td>
+        </tr>
+        <tr>
+          <th>Enqueue time</th>
+          <td>
+            <DatetimeWithDiff
+              :datetime="jobStatus.definition.enqueueTime"
+            ></DatetimeWithDiff>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</template>
+
+<script lang="ts">
+import { computed, defineComponent, PropType } from "@vue/composition-api";
+
+import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
+import { SnapshotJobStatus } from "@/types";
+import { truncate } from "@/utils/truncate";
+
+export default defineComponent({
+  name: "SnapshotJob",
+  components: {
+    DatetimeWithDiff,
+  },
+  props: {
+    jobStatus: {
+      type: Object as PropType<SnapshotJobStatus>,
+      required: true,
+    },
+  },
+  setup(props) {
+    const hasJobDefinition = computed(
+      () => props.jobStatus.definition !== null
+    );
+
+    return {
+      hasJobDefinition,
+      truncate,
+    };
+  },
+});
+</script>
