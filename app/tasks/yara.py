@@ -6,14 +6,14 @@ from app.services.yara_scanner import YaraScanner
 
 async def yara_scan_task(
     ctx: dict, payload: schemas.YaraScanPayloadWithSearchOptions
-) -> List[schemas.YaraScanResult]:
-    results: Optional[List[schemas.YaraScanResult]] = None
+) -> schemas.JobResultWrapper:
+    scan_results: Optional[List[schemas.YaraScanResult]] = None
     try:
         yara_scanner = YaraScanner(payload.source)
-        results = await yara_scanner.scan_snapshots(
+        scan_results = await yara_scanner.scan_snapshots(
             payload.target, payload.filters, size=payload.size, offset=payload.offset
         )
     except Exception as e:
-        return {"scan_results": results, "error": str(e)}
+        return schemas.JobResultWrapper(result=scan_results, error=str(e))
 
-    return {"scan_results": results, "error": None}
+    return schemas.JobResultWrapper(result=scan_results, error=None)

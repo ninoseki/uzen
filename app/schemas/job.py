@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import Any, List, Optional
 from uuid import UUID
 
 from arq.jobs import JobDef, JobResult
@@ -69,3 +69,8 @@ class YaraScanJobResult(APIModel):
 class YaraScanJobStatus(JobStatus):
     result: YaraScanJobResult = Field(...)
     definition: Optional[YaraScanJobDefinition] = Field(None)
+
+
+class JobResultWrapper(APIModel):
+    result: Optional[Any] = Field(None)
+    error: Optional[str] = Field(None)

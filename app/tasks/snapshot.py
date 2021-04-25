@@ -21,7 +21,9 @@ class UpdateProcessingTask(AbstractAsyncTask):
         return await instance.safe_process()
 
 
-async def take_snapshot_task(ctx: dict, payload: schemas.CreateSnapshotPayload):
+async def take_snapshot_task(
+    ctx: dict, payload: schemas.CreateSnapshotPayload
+) -> schemas.JobResultWrapper:
     ignore_https_error = payload.ignore_https_errors or False
     browser = Browser(
         enable_har=payload.enable_har,
@@ -34,7 +36,7 @@ async def take_snapshot_task(ctx: dict, payload: schemas.CreateSnapshotPayload):
     try:
         result = await browser.take_snapshot(payload.url)
     except TakeSnapshotError as e:
-        return {"error": str(e), "snapshot_id": None}
+        return schemas.JobResultWrapper(result=None, error=str(e))
 
     snapshot = await models.Snapshot.save_snapshot_result(result)
 
@@ -48,4 +50,4 @@ async def take_snapshot_task(ctx: dict, payload: schemas.CreateSnapshotPayload):
 
     await UpdateProcessingTask.process(snapshot)
 
-    return {"snapshot_id": str(snapshot.id), "error": None}
+    return schemas.JobResultWrapper(result={"snapshot_id": snapshot.id}, error=None)
