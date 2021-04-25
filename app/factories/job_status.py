@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional, cast
 
 from arq.connections import ArqRedis
 from arq.constants import job_key_prefix, result_key_prefix
@@ -47,21 +47,27 @@ class SnapshotJobStatusFactory:
             is_running = False
 
         job_result: Optional[JobResult] = None
-        result: Optional[schemas.SnapshotJobResult] = None
+        snapshot_job_result: Optional[schemas.SnapshotJobResult] = None
         if not is_running:
             try:
                 job_result = await get_result(arq_redis=arq_redis, id=job_id)
             except (KeyError):
                 raise JobNotFoundError(f"{job_id} is not found")
 
-            error = job_result.result.get("error")
-            if error is not None:
-                raise JobExecutionError(error)
+            result = cast(schemas.JobResultWrapper, job_result.result)
 
-            result = schemas.SnapshotJobResult.parse_obj(job_result.result)
+            if result.error is not None:
+                raise JobExecutionError(result.error)
+
+            snapshot_job_result = schemas.SnapshotJobResult.parse_obj(
+                result.result or {}
+            )
 
         return schemas.SnapshotJobStatus(
-            id=job_id, is_running=is_running, result=result, definition=job_definition
+            id=job_id,
+            is_running=is_running,
+            result=snapshot_job_result,
+            definition=job_definition,
         )
 
 
@@ -81,25 +87,29 @@ class YaraScanJobStatusFactory:
             is_running = False
 
         job_result: Optional[JobResult] = None
-        result: Optional[schemas.SnapshotJobResult] = None
+        yara_scan_job_result: Optional[schemas.YaraScanJobResult] = None
         if not is_running:
             try:
                 job_result = await get_result(arq_redis=arq_redis, id=job_id)
             except (KeyError):
                 raise JobNotFoundError(f"{job_id} is not found")
 
+            result = cast(schemas.JobResultWrapper, job_result.result)
+
             # check error
-            error = job_result.result.get("error")
-            if error is not None:
-                raise JobExecutionError(error)
+            if result.error is not None:
+                raise JobExecutionError(result.error)
 
             # get task result
-            scan_results = job_result.result.get("scan_results", [])
-            result = schemas.YaraScanJobResult(scan_results=scan_results)
+            scan_results = cast(List[schemas.YaraScanJobResult], result.result or [])
+            yara_scan_job_result = schemas.YaraScanJobResult(scan_results=scan_results)
 
             # get job definition
             job_definition = schemas.YaraScanJobDefinition.from_job_result(job_result)
 
         return schemas.YaraScanJobStatus(
-            id=job_id, is_running=is_running, result=result, definition=job_definition
+            id=job_id,
+            is_running=is_running,
+            result=yara_scan_job_result,
+            definition=job_definition,
         )

@@ -8,6 +8,7 @@ from app.schemas.html import HTML
 from app.schemas.ip_address import IPAddress
 from app.schemas.job import (
     Job,
+    JobResultWrapper,
     SnapshotJobDefinition,
     SnapshotJobResult,
     SnapshotJobStatus,
@@ -57,6 +58,7 @@ __all__ = [
     "HTML",
     "IPAddress",
     "Job",
+    "JobResultWrapper",
     "Match",
     "MatchesSearchResults",
     "MatchResult",
