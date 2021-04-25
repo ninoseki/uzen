@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from "@vue/composition-api";
+import { defineComponent, PropType } from "@vue/composition-api";
 
 import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
 import { SnapshotJobStatus } from "@/types";
@@ -39,15 +39,8 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
-    const hasJobDefinition = computed(
-      () => props.jobStatus.definition !== null
-    );
-
-    return {
-      hasJobDefinition,
-      truncate,
-    };
+  setup() {
+    return { truncate };
   },
 });
 </script>

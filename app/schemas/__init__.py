@@ -11,6 +11,9 @@ from app.schemas.job import (
     SnapshotJobDefinition,
     SnapshotJobResult,
     SnapshotJobStatus,
+    YaraScanJobDefinition,
+    YaraScanJobResult,
+    YaraScanJobStatus,
 )
 from app.schemas.match import Match, MatchesSearchResults, MatchResult
 from app.schemas.rule import CreateRulePayload, RulesSearchResults, UpdateRulePayload
@@ -34,6 +37,7 @@ from app.schemas.yara import (
     YaraMatchString,
     YaraResult,
     YaraScanPayload,
+    YaraScanPayloadWithSearchOptions,
     YaraScanResult,
 )
 
@@ -63,8 +67,8 @@ __all__ = [
     "Script",
     "Snapshot",
     "SnapshotJobDefinition",
-    "SnapshotJobStatus",
     "SnapshotJobResult",
+    "SnapshotJobStatus",
     "SnapshotsSearchResults",
     "Status",
     "Stylesheet",
@@ -73,6 +77,10 @@ __all__ = [
     "YaraMatch",
     "YaraMatchString",
     "YaraResult",
+    "YaraScanJobDefinition",
+    "YaraScanJobResult",
+    "YaraScanJobStatus",
     "YaraScanPayload",
+    "YaraScanPayloadWithSearchOptions",
     "YaraScanResult",
 ]

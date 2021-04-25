@@ -15,6 +15,7 @@ import Snapshot from "@/views/Snapshot.vue";
 import SnapshotJob from "@/views/SnapshotJob.vue";
 import Snapshots from "@/views/Snapshots.vue";
 import Yara from "@/views/Yara.vue";
+import YaraScanJob from "@/views/YaraScanJob.vue";
 
 Vue.use(VueRouter);
 
@@ -45,6 +46,12 @@ const routes = [
     path: "/jobs/snapshots/:id",
     name: "SnapshotJob",
     component: SnapshotJob,
+    props: true,
+  },
+  {
+    path: "/jobs/yara/:id",
+    name: "YaraScanJob",
+    component: YaraScanJob,
     props: true,
   },
   {

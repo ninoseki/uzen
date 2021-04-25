@@ -1,14 +1,14 @@
 from typing import Any, Dict, List, Optional, cast
 from uuid import UUID
 
-from arq.connections import create_pool
+from arq.connections import ArqRedis
 from fastapi import APIRouter, Depends, HTTPException
 from tortoise.exceptions import DoesNotExist
 
 from app import models, schemas
+from app.api.dependencies.arq import get_arq_redis
 from app.api.dependencies.snapshot import SearchFilters
 from app.api.dependencies.verification import verify_api_key
-from app.arq.settings import get_redis_settings
 from app.core.constants import snapshot_task_name
 from app.services.searchers.snapshot import SnapshotSearcher
 
@@ -74,9 +74,9 @@ async def get(snapshot_id: UUID) -> schemas.Snapshot:
 async def create(
     payload: schemas.CreateSnapshotPayload,
     _: Any = Depends(verify_api_key),
+    arq_redis: ArqRedis = Depends(get_arq_redis),
 ) -> schemas.Job:
-    redis = await create_pool(settings_=get_redis_settings())
-    job = await redis.enqueue_job(snapshot_task_name, payload)
+    job = await arq_redis.enqueue_job(snapshot_task_name, payload)
     return schemas.Job(id=job.job_id, type="snapshot")
 
 

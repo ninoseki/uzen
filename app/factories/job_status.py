@@ -63,3 +63,43 @@ class SnapshotJobStatusFactory:
         return schemas.SnapshotJobStatus(
             id=job_id, is_running=is_running, result=result, definition=job_definition
         )
+
+
+class YaraScanJobStatusFactory:
+    @staticmethod
+    async def from_job_id(
+        arq_redis: ArqRedis, job_id: str
+    ) -> schemas.YaraScanJobStatus:
+        job_definition: Optional[schemas.YaraScanJobDefinition] = None
+        is_running: bool = True
+        try:
+            job_definition_ = await get_job_definition(arq_redis=arq_redis, id=job_id)
+            job_definition = schemas.YaraScanJobDefinition.from_job_definition(
+                job_definition_
+            )
+        except (KeyError, DeserializationError):
+            is_running = False
+
+        job_result: Optional[JobResult] = None
+        result: Optional[schemas.SnapshotJobResult] = None
+        if not is_running:
+            try:
+                job_result = await get_result(arq_redis=arq_redis, id=job_id)
+            except (KeyError):
+                raise JobNotFoundError(f"{job_id} is not found")
+
+            # check error
+            error = job_result.result.get("error")
+            if error is not None:
+                raise JobExecutionError(error)
+
+            # get task result
+            scan_results = job_result.result.get("scan_results", [])
+            result = schemas.YaraScanJobResult(scan_results=scan_results)
+
+            # get job definition
+            job_definition = schemas.YaraScanJobDefinition.from_job_result(job_result)
+
+        return schemas.YaraScanJobStatus(
+            id=job_id, is_running=is_running, result=result, definition=job_definition
+        )
