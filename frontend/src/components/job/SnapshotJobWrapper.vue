@@ -11,14 +11,14 @@
           <b-button type="is-ghost" size="is-large" expanded loading></b-button>
         </div>
       </b-message>
-      <SnapshotJob
-        :jobStatus="getJobStatusTask.last.value"
-        v-if="
-          getJobStatusTask.last !== undefined &&
-          getJobStatusTask.last.value !== null
-        "
-      ></SnapshotJob>
     </div>
+    <SnapshotJob
+      :jobStatus="getJobStatusTask.last.value"
+      v-if="
+        getJobStatusTask.last !== undefined &&
+        getJobStatusTask.last.value !== null
+      "
+    ></SnapshotJob>
   </div>
 </template>
 
