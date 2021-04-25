@@ -3,6 +3,7 @@ from tortoise import Tortoise
 from app.arq.settings import get_redis_settings
 from app.database import init_db
 from app.tasks.snapshot import take_snapshot_task
+from app.tasks.yara import yara_scan_task
 
 
 async def startup(ctx: dict):
@@ -14,7 +15,7 @@ async def shutdown(ctx: dict):
 
 
 class ArqWorkerSettings:
-    functions = [take_snapshot_task]
+    functions = [take_snapshot_task, yara_scan_task]
     redis_settings = get_redis_settings()
 
     on_startup = startup

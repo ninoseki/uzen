@@ -8,7 +8,7 @@ import { Device } from "@/types/devices";
 import { DomainInformation } from "@/types/domain";
 import { HAR } from "@/types/har";
 import { IPAddressInformation } from "@/types/ip_address";
-import { Job, SnapshotJobStatus } from "@/types/job";
+import { Job, SnapshotJobStatus, YaraScanJobStatus } from "@/types/job";
 import { Link, LinkType } from "@/types/link";
 import {
   CreateRulePayload,
@@ -96,5 +96,6 @@ export {
   YaraMatch,
   YaraMatchString,
   YaraResult,
+  YaraScanJobStatus,
   YaraScanPayload,
 };

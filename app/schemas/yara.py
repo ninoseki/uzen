@@ -1,4 +1,5 @@
-from typing import Any, Dict, List, Optional
+from datetime import date, datetime
+from typing import Any, Dict, List, Optional, Union
 from uuid import UUID
 
 from pydantic import Field
@@ -10,6 +11,14 @@ from app.schemas.snapshot import PlainSnapshot
 
 class YaraScanPayload(Source, Target, APIModel):
     """Playload for YARA scan"""
+
+
+class YaraScanPayloadWithSearchOptions(YaraScanPayload):
+    """YARA scan payload with search options"""
+
+    size: Optional[int] = Field(None)
+    offset: Optional[int] = Field(None)
+    filters: Dict[str, Union[str, int, date, datetime, None]] = Field(...)
 
 
 class YaraMatchString(APIModel):

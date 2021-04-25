@@ -38,3 +38,9 @@ export interface YaraScanOptions {
   fromAt: string | undefined;
   toAt: string | undefined;
 }
+
+export interface YaraScanPayloadWithSearchOptions extends YaraScanPayload {
+  size: number | null;
+  offset: number | null;
+  filters: YaraScanOptions;
+}

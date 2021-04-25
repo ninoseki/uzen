@@ -1,4 +1,6 @@
+import { SnapshotWithYaraResult } from "@/types";
 import { CreateSnapshotPayload } from "@/types/snapshot";
+import { YaraScanPayloadWithSearchOptions } from "@/types/yara";
 
 export interface Job {
   id: string;
@@ -19,4 +21,20 @@ export interface SnapshotJobStatus {
   isRunning: boolean;
   result: SnapshotJobResult | null;
   definition: SnapshotJobDefinition | null;
+}
+
+export interface YaraScanJobResult {
+  scanResults: SnapshotWithYaraResult[];
+}
+
+export interface YaraScanJobDefinition {
+  enqueueTime: string;
+  payload: YaraScanPayloadWithSearchOptions;
+}
+
+export interface YaraScanJobStatus {
+  id: string;
+  isRunning: boolean;
+  result: YaraScanJobResult | null;
+  definition: YaraScanJobDefinition | null;
 }

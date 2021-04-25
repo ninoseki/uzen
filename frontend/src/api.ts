@@ -20,10 +20,10 @@ import {
   Snapshot,
   SnapshotJobStatus,
   SnapshotSearchResults,
-  SnapshotWithYaraResult,
   Status,
   UpdateRulePayload,
   Whois,
+  YaraScanJobStatus,
   YaraScanPayload,
 } from "@/types";
 
@@ -110,15 +110,8 @@ export const API = {
     return res.data;
   },
 
-  async yaraScan(
-    payload: YaraScanPayload,
-    params: SearchParams
-  ): Promise<SnapshotWithYaraResult[]> {
-    const res = await client.post<SnapshotWithYaraResult[]>(
-      "/api/yara/scan",
-      payload,
-      { params }
-    );
+  async yaraScan(payload: YaraScanPayload, params: SearchParams): Promise<Job> {
+    const res = await client.post<Job>("/api/yara/scan", payload, { params });
     return res.data;
   },
 
@@ -204,6 +197,11 @@ export const API = {
     const res = await client.get<SnapshotJobStatus>(
       `/api/jobs/snapshots/${jobId}`
     );
+    return res.data;
+  },
+
+  async getYaraScanJobStatus(jobId: string): Promise<YaraScanJobStatus> {
+    const res = await client.get<YaraScanJobStatus>(`/api/jobs/yara/${jobId}`);
     return res.data;
   },
 };
