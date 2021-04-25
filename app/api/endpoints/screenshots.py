@@ -1,11 +1,14 @@
-from typing import Union
+from typing import Union, cast
 from uuid import UUID
 
-from fastapi import APIRouter
+from arq.connections import ArqRedis
+from fastapi import APIRouter, Depends
 from fastapi.responses import Response
 from fastapi_cache.coder import PickleCoder
 
-from app.services.browser import Browser
+from app import schemas
+from app.api.dependencies.arq import get_arq_redis
+from app.core.constants import preview_task_name
 from app.utils.cache import cache
 from app.utils.screenshot import get_screenshot
 
@@ -45,6 +48,15 @@ async def get_screenshot_by_snapshot_id(
     summary="Get a screenshot",
     description="Get a screenshot for previewing",
 )
-async def perview(hostname: str) -> Union[Response]:
-    screenshot = await Browser.preview(hostname)
+async def perview(
+    hostname: str,
+    arq_redis: ArqRedis = Depends(get_arq_redis),
+) -> Union[Response]:
+    job = await arq_redis.enqueue_job(preview_task_name, hostname)
+
+    job_result = await job.result()
+    job_result = cast(schemas.JobResultWrapper, job_result)
+
+    screenshot = cast(bytes, job_result.result)
+
     return Response(content=screenshot, media_type="image/png")
