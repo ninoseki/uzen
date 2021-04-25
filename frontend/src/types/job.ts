@@ -20,7 +20,7 @@ export interface SnapshotJobStatus {
   id: string;
   isRunning: boolean;
   result: SnapshotJobResult | null;
-  definition: SnapshotJobDefinition | null;
+  definition: SnapshotJobDefinition;
 }
 
 export interface YaraScanJobResult {
@@ -36,5 +36,5 @@ export interface YaraScanJobStatus {
   id: string;
   isRunning: boolean;
   result: YaraScanJobResult | null;
-  definition: YaraScanJobDefinition | null;
+  definition: YaraScanJobDefinition;
 }

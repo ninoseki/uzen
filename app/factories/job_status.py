@@ -56,12 +56,17 @@ class SnapshotJobStatusFactory:
 
             result = cast(schemas.JobResultWrapper, job_result.result)
 
+            # check error
             if result.error is not None:
                 raise JobExecutionError(result.error)
 
+            # get task result
             snapshot_job_result = schemas.SnapshotJobResult.parse_obj(
                 result.result or {}
             )
+
+            # get job definition
+            job_definition = schemas.SnapshotJobDefinition.from_job_result(job_result)
 
         return schemas.SnapshotJobStatus(
             id=job_id,

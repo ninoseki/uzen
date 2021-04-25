@@ -17,13 +17,13 @@ class Job(APIModel):
     type: str = Field(...)
 
 
-class SnapshotJobResult(APIModel):
-    snapshot_id: UUID = Field(...)
-
-
 class JobStatus(APIModel):
     id: str = Field(...)
     is_running: bool = Field(...)
+
+
+class SnapshotJobResult(APIModel):
+    snapshot_id: UUID = Field(...)
 
 
 class SnapshotJobDefinition(APIModel):
@@ -37,10 +37,17 @@ class SnapshotJobDefinition(APIModel):
 
         return cls(payload=payload, enqueue_time=enqueue_time)
 
+    @classmethod
+    def from_job_result(cls, job_result: JobResult) -> "SnapshotJobDefinition":
+        payload = job_result.args[0]
+        enqueue_time = job_result.enqueue_time
+
+        return cls(payload=payload, enqueue_time=enqueue_time)
+
 
 class SnapshotJobStatus(JobStatus):
     result: Optional[SnapshotJobResult] = Field(None)
-    definition: Optional[SnapshotJobDefinition] = Field(None)
+    definition: SnapshotJobDefinition = Field(...)
 
 
 class YaraScanJobDefinition(APIModel):
@@ -67,8 +74,8 @@ class YaraScanJobResult(APIModel):
 
 
 class YaraScanJobStatus(JobStatus):
-    result: YaraScanJobResult = Field(...)
-    definition: Optional[YaraScanJobDefinition] = Field(None)
+    result: Optional[YaraScanJobResult] = Field(None)
+    definition: YaraScanJobDefinition = Field(...)
 
 
 class JobResultWrapper(APIModel):
