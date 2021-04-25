@@ -2,11 +2,12 @@ from typing import TYPE_CHECKING
 from uuid import UUID
 
 from tortoise.fields.base import CASCADE
-from tortoise.fields.data import JSONField, UUIDField
+from tortoise.fields.data import UUIDField
 from tortoise.fields.relational import OneToOneField, OneToOneRelation
 from tortoise.models import Model
 
 from app import schemas
+from app.database.fields import CustomJSONField
 from app.models.mixin import CountMixin, DeleteMixin, TimestampMixin
 
 if TYPE_CHECKING:
@@ -16,7 +17,7 @@ if TYPE_CHECKING:
 class HAR(Model, TimestampMixin, CountMixin, DeleteMixin):
     id = UUIDField(pk=True)
 
-    data = JSONField()
+    data = CustomJSONField()
 
     snapshot: OneToOneRelation["Snapshot"] = OneToOneField(
         "models.Snapshot", related_name="har", on_delete=CASCADE
