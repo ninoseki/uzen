@@ -8,7 +8,7 @@ from fastapi_cache.coder import PickleCoder
 
 from app import schemas
 from app.api.dependencies.arq import get_arq_redis
-from app.core.constants import preview_task_name
+from app.arq.constants import preview_task_name
 from app.utils.cache import cache
 from app.utils.screenshot import get_screenshot
 
