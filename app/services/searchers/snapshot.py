@@ -23,12 +23,12 @@ class SnapshotSearcher(AbstractSearcher):
             filters {dict} -- Filters for snapshot search
 
         Keyword Arguments:
-            size {[int]} -- Nmber of results returned (default: {None})
+            size {[int]} -- Number of results returned (default: {None})
             offset {[int]} -- Offset of the first result for pagination (default: {None})
             id_only {bool} -- Whether to return only a list of ids (default: {False})
 
         Returns:
-           SearchResults -- A list of simlified snapshots and total count
+           SearchResults -- A list of simplified snapshots and total count
         """
         queries = []
 
