@@ -1,4 +1,6 @@
 from app import models, schemas
+from app.api.dependencies.arq import get_arq_redis_with_context
+from app.arq.constants import enrich_snapshot_task_name
 from app.core.exceptions import TakeSnapshotError
 from app.services.browser import Browser
 from app.tasks import AbstractAsyncTask
@@ -21,6 +23,15 @@ class UpdateProcessingTask(AbstractAsyncTask):
         return await instance.safe_process()
 
 
+async def enrich_snapshot_task(
+    ctx: dict, snapshot: models.Snapshot
+) -> schemas.JobResultWrapper:
+    await EnrichmentTasks.process(snapshot)
+    await MatchingTask.process(snapshot)
+    await UpdateProcessingTask.process(snapshot)
+    return schemas.JobResultWrapper(result={"snapshot_id": snapshot.id}, error=None)
+
+
 async def take_snapshot_task(
     ctx: dict, payload: schemas.CreateSnapshotPayload
 ) -> schemas.JobResultWrapper:
@@ -40,14 +51,11 @@ async def take_snapshot_task(
 
     snapshot = await models.Snapshot.save_snapshot_result(result)
 
-    # execute other tasks
+    # upload screenshot
     if result.screenshot is not None:
         UploadScrenshotTask.process(uuid=snapshot.id, screenshot=result.screenshot)
 
-    await EnrichmentTasks.process(snapshot)
-
-    await MatchingTask.process(snapshot)
-
-    await UpdateProcessingTask.process(snapshot)
+    async with get_arq_redis_with_context() as arq_redis:
+        await arq_redis.enqueue_job(enrich_snapshot_task_name, snapshot)
 
     return schemas.JobResultWrapper(result={"snapshot_id": snapshot.id}, error=None)

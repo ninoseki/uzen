@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Path
 
 from app import schemas
 from app.api.dependencies.arq import get_arq_redis
-from app.core.constants import snapshot_task_name
+from app.arq.constants import snapshot_task_name
 from app.core.exceptions import JobExecutionError, JobNotFoundError
 from app.factories.job_status import SnapshotJobStatusFactory, YaraScanJobStatusFactory
 

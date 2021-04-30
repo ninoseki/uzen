@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends
 from app import schemas
 from app.api.dependencies.arq import get_arq_redis
 from app.api.dependencies.snapshot import SearchFilters
-from app.core.constants import yara_scan_task_name
+from app.arq.constants import yara_scan_task_name
 
 router = APIRouter()
 

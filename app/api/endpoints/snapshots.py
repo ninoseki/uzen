@@ -9,7 +9,7 @@ from app import models, schemas
 from app.api.dependencies.arq import get_arq_redis
 from app.api.dependencies.snapshot import SearchFilters
 from app.api.dependencies.verification import verify_api_key
-from app.core.constants import snapshot_task_name
+from app.arq.constants import snapshot_task_name
 from app.services.searchers.snapshot import SnapshotSearcher
 
 router = APIRouter()
