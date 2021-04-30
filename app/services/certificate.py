@@ -32,7 +32,7 @@ def get_certification(hostname: str, port: int) -> crypto.X509:
 class Certificate:
     @staticmethod
     def load_from_url(url: str) -> Optional[dataclasses.Certificate]:
-        """Load certficate from URL
+        """Load certificate from URL
 
         Arguments:
             url {str} -- A URL of a website

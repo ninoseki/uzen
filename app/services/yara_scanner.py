@@ -100,7 +100,7 @@ class YaraScanner:
             filters {dict} -- Filters for snapshot search (default: {{}})
 
         Returns:
-            List[SearchResultModel] -- A list of simlified snapshot models
+            List[SearchResultModel] -- A list of simplified snapshot models
         """
         if filters is None:
             filters = {}
