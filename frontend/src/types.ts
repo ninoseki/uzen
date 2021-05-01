@@ -8,7 +8,12 @@ import { Device } from "@/types/devices";
 import { DomainInformation } from "@/types/domain";
 import { HAR } from "@/types/har";
 import { IPAddressInformation } from "@/types/ip_address";
-import { Job, SnapshotJobStatus, YaraScanJobStatus } from "@/types/job";
+import {
+  Job,
+  SimilarityScanJobStatus,
+  SnapshotJobStatus,
+  YaraScanJobStatus,
+} from "@/types/job";
 import { Link, LinkType } from "@/types/link";
 import {
   CreateRulePayload,
@@ -25,6 +30,7 @@ import {
   SearchParams,
   SnapshotSearchResults,
 } from "@/types/search";
+import { SimilarityScanPayload } from "@/types/similarity";
 import {
   Certificate,
   Classification,
@@ -83,6 +89,8 @@ export {
   RuleSearchResults,
   Script,
   SearchParams,
+  SimilarityScanJobStatus,
+  SimilarityScanPayload,
   Snapshot,
   SnapshotFilters,
   SnapshotJobStatus,

@@ -16,6 +16,7 @@ class SnapshotSearcher(AbstractSearcher):
         size: Optional[int] = None,
         offset: Optional[int] = None,
         id_only: bool = False,
+        additional_queries: Optional[List[Q]] = None,
     ) -> schemas.SnapshotsSearchResults:
         """Search snapshots
 
@@ -75,6 +76,9 @@ class SnapshotSearcher(AbstractSearcher):
         to_at = filters.get("to_at")
         if to_at is not None:
             queries.append(Q(created_at__lt=convert_to_datetime(to_at)))
+
+        if additional_queries is not None:
+            queries.extend(additional_queries)
 
         query = Q(*queries)
 

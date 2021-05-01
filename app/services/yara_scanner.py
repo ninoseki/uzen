@@ -27,6 +27,18 @@ class YaraScanner:
     def __init__(self, source: str):
         self.rule: yara.Rules = yara.compile(source=source)
 
+    def match(self, data: Optional[str]) -> List[schemas.YaraMatch]:
+        """Scan a data with a YARA rule
+
+        Arguments:
+            data {Optional[str]} -- Data to scan
+
+        Returns:
+            List[yara.Match] -- YARA matches
+        """
+        data = "" if data is None else data
+        return MatchesConverter.convert(self.rule.match(data=data, timeout=60))
+
     async def partial_scan_for_scripts(
         self, ids: List[UUID]
     ) -> List[schemas.YaraResult]:
@@ -56,10 +68,10 @@ class YaraScanner:
 
         Arguments:
             target {str} -- A target of a snapshot's attribute
-            ids {List[int]} -- A list of ids of snapshots
+            ids {List[UUID]} -- A list of ids of snapshots
 
         Returns:
-            List[int] -- A list of ids which are matched with a YARA rule
+            List[schemas.YaraResult] -- A list of YARA results
         """
         if target == "script":
             return await self.partial_scan_for_scripts(ids)
@@ -70,7 +82,7 @@ class YaraScanner:
             .prefetch_related(target)
             .values("id", target_key)
         )
-        matched_results = []
+        matched_results: List[schemas.YaraResult] = []
         for snapshot in snapshots:
             snapshot_id = snapshot.get("id")
             data = snapshot.get(target_key, "")
@@ -100,7 +112,7 @@ class YaraScanner:
             filters {dict} -- Filters for snapshot search (default: {{}})
 
         Returns:
-            List[SearchResultModel] -- A list of simplified snapshot models
+            List[schemas.YaraScanResult] -- A list of YARA scan results
         """
         if filters is None:
             filters = {}
@@ -135,15 +147,3 @@ class YaraScanner:
                 snapshot["yara_result"] = result
 
         return [schemas.YaraScanResult(**snapshot) for snapshot in snapshots]
-
-    def match(self, data: Optional[str]) -> List[schemas.YaraMatch]:
-        """Scan a data with a YARA rule
-
-        Arguments:
-            data {Optional[str]} -- Data to scan
-
-        Returns:
-            List[yara.Match] -- YARA matches
-        """
-        data = "" if data is None else data
-        return MatchesConverter.convert(self.rule.match(data=data, timeout=60))

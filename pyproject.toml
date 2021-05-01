@@ -25,6 +25,7 @@ fastapi-cache2 = {extras = ["redis"], version = "^0.1.3"}
 httpx = "^0.18.0"
 loguru = "^0.5.3"
 minio = "^7.0.3"
+niteru = "^0.1.0"
 playwright = "^1.10.0"
 pydantic = "^1.8"
 pyhumps = "^1.6.1"

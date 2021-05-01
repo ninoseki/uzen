@@ -17,6 +17,8 @@ import {
   Rule,
   RuleSearchResults,
   SearchParams,
+  SimilarityScanJobStatus,
+  SimilarityScanPayload,
   Snapshot,
   SnapshotJobStatus,
   SnapshotSearchResults,
@@ -115,6 +117,16 @@ export const API = {
     return res.data;
   },
 
+  async similarityScan(
+    payload: SimilarityScanPayload,
+    params: SearchParams
+  ): Promise<Job> {
+    const res = await client.post<Job>("/api/similarity/scan", payload, {
+      params,
+    });
+    return res.data;
+  },
+
   async getDomainInformation(hostname: string): Promise<DomainInformation> {
     const res = await client.get<DomainInformation>(`/api/domain/${hostname}`);
     return res.data;
@@ -202,6 +214,15 @@ export const API = {
 
   async getYaraScanJobStatus(jobId: string): Promise<YaraScanJobStatus> {
     const res = await client.get<YaraScanJobStatus>(`/api/jobs/yara/${jobId}`);
+    return res.data;
+  },
+
+  async getSimilarityScanJobStatus(
+    jobId: string
+  ): Promise<SimilarityScanJobStatus> {
+    const res = await client.get<SimilarityScanJobStatus>(
+      `/api/jobs/similarity/${jobId}`
+    );
     return res.data;
   },
 };

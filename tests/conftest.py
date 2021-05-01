@@ -63,10 +63,12 @@ async def tortoise_db():
 
 @pytest.fixture
 async def snapshots_setup(client):
-    html = models.HTML(id=calculate_sha256("foo bar"), content="foo bar")
+    html_str = "<p>foo</p>"
+    html = models.HTML(id=calculate_sha256(html_str), content=html_str)
     await html.save()
 
-    whois = models.Whois(id=calculate_sha256("foo"), content="foo")
+    whois_str = "foo"
+    whois = models.Whois(id=calculate_sha256(whois_str), content=whois_str)
     await whois.save()
 
     for i in range(1, 11):

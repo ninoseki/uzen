@@ -12,6 +12,7 @@ from app.api.endpoints import (
     matches,
     rules,
     screenshots,
+    similarity,
     snapshots,
     status,
     urlscan,
@@ -36,6 +37,7 @@ api_router.include_router(rules.router, prefix="/rules", tags=["Rules"])
 api_router.include_router(
     screenshots.router, prefix="/screenshots", tags=["Screenshots"]
 )
+api_router.include_router(similarity.router, prefix="/similarity", tags=["Similarity"])
 api_router.include_router(snapshots.router, prefix="/snapshots", tags=["Snapshots"])
 api_router.include_router(status.router, prefix="/status", tags=["Status"])
 api_router.include_router(urlscan.router, prefix="/import", tags=["Import"])

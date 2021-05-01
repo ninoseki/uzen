@@ -1,5 +1,6 @@
 import { SnapshotWithYaraResult } from "@/types";
-import { CreateSnapshotPayload } from "@/types/snapshot";
+import { SimilarityScanPayloadWithSearchOptions } from "@/types/similarity";
+import { CreateSnapshotPayload, Snapshot } from "@/types/snapshot";
 import { YaraScanPayloadWithSearchOptions } from "@/types/yara";
 
 export interface Job {
@@ -37,4 +38,20 @@ export interface YaraScanJobStatus {
   isRunning: boolean;
   result: YaraScanJobResult | null;
   definition: YaraScanJobDefinition;
+}
+
+export interface SimilarityScanJobDefinition {
+  enqueueTime: string;
+  payload: SimilarityScanPayloadWithSearchOptions;
+}
+
+export interface SimilarityScanJobResult {
+  scanResults: Snapshot[];
+}
+
+export interface SimilarityScanJobStatus {
+  id: string;
+  isRunning: boolean;
+  result: SimilarityScanJobResult;
+  definition: SimilarityScanJobDefinition;
 }

@@ -135,6 +135,8 @@ class Snapshot(BaseSnapshot, AbstractBaseModel, TimestampMixin):
 class PlainSnapshot(SnapshotBasicAttributes, AbstractBaseModel, TimestampMixin):
     """Plain model for Snapshot"""
 
+    html_id: str = Field(...)
+
     @classmethod
     def field_keys(cls) -> List[str]:
         return list(cls.__fields__.keys())
