@@ -118,3 +118,53 @@ class YaraScanJobStatusFactory:
             result=yara_scan_job_result,
             definition=job_definition,
         )
+
+
+class SimilarityScanJobStatusFactory:
+    @staticmethod
+    async def from_job_id(
+        arq_redis: ArqRedis, job_id: str
+    ) -> schemas.SimilarityScanJobStatus:
+        job_definition: Optional[schemas.SimilarityScanJobDefinition] = None
+        is_running: bool = True
+        try:
+            job_definition_ = await get_job_definition(arq_redis=arq_redis, id=job_id)
+            job_definition = schemas.SimilarityScanJobDefinition.from_job_definition(
+                job_definition_
+            )
+        except (KeyError, DeserializationError):
+            is_running = False
+
+        job_result: Optional[JobResult] = None
+        similarity_scan_job_result: Optional[schemas.SimilarityScanJobResult] = None
+        if not is_running:
+            try:
+                job_result = await get_result(arq_redis=arq_redis, id=job_id)
+            except (KeyError):
+                raise JobNotFoundError(f"{job_id} is not found")
+
+            result = cast(schemas.JobResultWrapper, job_result.result)
+
+            # check error
+            if result.error is not None:
+                raise JobExecutionError(result.error)
+
+            # get task result
+            scan_results = cast(
+                List[schemas.SimilarityScanJobResult], result.result or []
+            )
+            similarity_scan_job_result = schemas.SimilarityScanJobResult(
+                scan_results=scan_results
+            )
+
+            # get job definition
+            job_definition = schemas.SimilarityScanJobDefinition.from_job_result(
+                job_result
+            )
+
+        return schemas.SimilarityScanJobStatus(
+            id=job_id,
+            is_running=is_running,
+            result=similarity_scan_job_result,
+            definition=job_definition,
+        )

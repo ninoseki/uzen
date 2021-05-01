@@ -694,6 +694,14 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "niteru"
+version = "0.1.0"
+description = "A set of similarity metrics to compare html files"
+category = "main"
+optional = false
+python-versions = ">=3.7,<4.0"
+
+[[package]]
 name = "nodeenv"
 version = "1.6.0"
 description = "Node.js virtual environment builder"
@@ -1434,7 +1442,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "d449b1441be2d230008523c5398b2769a5a30096d3886f2631f3e3ba3169bbb7"
+content-hash = "41e8da1219f7ce6d5605b828efefc20fdc56c9089a813341d0ba870fd051707f"
 
 [metadata.files]
 aiocache = [
@@ -1914,6 +1922,10 @@ mypy = [
 mypy-extensions = [
     {file = "mypy_extensions-0.4.3-py2.py3-none-any.whl", hash = "sha256:090fedd75945a69ae91ce1303b5824f428daf5a028d2f6ab8a299250a846f15d"},
     {file = "mypy_extensions-0.4.3.tar.gz", hash = "sha256:2d82818f5bb3e369420cb3c4060a7970edba416647068eb4c5343488a6c604a8"},
+]
+niteru = [
+    {file = "niteru-0.1.0-py3-none-any.whl", hash = "sha256:bd611b6d6b6d4804ebf9b7752b759aeddc6b493a78936183fff6d61e5970aa45"},
+    {file = "niteru-0.1.0.tar.gz", hash = "sha256:010e5fa26b093152c9e1368bf666faa2f20f6b29f7d6d94677e668aae6ea30c0"},
 ]
 nodeenv = [
     {file = "nodeenv-1.6.0-py2.py3-none-any.whl", hash = "sha256:621e6b7076565ddcacd2db0294c0381e01fd28945ab36bcf00f41c5daf63bef7"},

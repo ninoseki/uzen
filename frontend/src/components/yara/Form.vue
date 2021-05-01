@@ -1,11 +1,15 @@
 <template>
   <div>
     <div class="box">
+      <b-message type="is-info">Scan snapshots with YARA</b-message>
+
       <BasicForm :source.sync="source" :target.sync="target" />
+
       <hr />
+
       <SnapshotForm ref="form" />
-      <br />
-      <div class="has-text-centered">
+
+      <div class="has-text-centered mt-5">
         <b-button
           type="is-light"
           icon-pack="fas"

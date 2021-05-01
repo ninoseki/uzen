@@ -9,6 +9,9 @@ from app.schemas.ip_address import IPAddress
 from app.schemas.job import (
     Job,
     JobResultWrapper,
+    SimilarityScanJobDefinition,
+    SimilarityScanJobResult,
+    SimilarityScanJobStatus,
     SnapshotJobDefinition,
     SnapshotJobResult,
     SnapshotJobStatus,
@@ -20,6 +23,10 @@ from app.schemas.match import Match, MatchesSearchResults, MatchResult
 from app.schemas.rule import CreateRulePayload, RulesSearchResults, UpdateRulePayload
 from app.schemas.screenshot import Screenshot
 from app.schemas.script import Script
+from app.schemas.similarity import (
+    SimilarityScanPayload,
+    SimilarityScanPayloadWithSearchOptions,
+)
 from app.schemas.snapshot import (
     BaseSnapshot,
     CreateSnapshotPayload,
@@ -67,6 +74,11 @@ __all__ = [
     "RulesSearchResults",
     "Screenshot",
     "Script",
+    "SimilarityScanJobDefinition",
+    "SimilarityScanJobResult",
+    "SimilarityScanJobStatus",
+    "SimilarityScanPayload",
+    "SimilarityScanPayloadWithSearchOptions",
     "Snapshot",
     "SnapshotJobDefinition",
     "SnapshotJobResult",

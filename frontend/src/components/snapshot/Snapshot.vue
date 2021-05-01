@@ -93,13 +93,31 @@
             </div>
             <div class="column">
               <H3>SHA256 hash (HTML)</H3>
-              <router-link
-                :to="{
-                  name: 'Snapshots',
-                  query: { htmlHash: snapshot.html.sha256 },
-                }"
-                >{{ snapshot.html.sha256 }}
-              </router-link>
+              <p>
+                <router-link
+                  :to="{
+                    name: 'Snapshots',
+                    query: { htmlHash: snapshot.html.sha256 },
+                  }"
+                  >{{ snapshot.html.sha256 }}
+                </router-link>
+
+                <b-button
+                  class="is-pulled-right"
+                  icon-pack="fas"
+                  icon-left="search"
+                  tag="router-link"
+                  :to="{
+                    name: 'Similarity',
+                    query: {
+                      htmlHash: snapshot.html.sha256,
+                      excludeHostname: snapshot.hostname,
+                      excludeIPAddress: snapshot.ipAddress,
+                    },
+                  }"
+                  >Find similar snapshtos</b-button
+                >
+              </p>
             </div>
             <div class="column">
               <H3> Classifications </H3>

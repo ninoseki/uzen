@@ -1,4 +1,5 @@
 import { Dict } from "@/types/common";
+import { Pager, ScanOptions } from "@/types/scan";
 
 export interface YaraMatchString {
   offset: number;
@@ -26,21 +27,8 @@ export interface YaraScanPayload {
   source: string;
 }
 
-export interface YaraScanOptions {
-  asn: string | undefined;
-  contentType: string | undefined;
-  hostname: string | undefined;
-  ipAddress: string | undefined;
-  server: string | undefined;
-  sha256: string | undefined;
-  status: number | undefined;
-  url: string | undefined;
-  fromAt: string | undefined;
-  toAt: string | undefined;
-}
-
-export interface YaraScanPayloadWithSearchOptions extends YaraScanPayload {
-  size: number | null;
-  offset: number | null;
-  filters: YaraScanOptions;
+export interface YaraScanPayloadWithSearchOptions
+  extends YaraScanPayload,
+    Pager {
+  filters: ScanOptions;
 }

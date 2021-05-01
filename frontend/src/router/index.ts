@@ -11,6 +11,8 @@ import IPAddress from "@/views/IPAddress.vue";
 import Matches from "@/views/Matches.vue";
 import Rule from "@/views/Rule.vue";
 import Rules from "@/views/Rules.vue";
+import Similarity from "@/views/Similarity.vue";
+import SimilarityScanJob from "@/views/SimilarityScanJob.vue";
 import Snapshot from "@/views/Snapshot.vue";
 import SnapshotJob from "@/views/SnapshotJob.vue";
 import Snapshots from "@/views/Snapshots.vue";
@@ -55,11 +57,25 @@ const routes = [
     props: true,
   },
   {
+    path: "/jobs/similarity/:id",
+    name: "SimilarityScanJob",
+    component: SimilarityScanJob,
+    props: true,
+  },
+  {
     path: "/yara",
     name: "Yara",
     component: Yara,
     meta: {
       title: "YARA - Uzen",
+    },
+  },
+  {
+    path: "/similarity",
+    name: "Similarity",
+    component: Similarity,
+    meta: {
+      title: "Similarity - Uzen",
     },
   },
   {

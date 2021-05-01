@@ -20,7 +20,10 @@
         >Matches</b-navbar-item
       >
       <b-navbar-item tag="router-link" :to="{ path: '/yara' }"
-        >YARA scan</b-navbar-item
+        >YARA</b-navbar-item
+      >
+      <b-navbar-item tag="router-link" :to="{ path: '/similarity' }"
+        >Similarity</b-navbar-item
       >
       <b-navbar-item tag="router-link" :to="{ path: '/import' }"
         >Import</b-navbar-item
