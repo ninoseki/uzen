@@ -9,7 +9,7 @@ from app import models, schemas
 from app.api.dependencies.arq import get_arq_redis
 from app.api.dependencies.snapshot import SearchFilters
 from app.api.dependencies.verification import verify_api_key
-from app.arq.constants import snapshot_task_name
+from app.arq.constants import SNAPSHOT_TASK_NAME
 from app.services.searchers.snapshot import SnapshotSearcher
 
 router = APIRouter()
@@ -76,7 +76,7 @@ async def create(
     _: Any = Depends(verify_api_key),
     arq_redis: ArqRedis = Depends(get_arq_redis),
 ) -> schemas.Job:
-    job = await arq_redis.enqueue_job(snapshot_task_name, payload)
+    job = await arq_redis.enqueue_job(SNAPSHOT_TASK_NAME, payload)
     return schemas.Job(id=job.job_id, type="snapshot")
 
 
