@@ -5,7 +5,7 @@ import pytest
 
 from app.models.rule import Rule
 from app.models.snapshot import Snapshot
-from app.services.rule_matcher import RuleMatcher
+from app.services.scanners import RuleScanner
 
 
 @pytest.fixture
@@ -26,6 +26,6 @@ async def rule_setup():
 @pytest.mark.usefixtures("scripts_setup")
 async def test_scan():
     snapshot = await Snapshot.all().first().prefetch_related("_scripts__file")
-    matcher = RuleMatcher(snapshot)
+    matcher = RuleScanner(snapshot)
     results = await matcher.scan()
     assert len(results) == 1

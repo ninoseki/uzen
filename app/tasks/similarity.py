@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from app import schemas
-from app.services.similarity_scanner import SimilarityScanner
+from app.services.scanners import SimilarityScanner
 
 
 async def similarity_scan_task(

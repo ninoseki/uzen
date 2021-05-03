@@ -8,10 +8,8 @@ import yara
 
 from app import models, schemas
 from app.services.matches_converter import MatchesConverter
-from app.services.searchers.snapshot import SnapshotSearcher
-
-CHUNK_SIZE = 100
-MAX_AT_ONCE = 10
+from app.services.scanners.constants import CHUNK_SIZE, MAX_AT_ONCE
+from app.services.scanners.utils import search_snapshots
 
 
 def build_snapshot_table(snapshots: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -118,9 +116,13 @@ class YaraScanner:
             filters = {}
 
         # get snapshots ids based on filters
-        search_results = await SnapshotSearcher.search(
-            filters, id_only=True, size=size, offset=offset
+        search_results = await search_snapshots(
+            filters=filters,
+            id_only=True,
+            size=size,
+            offset=offset,
         )
+
         snapshot_ids = cast(List[UUID], search_results.results)
         if len(snapshot_ids) == 0:
             return []

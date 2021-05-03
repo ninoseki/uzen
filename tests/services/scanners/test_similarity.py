@@ -1,7 +1,7 @@
 import pytest
 
 from app.models.snapshot import Snapshot
-from app.services.similarity_scanner import SimilarityScanner
+from app.services.scanners import SimilarityScanner
 
 
 @pytest.mark.asyncio

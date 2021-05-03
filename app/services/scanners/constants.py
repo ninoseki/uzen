@@ -1,0 +1,2 @@
+CHUNK_SIZE: int = 256
+MAX_AT_ONCE: int = 10
