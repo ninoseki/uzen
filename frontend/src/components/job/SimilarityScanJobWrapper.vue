@@ -39,10 +39,7 @@
           getJobStatusTask.last.value.definition !== null
         "
       >
-        <div
-          class="table-container"
-          v-if="getJobStatusTask.last.value.definition !== null"
-        >
+        <div class="table-container">
           <table class="table">
             <tbody>
               <tr>
