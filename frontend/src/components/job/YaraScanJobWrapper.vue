@@ -61,6 +61,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted } from "@vue/composition-api";
+import { useTitle } from "@vueuse/core";
 import { useAsyncTask } from "vue-concurrency";
 
 import { API } from "@/api";
@@ -87,6 +88,10 @@ export default defineComponent({
   },
 
   setup(props) {
+    const updateTitle = (): void => {
+      useTitle(`${props.jobId} - Uzen`);
+    };
+
     const getJobStatusTask = useAsyncTask<YaraScanJobStatus, []>(async () => {
       return await API.getYaraScanJobStatus(props.jobId);
     });
@@ -96,6 +101,8 @@ export default defineComponent({
     };
 
     onMounted(async () => {
+      updateTitle();
+
       const refreshId = setInterval(async () => {
         try {
           const status = await getJobStatus();

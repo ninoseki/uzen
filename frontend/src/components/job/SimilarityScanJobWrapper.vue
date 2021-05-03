@@ -99,6 +99,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted } from "@vue/composition-api";
+import { useTitle } from "@vueuse/core";
 import { sha256 } from "js-sha256";
 import { useAsyncTask } from "vue-concurrency";
 
@@ -124,6 +125,10 @@ export default defineComponent({
   },
 
   setup(props) {
+    const updateTitle = (): void => {
+      useTitle(`${props.jobId} - Uzen`);
+    };
+
     const getJobStatusTask = useAsyncTask<SimilarityScanJobStatus, []>(
       async () => {
         return await API.getSimilarityScanJobStatus(props.jobId);
@@ -135,6 +140,8 @@ export default defineComponent({
     };
 
     onMounted(async () => {
+      updateTitle();
+
       const refreshId = setInterval(async () => {
         try {
           const status = await getJobStatus();
