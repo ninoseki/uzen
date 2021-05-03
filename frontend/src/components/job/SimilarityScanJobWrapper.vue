@@ -46,6 +46,14 @@
           <table class="table">
             <tbody>
               <tr>
+                <th>HTML hash (sha256)</th>
+                <td>
+                  {{
+                    sha256(getJobStatusTask.last.value.definition.payload.html)
+                  }}
+                </td>
+              </tr>
+              <tr>
                 <th>Hostname to exclude</th>
                 <td>
                   {{
@@ -91,6 +99,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted } from "@vue/composition-api";
+import { sha256 } from "js-sha256";
 import { useAsyncTask } from "vue-concurrency";
 
 import { API } from "@/api";
@@ -141,6 +150,7 @@ export default defineComponent({
 
     return {
       getJobStatusTask,
+      sha256,
     };
   },
 });
