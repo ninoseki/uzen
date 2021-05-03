@@ -6,6 +6,7 @@ from app.dataclasses.browser import (
 from app.dataclasses.certificate import Certificate
 from app.dataclasses.har import HAR
 from app.dataclasses.search import SearchResults
+from app.dataclasses.similarity import SimilarityResult
 from app.dataclasses.utils import (
     EnrichmentResults,
     HttpResource,
@@ -26,6 +27,7 @@ __all__ = [
     "ScriptFile",
     "SearchResults",
     "SearchResults",
+    "SimilarityResult",
     "SnapshotResult",
     "StylesheetFile",
     "Whois",

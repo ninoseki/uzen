@@ -1,5 +1,5 @@
 <template>
-  <div class="box table-container" v-if="hasSnapshots">
+  <div class="box table-container" v-if="$props.snapshots.length > 0">
     <b-table :data="snapshots">
       <b-table-column field="url" label="URL" v-slot="props">
         <p>
@@ -23,6 +23,11 @@
           <strong>ASN:</strong> {{ props.row.asn.split(" ")[0] }}
         </p>
         <p class="is-size-7"><strong>Status:</strong> {{ props.row.status }}</p>
+
+        <p class="is-size-7" v-if="props.row.similarty !== null">
+          <strong>Similarity:</strong>
+          {{ toPercentString(props.row.similarity) }}
+        </p>
       </b-table-column>
 
       <b-table-column field="createdAt" label="Created at" v-slot="props">
@@ -33,10 +38,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from "@vue/composition-api";
+import { defineComponent, PropType } from "@vue/composition-api";
 
 import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
-import { Snapshot, SnapshotWithYaraResult } from "@/types";
+import {
+  Snapshot,
+  SnapshotWithSimilarity,
+  SnapshotWithYaraResult,
+} from "@/types";
 import { countryCodeToEmoji } from "@/utils/country";
 import { truncate } from "@/utils/truncate";
 
@@ -44,19 +53,21 @@ export default defineComponent({
   name: "SnapshotTable",
   props: {
     snapshots: {
-      type: Array as PropType<Snapshot[] | SnapshotWithYaraResult[]>,
+      type: Array as PropType<
+        Snapshot[] | SnapshotWithYaraResult[] | SnapshotWithSimilarity[]
+      >,
       required: true,
     },
   },
   components: {
     DatetimeWithDiff,
   },
-  setup(props) {
-    const hasSnapshots = computed((): boolean => {
-      return props.snapshots.length > 0;
-    });
+  setup() {
+    const toPercentString = (n: number) => {
+      return `${Math.floor(n * 100)}%`;
+    };
 
-    return { hasSnapshots, truncate, countryCodeToEmoji };
+    return { truncate, countryCodeToEmoji, toPercentString };
   },
 });
 </script>
