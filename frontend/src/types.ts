@@ -12,6 +12,8 @@ import {
   Job,
   SimilarityScanJobStatus,
   SnapshotJobStatus,
+  SnapshotWithSimilarity,
+  SnapshotWithYaraResult,
   YaraScanJobStatus,
 } from "@/types/job";
 import { Link, LinkType } from "@/types/link";
@@ -53,10 +55,6 @@ import {
   YaraScanPayload,
 } from "@/types/yara";
 
-export interface SnapshotWithYaraResult extends Snapshot {
-  yaraResult: YaraResult | null;
-}
-
 export interface Status {
   ipAddress: string;
   countryCode: string;
@@ -95,6 +93,8 @@ export {
   SnapshotFilters,
   SnapshotJobStatus,
   SnapshotSearchResults,
+  SnapshotWithSimilarity,
+  SnapshotWithYaraResult,
   Stylesheet,
   TargetTypes,
   UpdateRulePayload,

@@ -26,6 +26,7 @@ from app.schemas.script import Script
 from app.schemas.similarity import (
     SimilarityScanPayload,
     SimilarityScanPayloadWithSearchOptions,
+    SimilarityScanResult,
 )
 from app.schemas.snapshot import (
     BaseSnapshot,
@@ -79,6 +80,7 @@ __all__ = [
     "SimilarityScanJobStatus",
     "SimilarityScanPayload",
     "SimilarityScanPayloadWithSearchOptions",
+    "SimilarityScanResult",
     "Snapshot",
     "SnapshotJobDefinition",
     "SnapshotJobResult",

@@ -6,8 +6,10 @@ from pydantic import Field
 
 from app.schemas.base import APIModel
 from app.schemas.jobs.common import JobStatus
-from app.schemas.similarity import SimilarityScanPayloadWithSearchOptions
-from app.schemas.snapshot import PlainSnapshot
+from app.schemas.similarity import (
+    SimilarityScanPayloadWithSearchOptions,
+    SimilarityScanResult,
+)
 
 
 class SimilarityScanJobDefinition(APIModel):
@@ -32,7 +34,7 @@ class SimilarityScanJobDefinition(APIModel):
 
 
 class SimilarityScanJobResult(APIModel):
-    scan_results: List[PlainSnapshot] = Field(...)
+    scan_results: List[SimilarityScanResult] = Field(...)
 
 
 class SimilarityScanJobStatus(JobStatus):

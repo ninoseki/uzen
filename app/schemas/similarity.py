@@ -1,9 +1,10 @@
 from datetime import date, datetime
-from typing import Dict, Optional, Union
+from typing import Dict, List, Optional, Union
 
 from pydantic import Field, validator
 
 from app.schemas.base import APIModel
+from app.schemas.snapshot import PlainSnapshot
 
 
 class SimilarityScanPayload(APIModel):
@@ -34,3 +35,15 @@ class SimilarityScanPayloadWithSearchOptions(SimilarityScanPayload):
     size: Optional[int] = Field(None)
     offset: Optional[int] = Field(None)
     filters: Dict[str, Union[str, int, date, datetime, None]] = Field(...)
+
+
+class SimilarityScanResult(PlainSnapshot):
+    """Similarity scan result + snapshot"""
+
+    similarity: float = Field(...)
+
+    @classmethod
+    def field_keys(cls) -> List[str]:
+        keys = list(cls.__fields__.keys())
+        keys.remove("similarity")
+        return keys
