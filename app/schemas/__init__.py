@@ -6,7 +6,7 @@ from app.schemas.file import File
 from app.schemas.har import HAR
 from app.schemas.html import HTML
 from app.schemas.ip_address import IPAddress
-from app.schemas.job import (
+from app.schemas.jobs import (
     Job,
     JobResultWrapper,
     SimilarityScanJobDefinition,
