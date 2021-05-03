@@ -6,14 +6,12 @@ from uuid import UUID
 import aiometer
 
 from app import models, schemas
+from app.services.scanners.constants import CHUNK_SIZE, MAX_AT_ONCE
+from app.services.scanners.yara import YaraScanner
 from app.services.searchers.rule import RuleSearcher
-from app.services.yara_scanner import YaraScanner
-
-CHUNK_SIZE = 100
-MAX_AT_ONCE = 10
 
 
-class RuleMatcher:
+class RuleScanner:
     def __init__(self, snapshot: models.Snapshot):
         self.snapshot = snapshot
 

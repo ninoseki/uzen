@@ -8,7 +8,7 @@ from fastapi_cache.coder import PickleCoder
 
 from app import schemas
 from app.api.dependencies.arq import get_arq_redis
-from app.arq.constants import preview_task_name
+from app.arq.constants import PREVIEW_TASK_NAME
 from app.utils.cache import cache
 from app.utils.screenshot import get_screenshot
 
@@ -52,7 +52,7 @@ async def perview(
     hostname: str,
     arq_redis: ArqRedis = Depends(get_arq_redis),
 ) -> Union[Response]:
-    job = await arq_redis.enqueue_job(preview_task_name, hostname)
+    job = await arq_redis.enqueue_job(PREVIEW_TASK_NAME, hostname)
 
     job_result = await job.result()
     job_result = cast(schemas.JobResultWrapper, job_result)

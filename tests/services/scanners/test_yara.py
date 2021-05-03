@@ -1,7 +1,7 @@
 import pytest
 
 from app.models.snapshot import Snapshot
-from app.services.yara_scanner import YaraScanner
+from app.services.scanners import YaraScanner
 
 
 @pytest.mark.asyncio

@@ -4,41 +4,11 @@ from typing import Any, Dict, List, Optional
 
 import aiometer
 from niteru import similarity
-from tortoise.query_utils import Q
 
 from app import models, schemas
-from app.services.searchers.snapshot import SnapshotSearcher
+from app.services.scanners.constants import CHUNK_SIZE, MAX_AT_ONCE
+from app.services.scanners.utils import search_snapshots
 from app.utils.hash import calculate_sha256
-
-CHUNK_SIZE = 256
-MAX_AT_ONCE = 10
-
-
-async def search_snapshots(
-    html_id: str,
-    exclude_hostname: Optional[str] = None,
-    exclude_ip_address: Optional[str] = None,
-    filters: Optional[Dict[str, Any]] = None,
-    size: Optional[int] = None,
-    offset: Optional[int] = None,
-):
-    if filters is None:
-        filters = {}
-
-    additional_queries: List[Q] = [~Q(html__id=html_id)]
-
-    if exclude_hostname is not None:
-        additional_queries.append(~Q(hostname=exclude_hostname))
-
-    if exclude_ip_address is not None:
-        additional_queries.append(~Q(ip_address=exclude_ip_address))
-
-    return await SnapshotSearcher.search(
-        filters,
-        size=size,
-        offset=offset,
-        additional_queries=additional_queries,
-    )
 
 
 def is_similar(html1: str, html2: str, threshold: float = 0.9):

@@ -1,6 +1,6 @@
 from app import models, schemas
 from app.api.dependencies.arq import get_arq_redis_with_context
-from app.arq.constants import enrich_snapshot_task_name
+from app.arq.constants import ENRICH_SNAPSHOT_TASK_NAME
 from app.core.exceptions import TakeSnapshotError
 from app.services.browser import Browser
 from app.tasks import AbstractAsyncTask
@@ -56,6 +56,6 @@ async def take_snapshot_task(
         UploadScrenshotTask.process(uuid=snapshot.id, screenshot=result.screenshot)
 
     async with get_arq_redis_with_context() as arq_redis:
-        await arq_redis.enqueue_job(enrich_snapshot_task_name, snapshot)
+        await arq_redis.enqueue_job(ENRICH_SNAPSHOT_TASK_NAME, snapshot)
 
     return schemas.JobResultWrapper(result={"snapshot_id": snapshot.id}, error=None)

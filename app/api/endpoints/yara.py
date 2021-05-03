@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends
 from app import schemas
 from app.api.dependencies.arq import get_arq_redis
 from app.api.dependencies.snapshot import SearchFilters
-from app.arq.constants import yara_scan_task_name
+from app.arq.constants import YARA_SCAN_TASK_NAME
 
 router = APIRouter()
 
@@ -32,5 +32,5 @@ async def scan(
         offset=offset,
         filters=vars(filters),
     )
-    job = await arq_redis.enqueue_job(yara_scan_task_name, task_payload)
+    job = await arq_redis.enqueue_job(YARA_SCAN_TASK_NAME, task_payload)
     return schemas.Job(id=job.job_id, type="yara")

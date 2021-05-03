@@ -3,7 +3,7 @@ from typing import List
 from loguru import logger
 
 from app import models, schemas
-from app.services.rule_matcher import RuleMatcher
+from app.services.scanners import RuleScanner
 from app.tasks import AbstractAsyncTask
 
 
@@ -18,8 +18,8 @@ class MatchingTask(AbstractAsyncTask):
             id=self.snapshot.id
         ).prefetch_related("_scripts__file", "whois", "certificate", "html")
 
-        matcher = RuleMatcher(snapshot_)
-        results: List[schemas.MatchResult] = await matcher.scan()
+        scanner = RuleScanner(snapshot_)
+        results: List[schemas.MatchResult] = await scanner.scan()
 
         matches = [
             models.Match(

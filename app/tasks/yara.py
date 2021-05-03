@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from app import schemas
-from app.services.yara_scanner import YaraScanner
+from app.services.scanners import YaraScanner
 
 
 async def yara_scan_task(

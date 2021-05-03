@@ -5,9 +5,9 @@ from fastapi import APIRouter, Depends, HTTPException, Path
 
 from app import schemas
 from app.api.dependencies.arq import get_arq_redis
-from app.arq.constants import snapshot_task_name
+from app.arq.constants import SNAPSHOT_TASK_NAME
 from app.core.exceptions import JobExecutionError, JobNotFoundError
-from app.factories.job_status import (
+from app.factories.job_statuses import (
     SimilarityScanJobStatusFactory,
     SnapshotJobStatusFactory,
     YaraScanJobStatusFactory,
@@ -30,7 +30,7 @@ async def get_running_snapshot_jobs(
 
     snapshot_job_definitions: List[schemas.SnapshotJobDefinition] = []
     for job in jobs:
-        if job.function == snapshot_task_name:
+        if job.function == SNAPSHOT_TASK_NAME:
             snapshot_job_definitions.append(
                 schemas.SnapshotJobDefinition.from_job_definition(job)
             )
