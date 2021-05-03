@@ -97,6 +97,7 @@ import { API } from "@/api";
 import SimilarityScanJob from "@/components/job/SimilarityScanJob.vue";
 import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
 import SimpleError from "@/components/ui/SimpleError.vue";
+import { JOB_CHECK_INTERVAL } from "@/constants";
 import { SimilarityScanJobStatus } from "@/types/job";
 
 export default defineComponent({
@@ -135,7 +136,7 @@ export default defineComponent({
         } catch (error) {
           clearInterval(refreshId);
         }
-      }, 3000);
+      }, JOB_CHECK_INTERVAL);
     });
 
     return {
