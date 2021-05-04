@@ -1,23 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 
-import Bulk from "@/views/Bulk.vue";
-import Configuration from "@/views/Configuration.vue";
-import Domain from "@/views/Domain.vue";
-import EditRule from "@/views/EditRule.vue";
 import Home from "@/views/Home.vue";
-import Import from "@/views/Import.vue";
-import IPAddress from "@/views/IPAddress.vue";
-import Matches from "@/views/Matches.vue";
-import Rule from "@/views/Rule.vue";
-import Rules from "@/views/Rules.vue";
-import Similarity from "@/views/Similarity.vue";
-import SimilarityScanJob from "@/views/SimilarityScanJob.vue";
-import Snapshot from "@/views/Snapshot.vue";
-import SnapshotJob from "@/views/SnapshotJob.vue";
-import Snapshots from "@/views/Snapshots.vue";
-import Yara from "@/views/Yara.vue";
-import YaraScanJob from "@/views/YaraScanJob.vue";
 
 Vue.use(VueRouter);
 
@@ -33,7 +17,8 @@ const routes = [
   {
     path: "/snapshots",
     name: "Snapshots",
-    component: Snapshots,
+    component: () =>
+      import(/* webpackChunkName: "snapshots" */ "../views/Snapshots.vue"),
     meta: {
       title: "Snapshots - Uzen",
     },
@@ -41,31 +26,37 @@ const routes = [
   {
     path: "/snapshots/:id",
     name: "Snapshot",
-    component: Snapshot,
+    component: () =>
+      import(/* webpackChunkName: "snapshot" */ "../views/Snapshot.vue"),
     props: true,
   },
   {
     path: "/jobs/snapshots/:id",
     name: "SnapshotJob",
-    component: SnapshotJob,
+    component: () =>
+      import(/* webpackChunkName: "snapshotJob" */ "../views/SnapshotJob.vue"),
     props: true,
   },
   {
     path: "/jobs/yara/:id",
     name: "YaraScanJob",
-    component: YaraScanJob,
+    component: () =>
+      import(/* webpackChunkName: "yaraScanJob" */ "../views/YaraScanJob.vue"),
     props: true,
   },
   {
     path: "/jobs/similarity/:id",
     name: "SimilarityScanJob",
-    component: SimilarityScanJob,
+    component: () =>
+      import(
+        /* webpackChunkName: "similarityScanJob" */ "../views/SimilarityScanJob.vue"
+      ),
     props: true,
   },
   {
     path: "/yara",
     name: "Yara",
-    component: Yara,
+    component: () => import(/* webpackChunkName: "yara" */ "../views/Yara.vue"),
     meta: {
       title: "YARA - Uzen",
     },
@@ -73,7 +64,8 @@ const routes = [
   {
     path: "/similarity",
     name: "Similarity",
-    component: Similarity,
+    component: () =>
+      import(/* webpackChunkName: "similarity" */ "../views/Similarity.vue"),
     meta: {
       title: "Similarity - Uzen",
     },
@@ -81,7 +73,8 @@ const routes = [
   {
     path: "/import",
     name: "Import",
-    component: Import,
+    component: () =>
+      import(/* webpackChunkName: "import" */ "../views/Import.vue"),
     meta: {
       title: "Import - Uzen",
     },
@@ -89,7 +82,8 @@ const routes = [
   {
     path: "/rules",
     name: "Rules",
-    component: Rules,
+    component: () =>
+      import(/* webpackChunkName: "rules" */ "../views/Rules.vue"),
     meta: {
       title: "Rules - Uzen",
     },
@@ -97,12 +91,13 @@ const routes = [
   {
     path: "/rules/:id",
     name: "Rule",
-    component: Rule,
+    component: () => import(/* webpackChunkName: "rule" */ "../views/Rule.vue"),
   },
   {
     path: "/rules/edit/:id",
     name: "EditRule",
-    component: EditRule,
+    component: () =>
+      import(/* webpackChunkName: "editRule" */ "../views/EditRule.vue"),
     meta: {
       title: "Edit a rule - Uzen",
     },
@@ -110,7 +105,8 @@ const routes = [
   {
     path: "/matches",
     name: "Matches",
-    component: Matches,
+    component: () =>
+      import(/* webpackChunkName: "matches" */ "../views/Matches.vue"),
     meta: {
       title: "Matches - Uzen",
     },
@@ -118,17 +114,19 @@ const routes = [
   {
     path: "/ip_address/:ipAddress",
     name: "IP address",
-    component: IPAddress,
+    component: () =>
+      import(/* webpackChunkName: "ipAddress" */ "../views/IPAddress.vue"),
   },
   {
     path: "/domain/:hostname",
     name: "Domain",
-    component: Domain,
+    component: () =>
+      import(/* webpackChunkName: "domain" */ "../views/Domain.vue"),
   },
   {
     path: "/bulk",
     name: "Bulk",
-    component: Bulk,
+    component: () => import(/* webpackChunkName: "bulk" */ "../views/Bulk.vue"),
     meta: {
       title: "Bulk - Uzen",
     },
@@ -136,7 +134,10 @@ const routes = [
   {
     path: "/configuration",
     name: "Configuration",
-    component: Configuration,
+    component: () =>
+      import(
+        /* webpackChunkName: "configuration" */ "../views/Configuration.vue"
+      ),
     meta: {
       title: "Configuration - Uzen",
     },
