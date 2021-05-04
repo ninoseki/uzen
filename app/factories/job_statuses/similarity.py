@@ -3,6 +3,7 @@ from typing import List, Optional, cast
 from arq.connections import ArqRedis
 
 from app import schemas
+from app.arq.constants import SIMILARITY_SCAN_TASK_NAME
 from app.factories.job_statuses.utils import get_job_definition_and_result
 
 
@@ -39,3 +40,20 @@ class SimilarityScanJobStatusFactory:
             result=job_result,
             definition=job_definition,
         )
+
+
+class RunningSimilarityScanJobsFactory:
+    @staticmethod
+    async def build(
+        arq_redis: ArqRedis,
+    ) -> List[schemas.SimilarityScanJobDefinition]:
+        jobs = await arq_redis.queued_jobs()
+
+        job_definitions: List[schemas.SimilarityScanJobDefinition] = []
+        for job in jobs:
+            if job.function == SIMILARITY_SCAN_TASK_NAME:
+                job_definitions.append(
+                    schemas.SimilarityScanJobDefinition.from_job_definition(job)
+                )
+
+        return job_definitions
