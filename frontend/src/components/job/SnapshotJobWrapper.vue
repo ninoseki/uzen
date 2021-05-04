@@ -30,6 +30,7 @@ import { useAsyncTask } from "vue-concurrency";
 import { API } from "@/api";
 import SnapshotJob from "@/components/job/SnapshotJob.vue";
 import SimpleError from "@/components/ui/SimpleError.vue";
+import { JOB_CHECK_INTERVAL } from "@/constants";
 import { SnapshotJobStatus } from "@/types";
 
 export default defineComponent({
@@ -75,7 +76,7 @@ export default defineComponent({
         } catch (error) {
           clearInterval(refreshId);
         }
-      }, 3000);
+      }, JOB_CHECK_INTERVAL);
     });
 
     return {

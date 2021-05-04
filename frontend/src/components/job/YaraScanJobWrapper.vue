@@ -61,6 +61,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted } from "@vue/composition-api";
+import { useTitle } from "@vueuse/core";
 import { useAsyncTask } from "vue-concurrency";
 
 import { API } from "@/api";
@@ -68,6 +69,7 @@ import YaraScanJob from "@/components/job/YaraScanJob.vue";
 import H3 from "@/components/ui/H3.vue";
 import SimpleError from "@/components/ui/SimpleError.vue";
 import YaraSource from "@/components/yara/Source.vue";
+import { JOB_CHECK_INTERVAL } from "@/constants";
 import { YaraScanJobStatus } from "@/types/job";
 
 export default defineComponent({
@@ -86,6 +88,10 @@ export default defineComponent({
   },
 
   setup(props) {
+    const updateTitle = (): void => {
+      useTitle(`${props.jobId} - Uzen`);
+    };
+
     const getJobStatusTask = useAsyncTask<YaraScanJobStatus, []>(async () => {
       return await API.getYaraScanJobStatus(props.jobId);
     });
@@ -95,6 +101,8 @@ export default defineComponent({
     };
 
     onMounted(async () => {
+      updateTitle();
+
       const refreshId = setInterval(async () => {
         try {
           const status = await getJobStatus();
@@ -105,7 +113,7 @@ export default defineComponent({
         } catch (error) {
           clearInterval(refreshId);
         }
-      }, 3000);
+      }, JOB_CHECK_INTERVAL);
     });
 
     return {

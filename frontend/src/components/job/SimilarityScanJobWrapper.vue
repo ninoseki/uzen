@@ -39,12 +39,17 @@
           getJobStatusTask.last.value.definition !== null
         "
       >
-        <div
-          class="table-container"
-          v-if="getJobStatusTask.last.value.definition !== null"
-        >
+        <div class="table-container">
           <table class="table">
             <tbody>
+              <tr>
+                <th>HTML hash (sha256)</th>
+                <td>
+                  {{
+                    sha256(getJobStatusTask.last.value.definition.payload.html)
+                  }}
+                </td>
+              </tr>
               <tr>
                 <th>Hostname to exclude</th>
                 <td>
@@ -91,12 +96,15 @@
 
 <script lang="ts">
 import { defineComponent, onMounted } from "@vue/composition-api";
+import { useTitle } from "@vueuse/core";
+import { sha256 } from "js-sha256";
 import { useAsyncTask } from "vue-concurrency";
 
 import { API } from "@/api";
 import SimilarityScanJob from "@/components/job/SimilarityScanJob.vue";
 import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
 import SimpleError from "@/components/ui/SimpleError.vue";
+import { JOB_CHECK_INTERVAL } from "@/constants";
 import { SimilarityScanJobStatus } from "@/types/job";
 
 export default defineComponent({
@@ -114,6 +122,10 @@ export default defineComponent({
   },
 
   setup(props) {
+    const updateTitle = (): void => {
+      useTitle(`${props.jobId} - Uzen`);
+    };
+
     const getJobStatusTask = useAsyncTask<SimilarityScanJobStatus, []>(
       async () => {
         return await API.getSimilarityScanJobStatus(props.jobId);
@@ -125,6 +137,8 @@ export default defineComponent({
     };
 
     onMounted(async () => {
+      updateTitle();
+
       const refreshId = setInterval(async () => {
         try {
           const status = await getJobStatus();
@@ -135,11 +149,12 @@ export default defineComponent({
         } catch (error) {
           clearInterval(refreshId);
         }
-      }, 3000);
+      }, JOB_CHECK_INTERVAL);
     });
 
     return {
       getJobStatusTask,
+      sha256,
     };
   },
 });

@@ -7,7 +7,7 @@ import {
 import { Device } from "@/types/devices";
 import { DomainInformation } from "@/types/domain";
 import { HAR } from "@/types/har";
-import { IPAddressInformation } from "@/types/ip_address";
+import { IPAddressInformation } from "@/types/ipAddress";
 import {
   Job,
   SimilarityScanJobStatus,
