@@ -24,7 +24,7 @@
         </p>
         <p class="is-size-7"><strong>Status:</strong> {{ props.row.status }}</p>
 
-        <p class="is-size-7" v-if="props.row.similarty !== null">
+        <p class="is-size-7" v-if="'similarity' in props.row">
           <strong>Similarity:</strong>
           {{ toPercentString(props.row.similarity) }}
         </p>
