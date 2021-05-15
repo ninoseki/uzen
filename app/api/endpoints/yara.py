@@ -1,4 +1,5 @@
 from typing import Optional
+from uuid import uuid4
 
 from arq.connections import ArqRedis
 from fastapi import APIRouter, Depends, HTTPException
@@ -32,7 +33,8 @@ async def scan(
         offset=offset,
         filters=vars(filters),
     )
-    job = await arq_redis.enqueue_job(YARA_SCAN_TASK_NAME, task_payload)
+    job_id = str(uuid4())
+    job = await arq_redis.enqueue_job(YARA_SCAN_TASK_NAME, task_payload, _job_id=job_id)
     if job is not None:
         return schemas.Job(id=job.job_id, type="yara")
 

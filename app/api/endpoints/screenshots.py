@@ -1,5 +1,5 @@
 from typing import Union, cast
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from arq.connections import ArqRedis
 from fastapi import APIRouter, Depends, HTTPException
@@ -52,7 +52,8 @@ async def perview(
     hostname: str,
     arq_redis: ArqRedis = Depends(get_arq_redis),
 ) -> Union[Response]:
-    job = await arq_redis.enqueue_job(PREVIEW_TASK_NAME, hostname)
+    job_id = str(uuid4())
+    job = await arq_redis.enqueue_job(PREVIEW_TASK_NAME, hostname, _job_id=job_id)
     if job is None:
         raise HTTPException(status_code=500, detail="Something went wrong...")
 

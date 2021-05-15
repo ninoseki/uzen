@@ -170,9 +170,13 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
     async def save_snapshot_result(
         _,
         result: "SnapshotResult",
+        id: str | None = None,
     ) -> Snapshot:
         async with in_transaction():
             snapshot = result.snapshot
+
+            if id is not None:
+                snapshot.id = id
 
             # save html, certificate, whois before saving snapshot
             html = result.html
