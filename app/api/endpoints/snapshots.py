@@ -77,6 +77,9 @@ async def create(
     arq_redis: ArqRedis = Depends(get_arq_redis),
 ) -> schemas.Job:
     job = await arq_redis.enqueue_job(SNAPSHOT_TASK_NAME, payload)
+    if job is None:
+        raise HTTPException(status_code=500, detail="Something went wrong...")
+
     return schemas.Job(id=job.job_id, type="snapshot")
 
 
