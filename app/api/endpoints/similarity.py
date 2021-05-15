@@ -1,7 +1,7 @@
 from typing import Optional
 
 from arq.connections import ArqRedis
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 
 from app import schemas
 from app.api.dependencies.arq import get_arq_redis
@@ -35,4 +35,7 @@ async def scan(
         filters=vars(filters),
     )
     job = await arq_redis.enqueue_job(SIMILARITY_SCAN_TASK_NAME, task_payload)
+    if job is None:
+        raise HTTPException(status_code=500, detail="Something went wrong...")
+
     return schemas.Job(id=job.job_id, type="similarity")

@@ -1,7 +1,7 @@
 from typing import Optional
 
 from arq.connections import ArqRedis
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 
 from app import schemas
 from app.api.dependencies.arq import get_arq_redis
@@ -33,4 +33,7 @@ async def scan(
         filters=vars(filters),
     )
     job = await arq_redis.enqueue_job(YARA_SCAN_TASK_NAME, task_payload)
-    return schemas.Job(id=job.job_id, type="yara")
+    if job is not None:
+        return schemas.Job(id=job.job_id, type="yara")
+
+    raise HTTPException(status_code=500, detail="Something went wrong...")

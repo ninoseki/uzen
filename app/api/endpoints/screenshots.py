@@ -2,7 +2,7 @@ from typing import Union, cast
 from uuid import UUID
 
 from arq.connections import ArqRedis
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import Response
 from fastapi_cache.coder import PickleCoder
 
@@ -53,6 +53,8 @@ async def perview(
     arq_redis: ArqRedis = Depends(get_arq_redis),
 ) -> Union[Response]:
     job = await arq_redis.enqueue_job(PREVIEW_TASK_NAME, hostname)
+    if job is None:
+        raise HTTPException(status_code=500, detail="Something went wrong...")
 
     job_result = await job.result()
     job_result = cast(schemas.JobResultWrapper, job_result)
