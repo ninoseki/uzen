@@ -1,5 +1,5 @@
 from typing import Any, Dict, List, Optional, cast
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from arq.connections import ArqRedis
 from fastapi import APIRouter, Depends, HTTPException
@@ -66,7 +66,6 @@ async def get(snapshot_id: UUID) -> schemas.Snapshot:
 @router.post(
     "/",
     response_model=schemas.Job,
-    response_description="Returns a created snapshot",
     summary="Create a snapshot",
     description="Create a snapshot of a website",
     status_code=201,
@@ -76,7 +75,8 @@ async def create(
     _: Any = Depends(verify_api_key),
     arq_redis: ArqRedis = Depends(get_arq_redis),
 ) -> schemas.Job:
-    job = await arq_redis.enqueue_job(SNAPSHOT_TASK_NAME, payload)
+    job_id = str(uuid4())
+    job = await arq_redis.enqueue_job(SNAPSHOT_TASK_NAME, payload, _job_id=job_id)
     if job is None:
         raise HTTPException(status_code=500, detail="Something went wrong...")
 

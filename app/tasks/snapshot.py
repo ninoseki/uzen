@@ -1,3 +1,5 @@
+from typing import Optional
+
 from app import models, schemas
 from app.api.dependencies.arq import get_arq_redis_with_context
 from app.arq.constants import ENRICH_SNAPSHOT_TASK_NAME
@@ -49,7 +51,8 @@ async def take_snapshot_task(
     except TakeSnapshotError as e:
         return schemas.JobResultWrapper(result=None, error=str(e))
 
-    snapshot = await models.Snapshot.save_snapshot_result(result)
+    id: Optional[str] = ctx.get("job_id")
+    snapshot = await models.Snapshot.save_snapshot_result(result, id=id)
 
     # upload screenshot
     if result.screenshot is not None:
