@@ -7,10 +7,11 @@
       ></SimpleError>
       <div
         v-else-if="
-          getJobStatusTask.last !== undefined &&
-          getJobStatusTask.last.value !== null &&
-          getJobStatusTask.last.value.definition !== null &&
-          getJobStatusTask.last.value.result === null
+          getJobStatusTask.last === undefined ||
+          (getJobStatusTask.last !== undefined &&
+            getJobStatusTask.last.value !== null &&
+            getJobStatusTask.last.value.definition !== null &&
+            getJobStatusTask.last.value.result === null)
         "
       >
         <b-message type="is-info" has-icon>
