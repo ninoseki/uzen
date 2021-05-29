@@ -1,20 +1,26 @@
 import json
 import pathlib
 
-from app.services.har import HarBuilder, HarReader
+import dateutil.parser
+from playwright_har_tracer.dataclasses.har import Har
+
+from app.services.har import HarReader
+
+
+def datetime_decoder(data: dict) -> dict:
+    for field, value in data.items():
+        if field in ["startedDateTime", "expires"]:
+            data[field] = dateutil.parser.parse(value)
+    return data
+
 
 path = pathlib.Path(__file__).parent / "../fixtures/w3c.har"
 with open(path) as f:
-    fixture = json.loads(f.read())
-
-
-def test_builder():
-    har = HarBuilder.from_dict(fixture)
-    assert len(har.log.entries) > 0
+    fixture = json.loads(f.read(), object_hook=datetime_decoder)
 
 
 def test_find_script_files():
-    har = HarBuilder.from_dict(fixture)
+    har = Har.from_dict(fixture)
     reader = HarReader(har)
     script_files = reader.find_script_files()
 
@@ -34,7 +40,7 @@ def test_find_script_files():
 
 
 def test_find_request():
-    har = HarBuilder.from_dict(fixture)
+    har = Har.from_dict(fixture)
     reader = HarReader(har)
     request = reader.find_request()
 

@@ -1,6 +1,8 @@
 from abc import ABC, abstractstaticmethod
 from typing import List, Optional, cast
 
+from playwright_har_tracer.dataclasses.har import Har
+
 from app import dataclasses, models
 from app.factories.certificate import CertificateFactory
 from app.factories.har import HarFactory
@@ -17,10 +19,14 @@ from app.utils.network import (
 )
 
 
-def find_ip_address(url: str, events: List[dataclasses.ResponseReceivedEvent]) -> str:
-    for event in events:
-        if event.response.url == url and event.response.remote_ip_address is not None:
-            return event.response.remote_ip_address
+def find_ip_address(url: str, har: Optional[Har]) -> str:
+    if har is not None:
+        for entry in har.log.entries:
+            if (
+                entry.request.url == url
+                and entry.response._remote_ip_address is not None
+            ):
+                return entry.response._remote_ip_address
 
     hostname = cast(str, get_hostname_from_url(url))
     ip_address = cast(str, get_ip_address_by_hostname(hostname))
@@ -30,11 +36,11 @@ def find_ip_address(url: str, events: List[dataclasses.ResponseReceivedEvent]) -
 async def build_snapshot_result(
     submitted_url: str,
     browsing_result: dataclasses.BrowsingResult,
-    har: Optional[dataclasses.HAR] = None,
 ) -> dataclasses.SnapshotResult:
-
     url = browsing_result.url
-    ip_address = find_ip_address(url, browsing_result.response_received_events)
+    har = browsing_result.har
+
+    ip_address = find_ip_address(url, har)
     hostname = cast(str, get_hostname_from_url(url))
     asn = await get_asn_by_ip_address(ip_address) or ""
     country_code = await get_country_code_by_ip_address(ip_address) or ""
@@ -42,7 +48,7 @@ async def build_snapshot_result(
     script_files: List[dataclasses.ScriptFile] = []
     stylesheet_files: List[dataclasses.StylesheetFile] = []
 
-    if har:
+    if har is not None:
         har_reader = HarReader(har)
         script_files = har_reader.find_script_files()
         stylesheet_files = har_reader.find_stylesheet_files()
