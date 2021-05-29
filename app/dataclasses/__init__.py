@@ -1,10 +1,5 @@
-from app.dataclasses.browser import (
-    BrowsingOptions,
-    BrowsingResult,
-    ResponseReceivedEvent,
-)
+from app.dataclasses.browser import BrowsingOptions, BrowsingResult
 from app.dataclasses.certificate import Certificate
-from app.dataclasses.har import HAR
 from app.dataclasses.search import SearchResults
 from app.dataclasses.similarity import SimilarityResult
 from app.dataclasses.utils import (
@@ -21,9 +16,7 @@ __all__ = [
     "BrowsingResult",
     "Certificate",
     "EnrichmentResults",
-    "HAR",
     "HttpResource",
-    "ResponseReceivedEvent",
     "ScriptFile",
     "SearchResults",
     "SearchResults",
