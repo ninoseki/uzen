@@ -1,5 +1,3 @@
-import json
-
 import httpx
 import pytest
 
@@ -10,14 +8,14 @@ from tests.helper import first_rule_id
 @pytest.mark.asyncio
 async def test_create_rule_with_invalid_target(client: httpx.AsyncClient):
     payload = {"name": "test", "target": "foo", "source": "foo"}
-    response = await client.post("/api/rules/", data=json.dumps(payload))
+    response = await client.post("/api/rules/", json=payload)
     assert response.status_code == 422
 
 
 @pytest.mark.asyncio
 async def test_create_rule_with_invalid_source(client: httpx.AsyncClient):
     payload = {"name": "test", "target": "html", "source": "foo; bar;"}
-    response = await client.post("/api/rules/", data=json.dumps(payload))
+    response = await client.post("/api/rules/", json=payload)
     assert response.status_code == 422
 
 
@@ -28,7 +26,7 @@ async def test_create_rule(client: httpx.AsyncClient):
         "target": "html",
         "source": 'rule foo: bar {strings: $a = "lmn" condition: $a}',
     }
-    response = await client.post("/api/rules/", data=json.dumps(payload))
+    response = await client.post("/api/rules/", json=payload)
     assert response.status_code == 201
 
     count = await Rule.all().count()
@@ -78,7 +76,7 @@ async def test_update(client: httpx.AsyncClient):
     id_ = await first_rule_id()
 
     payload = {"name": "woweee"}
-    response = await client.put(f"/api/rules/{id_}", data=json.dumps(payload))
+    response = await client.put(f"/api/rules/{id_}", json=payload)
     assert response.status_code == 200
 
     rule = await Rule.get(id=id_)
@@ -90,7 +88,7 @@ async def test_update(client: httpx.AsyncClient):
         "target": "script",
         "source": 'rule foo: bar {strings: $a = "html" condition: $a}',
     }
-    response = await client.put(f"/api/rules/{id_}", data=json.dumps(payload))
+    response = await client.put(f"/api/rules/{id_}", json=payload)
     assert response.status_code == 200
 
     rule = await Rule.get(id=id_)
