@@ -1,5 +1,3 @@
-import json
-
 import httpx
 import pytest
 from _pytest.monkeypatch import MonkeyPatch
@@ -98,14 +96,14 @@ async def test_snapshot_list_with_offset_and_size(client: httpx.AsyncClient):
 @pytest.mark.asyncio
 async def test_snapshot_post_without_url(client: httpx.AsyncClient):
     payload = {}
-    response = await client.post("/api/snapshots/", data=json.dumps(payload))
+    response = await client.post("/api/snapshots/", json=payload)
     assert response.status_code == 422
 
 
 @pytest.mark.asyncio
 async def test_snapshot_post_with_invalid_url(client):
     payload = {"url": "foo"}
-    response = await client.post("/api/snapshots/", data=json.dumps(payload))
+    response = await client.post("/api/snapshots/", json=payload)
     assert response.status_code == 422
 
 
@@ -118,7 +116,7 @@ async def test_snapshot_post(client: httpx.AsyncClient, monkeypatch: MonkeyPatch
     monkeypatch.setattr(Browser, "take_snapshot", mock_take_snapshot)
 
     payload = {"url": "http://example.com"}
-    response = await client.post("/api/snapshots/", data=json.dumps(payload))
+    response = await client.post("/api/snapshots/", json=payload)
 
     assert response.status_code == 201
 

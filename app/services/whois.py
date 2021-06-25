@@ -1,79 +1,54 @@
 import asyncio
-import datetime
-from typing import Dict, Optional, Union, cast
+from typing import Optional
 
-import dateparser
+import tldextract
 from aiocache import Cache, cached
 from aiocache.serializers import PickleSerializer
-from asyncwhois.errors import NotFoundError, QueryError, WhoIsError
-from asyncwhois.parser import WhoIsParser
+from whois_parser import WhoisParser
 
 from app import dataclasses
 
 
-def build_parser(hostname: str) -> WhoIsParser:
-    tld = hostname.split(".")[-1]
-    return WhoIsParser(tld)
+def convert_hostname(hostname: str) -> str:
+    extract_result = tldextract.extract(hostname)
 
+    # for IP address
+    if extract_result.suffix == "":
+        return hostname
 
-def normalize_datetime(
-    datetime_input: Optional[Union[datetime.datetime, str]]
-) -> Optional[datetime.datetime]:
-    if datetime_input is None:
-        return datetime_input
+    tld = extract_result.suffix
+    if len(tld.split(".")) > 1:
+        tld = tld.split(".")[-1]
 
-    if isinstance(datetime_input, datetime.datetime):
-        return datetime_input
-
-    return dateparser.parse(datetime_input)
-
-
-def parse(raw: str, hostname: str) -> dataclasses.Whois:
-    output: Dict[str, Optional[Union[str, datetime.datetime]]] = {}
-    try:
-        parser = build_parser(hostname)
-        parser.parse(raw)
-        output = parser.parser_output
-    except NotFoundError:
-        pass
-
-    created = normalize_datetime(output.get("created"))
-    updated = normalize_datetime(output.get("updated"))
-    expires = normalize_datetime(output.get("expires"))
-
-    registrar = cast(Optional[str], output.get("registrar"))
-    registrant_name = cast(Optional[str], output.get("registrant_name"))
-    registrant_organization = cast(Optional[str], output.get("registrant_organization"))
-
-    return dataclasses.Whois(
-        content=raw,
-        created=created,
-        updated=updated,
-        expires=expires,
-        registrar=registrar,
-        registrant_name=registrant_name,
-        registrant_organization=registrant_organization,
-    )
+    return extract_result.domain + "." + tld
 
 
 async def aio_from_whois_cmd(hostname: str, timeout: int) -> dataclasses.Whois:
+    domain_and_tld = convert_hostname(hostname)
+
     # open a new process for "whois" command
     proc = await asyncio.create_subprocess_shell(
-        f"whois {hostname}",
+        f"whois {domain_and_tld}",
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
     )
 
-    try:
-        # block for query_result
-        query_result_, _ = await asyncio.wait_for(proc.communicate(), timeout=timeout)
-        query_result = query_result_.decode(errors="ignore")
-    except asyncio.TimeoutError:
-        raise QueryError(
-            f'The shell command "whois {hostname}" exceeded timeout of {timeout} seconds'
-        )
+    # block for query_result
+    query_result_, _ = await asyncio.wait_for(proc.communicate(), timeout=timeout)
+    raw_text = query_result_.decode(errors="ignore")
 
-    return parse(query_result, hostname)
+    parser = WhoisParser()
+    record = parser.parse(raw_text, hostname=hostname)
+
+    return dataclasses.Whois(
+        content=raw_text,
+        created=record.registered_at,
+        updated=record.updated_at,
+        expires=record.expires_at,
+        registrar=record.registrar,
+        registrant_name=record.registrant.name,
+        registrant_organization=record.registrant.organization,
+    )
 
 
 class Whois:
@@ -86,11 +61,11 @@ class Whois:
             hostname {str} -- Hostname
 
         Returns:
-            Optional[str] -- Whois response as a string, returns None if an error occurs
+            Optional[dataclass.Whois] -- Whois record, returns None if an error occurs
         """
         try:
             result = await aio_from_whois_cmd(hostname, timeout=5)
-        except WhoIsError:
+        except Exception:
             return None
 
         return result
