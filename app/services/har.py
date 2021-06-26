@@ -52,6 +52,8 @@ def find_script_files(har: Har) -> List[dataclasses.ScriptFile]:
 
     for entry in har.log.entries:
         url = entry.request.url
+        ip_address = entry.response._remote_ip_address
+
         content = entry.response.content
         if not content:
             continue
@@ -61,7 +63,7 @@ def find_script_files(har: Har) -> List[dataclasses.ScriptFile]:
             text = base64.b64decode(encoded_text).decode()
             sha256 = calculate_sha256(text)
 
-            script = models.Script(url=url, file_id=sha256)
+            script = models.Script(url=url, ip_address=ip_address, file_id=sha256)
             file = models.File(id=sha256, content=text)
             script_files.append(dataclasses.ScriptFile(script=script, file=file))
 
@@ -73,6 +75,8 @@ def find_stylesheet_files(har: Har) -> List[dataclasses.StylesheetFile]:
 
     for entry in har.log.entries:
         url = entry.request.url
+        ip_address = entry.response._remote_ip_address
+
         content = entry.response.content
         if not content:
             continue
@@ -82,7 +86,9 @@ def find_stylesheet_files(har: Har) -> List[dataclasses.StylesheetFile]:
             text = base64.b64decode(encoded_text).decode()
             sha256 = calculate_sha256(text)
 
-            stylesheet = models.Stylesheet(url=url, file_id=sha256)
+            stylesheet = models.Stylesheet(
+                url=url, ip_address=ip_address, file_id=sha256
+            )
             file = models.File(id=sha256, content=text)
             stylesheet_files.append(
                 dataclasses.StylesheetFile(stylesheet=stylesheet, file=file)

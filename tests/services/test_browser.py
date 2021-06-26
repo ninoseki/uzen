@@ -37,6 +37,10 @@ async def test_take_snapshot_with_scripts():
     result = await browser.take_snapshot("https://github.com/")
     assert len(result.script_files) > 0
 
+    # it should record ip address
+    for script_file in result.script_files:
+        assert script_file.script.ip_address is not None
+
 
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("patch_whois_lookup")
