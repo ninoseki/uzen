@@ -22,7 +22,7 @@
         <router-link
           :to="{
             name: 'Snapshots',
-            query: { scriptHash: hash },
+            query: { hash: hash },
           }"
           >{{ hash }}
         </router-link>

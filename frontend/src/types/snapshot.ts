@@ -71,9 +71,7 @@ export interface SnapshotFilters {
   asn: string | undefined;
   hostname: string | undefined;
   ipAddress: string | undefined;
-  htmlHash: string | undefined;
-  scriptHash: string | undefined;
-  stylesheetHash: string | undefined;
+  hash: string | undefined;
   certificateFingerprint: string | undefined;
   status: number | undefined;
   url: string | undefined;
