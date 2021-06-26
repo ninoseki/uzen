@@ -11,9 +11,9 @@
                 <router-link
                   :to="{
                     name: 'Snapshots',
-                    query: { certificateFingerprint: certificate.sha256 },
+                    query: { certificateFingerprint: certificate.id },
                   }"
-                  >{{ certificate.sha256 }}
+                  >{{ certificate.id }}
                 </router-link>
               </td>
             </tr>
