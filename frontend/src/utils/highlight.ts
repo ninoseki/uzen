@@ -12,7 +12,7 @@ export function highlightCodeBlocks(context: SetupContext): void {
   }
 
   context.root.$el.querySelectorAll("pre code").forEach((block) => {
-    hljs.highlightBlock(block);
+    hljs.highlightBlock(block as HTMLElement);
     const parent = block.parentElement;
     if (parent !== null) {
       parent.style.backgroundColor = "#282b2e";

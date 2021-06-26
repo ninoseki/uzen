@@ -5,6 +5,7 @@ from fastapi_cache.coder import PickleCoder
 from tortoise.exceptions import DoesNotExist
 
 from app import models, schemas
+from app.services.html2text import html2text
 from app.utils.cache import cache
 
 router = APIRouter()
@@ -29,3 +30,18 @@ async def get_html_by_sha256(sha256: str) -> schemas.HTML:
         return await _get_html_by_sha256(sha256)
     except DoesNotExist:
         raise HTTPException(status_code=404, detail=f"HTML:{sha256} is not found")
+
+
+@router.get(
+    "/{sha256}/text",
+    response_description="Returns a text of an html",
+    summary="Get a text of an html",
+    description="Get a text of an html which has a given ID",
+)
+async def get_text_by_sha256(sha256: str) -> str:
+    try:
+        html = await _get_html_by_sha256(sha256)
+    except DoesNotExist:
+        raise HTTPException(status_code=404, detail=f"HTML:{sha256} is not found")
+
+    return html2text(html.content)
