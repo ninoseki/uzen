@@ -3,7 +3,7 @@
     <div v-if="certificate">
       <div class="column">
         <H3>Information</H3>
-        <table class="table is-fullwidth">
+        <table class="table is-completely-borderless is-fullwidth">
           <tbody>
             <tr>
               <th>X509 fingerprint (SHA256)</th>

@@ -3,7 +3,7 @@
     <div v-if="whois">
       <div class="column">
         <H3>Information</H3>
-        <table class="table is-fullwidth">
+        <table class="table is-completely-borderless">
           <tbody>
             <tr>
               <th>Created</th>

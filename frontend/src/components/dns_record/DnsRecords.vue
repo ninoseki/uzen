@@ -1,15 +1,20 @@
 <template>
   <div>
     <div class="table-container" v-if="hasDnsRecords">
-      <b-table :data="dnsRecords">
-        <b-table-column field="type" label="Type" v-slot="props">
-          {{ props.row.type }}
-        </b-table-column>
-
-        <b-table-column field="value" label="Value" v-slot="props">
-          {{ props.row.value }}
-        </b-table-column>
-      </b-table>
+      <table class="table is-completely-borderless is-fullwidth">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(record, index) in dnsRecords" :key="index">
+            <td>{{ record.type }}</td>
+            <td>{{ record.value }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
     <div v-else>
       <NA />

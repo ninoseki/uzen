@@ -19,7 +19,7 @@
         <div class="column is-half">
           <H3>Basic information</H3>
           <div class="table-container">
-            <table class="table">
+            <table class="table is-completely-borderless">
               <tbody>
                 <tr>
                   <th>ASN</th>

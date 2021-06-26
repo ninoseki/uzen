@@ -10,8 +10,6 @@
 </template>
 
 <script lang="ts">
-import "highlight.js/styles/androidstudio.css";
-
 import { defineComponent } from "@vue/composition-api";
 
 import Navbar from "@/components/ui/Navbar.vue";
@@ -47,5 +45,9 @@ pre {
 .container .navbar {
   margin-bottom: 10px;
   border-bottom: 2px solid lightgray;
+}
+
+table {
+  border: none;
 }
 </style>

@@ -31,6 +31,7 @@
     "axios-cache-adapter": "2.7.3",
     "bowser": "^2.11.0",
     "buefy": "0.9.7",
+    "bulma-helpers": "^0.4.0",
     "core-js": "3.12.1",
     "country-code-emoji": "2.2.0",
     "crypto-js": "4.0.0",
