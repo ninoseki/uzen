@@ -12,16 +12,26 @@ from tortoise.backends.base.config_generator import generate_config
 from tortoise.exceptions import DBConnectionError
 
 from app import create_app, dataclasses, models
+from app.api.dependencies.arq import get_arq_redis
 from app.core import settings
 from app.services.certificate import Certificate
 from app.services.ip2asn import IP2ASN
 from app.services.whois import Whois
 from app.utils.hash import calculate_sha256
+from tests.fake_arq import FakeArqRedis
+
+
+def override_get_arq_redis():
+    yield FakeArqRedis()
 
 
 @pytest.fixture
 async def client():
     app = create_app()
+
+    # use fake arq redis for testing
+    app.dependency_overrides[get_arq_redis] = override_get_arq_redis
+
     async with httpx.AsyncClient(
         app=app,
         base_url="http://testserver",
