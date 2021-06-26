@@ -53,17 +53,13 @@ class SnapshotSearcher(AbstractSearcher):
         if asn is not None:
             queries.append(Q(asn=asn))
 
-        html_hash = filters.get("html_hash")
-        if html_hash is not None:
-            queries.append(Q(html__id=html_hash))
-
-        script_hash = filters.get("script_hash")
-        if script_hash is not None:
-            queries.append(Q(_scripts__file_id=script_hash))
-
-        stylesheet_hash = filters.get("stylesheet_hash")
-        if stylesheet_hash is not None:
-            queries.append(Q(_stylesheets__file_id=stylesheet_hash))
+        hash = filters.get("hash")
+        if hash is not None:
+            queries.append(
+                Q(html__id=hash)
+                | Q(_scripts__file_id=hash)
+                | Q(_stylesheets__file_id=hash)
+            )
 
         certificate_fingerprint = filters.get("certificate_fingerprint")
         if certificate_fingerprint is not None:

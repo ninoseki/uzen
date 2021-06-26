@@ -32,10 +32,10 @@
     </div>
     <div class="columns">
       <div class="column is-half">
-        <b-field label="HTML hash (SHA256)">
+        <b-field label="Hash (SHA256)">
           <b-input
             placeholder="ea8fac7c65fb589b0d53560f5251f74f9e9b243478dcb6b3ea79b5e36449c8d9"
-            v-model="filters.htmlHash"
+            v-model="filters.hash"
           ></b-input>
         </b-field>
       </div>
@@ -44,24 +44,6 @@
           <b-input
             placeholder="ea8fac7c65fb589b0d53560f5251f74f9e9b243478dcb6b3ea79b5e36449c8d9"
             v-model="filters.certificateFingerprint"
-          ></b-input>
-        </b-field>
-      </div>
-    </div>
-    <div class="columns">
-      <div class="column is-half">
-        <b-field label="Script hash (SHA256)">
-          <b-input
-            placeholder="ea8fac7c65fb589b0d53560f5251f74f9e9b243478dcb6b3ea79b5e36449c8d9"
-            v-model="filters.scriptHash"
-          ></b-input>
-        </b-field>
-      </div>
-      <div class="column is-half">
-        <b-field label="Stylesheet hash (SHA256)">
-          <b-input
-            placeholder="ea8fac7c65fb589b0d53560f5251f74f9e9b243478dcb6b3ea79b5e36449c8d9"
-            v-model="filters.stylesheetHash"
           ></b-input>
         </b-field>
       </div>
@@ -116,15 +98,7 @@ export default defineComponent({
       type: Number,
       required: false,
     },
-    htmlHash: {
-      type: String,
-      required: false,
-    },
-    scriptHash: {
-      type: String,
-      required: false,
-    },
-    stylesheetHash: {
+    hash: {
       type: String,
       required: false,
     },
@@ -142,9 +116,7 @@ export default defineComponent({
       asn: props.asn,
       hostname: props.hostname,
       ipAddress: props.ipAddress,
-      htmlHash: props.htmlHash,
-      scriptHash: props.scriptHash,
-      stylesheetHash: props.stylesheetHash,
+      hash: props.hash,
       certificateFingerprint: props.certificateFingerprint,
       status: props.status,
       url: props.url,

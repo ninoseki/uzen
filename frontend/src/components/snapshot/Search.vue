@@ -13,9 +13,7 @@
         :asn="$route.query.asn"
         :hostname="$route.query.hostname"
         :ipAddress="$route.query.ipAddress"
-        :htmlHash="$route.query.htmlHash"
-        :scriptHash="$route.query.scriptHash"
-        :stylesheetHash="$route.query.stylesheetHash"
+        :hash="$route.query.hash"
         :certificateFingerprint="$route.query.certificateFingerprint"
       />
 

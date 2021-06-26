@@ -10,15 +10,7 @@ class SearchFilters:
         asn: Optional[str] = Query(None, title="AS number"),
         hostname: Optional[str] = Query(None, title="Hostname"),
         ip_address: Optional[str] = Query(None, title="IP address", alias="ipAddress"),
-        html_hash: Optional[str] = Query(
-            None, title="SHA256 hash of HTML", alias="htmlHash"
-        ),
-        script_hash: Optional[str] = Query(
-            None, title="SHA256 hash of script", alias="scriptHash"
-        ),
-        stylesheet_hash: Optional[str] = Query(
-            None, title="SHA256 hash of stylesheet", alias="stylesheetHash"
-        ),
+        hash: Optional[str] = Query(None, title="SHA256 hash of resource"),
         certificate_fingerprint: Optional[str] = Query(
             None,
             title="SHA256 fingerprint of X509 certificate",
@@ -42,9 +34,7 @@ class SearchFilters:
         self.asn = asn
         self.hostname = hostname
         self.ip_address = ip_address
-        self.html_hash = html_hash
-        self.script_hash = script_hash
-        self.stylesheet_hash = stylesheet_hash
+        self.hash = hash
         self.certificate_fingerprint = certificate_fingerprint
         self.status = status
         self.url = url

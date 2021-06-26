@@ -5,10 +5,10 @@
 
       <div class="columns">
         <div class="column is-half">
-          <b-field label="HTML hash (SHA256)">
+          <b-field label="Hash (SHA256)">
             <b-input
               placeholder="ea8fac7c65fb589b0d53560f5251f74f9e9b243478dcb6b3ea79b5e36449c8d9"
-              v-model="htmlHash"
+              v-model="hash"
             ></b-input>
           </b-field>
         </div>
@@ -79,8 +79,8 @@ export default defineComponent({
     Error,
   },
   setup(_, context) {
-    const htmlHash = ref(
-      (context.root.$route.query["htmlHash"] as string | null) || ""
+    const hash = ref(
+      (context.root.$route.query["hash"] as string | null) || ""
     );
     const excludeHostname = ref<string | undefined>(
       (context.root.$route.query["excludeHostname"] as string | null) ||
@@ -107,7 +107,7 @@ export default defineComponent({
       }
 
       // get HTML
-      const html = await API.getHTML(htmlHash.value);
+      const html = await API.getHTML(hash.value);
 
       const payload: SimilarityScanPayload = {
         html: html.content || "",
@@ -127,7 +127,7 @@ export default defineComponent({
     };
 
     return {
-      htmlHash,
+      hash,
       threshold,
       excludeIPAddress,
       excludeHostname,

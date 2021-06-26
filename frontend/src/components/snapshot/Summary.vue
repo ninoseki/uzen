@@ -82,7 +82,7 @@
         <router-link
           :to="{
             name: 'Snapshots',
-            query: { htmlHash: snapshot.html.sha256 },
+            query: { hash: snapshot.html.sha256 },
           }"
           >{{ snapshot.html.sha256 }}
         </router-link>
@@ -95,7 +95,7 @@
           :to="{
             name: 'Similarity',
             query: {
-              htmlHash: snapshot.html.sha256,
+              hash: snapshot.html.sha256,
               excludeHostname: snapshot.hostname,
               excludeIPAddress: snapshot.ipAddress,
             },
