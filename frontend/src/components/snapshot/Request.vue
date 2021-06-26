@@ -2,7 +2,7 @@
   <div>
     <H3>Request</H3>
     <div class="table-container">
-      <table class="table">
+      <table class="table is-completely-borderless">
         <tbody>
           <tr>
             <th>User Agent</th>

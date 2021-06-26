@@ -1,6 +1,6 @@
 <template>
   <div class="table-container" v-if="jobStatus.definition !== null">
-    <table class="table">
+    <table class="table is-completely-borderless">
       <tbody>
         <tr>
           <th>Submitted URL</th>

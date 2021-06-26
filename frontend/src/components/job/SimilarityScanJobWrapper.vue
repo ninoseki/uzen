@@ -41,7 +41,7 @@
         "
       >
         <div class="table-container">
-          <table class="table">
+          <table class="table is-completely-borderless">
             <tbody>
               <tr>
                 <th>HTML hash (sha256)</th>

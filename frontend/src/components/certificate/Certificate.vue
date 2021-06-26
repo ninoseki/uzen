@@ -3,7 +3,7 @@
     <div v-if="certificate">
       <div class="column">
         <H3>Information</H3>
-        <table class="table is-fullwidth">
+        <table class="table is-completely-borderless is-fullwidth">
           <tbody>
             <tr>
               <th>X509 fingerprint (SHA256)</th>
@@ -11,9 +11,9 @@
                 <router-link
                   :to="{
                     name: 'Snapshots',
-                    query: { certificateFingerprint: certificate.sha256 },
+                    query: { certificateFingerprint: certificate.id },
                   }"
-                  >{{ certificate.sha256 }}
+                  >{{ certificate.id }}
                 </router-link>
               </td>
             </tr>

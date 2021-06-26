@@ -24,7 +24,7 @@
       <div class="columns">
         <div class="column is-half">
           <div class="table-container">
-            <Table class="table">
+            <table class="table is-completely-borderless">
               <tbody>
                 <tr>
                   <th>ID</th>
@@ -43,7 +43,7 @@
                   <td>{{ rule.updatedAt || "N/A" }}</td>
                 </tr>
               </tbody>
-            </Table>
+            </table>
           </div>
         </div>
         <div class="column is-half">

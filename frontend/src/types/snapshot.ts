@@ -23,7 +23,7 @@ export interface Whois {
 }
 
 export interface Certificate {
-  sha256: string;
+  id: string;
   content: string | null;
   notAfter: string | null;
   notBefore: string | null;

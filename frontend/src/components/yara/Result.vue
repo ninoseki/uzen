@@ -5,7 +5,7 @@
       v-for="match in yaraResult.matches"
       :key="match.rule"
     >
-      <table class="table is-expanded">
+      <table class="table is-fullwidth is-completely-borderless">
         <tbody>
           <tr>
             <th>Target</th>

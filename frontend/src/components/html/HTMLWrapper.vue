@@ -10,6 +10,7 @@
         :html="getHTMLTask.last.value.content"
         v-if="getHTMLTask.last.value.content"
       />
+      <NA v-else></NA>
     </div>
     <NA v-else></NA>
   </div>

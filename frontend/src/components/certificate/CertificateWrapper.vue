@@ -12,6 +12,7 @@
         :certificate="getCertificateTask.last.value"
         v-if="getCertificateTask.last.value"
       />
+      <NA v-else></NA>
     </div>
     <NA v-else></NA>
   </div>

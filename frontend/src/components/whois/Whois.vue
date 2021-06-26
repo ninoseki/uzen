@@ -2,8 +2,8 @@
   <div>
     <div v-if="whois">
       <div class="column">
-        <H3>Information</H3>
-        <table class="table is-fullwidth">
+        <H4>Whois record</H4>
+        <table class="table is-completely-borderless">
           <tbody>
             <tr>
               <th>Created</th>
@@ -34,7 +34,7 @@
       </div>
 
       <div class="column">
-        <H3>Raw</H3>
+        <H4>Raw</H4>
         <pre>{{ whois.content }}</pre>
       </div>
     </div>
@@ -45,7 +45,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from "@vue/composition-api";
 
-import H3 from "@/components/ui/H3.vue";
+import H4 from "@/components/ui/H4.vue";
 import NA from "@/components/ui/NA.vue";
 import { Whois } from "@/types/snapshot";
 
@@ -58,7 +58,7 @@ export default defineComponent({
     },
   },
   components: {
-    H3,
+    H4,
     NA,
   },
 });
