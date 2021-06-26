@@ -27,6 +27,12 @@
               HTML
             </a>
             <a
+              @click="changeActiveState('text')"
+              :class="[activeState == 'text' ? 'is-active' : '']"
+            >
+              Text
+            </a>
+            <a
               @click="changeActiveState('whois')"
               :class="[activeState == 'whois' ? 'is-active' : '']"
             >
@@ -80,9 +86,11 @@
           <div v-if="activeState === 'summary'">
             <Summary :snapshot="snapshot"></Summary>
           </div>
-
           <div v-else-if="activeState === 'html'">
             <HTML :sha256="snapshot.html.sha256"></HTML>
+          </div>
+          <div v-else-if="activeState === 'text'">
+            <TextComponent :sha256="snapshot.html.sha256"></TextComponent>
           </div>
           <div v-else-if="activeState === 'whois'">
             <Whois
@@ -129,22 +137,24 @@ import Scripts from "@/components/script/Scripts.vue";
 import Navbar from "@/components/snapshot/Navbar.vue";
 import Summary from "@/components/snapshot/Summary.vue";
 import Stylesheets from "@/components/stylesheet/Stylesheets.vue";
+import TextComponent from "@/components/text/TextWrapper.vue";
 import NA from "@/components/ui/NA.vue";
 import Whois from "@/components/whois/WhoisWrapper.vue";
 import YaraResultComponent from "@/components/yara/Result.vue";
 import { Snapshot, YaraResult } from "@/types";
 
 type States =
-  | "summary"
-  | "html"
-  | "whois"
-  | "dnsRecords"
   | "certificate"
+  | "classifications"
+  | "dnsRecords"
+  | "har"
+  | "html"
   | "scripts"
   | "stylesheets"
-  | "classifications"
-  | "yaraMatches"
-  | "har";
+  | "summary"
+  | "text"
+  | "whois"
+  | "yaraMatches";
 
 export default defineComponent({
   name: "Snapshot",
@@ -158,6 +168,7 @@ export default defineComponent({
     Scripts,
     Summary,
     Stylesheets,
+    TextComponent,
     Whois,
     YaraResultComponent,
   },

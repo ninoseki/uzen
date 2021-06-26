@@ -187,6 +187,15 @@ export const API = {
     return res.data;
   },
 
+  async getText(sha256: string): Promise<string> {
+    const res = await client.get<string>(`/api/htmls/${sha256}/text`, {
+      cache: {
+        maxAge: 60 * 60 * 1000,
+      },
+    });
+    return res.data;
+  },
+
   async getCertificate(sha256: string): Promise<Certificate> {
     const res = await client.get<Certificate>(`/api/certificates/${sha256}`, {
       cache: {
