@@ -21,7 +21,7 @@ def create_start_app_handler(
 
         # initialize FastAPI cache
         backend: Union[InMemoryBackend, RedisBackend] = InMemoryBackend()
-        if settings.REDIS_URL != "":
+        if settings.REDIS_URL != "" and settings.TESTING is False:
             try:
                 redis = await aioredis.create_redis_pool(settings.REDIS_URL)
                 backend = RedisBackend(redis)
