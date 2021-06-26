@@ -3,7 +3,7 @@ from uuid import UUID
 
 from tortoise.exceptions import IntegrityError
 from tortoise.fields.base import CASCADE, RESTRICT
-from tortoise.fields.data import TextField
+from tortoise.fields.data import CharField, TextField
 from tortoise.fields.relational import ForeignKeyField, ForeignKeyRelation
 
 from app import schemas
@@ -18,6 +18,8 @@ if TYPE_CHECKING:
 
 class Script(TimestampMixin, AbstractBaseModel):
     url = TextField()
+    ip_address = CharField(max_length=255, null=True)
+
     snapshot: ForeignKeyRelation["Snapshot"] = ForeignKeyField(
         "models.Snapshot",
         related_name="_scripts",
