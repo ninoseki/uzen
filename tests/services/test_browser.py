@@ -27,6 +27,21 @@ async def test_take_snapshot():
     whois = result.whois
     assert whois.content == "foo"
 
+    # har should be None
+    assert result.har is None
+
+
+@pytest.mark.asyncio
+@pytest.mark.usefixtures("patch_whois_lookup")
+@pytest.mark.usefixtures("patch_ip2asn_lookup")
+@pytest.mark.usefixtures("patch_certificate_load_from_url")
+async def test_take_snapshot_with_har():
+    browser = Browser(enable_har=True)
+    result = await browser.take_snapshot("http://example.com")
+
+    # har should be not None
+    assert result.har is not None
+
 
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("patch_whois_lookup")

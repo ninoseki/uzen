@@ -93,4 +93,7 @@ class PlaywrightBrowser(AbstractBrowser):
 
         snapshot_result = await build_snapshot_result(submitted_url, browsing_result)
 
+        if options.enable_har is False:
+            snapshot_result.har = None
+
         return snapshot_result
