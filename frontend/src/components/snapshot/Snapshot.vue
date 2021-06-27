@@ -57,6 +57,12 @@
               Stylesheets
             </a>
             <a
+              @click="changeActiveState('indicators')"
+              :class="[activeState == 'indicators' ? 'is-active' : '']"
+            >
+              Indicators
+            </a>
+            <a
               @click="changeActiveState('dnsRecords')"
               :class="[activeState == 'dnsRecords' ? 'is-active' : '']"
             >
@@ -111,6 +117,9 @@
           <div v-else-if="activeState === 'stylesheets'">
             <Stylesheets :stylesheets="snapshot.stylesheets" />
           </div>
+          <div v-else-if="activeState === 'indicators'">
+            <Indicators :snapshotId="snapshot.id" />
+          </div>
           <div v-else-if="activeState === 'dnsRecords'">
             <DnsRecords :dnsRecords="snapshot.dnsRecords" />
           </div>
@@ -133,6 +142,7 @@ import Certificate from "@/components/certificate/CertificateWrapper.vue";
 import DnsRecords from "@/components/dns_record/DnsRecords.vue";
 import HAR from "@/components/har/HARWrapper.vue";
 import HTML from "@/components/html/HTMLWrapper.vue";
+import Indicators from "@/components/indicator/IndicatorsWrapper.vue";
 import Scripts from "@/components/script/Scripts.vue";
 import Navbar from "@/components/snapshot/Navbar.vue";
 import Summary from "@/components/snapshot/Summary.vue";
@@ -149,6 +159,7 @@ type States =
   | "dnsRecords"
   | "har"
   | "html"
+  | "indicators"
   | "scripts"
   | "stylesheets"
   | "summary"
@@ -164,6 +175,7 @@ export default defineComponent({
     HAR,
     HTML,
     NA,
+    Indicators,
     Navbar,
     Scripts,
     Summary,

@@ -183,3 +183,11 @@ async def test_count(client: httpx.AsyncClient):
     data = response.json()
     count_ = data.get("count")
     assert count == count_
+
+
+@pytest.mark.asyncio
+@pytest.mark.usefixtures("scripts_setup")
+async def test_indicators(client: httpx.AsyncClient):
+    id_ = await first_snapshot_id()
+    response = await client.get(f"/api/snapshots/{id_}/indicators")
+    assert response.status_code == 200
