@@ -15,7 +15,7 @@
       {{ numeral(getContentLength(entry.response.headers)).format("0b") }}
     </td>
     <td>{{ normalizeMIMEType(entry.response.content.mimeType) }}</td>
-    <td>{{ entry.response.comment }}</td>
+    <td>{{ getRemoteIPAddress(entry.response) }}</td>
   </tr>
 </template>
 
@@ -59,12 +59,21 @@ export default defineComponent({
       return mimeType.split(";")[0];
     };
 
+    const getRemoteIPAddress = (response: harFormat.Response): string => {
+      const remoteIPAddress = (response as any)._remoteIPAddress;
+      if (typeof remoteIPAddress === "string") {
+        return remoteIPAddress;
+      }
+      return "N/A";
+    };
+
     return {
       getHostname,
       getPathname,
       getContentLength,
       numeral,
       normalizeMIMEType,
+      getRemoteIPAddress,
     };
   },
 });
