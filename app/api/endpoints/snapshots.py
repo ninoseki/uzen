@@ -10,6 +10,7 @@ from app.api.dependencies.arq import get_arq_redis
 from app.api.dependencies.snapshot import SearchFilters
 from app.api.dependencies.verification import verify_api_key
 from app.arq.constants import SNAPSHOT_TASK_NAME
+from app.factories.indicators import IndicatorsFactory
 from app.services.searchers.snapshot import SnapshotSearcher
 
 router = APIRouter()
@@ -61,6 +62,24 @@ async def get(snapshot_id: UUID) -> schemas.Snapshot:
         )
 
     return snapshot.to_model()
+
+
+@router.get(
+    "/{snapshot_id}/indicators",
+    response_model=schemas.Indicators,
+    response_description="Returns indicators related to a snapshot",
+    summary="Get indicators related to a snapshot",
+    description="Get indicators related to a snapshot which has a given ID",
+)
+async def get_indicators(snapshot_id: UUID) -> schemas.Indicators:
+    try:
+        snapshot = await models.Snapshot.get_by_id(snapshot_id)
+    except DoesNotExist:
+        raise HTTPException(
+            status_code=404, detail=f"Snapshot:{snapshot_id} is not found"
+        )
+
+    return IndicatorsFactory.from_snapshot(snapshot)
 
 
 @router.post(

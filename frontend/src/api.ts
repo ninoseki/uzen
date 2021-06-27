@@ -11,6 +11,7 @@ import {
   File,
   HAR,
   HTML,
+  Indicators,
   IPAddressInformation,
   Job,
   MatchSearchResults,
@@ -81,6 +82,13 @@ export const API = {
 
   async deleteSnapshot(snapshotId: string): Promise<void> {
     await client.delete(`/api/snapshots/${snapshotId}`);
+  },
+
+  async getIndicators(snapshotId: string): Promise<Indicators> {
+    const res = await client.get<Indicators>(
+      `/api/snapshots/${snapshotId}/indicators`
+    );
+    return res.data;
   },
 
   async searchMatches(params: SearchParams): Promise<MatchSearchResults> {

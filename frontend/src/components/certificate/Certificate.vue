@@ -2,8 +2,8 @@
   <div>
     <div v-if="certificate">
       <div class="column">
-        <H3>Information</H3>
-        <table class="table is-completely-borderless is-fullwidth">
+        <H4>Information</H4>
+        <table class="table is-fullwidth">
           <tbody>
             <tr>
               <th>X509 fingerprint (SHA256)</th>
@@ -38,7 +38,7 @@
       </div>
 
       <div class="column">
-        <H3>Certificate</H3>
+        <H4>Certificate</H4>
         <pre>{{ certificate.content }}</pre>
       </div>
     </div>
@@ -49,13 +49,13 @@
 <script lang="ts">
 import { defineComponent, PropType } from "@vue/composition-api";
 
-import H3 from "@/components/ui/H3.vue";
+import H4 from "@/components/ui/H4.vue";
 import NA from "@/components/ui/NA.vue";
 import { Certificate } from "@/types/snapshot";
 
 export default defineComponent({
   name: "Certificate",
-  components: { H3, NA },
+  components: { H4, NA },
   props: {
     certificate: {
       type: Object as PropType<Certificate>,

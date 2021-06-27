@@ -124,6 +124,11 @@ const routes = [
       import(/* webpackChunkName: "domain" */ "../views/Domain.vue"),
   },
   {
+    path: "/file/:hash",
+    name: "File",
+    component: () => import(/* webpackChunkName: "file" */ "../views/File.vue"),
+  },
+  {
     path: "/bulk",
     name: "Bulk",
     component: () => import(/* webpackChunkName: "bulk" */ "../views/Bulk.vue"),

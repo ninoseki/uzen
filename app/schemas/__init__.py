@@ -5,6 +5,7 @@ from app.schemas.domain import Domain
 from app.schemas.file import File
 from app.schemas.har import HAR
 from app.schemas.html import HTML
+from app.schemas.indicators import Indicators
 from app.schemas.ip_address import IPAddress
 from app.schemas.jobs import (
     Job,
@@ -64,6 +65,7 @@ __all__ = [
     "File",
     "HAR",
     "HTML",
+    "Indicators",
     "IPAddress",
     "Job",
     "JobResultWrapper",

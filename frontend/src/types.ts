@@ -7,6 +7,7 @@ import {
 import { Device } from "@/types/devices";
 import { DomainInformation } from "@/types/domain";
 import { HAR } from "@/types/har";
+import { Indicators } from "@/types/indicators";
 import { IPAddressInformation } from "@/types/ipAddress";
 import {
   Job,
@@ -75,6 +76,7 @@ export {
   Header,
   Headers,
   HTML,
+  Indicators,
   IPAddressInformation,
   Job,
   Link,
