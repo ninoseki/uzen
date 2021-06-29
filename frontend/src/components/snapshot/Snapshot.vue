@@ -106,7 +106,7 @@
           </div>
           <div v-else-if="activeState === 'certificate'">
             <Certificate
-              :sha256="snapshot.certificate.sha256"
+              :id="snapshot.certificate.id"
               v-if="snapshot.certificate"
             />
             <NA v-else></NA>
