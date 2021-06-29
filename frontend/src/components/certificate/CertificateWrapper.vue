@@ -30,7 +30,7 @@ import { Certificate } from "@/types";
 export default defineComponent({
   name: "CertificateWrapper",
   props: {
-    sha256: {
+    id: {
       type: String,
       required: true,
     },
@@ -41,7 +41,7 @@ export default defineComponent({
   },
   setup(props) {
     const getCertificateTask = useAsyncTask<Certificate, []>(async () => {
-      return await API.getCertificate(props.sha256);
+      return await API.getCertificate(props.id);
     });
 
     getCertificateTask.perform();
