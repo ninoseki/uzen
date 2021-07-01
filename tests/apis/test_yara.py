@@ -1,13 +1,14 @@
-import httpx
+import asyncio
+
 import pytest
+from fastapi.testclient import TestClient
 
 
-@pytest.mark.asyncio
 @pytest.mark.usefixtures("snapshots_setup")
-async def test_yara_scan(client: httpx.AsyncClient):
+def test_yara_scan(client: TestClient, event_loop: asyncio.AbstractEventLoop):
     # it matches with all snapshots
     payload = {"source": 'rule foo: bar {strings: $a = "foo" condition: $a}'}
-    response = await client.post("/api/yara/scan", json=payload)
+    response = client.post("/api/yara/scan", json=payload)
     assert response.status_code == 200
 
     snapshot = response.json()
@@ -15,8 +16,9 @@ async def test_yara_scan(client: httpx.AsyncClient):
     assert snapshot.get("type") == "yara"
 
 
-@pytest.mark.asyncio
-async def test_yara_scan_with_invalid_input(client: httpx.AsyncClient):
+def test_yara_scan_with_invalid_input(
+    client: TestClient, event_loop: asyncio.AbstractEventLoop
+):
     payload = {"source": "boo"}
-    response = await client.post("/api/yara/scan", json=payload)
+    response = client.post("/api/yara/scan", json=payload)
     assert response.status_code == 422

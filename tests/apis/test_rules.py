@@ -1,85 +1,85 @@
-import httpx
+import asyncio
+
 import pytest
+from fastapi.testclient import TestClient
 
 from app.models.rule import Rule
-from tests.helper import first_rule_id
+from tests.helper import count_all_rules, first_rule_id_sync
 
 
-@pytest.mark.asyncio
-async def test_create_rule_with_invalid_target(client: httpx.AsyncClient):
+def test_create_rule_with_invalid_target(
+    client: TestClient, event_loop: asyncio.AbstractEventLoop
+):
     payload = {"name": "test", "target": "foo", "source": "foo"}
-    response = await client.post("/api/rules/", json=payload)
+    response = client.post("/api/rules/", json=payload)
     assert response.status_code == 422
 
 
-@pytest.mark.asyncio
-async def test_create_rule_with_invalid_source(client: httpx.AsyncClient):
+def test_create_rule_with_invalid_source(
+    client: TestClient, event_loop: asyncio.AbstractEventLoop
+):
     payload = {"name": "test", "target": "html", "source": "foo; bar;"}
-    response = await client.post("/api/rules/", json=payload)
+    response = client.post("/api/rules/", json=payload)
     assert response.status_code == 422
 
 
-@pytest.mark.asyncio
-async def test_create_rule(client: httpx.AsyncClient):
+def test_create_rule(client: TestClient, event_loop: asyncio.AbstractEventLoop):
     payload = {
         "name": "test",
         "target": "html",
         "source": 'rule foo: bar {strings: $a = "lmn" condition: $a}',
     }
-    response = await client.post("/api/rules/", json=payload)
+    response = client.post("/api/rules/", json=payload)
     assert response.status_code == 201
 
-    count = await Rule.all().count()
+    count = count_all_rules(event_loop)
     assert count == 1
 
 
-@pytest.mark.asyncio
 @pytest.mark.usefixtures("rules_setup")
-async def test_delete_rule(client: httpx.AsyncClient):
-    id_ = await first_rule_id()
-    response = await client.delete(f"/api/rules/{id_}")
+def test_delete_rule(client: TestClient, event_loop: asyncio.AbstractEventLoop):
+    id_ = first_rule_id_sync(event_loop)
+    response = client.delete(f"/api/rules/{id_}")
     assert response.status_code == 204
 
 
-@pytest.mark.asyncio
 @pytest.mark.usefixtures("rules_setup")
-async def test_rules_search(client: httpx.AsyncClient):
-    count = await Rule.all().count()
+def test_rules_search(client: TestClient, event_loop: asyncio.AbstractEventLoop):
+    count = count_all_rules(event_loop)
 
-    response = await client.get("/api/rules/search")
+    response = client.get("/api/rules/search")
     data = response.json()
     rules = data.get("results")
     assert len(rules) == count
 
     # it matches with a rule
-    response = await client.get("/api/rules/search", params={"name": "test1"})
+    response = client.get("/api/rules/search", params={"name": "test1"})
     data = response.json()
     rules = data.get("results")
     assert len(rules) == 1
 
     # it matches with the all rules
-    response = await client.get("/api/rules/search", params={"target": "html"})
+    response = client.get("/api/rules/search", params={"target": "html"})
     data = response.json()
     rules = data.get("results")
     assert len(rules) == count
 
     # it matches with the all rules
-    response = await client.get("/api/rules/search", params={"source": "lmn"})
+    response = client.get("/api/rules/search", params={"source": "lmn"})
     data = response.json()
     rules = data.get("results")
     assert len(rules) == count
 
 
-@pytest.mark.asyncio
 @pytest.mark.usefixtures("rules_setup")
-async def test_update(client: httpx.AsyncClient):
-    id_ = await first_rule_id()
+def test_update(client: TestClient, event_loop: asyncio.AbstractEventLoop):
+    id_ = first_rule_id_sync(event_loop)
 
     payload = {"name": "woweee"}
-    response = await client.put(f"/api/rules/{id_}", json=payload)
+    response = client.put(f"/api/rules/{id_}", json=payload)
     assert response.status_code == 200
 
-    rule = await Rule.get(id=id_)
+    rule = event_loop.run_until_complete(Rule.get(id=id_))
     assert rule.name == "woweee"
     old_updated_at = rule.updated_at
 
@@ -88,10 +88,10 @@ async def test_update(client: httpx.AsyncClient):
         "target": "script",
         "source": 'rule foo: bar {strings: $a = "html" condition: $a}',
     }
-    response = await client.put(f"/api/rules/{id_}", json=payload)
+    response = client.put(f"/api/rules/{id_}", json=payload)
     assert response.status_code == 200
 
-    rule = await Rule.get(id=id_)
+    rule = event_loop.run_until_complete(Rule.get(id=id_))
     assert rule.name == "test"
     assert rule.target == "script"
     assert rule.source == 'rule foo: bar {strings: $a = "html" condition: $a}'

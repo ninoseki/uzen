@@ -1,10 +1,8 @@
 import httpx
 
 from app import schemas
-from app.utils.cache import cache
 
 
-@cache()
 async def query_to_ipinfo():
     async with httpx.AsyncClient(base_url="https://ipinfo.io") as client:
         res = await client.get("/json")

@@ -5,11 +5,11 @@ from arq.connections import ArqRedis
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import Response
 from fastapi_cache.coder import PickleCoder
+from fastapi_cache.decorator import cache
 
 from app import schemas
 from app.api.dependencies.arq import get_arq_redis
 from app.arq.constants import PREVIEW_TASK_NAME
-from app.utils.cache import cache
 from app.utils.screenshot import get_screenshot
 
 router = APIRouter()

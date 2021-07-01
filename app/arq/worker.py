@@ -8,11 +8,11 @@ from app.tasks.snapshot import enrich_snapshot_task, take_snapshot_task
 from app.tasks.yara import yara_scan_task
 
 
-async def startup(ctx: dict):
+async def startup(ctx: dict) -> None:
     await init_db()
 
 
-async def shutdown(ctx: dict):
+async def shutdown(ctx: dict) -> None:
     await Tortoise.close_connections()
 
 

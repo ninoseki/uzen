@@ -2,10 +2,10 @@ from typing import cast
 
 from fastapi import APIRouter, HTTPException
 from fastapi_cache.coder import PickleCoder
+from fastapi_cache.decorator import cache
 from tortoise.exceptions import DoesNotExist
 
 from app import models, schemas
-from app.utils.cache import cache
 
 router = APIRouter()
 

@@ -1,20 +1,20 @@
-import httpx
+import asyncio
+
 import pytest
+from fastapi.testclient import TestClient
 
 from app.models.script import Script
 
 
-@pytest.mark.asyncio
 @pytest.mark.usefixtures("scripts_setup")
-async def test_files(client: httpx.AsyncClient):
-    first = await Script.all().first()
+def test_files(client: TestClient, event_loop: asyncio.AbstractEventLoop):
+    first = event_loop.run_until_complete(Script.all().first())
     sha256 = first.file_id
 
-    response = await client.get(f"/api/files/{sha256}")
+    response = client.get(f"/api/files/{sha256}")
     assert response.status_code == 200
 
 
-@pytest.mark.asyncio
-async def test_files_404(client: httpx.AsyncClient):
-    response = await client.get("/api/files/404")
+def test_files_404(client: TestClient, event_loop: asyncio.AbstractEventLoop):
+    response = client.get("/api/files/404")
     assert response.status_code == 404

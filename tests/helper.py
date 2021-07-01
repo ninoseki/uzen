@@ -1,3 +1,4 @@
+import asyncio
 import datetime
 import uuid
 from uuid import UUID
@@ -53,6 +54,32 @@ async def first_rule_id() -> UUID:
     return rule.id
 
 
+def first_rule_id_sync(event_loop: asyncio.AbstractEventLoop) -> UUID:
+    rule = event_loop.run_until_complete(models.Rule.all().first())
+    return rule.id
+
+
 async def first_snapshot_id() -> UUID:
     snapshot = await models.Snapshot.all().first()
     return snapshot.id
+
+
+def first_snapshot_id_sync(event_loop: asyncio.AbstractEventLoop) -> UUID:
+    snapshot = event_loop.run_until_complete(models.Snapshot.all().first())
+    return snapshot.id
+
+
+def count_all_rules(event_loop: asyncio.AbstractEventLoop) -> int:
+    return event_loop.run_until_complete(models.Rule.all().count())
+
+
+def count_all_matches(event_loop: asyncio.AbstractEventLoop) -> int:
+    return event_loop.run_until_complete(models.Match.all().count())
+
+
+def count_all_snapshots(event_loop: asyncio.AbstractEventLoop) -> int:
+    return event_loop.run_until_complete(models.Snapshot.all().count())
+
+
+def count_all_scripts(event_loop: asyncio.AbstractEventLoop) -> int:
+    return event_loop.run_until_complete(models.Script.all().count())

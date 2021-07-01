@@ -1,14 +1,14 @@
-import httpx
+import asyncio
+
 import pytest
+from fastapi.testclient import TestClient
 
-from app.models.snapshot import Snapshot
+from tests.helper import first_snapshot_id_sync
 
 
-@pytest.mark.asyncio
 @pytest.mark.usefixtures("snapshots_setup")
-async def test_screenshots(client: httpx.AsyncClient):
-    first = await Snapshot.all().first()
-    snapshot_id = first.id
+def test_har(client: TestClient, event_loop: asyncio.AbstractEventLoop):
+    snapshot_id = first_snapshot_id_sync(event_loop)
 
-    response = await client.get(f"/api/hars/{snapshot_id}")
+    response = client.get(f"/api/hars/{snapshot_id}")
     assert response.status_code == 200
