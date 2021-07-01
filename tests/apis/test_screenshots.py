@@ -1,16 +1,16 @@
-import httpx
+import asyncio
+
 import pytest
+from fastapi.testclient import TestClient
 
-from app.models.snapshot import Snapshot
+from tests.helper import first_snapshot_id_sync
 
 
-@pytest.mark.asyncio
 @pytest.mark.usefixtures("snapshots_setup")
-async def test_screenshots(client: httpx.AsyncClient):
-    first = await Snapshot.all().first()
-    snapshot_id = first.id
+def test_screenshots(client: TestClient, event_loop: asyncio.AbstractEventLoop):
+    snapshot_id = first_snapshot_id_sync(event_loop)
 
-    response = await client.get(f"/api/screenshots/{snapshot_id}")
+    response = client.get(f"/api/screenshots/{snapshot_id}")
     assert response.status_code == 200
     assert response.headers.get("content-type") == "image/png"
 
@@ -22,7 +22,7 @@ async def test_screenshots(client: httpx.AsyncClient):
 #
 # @pytest.mark.asyncio
 # async def test_preview(
-#     client: httpx.AsyncClient, monkeypatch: MonkeyPatch, arq_worker: Worker
+#     client: TestClient, monkeypatch: MonkeyPatch, arq_worker: Worker
 # ):
 #     monkeypatch.setattr(Browser, "preview", mock_preview)
 #

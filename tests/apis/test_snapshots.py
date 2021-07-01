@@ -1,43 +1,43 @@
-import httpx
+import asyncio
+
 import pytest
 from _pytest.monkeypatch import MonkeyPatch
+from fastapi.testclient import TestClient
 
-from app.models.snapshot import Snapshot
 from app.services.browser import Browser
-from tests.helper import first_snapshot_id, make_snapshot_result
+from tests.helper import (
+    count_all_snapshots,
+    first_snapshot_id_sync,
+    make_snapshot_result,
+)
 
 
-@pytest.mark.asyncio
 @pytest.mark.usefixtures("snapshots_setup")
-async def test_snapshot_search(client: httpx.AsyncClient):
-    count = await Snapshot.all().count()
-    response = await client.get("/api/snapshots/search")
+def test_snapshot_search(client: TestClient, event_loop: asyncio.AbstractEventLoop):
+    count = count_all_snapshots(event_loop)
+    response = client.get("/api/snapshots/search")
     data = response.json()
     snapshots = data.get("results")
     assert len(snapshots) == count
 
-    response = await client.get(
-        "/api/snapshots/search", params={"hostname": "example.com"}
-    )
+    response = client.get("/api/snapshots/search", params={"hostname": "example.com"})
     data = response.json()
     snapshots = data.get("results")
     assert len(snapshots) == count
 
-    response = await client.get(
+    response = client.get(
         "/api/snapshots/search", params={"from_at": "1970-01-01T15:53:00+05:00"}
     )
     data = response.json()
     snapshots = data.get("results")
     assert len(snapshots) == count
 
-    response = await client.get(
-        "/api/snapshots/search", params={"from_at": "1970-01-01"}
-    )
+    response = client.get("/api/snapshots/search", params={"from_at": "1970-01-01"})
     data = response.json()
     snapshots = data.get("results")
     assert len(snapshots) == count
 
-    response = await client.get(
+    response = client.get(
         "/api/snapshots/search", params={"to_at": "3000-01-01T15:53:00+05:00"}
     )
     data = response.json()
@@ -45,17 +45,18 @@ async def test_snapshot_search(client: httpx.AsyncClient):
     assert len(snapshots) == count
 
     # it doesn't match any snapshot
-    response = await client.get("/api/snapshots/search", params={"status": 404})
+    response = client.get("/api/snapshots/search", params={"status": 404})
     data = response.json()
     snapshots = data.get("results")
     assert len(snapshots) == 0
 
 
-@pytest.mark.asyncio
 @pytest.mark.usefixtures("snapshots_setup")
-async def test_snapshot_list_with_size(client: httpx.AsyncClient):
+def test_snapshot_list_with_size(
+    client: TestClient, event_loop: asyncio.AbstractEventLoop
+):
     payload = {"size": 1}
-    response = await client.get("/api/snapshots/search", params=payload)
+    response = client.get("/api/snapshots/search", params=payload)
     data = response.json()
     snapshots = data.get("results")
     assert len(snapshots) == 1
@@ -63,11 +64,12 @@ async def test_snapshot_list_with_size(client: httpx.AsyncClient):
     assert first.get("url") == "http://example10.com/"
 
 
-@pytest.mark.asyncio
 @pytest.mark.usefixtures("snapshots_setup")
-async def test_snapshot_list_with_offset_and_size(client: httpx.AsyncClient):
+def test_snapshot_list_with_offset_and_size(
+    client: TestClient, event_loop: asyncio.AbstractEventLoop
+):
     payload = {"offset": 0, "size": 1}
-    response = await client.get("/api/snapshots/search", params=payload)
+    response = client.get("/api/snapshots/search", params=payload)
     data = response.json()
     snapshots = data.get("results")
     assert len(snapshots) == 1
@@ -75,7 +77,7 @@ async def test_snapshot_list_with_offset_and_size(client: httpx.AsyncClient):
     offset = 0
     size = 10
     payload = {"offset": offset, "size": size}
-    response = await client.get("/api/snapshots/search", params=payload)
+    response = client.get("/api/snapshots/search", params=payload)
     data = response.json()
     snapshots = data.get("results")
     assert len(snapshots) == size - offset
@@ -85,25 +87,25 @@ async def test_snapshot_list_with_offset_and_size(client: httpx.AsyncClient):
     offset = 5
     size = 100000
     payload = {"offset": offset, "size": size}
-    response = await client.get("/api/snapshots/search", params=payload)
+    response = client.get("/api/snapshots/search", params=payload)
     data = response.json()
     snapshots = data.get("results")
-    assert len(snapshots) == await Snapshot.all().count() - offset
+    assert len(snapshots) == count_all_snapshots(event_loop) - offset
     first = snapshots[0]
     assert first.get("url") == f"http://example{offset}.com/"
 
 
-@pytest.mark.asyncio
-async def test_snapshot_post_without_url(client: httpx.AsyncClient):
+def test_snapshot_post_without_url(
+    client: TestClient, event_loop: asyncio.AbstractEventLoop
+):
     payload = {}
-    response = await client.post("/api/snapshots/", json=payload)
+    response = client.post("/api/snapshots/", json=payload)
     assert response.status_code == 422
 
 
-@pytest.mark.asyncio
-async def test_snapshot_post_with_invalid_url(client):
+def test_snapshot_post_with_invalid_url(client):
     payload = {"url": "foo"}
-    response = await client.post("/api/snapshots/", json=payload)
+    response = client.post("/api/snapshots/", json=payload)
     assert response.status_code == 422
 
 
@@ -111,12 +113,11 @@ def mock_take_snapshot(*args, **kwargs):
     return make_snapshot_result()
 
 
-@pytest.mark.asyncio
-async def test_snapshot_post(client: httpx.AsyncClient, monkeypatch: MonkeyPatch):
+def test_snapshot_post(client: TestClient, monkeypatch: MonkeyPatch):
     monkeypatch.setattr(Browser, "take_snapshot", mock_take_snapshot)
 
     payload = {"url": "http://example.com"}
-    response = await client.post("/api/snapshots/", json=payload)
+    response = client.post("/api/snapshots/", json=payload)
 
     assert response.status_code == 201
 
@@ -124,20 +125,20 @@ async def test_snapshot_post(client: httpx.AsyncClient, monkeypatch: MonkeyPatch
     assert snapshot.get("type") == "snapshot"
 
 
-@pytest.mark.asyncio
 @pytest.mark.usefixtures("snapshots_setup")
-async def test_snapshot_get(client: httpx.AsyncClient):
-    id_ = await first_snapshot_id()
-    response = await client.get(f"/api/snapshots/{id_}")
+def test_snapshot_get(client: TestClient, event_loop: asyncio.AbstractEventLoop):
+    id_ = first_snapshot_id_sync(event_loop)
+    response = client.get(f"/api/snapshots/{id_}")
     assert response.status_code == 200
     assert response.json().get("id") == str(id_)
 
 
-@pytest.mark.asyncio
 @pytest.mark.usefixtures("dns_records_setup")
-async def test_snapshot_get_with_dns_records(client: httpx.AsyncClient):
-    id_ = await first_snapshot_id()
-    response = await client.get(f"/api/snapshots/{id_}")
+def test_snapshot_get_with_dns_records(
+    client: TestClient, event_loop: asyncio.AbstractEventLoop
+):
+    id_ = first_snapshot_id_sync(event_loop)
+    response = client.get(f"/api/snapshots/{id_}")
     assert response.status_code == 200
 
     snapshot = response.json()
@@ -146,11 +147,12 @@ async def test_snapshot_get_with_dns_records(client: httpx.AsyncClient):
     assert len(snapshot.get("classifications")) == 0
 
 
-@pytest.mark.asyncio
 @pytest.mark.usefixtures("classifications_setup")
-async def test_snapshot_get_with_classifications(client: httpx.AsyncClient):
-    id_ = await first_snapshot_id()
-    response = await client.get(f"/api/snapshots/{id_}")
+def test_snapshot_get_with_classifications(
+    client: TestClient, event_loop: asyncio.AbstractEventLoop
+):
+    id_ = first_snapshot_id_sync(event_loop)
+    response = client.get(f"/api/snapshots/{id_}")
     assert response.status_code == 200
 
     snapshot = response.json()
@@ -159,11 +161,12 @@ async def test_snapshot_get_with_classifications(client: httpx.AsyncClient):
     assert len(snapshot.get("scripts")) == 0
 
 
-@pytest.mark.asyncio
 @pytest.mark.usefixtures("scripts_setup")
-async def test_snapshot_get_with_scripts(client: httpx.AsyncClient):
-    id_ = await first_snapshot_id()
-    response = await client.get(f"/api/snapshots/{id_}")
+def test_snapshot_get_with_scripts(
+    client: TestClient, event_loop: asyncio.AbstractEventLoop
+):
+    id_ = first_snapshot_id_sync(event_loop)
+    response = client.get(f"/api/snapshots/{id_}")
     assert response.status_code == 200
 
     snapshot = response.json()
@@ -172,12 +175,11 @@ async def test_snapshot_get_with_scripts(client: httpx.AsyncClient):
     assert len(snapshot.get("dnsRecords")) == 0
 
 
-@pytest.mark.asyncio
 @pytest.mark.usefixtures("snapshots_setup")
-async def test_count(client: httpx.AsyncClient):
-    count = await Snapshot.all().count()
+def test_count(client: TestClient, event_loop: asyncio.AbstractEventLoop):
+    count = count_all_snapshots(event_loop)
 
-    response = await client.get("/api/snapshots/count")
+    response = client.get("/api/snapshots/count")
     assert response.status_code == 200
 
     data = response.json()
@@ -185,9 +187,8 @@ async def test_count(client: httpx.AsyncClient):
     assert count == count_
 
 
-@pytest.mark.asyncio
 @pytest.mark.usefixtures("scripts_setup")
-async def test_indicators(client: httpx.AsyncClient):
-    id_ = await first_snapshot_id()
-    response = await client.get(f"/api/snapshots/{id_}/indicators")
+def test_indicators(client: TestClient, event_loop: asyncio.AbstractEventLoop):
+    id_ = first_snapshot_id_sync(event_loop)
+    response = client.get(f"/api/snapshots/{id_}/indicators")
     assert response.status_code == 200

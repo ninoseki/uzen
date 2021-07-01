@@ -3,11 +3,11 @@ from typing import Any, Callable, Coroutine, Union
 import aioredis
 from fastapi import FastAPI
 from fastapi_cache import FastAPICache
-from fastapi_cache.backends.inmemory import InMemoryBackend
 from fastapi_cache.backends.redis import RedisBackend
 from loguru import logger
 from tortoise import Tortoise
 
+from app.cache.backend import InMemoryBackend
 from app.core import settings
 from app.database import init_db
 
