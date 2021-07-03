@@ -45,7 +45,7 @@ async def get_asn_by_ip_address(ip_address: str) -> Optional[str]:
         Optional[str] -- ASN as a string, returns None if an error occurs
     """
     res = await IP2ASN.lookup(ip_address)
-    return res.get("asn")
+    return res.asn if res is not None else None
 
 
 async def get_country_code_by_ip_address(ip_address: str) -> Optional[str]:
@@ -58,4 +58,4 @@ async def get_country_code_by_ip_address(ip_address: str) -> Optional[str]:
         Optional[str] -- Country code, returns None if an error occurs
     """
     res = await IP2ASN.lookup(ip_address)
-    return res.get("country_code")
+    return res.country_code if res is not None else None

@@ -1,8 +1,9 @@
 from functools import partial
+from typing import Optional, cast
 
 import aiometer
 
-from app import models, schemas
+from app import dataclasses, models, schemas
 from app.services.ip2asn import IP2ASN
 from app.services.whois import Whois
 
@@ -17,9 +18,10 @@ class IPAddressFactory:
         ]
         whois, res, snapshots = await aiometer.run_all(tasks)
 
-        asn = res.get("asn", "")
-        country_code = res.get("country_code", "")
-        description = res.get("description", "")
+        res = cast(Optional[dataclasses.IP2ASNResponse], res)
+        asn = res.asn if res is not None else ""
+        country_code = res.country_code if res is not None else ""
+        description = res.description if res is not None else ""
 
         return schemas.IPAddress(
             asn=asn,
