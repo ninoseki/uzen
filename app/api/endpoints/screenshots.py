@@ -10,12 +10,13 @@ from fastapi_cache.decorator import cache
 from app import schemas
 from app.api.dependencies.arq import get_arq_redis
 from app.arq.constants import PREVIEW_TASK_NAME
+from app.cache.constants import ONE_HOUR
 from app.utils.screenshot import get_screenshot
 
 router = APIRouter()
 
 
-@cache(coder=PickleCoder)
+@cache(coder=PickleCoder, expire=ONE_HOUR)
 async def _get_screenshot_by_snapshot_id(snapshot_id: str) -> bytes:
     return await get_screenshot(str(snapshot_id))
 

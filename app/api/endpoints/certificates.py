@@ -6,11 +6,12 @@ from fastapi_cache.decorator import cache
 from tortoise.exceptions import DoesNotExist
 
 from app import models, schemas
+from app.cache.constants import ONE_DAY
 
 router = APIRouter()
 
 
-@cache(coder=PickleCoder)
+@cache(coder=PickleCoder, expire=ONE_DAY)
 async def _get_certificate_by_sha256(sha256: str) -> schemas.Certificate:
     certificate = await models.Certificate.get_by_id(sha256)
     certificate = cast(models.Certificate, certificate)

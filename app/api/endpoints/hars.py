@@ -6,11 +6,12 @@ from fastapi_cache.decorator import cache
 from tortoise.exceptions import DoesNotExist
 
 from app import models, schemas
+from app.cache.constants import ONE_DAY
 
 router = APIRouter()
 
 
-@cache(coder=PickleCoder)
+@cache(coder=PickleCoder, expire=ONE_DAY)
 async def _get_har_by_snapshot_id(snapshot_id: UUID) -> schemas.HAR:
     har = await models.HAR.get_by_snapshot_id(snapshot_id)
     return har.to_model()

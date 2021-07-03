@@ -6,11 +6,12 @@ from fastapi_cache.decorator import cache
 from tortoise.exceptions import DoesNotExist
 
 from app import models, schemas
+from app.cache.constants import ONE_DAY
 
 router = APIRouter()
 
 
-@cache(coder=PickleCoder)
+@cache(coder=PickleCoder, expire=ONE_DAY)
 async def _get_whois_by_id(id_: str) -> schemas.Whois:
     whois = await models.Whois.get_by_id(id_)
     whois = cast(models.Whois, whois)
