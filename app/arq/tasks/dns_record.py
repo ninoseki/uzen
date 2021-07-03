@@ -3,8 +3,8 @@ from typing import List
 from loguru import logger
 
 from app import models
+from app.arq.tasks import EnrichmentTask
 from app.factories.dns_record import DnsRecordFactory
-from app.tasks import EnrichmentTask
 
 
 class DnsRecordTask(EnrichmentTask):

@@ -1,9 +1,9 @@
 import pytest
 
+from app.arq.tasks.match import MatchingTask
 from app.models.match import Match
 from app.models.rule import Rule
 from app.models.snapshot import Snapshot
-from app.tasks.match import MatchingTask
 from tests.helper import first_snapshot_id
 
 

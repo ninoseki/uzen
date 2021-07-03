@@ -1,7 +1,7 @@
 import pytest
 
+from app.arq.tasks.snapshot import UpdateProcessingTask
 from app.models.snapshot import Snapshot
-from app.tasks.snapshot import UpdateProcessingTask
 from tests.helper import first_snapshot_id
 
 

@@ -1,9 +1,9 @@
 import httpx
 
 from app import dataclasses
+from app.arq.tasks.script import ScriptTask
+from app.arq.tasks.stylesheet import StylesheetTask
 from app.services.browsers import AbstractBrowser, build_snapshot_result
-from app.tasks.script import ScriptTask
-from app.tasks.stylesheet import StylesheetTask
 
 DEFAULT_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
 DEFAULT_AL = "en-US"

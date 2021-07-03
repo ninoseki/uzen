@@ -3,8 +3,8 @@ from typing import List
 from loguru import logger
 
 from app import dataclasses, models
+from app.arq.tasks import AbstractAsyncTask
 from app.factories.script import ScriptFactory
-from app.tasks import AbstractAsyncTask
 
 
 class ScriptTask(AbstractAsyncTask):
