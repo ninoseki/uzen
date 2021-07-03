@@ -1,11 +1,12 @@
 from dataclasses import dataclass, field
-from typing import List, Optional, Type, Union
+from typing import TYPE_CHECKING, List, Optional, Type, Union
 from uuid import UUID
 
 from pydantic import BaseModel
 from tortoise.models import Model
 
-from app import models
+if TYPE_CHECKING:
+    from app import models
 
 
 @dataclass
@@ -17,32 +18,32 @@ class HttpResource:
 
 @dataclass
 class ScriptFile:
-    script: models.Script
-    file: models.File
+    script: "models.Script"
+    file: "models.File"
 
 
 @dataclass
 class StylesheetFile:
-    stylesheet: models.Stylesheet
-    file: models.File
+    stylesheet: "models.Stylesheet"
+    file: "models.File"
 
 
 @dataclass
 class SnapshotResult:
-    snapshot: models.Snapshot
-    html: models.HTML
-    whois: Optional[models.Whois] = None
-    certificate: Optional[models.Certificate] = None
+    snapshot: "models.Snapshot"
+    html: "models.HTML"
+    whois: Optional["models.Whois"] = None
+    certificate: Optional["models.Certificate"] = None
     screenshot: Optional[bytes] = None
-    har: Optional[models.HAR] = None
+    har: Optional["models.HAR"] = None
     script_files: List[ScriptFile] = field(default_factory=lambda: [])
     stylesheet_files: List[StylesheetFile] = field(default_factory=lambda: [])
 
 
 @dataclass
 class EnrichmentResults:
-    classifications: List[models.Classification]
-    dns_records: List[models.DnsRecord]
+    classifications: List["models.Classification"]
+    dns_records: List["models.DnsRecord"]
 
 
 @dataclass

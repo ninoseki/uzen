@@ -224,7 +224,18 @@ def patch_whois_lookup(monkeypatch: MonkeyPatch):
 
 @pytest.fixture
 def patch_ip2asn_lookup(monkeypatch: MonkeyPatch):
-    monkeypatch.setattr(IP2ASN, "lookup", AsyncMock(return_value={"asn": "AS15133"}))
+    monkeypatch.setattr(
+        IP2ASN,
+        "lookup",
+        AsyncMock(
+            return_value=dataclasses.IP2ASNResponse(
+                ip_address="1.1.1.1",
+                country_code="AU",
+                description="dummy",
+                asn="AS15133",
+            )
+        ),
+    )
 
 
 @pytest.fixture

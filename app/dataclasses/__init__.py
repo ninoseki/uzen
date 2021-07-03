@@ -1,5 +1,6 @@
 from app.dataclasses.browser import BrowsingOptions, BrowsingResult
 from app.dataclasses.certificate import Certificate
+from app.dataclasses.ip2asn import IP2ASNResponse
 from app.dataclasses.search import SearchResults
 from app.dataclasses.similarity import SimilarityResult
 from app.dataclasses.utils import (
@@ -17,6 +18,7 @@ __all__ = [
     "Certificate",
     "EnrichmentResults",
     "HttpResource",
+    "IP2ASNResponse",
     "ScriptFile",
     "SearchResults",
     "SearchResults",
