@@ -3,12 +3,12 @@ from typing import Optional
 from app import models, schemas
 from app.api.dependencies.arq import get_arq_redis_with_context
 from app.arq.constants import ENRICH_SNAPSHOT_TASK_NAME
+from app.arq.tasks import AbstractAsyncTask
+from app.arq.tasks.enrichment import EnrichmentTasks
+from app.arq.tasks.match import MatchingTask
+from app.arq.tasks.screenshot import UploadScrenshotTask
 from app.core.exceptions import TakeSnapshotError
 from app.services.browser import Browser
-from app.tasks import AbstractAsyncTask
-from app.tasks.enrichment import EnrichmentTasks
-from app.tasks.match import MatchingTask
-from app.tasks.screenshot import UploadScrenshotTask
 
 
 class UpdateProcessingTask(AbstractAsyncTask):

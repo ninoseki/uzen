@@ -3,8 +3,8 @@ from typing import List
 from loguru import logger
 
 from app import models
+from app.arq.tasks import EnrichmentTask
 from app.factories.classification import ClassificationFactory
-from app.tasks import EnrichmentTask
 
 
 class ClassificationTask(EnrichmentTask):
