@@ -1,29 +1,29 @@
-from app.dataclasses.browser import BrowsingOptions, BrowsingResult
+from app.dataclasses.browser import (
+    BrowserOptions,
+    ScriptFile,
+    Snapshot,
+    SnapshotModelWrapper,
+    StylesheetFile,
+)
 from app.dataclasses.certificate import Certificate
 from app.dataclasses.ip2asn import IP2ASNResponse
 from app.dataclasses.search import SearchResults
 from app.dataclasses.similarity import SimilarityResult
-from app.dataclasses.utils import (
-    EnrichmentResults,
-    HttpResource,
-    ScriptFile,
-    SnapshotResult,
-    StylesheetFile,
-)
+from app.dataclasses.utils import Enrichments, HttpResource
 from app.dataclasses.whois import Whois
 
 __all__ = [
-    "BrowsingOptions",
-    "BrowsingResult",
+    "BrowserOptions",
+    "Snapshot",
     "Certificate",
-    "EnrichmentResults",
+    "Enrichments",
     "HttpResource",
     "IP2ASNResponse",
     "ScriptFile",
     "SearchResults",
     "SearchResults",
     "SimilarityResult",
-    "SnapshotResult",
+    "SnapshotModelWrapper",
     "StylesheetFile",
     "Whois",
 ]

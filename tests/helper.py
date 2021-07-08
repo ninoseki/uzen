@@ -3,8 +3,7 @@ import datetime
 import uuid
 from uuid import UUID
 
-from app import models
-from app.dataclasses.utils import ScriptFile, SnapshotResult
+from app import dataclasses, models
 from app.utils.hash import calculate_sha256
 
 
@@ -28,17 +27,17 @@ def make_snapshot(hostname: str = "example.com") -> models.Snapshot:
     )
 
 
-def make_script_file(hostname: str = "example.com") -> ScriptFile:
-    return ScriptFile(
+def make_script_file(hostname: str = "example.com") -> dataclasses.ScriptFile:
+    return dataclasses.ScriptFile(
         script=models.Script(url=f"http://{hostname}/test.js", file_id="foo"),
         file=models.File(id="foo", content="foo"),
     )
 
 
-async def make_snapshot_result() -> SnapshotResult:
+async def make_snapshot_result() -> dataclasses.SnapshotModelWrapper:
     snapshot = make_snapshot()
     html = make_html()
-    return SnapshotResult(
+    return dataclasses.SnapshotModelWrapper(
         snapshot=snapshot,
         screenshot=None,
         script_files=[],

@@ -24,7 +24,7 @@ from app.models.script import Script
 from app.models.stylesheet import Stylesheet
 
 if TYPE_CHECKING:
-    from app.dataclasses import SnapshotResult
+    from app.dataclasses import SnapshotModelWrapper
     from app.models import HTML, Certificate, Classification, DnsRecord, Rule, Whois
 
 
@@ -169,7 +169,7 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
     @classmethod
     async def save_snapshot_result(
         _,
-        result: "SnapshotResult",
+        result: "SnapshotModelWrapper",
         id: str | None = None,
     ) -> Snapshot:
         async with in_transaction():

@@ -16,7 +16,7 @@ async def test_take_snapshot():
         Response(status_code=200, content="foo", headers={"Content-Type": "text/html"})
     )
 
-    options = dataclasses.BrowsingOptions()
+    options = dataclasses.BrowserOptions()
     result = await HttpxBrowser.take_snapshot("http://example.com", options)
     snapshot = result.snapshot
     assert snapshot.url == "http://example.com"

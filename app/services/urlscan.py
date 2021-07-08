@@ -36,7 +36,7 @@ class URLScan:
             return cast(dict, r.json())
 
     @classmethod
-    async def import_as_snapshot(cls, uuid: str) -> dataclasses.SnapshotResult:
+    async def import_as_snapshot(cls, uuid: str) -> dataclasses.SnapshotModelWrapper:
         """Import urlscan.io scan as a snapshot
 
         Arguments:
@@ -85,7 +85,7 @@ class URLScan:
 
         screenshot = await instance.screenshot()
 
-        return dataclasses.SnapshotResult(
+        return dataclasses.SnapshotModelWrapper(
             screenshot=screenshot,
             snapshot=snapshot,
             html=html,

@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, List, Optional, Type, Union
 from uuid import UUID
 
@@ -11,42 +11,24 @@ if TYPE_CHECKING:
 
 @dataclass
 class HttpResource:
+    """HTTP response resource"""
+
     url: str
     content: str
     content_type: Optional[str] = None
 
 
 @dataclass
-class ScriptFile:
-    script: "models.Script"
-    file: "models.File"
+class Enrichments:
+    """Classifications and DNS records"""
 
-
-@dataclass
-class StylesheetFile:
-    stylesheet: "models.Stylesheet"
-    file: "models.File"
-
-
-@dataclass
-class SnapshotResult:
-    snapshot: "models.Snapshot"
-    html: "models.HTML"
-    whois: Optional["models.Whois"] = None
-    certificate: Optional["models.Certificate"] = None
-    screenshot: Optional[bytes] = None
-    har: Optional["models.HAR"] = None
-    script_files: List[ScriptFile] = field(default_factory=lambda: [])
-    stylesheet_files: List[StylesheetFile] = field(default_factory=lambda: [])
-
-
-@dataclass
-class EnrichmentResults:
     classifications: List["models.Classification"]
     dns_records: List["models.DnsRecord"]
 
 
 @dataclass
 class SearchResults:
+    """Search results with total"""
+
     results: Union[List[Type[Model]], List[Type[BaseModel]], List[dict], List[UUID]]
     total: int
