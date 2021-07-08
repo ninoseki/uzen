@@ -3,15 +3,17 @@ import httpx
 from app import dataclasses
 from app.arq.tasks.script import ScriptTask
 from app.arq.tasks.stylesheet import StylesheetTask
-from app.services.browsers import AbstractBrowser, build_snapshot_result
+
+from .abstract import AbstractBrowser
+from .utils import build_snapshot_model_wrapper
 
 DEFAULT_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
 DEFAULT_AL = "en-US"
 
 
 async def run_httpx(
-    url: str, options: dataclasses.BrowsingOptions
-) -> dataclasses.BrowsingResult:
+    url: str, options: dataclasses.BrowserOptions
+) -> dataclasses.Snapshot:
     verify = not options.ignore_https_errors
 
     async with httpx.AsyncClient(verify=verify) as client:
@@ -22,7 +24,7 @@ async def run_httpx(
             allow_redirects=True,
         )
 
-        return dataclasses.BrowsingResult(
+        return dataclasses.Snapshot(
             url=str(res.url),
             status=res.status_code,
             screenshot=None,
@@ -37,28 +39,28 @@ class HttpxBrowser(AbstractBrowser):
     @staticmethod
     async def take_snapshot(
         url: str,
-        options: dataclasses.BrowsingOptions,
-    ) -> dataclasses.SnapshotResult:
+        options: dataclasses.BrowserOptions,
+    ) -> dataclasses.SnapshotModelWrapper:
         submitted_url: str = url
 
         try:
-            browsing_result = await run_httpx(url, options)
+            snapshot = await run_httpx(url, options)
         except httpx.HTTPError as e:
             raise (e)
 
-        snapshot_result = await build_snapshot_result(submitted_url, browsing_result)
+        wrapper = await build_snapshot_model_wrapper(submitted_url, snapshot)
 
         # set html to extract scripts
-        snapshot = snapshot_result.snapshot
-        snapshot.html = snapshot_result.html
+        snapshot = wrapper.snapshot
+        snapshot.html = wrapper.html
 
         # get script files
         script_files = await ScriptTask.process(snapshot)
-        snapshot_result.script_files = script_files
+        wrapper.script_files = script_files
 
         # get stylesheet files
         stylesheet_files = await StylesheetTask.process(snapshot)
 
-        snapshot_result.stylesheet_files = stylesheet_files
+        wrapper.stylesheet_files = stylesheet_files
 
-        return snapshot_result
+        return wrapper

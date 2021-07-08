@@ -4,7 +4,9 @@ from playwright.async_api import Browser, Error, Playwright, Response, async_pla
 from playwright_har_tracer import HarTracer
 
 from app import dataclasses
-from app.services.browsers import AbstractBrowser, build_snapshot_result
+
+from .abstract import AbstractBrowser
+from .utils import build_snapshot_model_wrapper
 
 
 async def launch_playwright_browser(playwright: Playwright) -> Browser:
@@ -12,8 +14,8 @@ async def launch_playwright_browser(playwright: Playwright) -> Browser:
 
 
 async def run_playwright_browser(
-    url: str, options: dataclasses.BrowsingOptions
-) -> dataclasses.BrowsingResult:
+    url: str, options: dataclasses.BrowserOptions
+) -> dataclasses.Snapshot:
     async with async_playwright() as playwright:
         browser: Browser = await launch_playwright_browser(playwright)
 
@@ -66,7 +68,7 @@ async def run_playwright_browser(
         await context.close()
         await browser.close()
 
-        return dataclasses.BrowsingResult(
+        return dataclasses.Snapshot(
             url=url,
             screenshot=screenshot,
             html=content,
@@ -82,18 +84,18 @@ class PlaywrightBrowser(AbstractBrowser):
     @staticmethod
     async def take_snapshot(
         url: str,
-        options: dataclasses.BrowsingOptions,
-    ) -> dataclasses.SnapshotResult:
+        options: dataclasses.BrowserOptions,
+    ) -> dataclasses.SnapshotModelWrapper:
         submitted_url: str = url
 
         try:
-            browsing_result = await run_playwright_browser(url, options=options)
+            snapshot = await run_playwright_browser(url, options=options)
         except Error as e:
             raise (e)
 
-        snapshot_result = await build_snapshot_result(submitted_url, browsing_result)
+        wrapper = await build_snapshot_model_wrapper(submitted_url, snapshot)
 
         if options.enable_har is False:
-            snapshot_result.har = None
+            wrapper.har = None
 
-        return snapshot_result
+        return wrapper

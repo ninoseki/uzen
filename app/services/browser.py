@@ -72,8 +72,8 @@ class Browser:
         self.wait_until: WaitUntilType = wait_until
 
     @cached_property
-    def options(self) -> dataclasses.BrowsingOptions:
-        return dataclasses.BrowsingOptions(
+    def options(self) -> dataclasses.BrowserOptions:
+        return dataclasses.BrowserOptions(
             enable_har=self.enable_har,
             ignore_https_errors=self.ignore_https_errors,
             timeout=self.timeout,
@@ -82,8 +82,8 @@ class Browser:
             wait_until=self.wait_until,
         )
 
-    async def take_snapshot(self, url: str) -> dataclasses.SnapshotResult:
-        result: Optional[dataclasses.SnapshotResult] = None
+    async def take_snapshot(self, url: str) -> dataclasses.SnapshotModelWrapper:
+        result: Optional[dataclasses.SnapshotModelWrapper] = None
         errors = []
 
         if are_headers_safe(self.headers):

@@ -5,7 +5,6 @@ import aiometer
 import httpx
 
 from app import dataclasses, models
-from app.dataclasses.utils import ScriptFile
 from app.utils.hash import calculate_sha256
 from app.utils.http import get_http_resource, get_script_urls
 
@@ -45,6 +44,6 @@ class ScriptFactory:
                     # insert a dummy ID if a snapshot doesn't have ID
                     snapshot_id=snapshot.id or -1,
                 )
-                script_files.append(ScriptFile(script=script, file=file))
+                script_files.append(dataclasses.ScriptFile(script=script, file=file))
 
         return script_files

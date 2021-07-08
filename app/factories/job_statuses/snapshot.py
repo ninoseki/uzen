@@ -3,7 +3,7 @@ from typing import Optional, cast
 from arq.connections import ArqRedis
 
 from app import schemas
-from app.factories.job_statuses.utils import get_job_definition_and_result
+from app.arq.utils import get_job_definition_and_result
 
 
 class SnapshotJobStatusFactory:
