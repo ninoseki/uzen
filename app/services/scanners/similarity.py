@@ -3,12 +3,12 @@ from functools import partial
 from typing import Any, Dict, List, Optional
 
 import aiometer
+from d8s_hashes import sha256
 from niteru import similarity
 
 from app import dataclasses, models, schemas
 from app.services.scanners.constants import CHUNK_SIZE, MAX_AT_ONCE
 from app.services.scanners.utils import search_snapshots
-from app.utils.hash import calculate_sha256
 
 
 def build_similarity_result_table(
@@ -28,7 +28,7 @@ class SimilarityScanner:
         threshold: Optional[float] = None,
     ):
         self.html = html
-        self.id: str = calculate_sha256(html)
+        self.id: str = sha256(html)
 
         if threshold is None:
             threshold = 0.9

@@ -3,10 +3,10 @@ from typing import List
 
 import aiometer
 import httpx
+from d8s_hashes import sha256
 
 from app import dataclasses, models
 from app.services.har import is_stylesheet_content_type
-from app.utils.hash import calculate_sha256
 from app.utils.http import get_http_resource, get_stylesheet_urls
 
 MAX_AT_ONCE = 10
@@ -45,11 +45,11 @@ class StylesheetFactory:
                 if not is_stylesheet_content_type(result.content_type):
                     continue
 
-                sha256 = calculate_sha256(result.content)
-                file = models.File(id=sha256, content=result.content)
+                file_id = sha256(result.content)
+                file = models.File(id=file_id, content=result.content)
                 stylesheet = models.Stylesheet(
                     url=result.url,
-                    file_id=sha256,
+                    file_id=file_id,
                     # insert a dummy ID if a snapshot doesn't have ID
                     snapshot_id=snapshot.id or -1,
                 )

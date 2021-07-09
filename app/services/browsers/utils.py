@@ -1,5 +1,6 @@
 from typing import List, Optional, cast
 
+from d8s_hashes import sha256
 from playwright_har_tracer.dataclasses.har import Har
 
 from app import dataclasses, models
@@ -9,7 +10,6 @@ from app.factories.whois import WhoisFactory
 from app.services.certificate import Certificate
 from app.services.har import HarReader
 from app.services.whois import Whois
-from app.utils.hash import calculate_sha256
 from app.utils.network import (
     get_asn_by_ip_address,
     get_country_code_by_ip_address,
@@ -78,7 +78,7 @@ async def build_snapshot_model_wrapper(
         country_code=country_code,
         ignore_https_errors=snapshot.options.ignore_https_errors,
     )
-    html = models.HTML(id=calculate_sha256(snapshot.html), content=snapshot.html)
+    html = models.HTML(id=sha256(snapshot.html), content=snapshot.html)
     whois = WhoisFactory.from_dataclass(whois_data) if whois_data else None
     certificate = (
         CertificateFactory.from_dataclass(certificate_data)

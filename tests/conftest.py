@@ -8,6 +8,7 @@ from uuid import UUID, uuid4
 import nest_asyncio
 import pytest
 from _pytest.monkeypatch import MonkeyPatch
+from d8s_hashes import sha256
 from fastapi.testclient import TestClient
 from starlette.config import environ
 from tortoise import Tortoise
@@ -20,7 +21,6 @@ from app.core import settings
 from app.services.certificate import Certificate
 from app.services.ip2asn import IP2ASN
 from app.services.whois import Whois
-from app.utils.hash import calculate_sha256
 from tests.fake_arq import FakeArqRedis
 
 nest_asyncio.apply()
@@ -85,11 +85,11 @@ def event_loop(client: TestClient) -> AbstractEventLoop:
 @pytest.fixture
 def snapshots_setup(client: TestClient, event_loop: asyncio.AbstractEventLoop):
     html_str = "<p>foo</p>"
-    html = models.HTML(id=calculate_sha256(html_str), content=html_str)
+    html = models.HTML(id=sha256(html_str), content=html_str)
     event_loop.run_until_complete(html.save())
 
     whois_str = "foo"
-    whois = models.Whois(id=calculate_sha256(whois_str), content=whois_str)
+    whois = models.Whois(id=sha256(whois_str), content=whois_str)
     event_loop.run_until_complete(whois.save())
 
     for i in range(1, 11):

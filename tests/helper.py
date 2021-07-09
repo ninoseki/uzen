@@ -3,12 +3,13 @@ import datetime
 import uuid
 from uuid import UUID
 
+from d8s_hashes import sha256
+
 from app import dataclasses, models
-from app.utils.hash import calculate_sha256
 
 
 def make_html() -> models.HTML:
-    return models.HTML(id=calculate_sha256("foo bar"), content="foo bar")
+    return models.HTML(id=sha256("foo bar"), content="foo bar")
 
 
 def make_snapshot(hostname: str = "example.com") -> models.Snapshot:
