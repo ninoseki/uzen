@@ -37,6 +37,7 @@ whois-parser = "^0.1.0"
 yara-python = "^4.1.0"
 html2text = "^2020.1.16"
 d8s-hashes = "^0.6.0"
+d8s-urls = "^0.6.0"
 
 [tool.poetry.dev-dependencies]
 asynctest = "^0.13.0"

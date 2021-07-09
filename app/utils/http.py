@@ -1,25 +1,12 @@
 from functools import lru_cache
 from typing import Any, Dict, List, Optional
-from urllib.parse import urlparse
 
 import httpx
 from bs4 import BeautifulSoup
+from d8s_urls import url_base_form
 
 from app import dataclasses
 from app.dataclasses.utils import HttpResource
-
-
-def extract_base_path(path: str) -> str:
-    """Extract base path from a path (or remove a filename from the path)
-
-    Arguments:
-        path {str} -- A path e.g. /foo/bar/index.html
-
-    Returns:
-        str -- A base path (e.g. /foo/bar/)
-    """
-    parts = path.split("/")
-    return "/".join(parts[:-1])
 
 
 def convert_to_absolute_url(url: str, source: str) -> str:
@@ -35,9 +22,7 @@ def convert_to_absolute_url(url: str, source: str) -> str:
     if source.startswith("http://") or source.startswith("https://"):
         return source
 
-    parsed = urlparse(url)
-    base_path = extract_base_path(parsed.path)
-    base_url = f"{parsed.scheme}://{parsed.netloc}{base_path}"
+    base_url = url_base_form(url).removesuffix("/")
 
     if source.startswith("/"):
         return f"{base_url}{source}"
