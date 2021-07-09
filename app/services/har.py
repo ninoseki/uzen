@@ -1,10 +1,10 @@
 import base64
 from typing import List, Optional
 
+from d8s_hashes import sha256
 from playwright_har_tracer.dataclasses.har import Entry, Har, Request
 
 from app import dataclasses, models
-from app.utils.hash import calculate_sha256
 
 
 def is_js_content_type(content_type: Optional[str]) -> bool:
@@ -61,10 +61,10 @@ def find_script_files(har: Har) -> List[dataclasses.ScriptFile]:
         if is_js_content_type(content.mime_type):
             encoded_text = str(content.text)
             text = base64.b64decode(encoded_text).decode()
-            sha256 = calculate_sha256(text)
+            file_id = sha256(text)
 
-            script = models.Script(url=url, ip_address=ip_address, file_id=sha256)
-            file = models.File(id=sha256, content=text)
+            script = models.Script(url=url, ip_address=ip_address, file_id=file_id)
+            file = models.File(id=file_id, content=text)
             script_files.append(dataclasses.ScriptFile(script=script, file=file))
 
     return script_files
@@ -84,12 +84,12 @@ def find_stylesheet_files(har: Har) -> List[dataclasses.StylesheetFile]:
         if is_stylesheet_content_type(content.mime_type):
             encoded_text = str(content.text)
             text = base64.b64decode(encoded_text).decode()
-            sha256 = calculate_sha256(text)
+            file_id = sha256(text)
 
             stylesheet = models.Stylesheet(
-                url=url, ip_address=ip_address, file_id=sha256
+                url=url, ip_address=ip_address, file_id=file_id
             )
-            file = models.File(id=sha256, content=text)
+            file = models.File(id=file_id, content=text)
             stylesheet_files.append(
                 dataclasses.StylesheetFile(stylesheet=stylesheet, file=file)
             )

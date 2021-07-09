@@ -137,7 +137,7 @@ python-versions = ">=3.5"
 version = "0.13.0"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Atomic file writes."
 name = "atomicwrites"
 optional = false
@@ -145,7 +145,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "1.4.0"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Classes Without Boilerplate"
 name = "attrs"
 optional = false
@@ -336,6 +336,187 @@ test = ["pytest (>=6.0)", "pytest-cov", "pytest-subtests", "pytest-xdist", "pret
 
 [[package]]
 category = "main"
+description = "Democritus functions for working with CSV."
+name = "d8s-csv"
+optional = false
+python-versions = "*"
+version = "0.6.0"
+
+[[package]]
+category = "main"
+description = "Democritus functions for working with Python dictionaries."
+name = "d8s-dicts"
+optional = false
+python-versions = "*"
+version = "0.6.0"
+
+[package.dependencies]
+d8s-hypothesis = "<1.0.0"
+dictdiffer = "*"
+hypothesis = "*"
+more-itertools = "*"
+
+[[package]]
+category = "main"
+description = "Democritus functions for working with domains."
+name = "d8s-domains"
+optional = false
+python-versions = "*"
+version = "0.6.0"
+
+[package.dependencies]
+d8s-hypothesis = "<1.0.0"
+d8s-networking = "<1.0.0"
+d8s-urls = "<1.0.0"
+hypothesis = "*"
+ioc-finder = "*"
+tldextract = "*"
+whois = "*"
+
+[[package]]
+category = "main"
+description = "Democritus functions for working with files and directories."
+name = "d8s-file-system"
+optional = false
+python-versions = "*"
+version = "0.10.0"
+
+[package.dependencies]
+atomicwrites = "*"
+d8s-hashes = "<1.0.0"
+
+[[package]]
+category = "main"
+description = "Democritus functions for working with hashes."
+name = "d8s-hashes"
+optional = false
+python-versions = "*"
+version = "0.6.0"
+
+[package.dependencies]
+ppdeep = "*"
+
+[[package]]
+category = "main"
+description = "Democritus functions to interact with Hypothesis."
+name = "d8s-hypothesis"
+optional = false
+python-versions = "*"
+version = "0.6.0"
+
+[package.dependencies]
+hypothesis = "*"
+
+[[package]]
+category = "main"
+description = "Democritus functions for working with JSON."
+name = "d8s-json"
+optional = false
+python-versions = "*"
+version = "0.3.0"
+
+[package.dependencies]
+d8s-file-system = "<1.0.0"
+d8s-strings = "<1.0.0"
+
+[[package]]
+category = "main"
+description = "Democritus functions for working with lists."
+name = "d8s-lists"
+optional = false
+python-versions = "*"
+version = "0.8.0"
+
+[package.dependencies]
+d8s-dicts = "<1.0.0"
+more-itertools = "*"
+
+[[package]]
+category = "main"
+description = "Democritus functions for working with math."
+name = "d8s-math"
+optional = false
+python-versions = "*"
+version = "0.7.0"
+
+[package.dependencies]
+d8s-strings = "<1.0.0"
+number-tools = "*"
+sympy = "*"
+
+[[package]]
+category = "main"
+description = "Democritus functions for working with network requests."
+name = "d8s-networking"
+optional = false
+python-versions = "*"
+version = "0.4.2"
+
+[package.dependencies]
+d8s-hashes = "<1.0.0"
+d8s-json = "<1.0.0"
+d8s-user-agents = "<1.0.0"
+requests = "*"
+
+[[package]]
+category = "main"
+description = "Democritus functions for working with Python strings."
+name = "d8s-strings"
+optional = false
+python-versions = "*"
+version = "0.5.0"
+
+[package.dependencies]
+d8s-dicts = "0.6.0"
+d8s-hypothesis = "<1.0.0"
+d8s-lists = "0.8.0"
+d8s-math = "0.7.0"
+d8s-uuids = "<1.0.0"
+hypothesis = "*"
+inflect = "*"
+more-itertools = "*"
+
+[[package]]
+category = "main"
+description = "Democritus functions for working with URLs."
+name = "d8s-urls"
+optional = false
+python-versions = "*"
+version = "0.6.0"
+
+[package.dependencies]
+d8s-csv = "<1.0.0"
+d8s-domains = "<1.0.0"
+d8s-file-system = "<1.0.0"
+d8s-hypothesis = "<1.0.0"
+d8s-networking = "<1.0.0"
+d8s-strings = "<1.0.0"
+hypothesis = "*"
+ioc-finder = "*"
+werkzeug = "*"
+
+[[package]]
+category = "main"
+description = "Democritus functions for working with User Agents."
+name = "d8s-user-agents"
+optional = false
+python-versions = "*"
+version = "0.6.0"
+
+[[package]]
+category = "main"
+description = "Democritus functions for working with uuids."
+name = "d8s-uuids"
+optional = false
+python-versions = "*"
+version = "0.6.0"
+
+[package.dependencies]
+d8s-hypothesis = "<1.0.0"
+hypothesis = "*"
+
+[[package]]
+category = "main"
 description = "Easily serialize dataclasses to and from JSON"
 name = "dataclasses-json"
 optional = false
@@ -367,6 +548,20 @@ tzlocal = "*"
 
 [package.extras]
 calendars = ["convertdate", "hijri-converter", "convertdate"]
+
+[[package]]
+category = "main"
+description = "Dictdiffer is a library that helps you to diff and patch dictionaries."
+name = "dictdiffer"
+optional = false
+python-versions = "*"
+version = "0.8.1"
+
+[package.extras]
+all = ["Sphinx (>=1.4.4)", "sphinx-rtd-theme (>=0.1.9)", "check-manifest (>=0.25)", "coverage (>=4.0)", "isort (>=4.2.2)", "mock (>=1.3.0)", "pydocstyle (>=1.0.0)", "pytest-cov (>=1.8.0)", "pytest-pep8 (>=1.0.6)", "pytest (>=2.8.0)", "tox (>=3.7.0)", "numpy (>=1.11.0)"]
+docs = ["Sphinx (>=1.4.4)", "sphinx-rtd-theme (>=0.1.9)"]
+numpy = ["numpy (>=1.11.0)"]
+tests = ["check-manifest (>=0.25)", "coverage (>=4.0)", "isort (>=4.2.2)", "mock (>=1.3.0)", "pydocstyle (>=1.0.0)", "pytest-cov (>=1.8.0)", "pytest-pep8 (>=1.0.6)", "pytest (>=2.8.0)", "tox (>=3.7.0)"]
 
 [[package]]
 category = "dev"
@@ -538,6 +733,34 @@ brotli = ["brotlicffi (>=1.0.0,<2.0.0)"]
 http2 = ["h2 (>=3.0.0,<4.0.0)"]
 
 [[package]]
+category = "main"
+description = "A library for property-based testing"
+name = "hypothesis"
+optional = false
+python-versions = ">=3.6"
+version = "6.14.1"
+
+[package.dependencies]
+attrs = ">=19.2.0"
+sortedcontainers = ">=2.1.0,<3.0.0"
+
+[package.extras]
+all = ["black (>=19.10b0)", "click (>=7.0)", "django (>=2.2)", "dpcontracts (>=0.4)", "lark-parser (>=0.6.5)", "libcst (>=0.3.16)", "numpy (>=1.9.0)", "pandas (>=0.25)", "pytest (>=4.6)", "python-dateutil (>=1.4)", "pytz (>=2014.1)", "redis (>=3.0.0)", "rich (>=9.0.0)", "importlib-resources (>=3.3.0)", "importlib-metadata (>=3.6)", "backports.zoneinfo (>=0.2.1)", "tzdata (>=2020.4)"]
+cli = ["click (>=7.0)", "black (>=19.10b0)", "rich (>=9.0.0)"]
+codemods = ["libcst (>=0.3.16)"]
+dateutil = ["python-dateutil (>=1.4)"]
+django = ["pytz (>=2014.1)", "django (>=2.2)"]
+dpcontracts = ["dpcontracts (>=0.4)"]
+ghostwriter = ["black (>=19.10b0)"]
+lark = ["lark-parser (>=0.6.5)"]
+numpy = ["numpy (>=1.9.0)"]
+pandas = ["pandas (>=0.25)"]
+pytest = ["pytest (>=4.6)"]
+pytz = ["pytz (>=2014.1)"]
+redis = ["redis (>=3.0.0)"]
+zoneinfo = ["importlib-resources (>=3.3.0)", "backports.zoneinfo (>=0.2.1)", "tzdata (>=2020.4)"]
+
+[[package]]
 category = "dev"
 description = "File identification library for Python"
 name = "identify"
@@ -573,12 +796,50 @@ perf = ["ipython"]
 testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-cov", "pytest-enabler (>=1.0.1)", "packaging", "pep517", "pyfakefs", "flufl.flake8", "pytest-perf (>=0.9.2)", "pytest-black (>=0.3.7)", "pytest-mypy", "importlib-resources (>=1.3)"]
 
 [[package]]
+category = "main"
+description = "Correctly generate plurals, singular nouns, ordinals, indefinite articles; convert numbers to words"
+name = "inflect"
+optional = false
+python-versions = ">=3.6"
+version = "5.3.0"
+
+[package.extras]
+docs = ["sphinx", "jaraco.packaging (>=8.2)", "rst.linker (>=1.9)"]
+testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pytest-cov", "pytest-enabler", "pygments", "pytest-black (>=0.3.7)", "pytest-mypy"]
+
+[[package]]
 category = "dev"
 description = "iniconfig: brain-dead simple config-ini parsing"
 name = "iniconfig"
 optional = false
 python-versions = "*"
 version = "1.1.1"
+
+[[package]]
+category = "main"
+description = "Python package to defang and fang indicators of compromise from text."
+name = "ioc-fanger"
+optional = false
+python-versions = "*"
+version = "3.3.0"
+
+[package.dependencies]
+Click = "*"
+pyparsing = "*"
+
+[[package]]
+category = "main"
+description = "Python package for finding and parsing indicators of compromise from text."
+name = "ioc-finder"
+optional = false
+python-versions = "*"
+version = "6.0.1"
+
+[package.dependencies]
+click = ">=7.1.2,<9.0"
+d8s-strings = "0.5.0"
+ioc-fanger = "3.3.0"
+pyparsing = "2.4.7"
 
 [[package]]
 category = "main"
@@ -674,6 +935,26 @@ certifi = "*"
 urllib3 = "*"
 
 [[package]]
+category = "main"
+description = "More routines for operating on iterables, beyond itertools"
+name = "more-itertools"
+optional = false
+python-versions = ">=3.5"
+version = "8.8.0"
+
+[[package]]
+category = "main"
+description = "Python library for arbitrary-precision floating-point arithmetic"
+name = "mpmath"
+optional = false
+python-versions = "*"
+version = "1.2.1"
+
+[package.extras]
+develop = ["pytest (>=4.6)", "pycodestyle", "pytest-cov", "codecov", "wheel"]
+tests = ["pytest (>=4.6)"]
+
+[[package]]
 category = "dev"
 description = "multidict implementation"
 name = "multidict"
@@ -729,6 +1010,14 @@ name = "nodeenv"
 optional = false
 python-versions = "*"
 version = "1.6.0"
+
+[[package]]
+category = "main"
+description = "Various tools for manipulating numbers"
+name = "number-tools"
+optional = false
+python-versions = "*"
+version = "0.1.0"
 
 [[package]]
 category = "dev"
@@ -798,6 +1087,14 @@ version = "0.1.5"
 
 [package.dependencies]
 tomlkit = ">=0.4.6,<0.6.0"
+
+[[package]]
+category = "main"
+description = "Pure-Python library for computing fuzzy hashes (ssdeep)"
+name = "ppdeep"
+optional = false
+python-versions = "*"
+version = "20200505"
 
 [[package]]
 category = "dev"
@@ -1196,6 +1493,14 @@ version = "1.2.0"
 
 [[package]]
 category = "main"
+description = "Sorted Containers -- Sorted List, Sorted Dict, Sorted Set"
+name = "sortedcontainers"
+optional = false
+python-versions = "*"
+version = "2.4.0"
+
+[[package]]
+category = "main"
 description = "A modern CSS selector implementation for Beautiful Soup."
 name = "soupsieve"
 optional = false
@@ -1220,6 +1525,17 @@ name = "stringcase"
 optional = false
 python-versions = "*"
 version = "1.2.0"
+
+[[package]]
+category = "main"
+description = "Computer algebra system (CAS) in Python"
+name = "sympy"
+optional = false
+python-versions = ">=3.6"
+version = "1.8"
+
+[package.dependencies]
+mpmath = ">=0.19"
 
 [[package]]
 category = "dev"
@@ -1434,6 +1750,25 @@ version = "9.1"
 
 [[package]]
 category = "main"
+description = "The comprehensive WSGI web application library."
+name = "werkzeug"
+optional = false
+python-versions = ">=3.6"
+version = "2.0.1"
+
+[package.extras]
+watchdog = ["watchdog"]
+
+[[package]]
+category = "main"
+description = "Python package for retrieving WHOIS information of domains."
+name = "whois"
+optional = false
+python-versions = "*"
+version = "0.9.13"
+
+[[package]]
+category = "main"
 description = "Yet another whois parser for Python"
 name = "whois-parser"
 optional = false
@@ -1498,7 +1833,7 @@ docs = ["sphinx", "jaraco.packaging (>=8.2)", "rst.linker (>=1.9)"]
 testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-cov", "pytest-enabler (>=1.0.1)", "jaraco.itertools", "func-timeout", "pytest-black (>=0.3.7)", "pytest-mypy"]
 
 [metadata]
-content-hash = "5d2a61da62abbb32f1b854c1434cf2e8f9326909195df4d9e7fbed85f4e16d3a"
+content-hash = "75e026c1926712d0ea81e00cfb1fad6150efcc3ec43fad2cb885c0f67469f5c0"
 lock-version = "1.1"
 python-versions = "^3.9"
 
@@ -1717,6 +2052,62 @@ cryptography = [
     {file = "cryptography-3.4.7-pp37-pypy37_pp73-manylinux2014_x86_64.whl", hash = "sha256:ee77aa129f481be46f8d92a1a7db57269a2f23052d5f2433b4621bb457081cc9"},
     {file = "cryptography-3.4.7.tar.gz", hash = "sha256:3d10de8116d25649631977cb37da6cbdd2d6fa0e0281d014a5b7d337255ca713"},
 ]
+d8s-csv = [
+    {file = "d8s_csv-0.6.0-py2.py3-none-any.whl", hash = "sha256:822ed26a9733efb1b9be0ed9b7c20acdc6f896f6c71db59d2019d3b98186f3c3"},
+    {file = "d8s_csv-0.6.0.tar.gz", hash = "sha256:3a7aaa700e326e4d52058d8f5c72864bc3223c468e03ae5606f35edc7b9dc3fa"},
+]
+d8s-dicts = [
+    {file = "d8s_dicts-0.6.0-py2.py3-none-any.whl", hash = "sha256:54906ef88b5a2bc145a30f4317e8eca8b5b3182ec449562be83a347311c9572a"},
+    {file = "d8s_dicts-0.6.0.tar.gz", hash = "sha256:7d70da66350a4d24451c74b062c2017743b34c06df6ef50050dab7d64b6a46c6"},
+]
+d8s-domains = [
+    {file = "d8s_domains-0.6.0-py2.py3-none-any.whl", hash = "sha256:2d63e5fe67fe364eff03843230a6d7055a9f40b60c77bb2241d0a1e842d2969a"},
+    {file = "d8s_domains-0.6.0.tar.gz", hash = "sha256:19509f954a45324e0a9fdf9ce7437d022d06e67df6e9e9f2b5b2b19f08ac3793"},
+]
+d8s-file-system = [
+    {file = "d8s_file_system-0.10.0-py2.py3-none-any.whl", hash = "sha256:6356bbb3e4823657d0c0bacb99e82a4478415ff77c1439f753e14b3eef481dca"},
+    {file = "d8s_file_system-0.10.0.tar.gz", hash = "sha256:45b56e76ed82b71c1aa0c2c33eea56c02adeb3493f4a558a0aa59f9280d0e6e0"},
+]
+d8s-hashes = [
+    {file = "d8s_hashes-0.6.0-py2.py3-none-any.whl", hash = "sha256:92f5fe670de1bafc0b3d4afe1c52bc8f7dcbd1e381f670a02d7cebb03b7a0d1f"},
+    {file = "d8s_hashes-0.6.0.tar.gz", hash = "sha256:dd95b6278f29f42042b315f51d14acb24962154ead759654d55c2dc6f6fa34ea"},
+]
+d8s-hypothesis = [
+    {file = "d8s_hypothesis-0.6.0-py2.py3-none-any.whl", hash = "sha256:1d883c06fd05adc8c8f9f13de180f70ecc41cdfa1fee21055341b5ddc49a091d"},
+    {file = "d8s_hypothesis-0.6.0.tar.gz", hash = "sha256:d3219bf4b1edb1742a0a2fe429c39b5b776374ecabe41e575bda2ee6980da058"},
+]
+d8s-json = [
+    {file = "d8s_json-0.3.0-py2.py3-none-any.whl", hash = "sha256:aa31f14a148f564db2cac344c527de2dc57fe0f49a1e1b8edd9a50fcef9fa8b5"},
+    {file = "d8s_json-0.3.0.tar.gz", hash = "sha256:d27ef5efdc3e081894d6c83560882b5e1d1e1eb932766287bf0cd98e273178ea"},
+]
+d8s-lists = [
+    {file = "d8s_lists-0.8.0-py2.py3-none-any.whl", hash = "sha256:93b7f6f402af580467a058d941673dcc3911084aa58cdc95f458f58ad8d81af4"},
+    {file = "d8s_lists-0.8.0.tar.gz", hash = "sha256:6a7709a9a64a64f77a85051d6887117ec216a2dd71d02477bcd0277e9fd4477e"},
+]
+d8s-math = [
+    {file = "d8s_math-0.7.0-py2.py3-none-any.whl", hash = "sha256:a474237b72aee6669f343eb0cac056ba79673214e5976b923acdfd5898620719"},
+    {file = "d8s_math-0.7.0.tar.gz", hash = "sha256:32acfc784842def2e1f9a5c69cfb9e09887f8151a8483f434752badd40f7959f"},
+]
+d8s-networking = [
+    {file = "d8s_networking-0.4.2-py2.py3-none-any.whl", hash = "sha256:3b9639deaa053f2b76537a6a7ebc2d509a902fc08487f09e2abd6a2456631c6f"},
+    {file = "d8s_networking-0.4.2.tar.gz", hash = "sha256:1f5a27cd6cd7f9e6368c4daa2b54e2fb65b794c185ebec555d75468fa2398d3f"},
+]
+d8s-strings = [
+    {file = "d8s_strings-0.5.0-py2.py3-none-any.whl", hash = "sha256:4fc926120ce027d7ada5af225d9557b9c6923675f148817fb1b49bbd1f721116"},
+    {file = "d8s_strings-0.5.0.tar.gz", hash = "sha256:5271d08f49d73228801a29a70cad53661b063effb50a7abd42aacf781ded5de9"},
+]
+d8s-urls = [
+    {file = "d8s_urls-0.6.0-py2.py3-none-any.whl", hash = "sha256:9416567d3e7c1b69e274a950f25c8da789d1b78b25e7e74786d7cff6ff98f941"},
+    {file = "d8s_urls-0.6.0.tar.gz", hash = "sha256:391064b5443bd0034055e5535e89a63974e50c3141dfd4a8c19c04d4995bbe1c"},
+]
+d8s-user-agents = [
+    {file = "d8s_user_agents-0.6.0-py2.py3-none-any.whl", hash = "sha256:9841507b8ef617d0823c4bcb86951e09a45cc032e07b0b3fe12a39d1b7a0e035"},
+    {file = "d8s_user_agents-0.6.0.tar.gz", hash = "sha256:2bcdcff88bbd82589b0c5de65417cc4651421dcc2e1b3b74a5f91063f886d73a"},
+]
+d8s-uuids = [
+    {file = "d8s_uuids-0.6.0-py2.py3-none-any.whl", hash = "sha256:8aa71fdf60dcdb26949643971734e25b5acfcb17e115bad345d9247b5855b7f5"},
+    {file = "d8s_uuids-0.6.0.tar.gz", hash = "sha256:1bf9ff07dfe4b11c258dc7ef8c5008579872ee5a318bd1839eb73232fde20c68"},
+]
 dataclasses-json = [
     {file = "dataclasses-json-0.5.4.tar.gz", hash = "sha256:6c3976816fd3cdd8db3be2b516b64fc083acd46ac22c680d3dc24cb1d6ae3367"},
     {file = "dataclasses_json-0.5.4-py3-none-any.whl", hash = "sha256:0b25143f621d0122a2de123c156a5f6909c28d0fdd8c2e1ca2a6e4042130ad32"},
@@ -1724,6 +2115,10 @@ dataclasses-json = [
 dateparser = [
     {file = "dateparser-1.0.0-py2.py3-none-any.whl", hash = "sha256:17202df32c7a36e773136ff353aa3767e987f8b3e27374c39fd21a30a803d6f8"},
     {file = "dateparser-1.0.0.tar.gz", hash = "sha256:159cc4e01a593706a15cd4e269a0b3345edf3aef8bf9278a57dac8adf5bf1e4a"},
+]
+dictdiffer = [
+    {file = "dictdiffer-0.8.1-py2.py3-none-any.whl", hash = "sha256:d79d9a39e459fe33497c858470ca0d2e93cb96621751de06d631856adfd9c390"},
+    {file = "dictdiffer-0.8.1.tar.gz", hash = "sha256:1adec0d67cdf6166bda96ae2934ddb5e54433998ceab63c984574d187cc563d2"},
 ]
 distlib = [
     {file = "distlib-0.3.2-py2.py3-none-any.whl", hash = "sha256:23e223426b28491b1ced97dc3bbe183027419dfc7982b4fa2f05d5f3ff10711c"},
@@ -1879,6 +2274,10 @@ httpx = [
     {file = "httpx-0.18.2-py3-none-any.whl", hash = "sha256:979afafecb7d22a1d10340bafb403cf2cb75aff214426ff206521fc79d26408c"},
     {file = "httpx-0.18.2.tar.gz", hash = "sha256:9f99c15d33642d38bce8405df088c1c4cfd940284b4290cacbfb02e64f4877c6"},
 ]
+hypothesis = [
+    {file = "hypothesis-6.14.1-py3-none-any.whl", hash = "sha256:6dad44da8962cc7c13cdc28cf9b78c6779b5a0b0279a9baac427ae6d109f70e3"},
+    {file = "hypothesis-6.14.1.tar.gz", hash = "sha256:88b0736a5691b68b8e16a4b7ee8e4c8596810c5a20989ea5b5f64870a7c25740"},
+]
 identify = [
     {file = "identify-2.2.10-py2.py3-none-any.whl", hash = "sha256:18d0c531ee3dbc112fa6181f34faa179de3f57ea57ae2899754f16a7e0ff6421"},
     {file = "identify-2.2.10.tar.gz", hash = "sha256:5b41f71471bc738e7b586308c3fca172f78940195cb3bf6734c1e66fdac49306"},
@@ -1891,9 +2290,21 @@ importlib-metadata = [
     {file = "importlib_metadata-4.6.1-py3-none-any.whl", hash = "sha256:9f55f560e116f8643ecf2922d9cd3e1c7e8d52e683178fecd9d08f6aa357e11e"},
     {file = "importlib_metadata-4.6.1.tar.gz", hash = "sha256:079ada16b7fc30dfbb5d13399a5113110dab1aa7c2bc62f66af75f0b717c8cac"},
 ]
+inflect = [
+    {file = "inflect-5.3.0-py3-none-any.whl", hash = "sha256:42560be16af702a21d43d59427f276b5aed79efb1ded9b713468c081f4353d10"},
+    {file = "inflect-5.3.0.tar.gz", hash = "sha256:41a23f6788962e9775e40e2ecfb1d6455d02de315022afeedd3c5dc070019d73"},
+]
 iniconfig = [
     {file = "iniconfig-1.1.1-py2.py3-none-any.whl", hash = "sha256:011e24c64b7f47f6ebd835bb12a743f2fbe9a26d4cecaa7f53bc4f35ee9da8b3"},
     {file = "iniconfig-1.1.1.tar.gz", hash = "sha256:bc3af051d7d14b2ee5ef9969666def0cd1a000e121eaea580d4a313df4b37f32"},
+]
+ioc-fanger = [
+    {file = "ioc_fanger-3.3.0-py2.py3-none-any.whl", hash = "sha256:51d282a21db58d5b273e4c57d788ef3ccfd5521b0c46e712018cf8f3e33ba01f"},
+    {file = "ioc_fanger-3.3.0.tar.gz", hash = "sha256:026b61493257ee762196f8f355c934d58683324ee73ab6f5455734ce66389b86"},
+]
+ioc-finder = [
+    {file = "ioc_finder-6.0.1-py2.py3-none-any.whl", hash = "sha256:416cfd3a47ce66bc84070960a53be6642dc1f2d7b2faf36ae0401d4471cb3c2b"},
+    {file = "ioc_finder-6.0.1.tar.gz", hash = "sha256:15979dc1bf3b54df64d8343f61423f53660cca71dd0042529bec5e9f26ec1802"},
 ]
 iso8601 = [
     {file = "iso8601-0.1.14-py2.py3-none-any.whl", hash = "sha256:e7e1122f064d626e17d47cd5106bed2c620cb38fe464999e0ddae2b6d2de6004"},
@@ -1925,6 +2336,14 @@ mccabe = [
 minio = [
     {file = "minio-7.1.0-py3-none-any.whl", hash = "sha256:c78d5559b3c37b0b3a09983aade272d6ec2a437e02335a44949f30000e5e46a4"},
     {file = "minio-7.1.0.tar.gz", hash = "sha256:90b853a48422240028d0720668808d2cc7498b5f843271b533ba6fa91e3e3797"},
+]
+more-itertools = [
+    {file = "more-itertools-8.8.0.tar.gz", hash = "sha256:83f0308e05477c68f56ea3a888172c78ed5d5b3c282addb67508e7ba6c8f813a"},
+    {file = "more_itertools-8.8.0-py3-none-any.whl", hash = "sha256:2cf89ec599962f2ddc4d568a05defc40e0a587fbc10d5989713638864c36be4d"},
+]
+mpmath = [
+    {file = "mpmath-1.2.1-py3-none-any.whl", hash = "sha256:604bc21bd22d2322a177c73bdb573994ef76e62edd595d17e00aff24b0667e5c"},
+    {file = "mpmath-1.2.1.tar.gz", hash = "sha256:79ffb45cf9f4b101a807595bcb3e72e0396202e0b1d25d689134b48c4216a81a"},
 ]
 multidict = [
     {file = "multidict-5.1.0-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:b7993704f1a4b204e71debe6095150d43b2ee6150fa4f44d6d966ec356a8d61f"},
@@ -2006,6 +2425,10 @@ nodeenv = [
     {file = "nodeenv-1.6.0-py2.py3-none-any.whl", hash = "sha256:621e6b7076565ddcacd2db0294c0381e01fd28945ab36bcf00f41c5daf63bef7"},
     {file = "nodeenv-1.6.0.tar.gz", hash = "sha256:3ef13ff90291ba2a4a7a4ff9a979b63ffdd00a464dbe04acf0ea6471517a4c2b"},
 ]
+number-tools = [
+    {file = "number-tools-0.1.0.tar.gz", hash = "sha256:585ff62d2298edbe8f5cb08deef998e6679bd9f385b9edf59ffbaced5acfd7ce"},
+    {file = "number_tools-0.1.0-py3-none-any.whl", hash = "sha256:f6b39c1fae1eaabff4c490035bed3abceed7b36bd9545a69b881b2ca157f2a95"},
+]
 packaging = [
     {file = "packaging-21.0-py3-none-any.whl", hash = "sha256:c86254f9220d55e31cc94d69bade760f0847da8000def4dfe1c6b872fd14ff14"},
     {file = "packaging-21.0.tar.gz", hash = "sha256:7dc96269f53a4ccec5c0670940a4281106dd0bb343f47b7471f779df49c2fbe7"},
@@ -2032,6 +2455,10 @@ pluggy = [
 poetry-version = [
     {file = "poetry-version-0.1.5.tar.gz", hash = "sha256:f7d77b5c4f0761c5a5b9031f199c79c7f81d125676248053ea84e69ad79faa89"},
     {file = "poetry_version-0.1.5-py2.py3-none-any.whl", hash = "sha256:ba259257640cd36c76375563a001b9e85c6f54d764cc56b3eed0f3b5cefb0317"},
+]
+ppdeep = [
+    {file = "ppdeep-20200505-py3-none-any.whl", hash = "sha256:0335063cc96edfb2f90f546a5812c4a47d122dc7bd764b3eef48303d2bf41939"},
+    {file = "ppdeep-20200505.tar.gz", hash = "sha256:acc74bb902e6d21b03d39aed740597093c6562185bfe06da9b5272e01c80a1ff"},
 ]
 pre-commit = [
     {file = "pre_commit-2.13.0-py2.py3-none-any.whl", hash = "sha256:b679d0fddd5b9d6d98783ae5f10fd0c4c59954f375b70a58cbe1ce9bcf9809a4"},
@@ -2291,6 +2718,10 @@ sniffio = [
     {file = "sniffio-1.2.0-py3-none-any.whl", hash = "sha256:471b71698eac1c2112a40ce2752bb2f4a4814c22a54a3eed3676bc0f5ca9f663"},
     {file = "sniffio-1.2.0.tar.gz", hash = "sha256:c4666eecec1d3f50960c6bdf61ab7bc350648da6c126e3cf6898d8cd4ddcd3de"},
 ]
+sortedcontainers = [
+    {file = "sortedcontainers-2.4.0-py2.py3-none-any.whl", hash = "sha256:a163dcaede0f1c021485e957a39245190e74249897e2ae4b2aa38595db237ee0"},
+    {file = "sortedcontainers-2.4.0.tar.gz", hash = "sha256:25caa5a06cc30b6b83d11423433f65d1f9d76c4c6a0c90e3379eaa43b9bfdb88"},
+]
 soupsieve = [
     {file = "soupsieve-2.2.1-py3-none-any.whl", hash = "sha256:c2c1c2d44f158cdbddab7824a9af8c4f83c76b1e23e049479aa432feb6c4c23b"},
     {file = "soupsieve-2.2.1.tar.gz", hash = "sha256:052774848f448cf19c7e959adf5566904d525f33a3f8b6ba6f6f8f26ec7de0cc"},
@@ -2301,6 +2732,10 @@ starlette = [
 ]
 stringcase = [
     {file = "stringcase-1.2.0.tar.gz", hash = "sha256:48a06980661908efe8d9d34eab2b6c13aefa2163b3ced26972902e3bdfd87008"},
+]
+sympy = [
+    {file = "sympy-1.8-py3-none-any.whl", hash = "sha256:3b0b3776e357f789951bb14776c6a841f931680f20d5f8fe55977885657c9b7a"},
+    {file = "sympy-1.8.tar.gz", hash = "sha256:1ca588a9f6ce6a323c5592f9635159c2093572826668a1022c75c75bdf0297cb"},
 ]
 tblib = [
     {file = "tblib-1.7.0-py2.py3-none-any.whl", hash = "sha256:289fa7359e580950e7d9743eab36b0691f0310fce64dee7d9c31065b8f723e23"},
@@ -2432,6 +2867,13 @@ websockets = [
     {file = "websockets-9.1-cp39-cp39-win32.whl", hash = "sha256:be5fd35e99970518547edc906efab29afd392319f020c3c58b0e1a158e16ed20"},
     {file = "websockets-9.1-cp39-cp39-win_amd64.whl", hash = "sha256:85db8090ba94e22d964498a47fdd933b8875a1add6ebc514c7ac8703eb97bbf0"},
     {file = "websockets-9.1.tar.gz", hash = "sha256:276d2339ebf0df4f45df453923ebd2270b87900eda5dfd4a6b0cfa15f82111c3"},
+]
+werkzeug = [
+    {file = "Werkzeug-2.0.1-py3-none-any.whl", hash = "sha256:6c1ec500dcdba0baa27600f6a22f6333d8b662d22027ff9f6202e3367413caa8"},
+    {file = "Werkzeug-2.0.1.tar.gz", hash = "sha256:1de1db30d010ff1af14a009224ec49ab2329ad2cde454c8a708130642d579c42"},
+]
+whois = [
+    {file = "whois-0.9.13.tar.gz", hash = "sha256:478a4f10673412d774078f74302b2b62cbab20fbda9216918815687582a0c68d"},
 ]
 whois-parser = [
     {file = "whois-parser-0.1.0.tar.gz", hash = "sha256:df62e2849ef3cc1ddf450203d54c519a9cdf8278c7b7832735066566177b1eec"},

@@ -2,9 +2,9 @@ import datetime
 from typing import cast
 
 import httpx
+from d8s_hashes import sha256
 
 from app import dataclasses, models
-from app.utils.hash import calculate_sha256
 
 
 class URLScan:
@@ -68,7 +68,7 @@ class URLScan:
         created_at = datetime.datetime.strptime(time, "%Y-%m-%dT%H:%M:%S.%fZ")
 
         html_content = await instance.body()
-        html = models.HTML(id=calculate_sha256(html_content), content=html_content)
+        html = models.HTML(id=sha256(html_content), content=html_content)
 
         snapshot = models.Snapshot(
             url=url,
