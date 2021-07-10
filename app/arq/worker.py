@@ -1,4 +1,8 @@
-from arq.worker import func
+from typing import Optional, Sequence, Union
+
+from arq.connections import RedisSettings
+from arq.typing import StartupShutdown, WorkerCoroutine
+from arq.worker import Function, func
 from tortoise import Tortoise
 
 from app.arq.constants import (
@@ -14,6 +18,7 @@ from app.arq.tasks.similarity import similarity_scan_task
 from app.arq.tasks.snapshot import enrich_snapshot_task, take_snapshot_task
 from app.arq.tasks.yara import yara_scan_task
 from app.cache.constants import ONE_DAY, ONE_HOUR
+from app.core import settings
 from app.database import init_db
 
 
@@ -27,7 +32,7 @@ async def shutdown(ctx: dict) -> None:
 
 class ArqWorkerSettings:
     # default timeout = 300s, keep_result = 3600s
-    functions = [
+    functions: Sequence[Union[Function, WorkerCoroutine]] = [
         func(enrich_snapshot_task, name=ENRICH_SNAPSHOT_TASK_NAME),
         func(preview_task, name=PREVIEW_TASK_NAME),
         func(
@@ -44,7 +49,9 @@ class ArqWorkerSettings:
             keep_result=ONE_DAY,
         ),
     ]
-    redis_settings = get_redis_settings()
+    redis_settings: RedisSettings = get_redis_settings()
 
-    on_startup = startup
-    on_shutdown = shutdown
+    max_jobs: int = settings.ARQ_MAX_JOBS
+
+    on_startup: Optional[StartupShutdown] = startup
+    on_shutdown: Optional[StartupShutdown] = shutdown

@@ -36,6 +36,9 @@ MINIO_SECURE: bool = config("MINIO_SECURE", cast=bool, default=False)
 # Redis settings
 REDIS_URL: str = config("REDIS_URL", cast=str, default="")
 
+# ARQ settings
+ARQ_MAX_JOBS: int = config("ARQ_MAX_JOBS", cast=int, default=10)
+
 # IP to ASN web service settings
 IP2ASN_WEB_SERVICE_URL: str = config("IP2ASN_WEB_SERVICE_URL", cast=str, default="")
 
