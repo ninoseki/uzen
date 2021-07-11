@@ -12,3 +12,4 @@ class HTML(AbstractResourceModel, TimestampMixin):
     """HTML"""
 
     id: str = Field(..., title="SHA256", alias="sha256")
+    ssdeep: str = Field(..., title="SSDEEP")

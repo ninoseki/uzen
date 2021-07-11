@@ -8,7 +8,7 @@ from app.services.browser import Browser
 from tests.helper import (
     count_all_snapshots,
     first_snapshot_id_sync,
-    make_snapshot_result,
+    make_snapshot_wrapper,
 )
 
 
@@ -110,7 +110,7 @@ def test_snapshot_post_with_invalid_url(client):
 
 
 def mock_take_snapshot(*args, **kwargs):
-    return make_snapshot_result()
+    return make_snapshot_wrapper()
 
 
 def test_snapshot_post(client: TestClient, monkeypatch: MonkeyPatch):

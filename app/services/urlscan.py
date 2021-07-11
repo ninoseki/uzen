@@ -2,9 +2,9 @@ import datetime
 from typing import cast
 
 import httpx
-from d8s_hashes import sha256
 
 from app import dataclasses, models
+from app.factories.html import HTMLFactory
 
 
 class URLScan:
@@ -67,8 +67,8 @@ class URLScan:
         time = cast(str, result.get("task", {}).get("time"))
         created_at = datetime.datetime.strptime(time, "%Y-%m-%dT%H:%M:%S.%fZ")
 
-        html_content = await instance.body()
-        html = models.HTML(id=sha256(html_content), content=html_content)
+        html_str = await instance.body()
+        html = HTMLFactory.from_str(html_str)
 
         snapshot = models.Snapshot(
             url=url,

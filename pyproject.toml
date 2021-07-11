@@ -24,7 +24,7 @@ fastapi-cache2 = {extras = ["redis"], version = "^0.1.3"}
 httpx = "^0.18.2"
 loguru = "^0.5.3"
 minio = "^7.1.0"
-niteru = "^0.1.1"
+niteru = "^0.2.0"
 playwright = "^1.12.1"
 playwright-har-tracer = "^0.1.3"
 pyhumps = "^3.0.2"

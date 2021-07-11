@@ -4,7 +4,8 @@ from typing import Any, Dict, List, Optional
 
 import aiometer
 from d8s_hashes import sha256
-from niteru import similarity
+from niteru.html_parser import parse_html
+from niteru.similarity import similarity, similarity_by_tags_and_classes
 
 from app import dataclasses, models, schemas
 from app.services.scanners.constants import CHUNK_SIZE, MAX_AT_ONCE
@@ -30,6 +31,10 @@ class SimilarityScanner:
         self.html = html
         self.id: str = sha256(html)
 
+        parsed = parse_html(html)
+        self.tags = parsed.tags
+        self.classes = parsed.classes
+
         if threshold is None:
             threshold = 0.9
 
@@ -49,10 +54,20 @@ class SimilarityScanner:
         results: List[dataclasses.SimilarityResult] = []
 
         for html in htmls:
+            tags = (self.tags, html.tags)
+            classes = (self.classes, html.classes)
+
+            similarity_: float = 0.0
+            if len(tags) > 0:
+                similarity_ = similarity_by_tags_and_classes(tags, classes, k=0.3)
+            else:
+                # fallback to support old records
+                similarity_ = similarity(self.html, html.content, k=0.3)
+
             results.append(
                 dataclasses.SimilarityResult(
                     html_id=html.id,
-                    similarity=similarity(html.content, self.html, k=0.3),
+                    similarity=similarity_,
                     threshold=self.threshold,
                 )
             )

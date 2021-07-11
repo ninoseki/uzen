@@ -3,11 +3,11 @@ from _pytest.monkeypatch import MonkeyPatch
 from fastapi.testclient import TestClient
 
 from app.services.urlscan import URLScan
-from tests.helper import make_snapshot_result
+from tests.helper import make_snapshot_wrapper
 
 
 def mock_import_as_snapshot(url: str):
-    return make_snapshot_result()
+    return make_snapshot_wrapper()
 
 
 @pytest.mark.usefixtures("snapshots_setup")
