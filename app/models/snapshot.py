@@ -167,28 +167,28 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
         )
 
     @classmethod
-    async def save_snapshot_result(
+    async def save_snapshot(
         _,
-        result: "SnapshotModelWrapper",
+        wrapper: "SnapshotModelWrapper",
         id: str | None = None,
     ) -> Snapshot:
         async with in_transaction():
-            snapshot = result.snapshot
+            snapshot = wrapper.snapshot
 
             if id is not None:
                 snapshot.id = id
 
             # save html, certificate, whois before saving snapshot
-            html = result.html
+            html = wrapper.html
             await save_ignore_integrity_error(html)
             snapshot.html_id = html.id
 
-            certificate = result.certificate
+            certificate = wrapper.certificate
             if certificate:
                 await save_ignore_integrity_error(certificate)
                 snapshot.certificate_id = certificate.id
 
-            whois = result.whois
+            whois = wrapper.whois
             if whois:
                 await save_ignore_integrity_error(whois)
                 snapshot.whois_id = whois.id
@@ -197,13 +197,15 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
             await snapshot.save()
 
             # save scripts
-            await Script.save_script_files(result.script_files, snapshot.id)
+            await Script.save_script_files(wrapper.script_files, snapshot.id)
 
             # save stylesheets
-            await Stylesheet.save_stylesheet_files(result.stylesheet_files, snapshot.id)
+            await Stylesheet.save_stylesheet_files(
+                wrapper.stylesheet_files, snapshot.id
+            )
 
             # save har
-            har = result.har
+            har = wrapper.har
             if har:
                 har.snapshot_id = snapshot.id
                 await har.save()

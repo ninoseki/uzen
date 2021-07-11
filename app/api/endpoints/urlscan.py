@@ -28,7 +28,7 @@ async def import_from_urlscan(
     except httpx.HTTPError:
         raise HTTPException(status_code=404, detail=f"{uuid} is not found")
 
-    snapshot = await models.Snapshot.save_snapshot_result(result)
+    snapshot = await models.Snapshot.save_snapshot(result)
 
     background_tasks.add_task(MatchingTask.process, snapshot)
     background_tasks.add_task(UpdateProcessingTask.process, snapshot)
