@@ -18,6 +18,7 @@ from tortoise.exceptions import DBConnectionError
 from app import create_app, dataclasses, models
 from app.api.dependencies.arq import get_arq_redis
 from app.core import settings
+from app.factories.html import HTMLFactory
 from app.services.certificate import Certificate
 from app.services.ip2asn import IP2ASN
 from app.services.whois import Whois
@@ -91,7 +92,7 @@ def event_loop(client: TestClient) -> AbstractEventLoop:
 @pytest.fixture
 def snapshots_setup(client: TestClient, event_loop: asyncio.AbstractEventLoop):
     html_str = "<p>foo</p>"
-    html = models.HTML(id=sha256(html_str), content=html_str)
+    html = HTMLFactory.from_str(html_str)
     event_loop.run_until_complete(html.save())
 
     whois_str = "foo"

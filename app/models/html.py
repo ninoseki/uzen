@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+from tortoise.fields.data import CharField, JSONField
 from tortoise.fields.relational import ReverseRelation
 
 from app import schemas
@@ -11,6 +12,10 @@ if TYPE_CHECKING:
 
 
 class HTML(AbstractResourceModel, TimestampMixin):
+    ssdeep = CharField(max_length=148)
+    tags = JSONField()
+    classes = JSONField()
+
     snapshots: ReverseRelation["Snapshot"]
 
     def to_model(self) -> schemas.HTML:

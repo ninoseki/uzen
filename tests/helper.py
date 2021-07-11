@@ -3,13 +3,12 @@ import datetime
 import uuid
 from uuid import UUID
 
-from d8s_hashes import sha256
-
 from app import dataclasses, models
+from app.factories.html import HTMLFactory
 
 
 def make_html() -> models.HTML:
-    return models.HTML(id=sha256("foo bar"), content="foo bar")
+    return HTMLFactory.from_str("<p>foo bar</p>")
 
 
 def make_snapshot(hostname: str = "example.com") -> models.Snapshot:
@@ -35,7 +34,7 @@ def make_script_file(hostname: str = "example.com") -> dataclasses.ScriptFile:
     )
 
 
-async def make_snapshot_result() -> dataclasses.SnapshotModelWrapper:
+async def make_snapshot_wrapper() -> dataclasses.SnapshotModelWrapper:
     snapshot = make_snapshot()
     html = make_html()
     return dataclasses.SnapshotModelWrapper(
