@@ -7,17 +7,17 @@ from fastapi_cache.backends.redis import RedisBackend
 from loguru import logger
 from tortoise import Tortoise
 
+import app.database
 from app.cache.backend import InMemoryBackend
 from app.core import settings
-from app.database import init_db
 
 
 def create_start_app_handler(
-    app: FastAPI,
+    app_: FastAPI,
 ) -> Callable[[], Coroutine[Any, Any, None]]:
     async def start_app() -> None:
         # initialize Tortoise ORM
-        await init_db()
+        await app.database.init_db()
 
         # initialize FastAPI cache
         backend: Union[InMemoryBackend, RedisBackend] = InMemoryBackend()
@@ -35,7 +35,7 @@ def create_start_app_handler(
 
 
 def create_stop_app_handler(
-    app: FastAPI,
+    app_: FastAPI,
 ) -> Callable[[], Coroutine[Any, Any, None]]:
     async def stop_app() -> None:
         # close DB connections
