@@ -26,26 +26,6 @@ from tests.fake_arq import FakeArqRedis
 nest_asyncio.apply()
 
 
-def override_get_arq_redis():
-    yield FakeArqRedis()
-
-
-@pytest.fixture
-async def client():
-
-    app = create_app()
-
-    # use fake arq redis for testing
-    app.dependency_overrides[get_arq_redis] = override_get_arq_redis
-
-    with TestClient(
-        app=app,
-        base_url="http://testserver",
-    ) as client_:
-        client_.headers = {"api-key": settings.GLOBAL_API_KEY}
-        yield client_
-
-
 def get_db_config(app_label: str, db_url: str, modules: List[str]) -> dict:
     return generate_config(
         db_url,
@@ -55,9 +35,9 @@ def get_db_config(app_label: str, db_url: str, modules: List[str]) -> dict:
     )
 
 
-@pytest.fixture(autouse=True)
-async def tortoise_db():
+async def init_db():
     db_url = environ.get("TORTOISE_TEST_DB", "sqlite://:memory:")
+
     config = get_db_config(
         app_label="models",
         db_url=db_url,
@@ -72,9 +52,35 @@ async def tortoise_db():
     await Tortoise.init(config, _create_db=True)
     await Tortoise.generate_schemas()
 
+
+@pytest.fixture(autouse=True)
+async def tortoise_db():
+    await init_db()
+
     yield
 
     await Tortoise.close_connections()
+
+
+def override_get_arq_redis():
+    yield FakeArqRedis()
+
+
+@pytest.fixture
+async def client(monkeypatch: MonkeyPatch):
+    monkeypatch.setattr("app.database.init_db", init_db)
+
+    app = create_app()
+
+    # use fake arq redis for testing
+    app.dependency_overrides[get_arq_redis] = override_get_arq_redis
+
+    with TestClient(
+        app=app,
+        base_url="http://testserver",
+    ) as client_:
+        client_.headers = {"api-key": settings.GLOBAL_API_KEY}
+        yield client_
 
 
 @pytest.fixture
