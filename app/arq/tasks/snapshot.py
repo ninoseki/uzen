@@ -47,16 +47,16 @@ async def take_snapshot_task(
         wait_until=payload.wait_until,
     )
     try:
-        result = await browser.take_snapshot(payload.url)
+        wrapper = await browser.take_snapshot(payload.url)
     except TakeSnapshotError as e:
         return schemas.JobResultWrapper(result=None, error=str(e))
 
     id: Optional[str] = ctx.get("job_id")
-    snapshot = await models.Snapshot.save_snapshot_result(result, id=id)
+    snapshot = await models.Snapshot.save_snapshot(wrapper, id=id)
 
     # upload screenshot
-    if result.screenshot is not None:
-        UploadScrenshotTask.process(uuid=snapshot.id, screenshot=result.screenshot)
+    if wrapper.screenshot is not None:
+        UploadScrenshotTask.process(uuid=snapshot.id, screenshot=wrapper.screenshot)
 
     async with get_arq_redis_with_context() as arq_redis:
         await arq_redis.enqueue_job(ENRICH_SNAPSHOT_TASK_NAME, snapshot)
