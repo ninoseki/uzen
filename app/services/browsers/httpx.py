@@ -7,9 +7,6 @@ from app.arq.tasks.stylesheet import StylesheetTask
 from .abstract import AbstractBrowser
 from .utils import build_snapshot_model_wrapper
 
-DEFAULT_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
-DEFAULT_AL = "en-US"
-
 
 async def run_httpx(
     url: str, options: dataclasses.BrowserOptions
@@ -60,7 +57,6 @@ class HttpxBrowser(AbstractBrowser):
 
         # get stylesheet files
         stylesheet_files = await StylesheetTask.process(snapshot)
-
         wrapper.stylesheet_files = stylesheet_files
 
         return wrapper
