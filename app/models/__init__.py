@@ -1,4 +1,5 @@
 from app.models import (
+    api_keys,
     certificate,
     classification,
     dns_record,
@@ -12,6 +13,7 @@ from app.models import (
     stylesheet,
     whois,
 )
+from app.models.api_keys import APIKey
 from app.models.certificate import Certificate
 from app.models.classification import Classification
 from app.models.dns_record import DnsRecord
@@ -26,6 +28,8 @@ from app.models.stylesheet import Stylesheet
 from app.models.whois import Whois
 
 __all__ = [
+    "api_keys",
+    "APIKey",
     "certificate",
     "Certificate",
     "classification",
