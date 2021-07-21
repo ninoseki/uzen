@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
 from app.api.endpoints import (
+    api_keys,
     certificates,
     devices,
     domain,
@@ -22,6 +23,7 @@ from app.api.endpoints import (
 
 api_router = APIRouter()
 
+api_router.include_router(api_keys.router, prefix="/api_keys", tags=["API Key"])
 api_router.include_router(
     certificates.router, prefix="/certificates", tags=["Certificate"]
 )

@@ -17,6 +17,7 @@ from tortoise.exceptions import DBConnectionError
 
 from app import create_app, dataclasses, models
 from app.api.dependencies.arq import get_arq_redis
+from app.api.dependencies.verification import verify_api_key
 from app.core import settings
 from app.factories.html import HTMLFactory
 from app.services.certificate import Certificate
@@ -63,12 +64,35 @@ async def tortoise_db():
     await Tortoise.close_connections()
 
 
-def override_get_arq_redis():
+async def override_get_arq_redis():
     yield FakeArqRedis()
+
+
+async def override_verify_api_key():
+    yield None
 
 
 @pytest.fixture
 async def client(monkeypatch: MonkeyPatch):
+    monkeypatch.setattr("app.database.init_db", init_db)
+
+    app = create_app()
+
+    # use fake arq redis for testing
+    app.dependency_overrides[get_arq_redis] = override_get_arq_redis
+    # do not check API key
+    app.dependency_overrides[verify_api_key] = override_verify_api_key
+
+    with TestClient(
+        app=app,
+        base_url="http://testserver",
+    ) as client_:
+        client_.headers = {"secret-api-key": settings.SECRET_API_KEY}
+        yield client_
+
+
+@pytest.fixture
+async def client_without_verity_api_key_override(monkeypatch: MonkeyPatch):
     monkeypatch.setattr("app.database.init_db", init_db)
 
     app = create_app()
@@ -80,7 +104,7 @@ async def client(monkeypatch: MonkeyPatch):
         app=app,
         base_url="http://testserver",
     ) as client_:
-        client_.headers = {"api-key": settings.GLOBAL_API_KEY}
+        client_.headers = {"secret-api-key": settings.SECRET_API_KEY}
         yield client_
 
 

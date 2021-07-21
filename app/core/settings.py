@@ -12,7 +12,8 @@ PROJECT_NAME: str = config("PROJECT_NAME", default="uzen")
 DEBUG: bool = config("DEBUG", cast=bool, default=False)
 TESTING: bool = config("TESTING", cast=bool, default=False)
 
-GLOBAL_API_KEY: str = config("GLOBAL_API_KEY", default="uzen")
+# secret key settings
+SECRET_API_KEY: str = config("SECRET_API_KEY", default="uzen")
 
 # log settings
 LOG_FILE: TextIO = config("LOG_FILE", default=sys.stderr)

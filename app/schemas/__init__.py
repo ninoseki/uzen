@@ -1,3 +1,4 @@
+from app.schemas.api_key import APIKey, RevokeOrActivateAPIKey
 from app.schemas.certificate import Certificate
 from app.schemas.classification import Classification
 from app.schemas.dns_record import BaseDnsRecord, DnsRecord
@@ -52,6 +53,7 @@ from app.schemas.yara import (
 )
 
 __all__ = [
+    "APIKey",
     "BaseDnsRecord",
     "BaseSnapshot",
     "Certificate",
@@ -73,6 +75,7 @@ __all__ = [
     "MatchesSearchResults",
     "MatchResult",
     "PlainSnapshot",
+    "RevokeOrActivateAPIKey",
     "Rule",
     "RulesSearchResults",
     "Screenshot",
