@@ -22,6 +22,7 @@ from app.models.base import AbstractBaseModel
 from app.models.mixin import TimestampMixin
 from app.models.script import Script
 from app.models.stylesheet import Stylesheet
+from app.models.tag import Tag
 
 if TYPE_CHECKING:
     from app.dataclasses import SnapshotModelWrapper
@@ -91,10 +92,25 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
         backward_key="snapshot_id",
     )
 
+    _tags: ManyToManyRelation[Tag] = ManyToManyField(
+        "models.Tag",
+        related_name="_snapshots",
+        through="taggings",
+        forward_key="tag_id",
+        backward_key="snapshot_id",
+    )
+
     @property
     def rules(self) -> list[schemas.Rule]:
         try:
             return [rule.to_model() for rule in self._rules]
+        except NoValuesFetched:
+            return []
+
+    @property
+    def tags(self) -> list[schemas.Tag]:
+        try:
+            return [tag.to_model() for tag in self._tags]
         except NoValuesFetched:
             return []
 
@@ -183,7 +199,8 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
         wrapper: "SnapshotModelWrapper",
         *,
         id: str | None = None,
-        api_key: str | None = None
+        api_key: str | None = None,
+        tag_names: list[str] | None = None,
     ) -> Snapshot:
         async with in_transaction():
             snapshot = wrapper.snapshot
@@ -211,6 +228,11 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
 
             # save snapshot
             await snapshot.save()
+
+            # create and add tags
+            if tag_names:
+                tags_ = [(await Tag.get_or_create(name=name))[0] for name in tag_names]
+                await snapshot._tags.add(*tags_)
 
             # save scripts
             await Script.save_script_files(wrapper.script_files, snapshot.id)
