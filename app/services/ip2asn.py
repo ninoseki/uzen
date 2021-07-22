@@ -23,7 +23,7 @@ class IP2ASN:
             try:
                 res = await client.get(path)
             except httpx.HTTPError:
-                return {}
+                return None
 
             data = res.json()
 
