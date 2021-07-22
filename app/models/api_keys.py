@@ -1,18 +1,24 @@
 from datetime import datetime
-from typing import Union
+from typing import TYPE_CHECKING, Union
 from uuid import UUID
 
 from tortoise.fields.data import BooleanField, DatetimeField, IntField
+from tortoise.fields.relational import ReverseRelation
 from tortoise.transactions import in_transaction
 
 from app.models.base import AbstractBaseModel
 from app.models.mixin import TimestampMixin
+
+if TYPE_CHECKING:
+    from app.models import Snapshot
 
 
 class APIKey(AbstractBaseModel, TimestampMixin):
     is_active = BooleanField(default=True)
     last_queried_at = DatetimeField(null=True)
     total_queries = IntField(default=0)
+
+    snapshots: ReverseRelation["Snapshot"]
 
     class Meta:
         table = "api_keys"

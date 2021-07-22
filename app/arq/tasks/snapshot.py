@@ -1,4 +1,5 @@
-from typing import Optional
+from typing import Optional, Union
+from uuid import UUID
 
 from app import models, schemas
 from app.api.dependencies.arq import get_arq_redis_with_context
@@ -35,7 +36,9 @@ async def enrich_snapshot_task(
 
 
 async def take_snapshot_task(
-    ctx: dict, payload: schemas.CreateSnapshotPayload
+    ctx: dict,
+    payload: schemas.CreateSnapshotPayload,
+    api_key: Optional[Union[str, UUID]] = None,
 ) -> schemas.JobResultWrapper:
     ignore_https_error = payload.ignore_https_errors or False
     browser = Browser(
@@ -52,7 +55,7 @@ async def take_snapshot_task(
         return schemas.JobResultWrapper(result=None, error=str(e))
 
     id: Optional[str] = ctx.get("job_id")
-    snapshot = await models.Snapshot.save_snapshot(wrapper, id=id)
+    snapshot = await models.Snapshot.save_snapshot(wrapper, id=id, api_key=api_key)
 
     # upload screenshot
     if wrapper.screenshot is not None:
