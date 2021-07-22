@@ -25,7 +25,15 @@ from app.models.stylesheet import Stylesheet
 
 if TYPE_CHECKING:
     from app.dataclasses import SnapshotModelWrapper
-    from app.models import HTML, Certificate, Classification, DnsRecord, Rule, Whois
+    from app.models import (
+        HTML,
+        APIKey,
+        Certificate,
+        Classification,
+        DnsRecord,
+        Rule,
+        Whois,
+    )
 
 
 async def save_ignore_integrity_error(model: "HTML" | "Certificate" | "Whois") -> None:
@@ -63,6 +71,9 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
     )
     whois: ForeignKeyNullableRelation[Whois] = ForeignKeyField(
         "models.Whois", related_name="snapshots", on_delete=RESTRICT, null=True
+    )
+    api_key: ForeignKeyNullableRelation[APIKey] = ForeignKeyField(
+        "models.APIKey", related_name="snapshots", on_delete=RESTRICT, null=True
     )
 
     har = OneToOneRelation["HAR"]
@@ -168,9 +179,11 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
 
     @classmethod
     async def save_snapshot(
-        _,
+        _cls,
         wrapper: "SnapshotModelWrapper",
+        *,
         id: str | None = None,
+        api_key: str | None = None
     ) -> Snapshot:
         async with in_transaction():
             snapshot = wrapper.snapshot
@@ -192,6 +205,9 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
             if whois:
                 await save_ignore_integrity_error(whois)
                 snapshot.whois_id = whois.id
+
+            if api_key:
+                snapshot.api_key_id = api_key
 
             # save snapshot
             await snapshot.save()

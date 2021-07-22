@@ -2,7 +2,7 @@ from typing import Any, Dict, List, Optional, cast
 from uuid import UUID, uuid4
 
 from arq.connections import ArqRedis
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, Header, HTTPException
 from tortoise.exceptions import DoesNotExist
 
 from app import models, schemas
@@ -91,11 +91,15 @@ async def get_indicators(snapshot_id: UUID) -> schemas.Indicators:
 )
 async def create(
     payload: schemas.CreateSnapshotPayload,
+    api_key: Optional[str] = Header(None),
+    *,
     _: Any = Depends(verify_api_key),
     arq_redis: ArqRedis = Depends(get_arq_redis),
 ) -> schemas.Job:
     job_id = str(uuid4())
-    job = await arq_redis.enqueue_job(SNAPSHOT_TASK_NAME, payload, _job_id=job_id)
+    job = await arq_redis.enqueue_job(
+        SNAPSHOT_TASK_NAME, payload, api_key, _job_id=job_id
+    )
     if job is None:
         raise HTTPException(status_code=500, detail="Something went wrong...")
 
