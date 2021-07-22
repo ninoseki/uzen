@@ -38,6 +38,7 @@ from app.schemas.snapshot import (
     Rule,
     Snapshot,
     SnapshotsSearchResults,
+    Tag,
 )
 from app.schemas.status import Status
 from app.schemas.stylesheet import Stylesheet
@@ -93,6 +94,7 @@ __all__ = [
     "SnapshotsSearchResults",
     "Status",
     "Stylesheet",
+    "Tag",
     "UpdateRulePayload",
     "Whois",
     "YaraMatch",

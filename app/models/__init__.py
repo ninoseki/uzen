@@ -11,6 +11,7 @@ from app.models import (
     script,
     snapshot,
     stylesheet,
+    tag,
     whois,
 )
 from app.models.api_keys import APIKey
@@ -25,6 +26,7 @@ from app.models.rule import Rule
 from app.models.script import Script
 from app.models.snapshot import Snapshot
 from app.models.stylesheet import Stylesheet
+from app.models.tag import Tag
 from app.models.whois import Whois
 
 __all__ = [
@@ -52,6 +54,8 @@ __all__ = [
     "Snapshot",
     "stylesheet",
     "Stylesheet",
+    "tag",
+    "Tag",
     "whois",
     "Whois",
 ]

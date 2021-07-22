@@ -82,6 +82,16 @@ class Rule(BaseRule, AbstractBaseModel, TimestampMixin):
     )
 
 
+class BaseTag(APIModel):
+    """Base model for Tag"""
+
+    name: str = Field(..., title="Name", description="A name of the tag", min_length=1)
+
+
+class Tag(BaseTag, AbstractBaseModel, TimestampMixin):
+    """Tag"""
+
+
 class SnapshotBasicAttributes(APIModel):
     url: AnyHttpUrl = Field(..., title="URL", description="A URL of the snapshot")
     submitted_url: AnyHttpUrl = Field(
@@ -130,6 +140,7 @@ class Snapshot(BaseSnapshot, AbstractBaseModel, TimestampMixin):
         ..., description="A list of classifications"
     )
     rules: List[Rule] = Field(..., description="A list of matched rules")
+    tags: List[Tag] = Field(..., description="A list of tags")
 
 
 class PlainSnapshot(SnapshotBasicAttributes, AbstractBaseModel, TimestampMixin):
@@ -172,6 +183,7 @@ class CreateSnapshotPayload(APIModel):
         title="Wait until",
         description="When to consider operation succeeded, defaults to load",
     )
+    tags: Optional[List[str]] = Field(None, description="A list of tags")
 
     @validator("url")
     def hostname_must_resolvable(cls, v: str) -> str:

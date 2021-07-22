@@ -55,7 +55,9 @@ async def take_snapshot_task(
         return schemas.JobResultWrapper(result=None, error=str(e))
 
     id: Optional[str] = ctx.get("job_id")
-    snapshot = await models.Snapshot.save_snapshot(wrapper, id=id, api_key=api_key)
+    snapshot = await models.Snapshot.save_snapshot(
+        wrapper, id=id, api_key=api_key, tag_names=payload.tags
+    )
 
     # upload screenshot
     if wrapper.screenshot is not None:
