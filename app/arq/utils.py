@@ -52,7 +52,12 @@ async def get_job_definition_and_result(
         result = cast(schemas.JobResultWrapper, job_result.result)
 
         # check error
-        if result.error is not None:
-            raise JobExecutionError(result.error)
+        try:
+            if result.error is not None:
+                raise JobExecutionError(result.error)
+        except AttributeError:
+            # then someting went wrong with the job...
+            # e.g. result=AttributeError("'dict' object has no attribute 'asn'")
+            raise JobExecutionError(str(result))
 
     return is_running, job_definition, job_result
