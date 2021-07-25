@@ -19,4 +19,4 @@ class IPAddress(APIModel):
     whois: Optional[BaseWhois] = Field(
         None,
     )
-    snapshots: List[Snapshot] = Field(..., description="A list of related snapshots")
+    snapshots: List[Snapshot] = Field(...)

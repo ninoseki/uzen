@@ -10,9 +10,7 @@ router = APIRouter()
 @router.get(
     "/{hostname}",
     response_model=schemas.Domain,
-    response_description="Returns information of a domain",
-    summary="Get domain information",
-    description="Get information related to a domain",
+    summary="Get information related to a domain",
 )
 async def get(hostname: str) -> schemas.Domain:
     if not is_domain(hostname):

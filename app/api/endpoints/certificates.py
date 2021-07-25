@@ -21,9 +21,7 @@ async def _get_certificate_by_sha256(sha256: str) -> schemas.Certificate:
 @router.get(
     "/{sha256}",
     response_model=schemas.Certificate,
-    response_description="Returns a certificate",
     summary="Get a certificate",
-    description="Get a certificate which has a given SHA256 fingerprint",
 )
 async def get_certificate_by_sha256(sha256: str) -> schemas.Certificate:
     try:

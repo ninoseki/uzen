@@ -21,7 +21,6 @@ async def _get_whois_by_id(id_: str) -> schemas.Whois:
 @router.get(
     "/{whois_id}",
     response_model=schemas.Whois,
-    response_description="Returns a whois",
     summary="Get a whois",
 )
 async def get_whois_by_id(whois_id: str) -> schemas.Whois:

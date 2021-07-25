@@ -20,15 +20,12 @@ class Match(AbstractBaseModel, TimestampMixin):
     )
     snapshot: PlainSnapshot = Field(
         ...,
-        description="A matched snapshot",
     )
     rule: Rule = Field(
         ...,
-        description="A matched rule",
     )
     script: Optional[Script] = Field(
         None,
-        description="A matched script",
     )
 
     class Config:
@@ -40,11 +37,9 @@ class MatchResult(APIModel):
 
     rule_id: UUID = Field(
         ...,
-        description="An ID of the rule",
     )
     script_id: Optional[UUID] = Field(
         None,
-        description="An ID of the script",
     )
     matches: List[YaraMatch] = Field(
         ...,

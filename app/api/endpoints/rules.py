@@ -15,9 +15,7 @@ router = APIRouter()
 @router.get(
     "/search",
     response_model=schemas.RulesSearchResults,
-    response_description="Returns a list of matched rules",
     summary="Search rules",
-    description="Search rules with filters",
 )
 async def search(
     size: Optional[int] = None,
@@ -30,9 +28,7 @@ async def search(
 @router.get(
     "/{rule_id}",
     response_model=schemas.Rule,
-    response_description="Returns a rule",
     summary="Get a rule",
-    description="Get a rule which has a given ID",
 )
 async def get(rule_id: UUID) -> schemas.Rule:
     try:
@@ -46,9 +42,7 @@ async def get(rule_id: UUID) -> schemas.Rule:
 @router.put(
     "/{rule_id}",
     response_model=schemas.Rule,
-    response_description="Returns a rule",
     summary="Update a rule",
-    description="Update a rule which has a given ID",
 )
 async def put(
     rule_id: UUID, payload: schemas.UpdateRulePayload, _: Any = Depends(verify_api_key)
@@ -75,9 +69,7 @@ async def put(
 @router.post(
     "/",
     response_model=schemas.Rule,
-    response_description="Returns a created rule",
     summary="Create a rule",
-    description="Create a rule",
     status_code=201,
 )
 async def create(
@@ -90,9 +82,7 @@ async def create(
 
 @router.delete(
     "/{rule_id}",
-    response_description="Returns an empty JSON",
     summary="Delete a rule",
-    description="Delete a rule which has a given ID",
     status_code=204,
 )
 async def delete(rule_id: UUID, _: Any = Depends(verify_api_key)) -> Dict[str, Any]:

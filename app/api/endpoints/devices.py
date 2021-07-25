@@ -11,7 +11,6 @@ router = APIRouter()
 @router.get(
     "/",
     response_model=List[schemas.Device],
-    response_description="Returns a list of devices",
     summary="Get a list of devices",
     description="Get a list of devices supported to use",
 )

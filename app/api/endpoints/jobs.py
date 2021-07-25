@@ -19,9 +19,7 @@ router = APIRouter()
 @router.get(
     "/snapshots/running",
     response_model=List[schemas.SnapshotJobDefinition],
-    response_description="Returns a list of snapshot job definitions",
     summary="Get a list of snapshot job definitions",
-    description="Get a list of snapshot job definitions which are running",
 )
 async def get_running_snapshot_jobs(
     arq_redis: ArqRedis = Depends(get_arq_redis),
@@ -41,9 +39,7 @@ async def get_running_snapshot_jobs(
 @router.get(
     "/snapshots/{job_id}",
     response_model=schemas.SnapshotJobStatus,
-    response_description="Returns a snapshot job status",
     summary="Get a snapshot job status",
-    description="Get a snapshot job status which has a given job ID",
 )
 async def get_snapshot_job(
     job_id: str = Path(..., min_length=32),
@@ -63,9 +59,7 @@ async def get_snapshot_job(
 @router.get(
     "/yara/{job_id}",
     response_model=schemas.YaraScanJobStatus,
-    response_description="Returns a YARA scan job status",
     summary="Get a YARA scan job status",
-    description="Get a YARA scan job status which has a given job ID",
 )
 async def get_yara_scan_job(
     job_id: str = Path(..., min_length=32),
@@ -85,9 +79,7 @@ async def get_yara_scan_job(
 @router.get(
     "/similarity/{job_id}",
     response_model=schemas.SimilarityScanJobStatus,
-    response_description="Returns a similarity scan job status",
     summary="Get a similarity scan job status",
-    description="Get a similarity scan job status which has a given job ID",
 )
 async def get_similarity_scan_job(
     job_id: str = Path(..., min_length=32),

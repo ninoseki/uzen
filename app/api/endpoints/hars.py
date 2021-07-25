@@ -20,9 +20,7 @@ async def _get_har_by_snapshot_id(snapshot_id: UUID) -> schemas.HAR:
 @router.get(
     "/{snapshot_id}",
     response_model=schemas.HAR,
-    response_description="Returns a HAR",
     summary="Get a HAR",
-    description="Get a HAR which related to a snapshot",
 )
 async def get_har_by_snapshot_id(
     snapshot_id: UUID,

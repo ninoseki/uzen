@@ -22,9 +22,7 @@ async def _get_html_by_sha256(sha256: str) -> schemas.HTML:
 @router.get(
     "/{sha256}",
     response_model=schemas.HTML,
-    response_description="Returns an html",
     summary="Get an html",
-    description="Get an html which has a given SHA256 hash",
 )
 async def get_html_by_sha256(sha256: str) -> schemas.HTML:
     try:
@@ -35,9 +33,7 @@ async def get_html_by_sha256(sha256: str) -> schemas.HTML:
 
 @router.get(
     "/{sha256}/text",
-    response_description="Returns a text of an html",
     summary="Get a text of an html",
-    description="Get a text of an html which has a given ID",
 )
 async def get_text_by_sha256(sha256: str) -> str:
     try:

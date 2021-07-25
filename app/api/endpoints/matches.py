@@ -12,9 +12,7 @@ router = APIRouter()
 @router.get(
     "/search",
     response_model=schemas.MatchesSearchResults,
-    response_description="Returns a list of matches",
     summary="Search matches",
-    description="Search matches with filters",
 )
 async def search(
     size: Optional[int] = None,
