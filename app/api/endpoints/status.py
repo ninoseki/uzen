@@ -16,9 +16,7 @@ async def get_status() -> schemas.Status:
 @router.get(
     "/",
     response_model=schemas.Status,
-    response_description="Returns a status of the app",
     summary="Get a status",
-    description="Get a status of the app",
     status_code=200,
 )
 async def status() -> schemas.Status:

@@ -19,9 +19,7 @@ router = APIRouter()
 @router.get(
     "/count",
     response_model=schemas.CountResponse,
-    response_description="Returns a count of snapshots",
     summary="Count snapshots",
-    description="Get a count of snapshots",
     status_code=200,
 )
 async def count() -> schemas.CountResponse:
@@ -32,9 +30,7 @@ async def count() -> schemas.CountResponse:
 @router.get(
     "/search",
     response_model=schemas.SnapshotsSearchResults,
-    response_description="Returns a list of matched snapshots",
     summary="Search snapshots",
-    description="Search snapshots with filters",
 )
 async def search(
     size: Optional[int] = None,
@@ -49,9 +45,7 @@ async def search(
 @router.get(
     "/{snapshot_id}",
     response_model=schemas.Snapshot,
-    response_description="Returns a snapshot",
     summary="Get a snapshot",
-    description="Get a snapshot which has a given ID",
 )
 async def get(snapshot_id: UUID) -> schemas.Snapshot:
     try:
@@ -67,9 +61,7 @@ async def get(snapshot_id: UUID) -> schemas.Snapshot:
 @router.get(
     "/{snapshot_id}/indicators",
     response_model=schemas.Indicators,
-    response_description="Returns indicators related to a snapshot",
     summary="Get indicators related to a snapshot",
-    description="Get indicators related to a snapshot which has a given ID",
 )
 async def get_indicators(snapshot_id: UUID) -> schemas.Indicators:
     try:
@@ -86,7 +78,6 @@ async def get_indicators(snapshot_id: UUID) -> schemas.Indicators:
     "/",
     response_model=schemas.Job,
     summary="Create a snapshot",
-    description="Create a snapshot of a website",
     status_code=201,
 )
 async def create(
@@ -108,9 +99,7 @@ async def create(
 
 @router.delete(
     "/{snapshot_id}",
-    response_description="Returns an empty JSON",
     summary="Delete a snapshot",
-    description="Delete a snapshot which has a given ID",
     status_code=204,
 )
 async def delete(snapshot_id: UUID, _: Any = Depends(verify_api_key)) -> Dict[str, Any]:

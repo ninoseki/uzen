@@ -66,9 +66,7 @@ def remove_sharp_and_question_from_tail(v: str) -> str:
 class BaseRule(Source, Target):
     """Base model for Rule"""
 
-    name: str = Field(
-        ..., title="Name", description="A name of the YARA rule", min_length=1
-    )
+    name: str = Field(...)
 
 
 class Rule(BaseRule, AbstractBaseModel, TimestampMixin):
@@ -85,7 +83,7 @@ class Rule(BaseRule, AbstractBaseModel, TimestampMixin):
 class BaseTag(APIModel):
     """Base model for Tag"""
 
-    name: str = Field(..., title="Name", description="A name of the tag", min_length=1)
+    name: str = Field(..., min_length=1)
 
 
 class Tag(BaseTag, AbstractBaseModel, TimestampMixin):
@@ -93,15 +91,13 @@ class Tag(BaseTag, AbstractBaseModel, TimestampMixin):
 
 
 class SnapshotBasicAttributes(APIModel):
-    url: AnyHttpUrl = Field(..., title="URL", description="A URL of the snapshot")
-    submitted_url: AnyHttpUrl = Field(
-        ..., title="Submitted URL", description="A submitted URL of the snapshot"
-    )
-    hostname: str = Field(..., title="Hostname", description="Hostname")
-    ip_address: IPvAnyAddress = Field(..., title="IP address", description="IP address")
-    asn: str = Field(..., title="ASN", description="AS number")
-    country_code: str = Field(..., title="Country code")
-    status: int = Field(..., title="Status", description="Status code")
+    url: AnyHttpUrl = Field(...)
+    submitted_url: AnyHttpUrl = Field(...)
+    hostname: str = Field(...)
+    ip_address: IPvAnyAddress = Field(...)
+    asn: str = Field(...)
+    country_code: str = Field(...)
+    status: int = Field(..., description="HTTP Status code")
 
     @validator(
         "url",
@@ -133,14 +129,12 @@ class Snapshot(BaseSnapshot, AbstractBaseModel, TimestampMixin):
     certificate: Optional[CertificateMetaData] = Field(None)
     whois: WhoisMetaData = Field(None)
 
-    scripts: List[Script] = Field(..., description="A list of scripts")
-    stylesheets: List[Stylesheet] = Field(..., description="A list of stylesheets")
-    dns_records: List[DnsRecord] = Field(..., description="A list of DNS records")
-    classifications: List[Classification] = Field(
-        ..., description="A list of classifications"
-    )
-    rules: List[Rule] = Field(..., description="A list of matched rules")
-    tags: List[Tag] = Field(..., description="A list of tags")
+    scripts: List[Script] = Field(...)
+    stylesheets: List[Stylesheet] = Field(...)
+    dns_records: List[DnsRecord] = Field(...)
+    classifications: List[Classification] = Field(...)
+    rules: List[Rule] = Field(...)
+    tags: List[Tag] = Field(...)
 
 
 class PlainSnapshot(SnapshotBasicAttributes, AbstractBaseModel, TimestampMixin):
@@ -162,7 +156,7 @@ class SnapshotsSearchResults(BaseSearchResults):
 class CreateSnapshotPayload(APIModel):
     """Payload to create a snapshot"""
 
-    url: AnyHttpUrl = Field(..., title="URL", description="A URL to take a snapshot")
+    url: AnyHttpUrl = Field(...)
     enable_har: bool = Field(
         False, title="Enable HAR", description="Whether to enable HAR recording"
     )
@@ -183,7 +177,7 @@ class CreateSnapshotPayload(APIModel):
         title="Wait until",
         description="When to consider operation succeeded, defaults to load",
     )
-    tags: Optional[List[str]] = Field(None, description="A list of tags")
+    tags: Optional[List[str]] = Field(None)
 
     @validator("url")
     def hostname_must_resolvable(cls, v: str) -> str:

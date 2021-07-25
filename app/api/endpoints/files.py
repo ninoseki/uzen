@@ -21,9 +21,7 @@ async def _get_file_by_sha256(sha256: str) -> schemas.File:
 @router.get(
     "/{sha256}",
     response_model=schemas.File,
-    response_description="Returns a file",
     summary="Get a file",
-    description="Get a file which has a given SHA256 hash",
 )
 async def get_file_by_sha256(sha256: str) -> schemas.File:
     try:

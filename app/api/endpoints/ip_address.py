@@ -10,9 +10,7 @@ router = APIRouter()
 @router.get(
     "/{ip_address}",
     response_model=schemas.IPAddress,
-    response_description="Returns information of an IP address",
-    summary="Get IP information",
-    description="Get an information which is related to an IP address",
+    summary="Get information related to an IP address",
 )
 async def get(ip_address: str) -> schemas.IPAddress:
     if not is_ip_address(ip_address):

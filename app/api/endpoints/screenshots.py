@@ -26,9 +26,7 @@ async def _get_screenshot_by_snapshot_id(snapshot_id: str) -> bytes:
     responses={
         200: {"content": {"image/png": {}}, "description": "Returns a screenshot."}
     },
-    response_description="Returns a screenshot",
     summary="Get a screenshot",
-    description="Get a screenshot which is related to a snapshot",
 )
 async def get_screenshot_by_snapshot_id(
     snapshot_id: UUID,
@@ -45,9 +43,7 @@ async def get_screenshot_by_snapshot_id(
             "description": "Returns a screenshot or an image.",
         }
     },
-    response_description="Returns a screenshot",
-    summary="Get a screenshot",
-    description="Get a screenshot for previewing",
+    summary="Get a live screenshot",
 )
 async def perview(
     hostname: str,

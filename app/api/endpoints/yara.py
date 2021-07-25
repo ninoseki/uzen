@@ -15,9 +15,7 @@ router = APIRouter()
 @router.post(
     "/scan",
     response_model=schemas.Job,
-    response_description="Returns a YARA scan job",
     summary="Perform YARA scans against snapshots",
-    description="Perform YARA scans against snapshots (which can be narrowed down by filters)",
 )
 async def scan(
     payload: schemas.YaraScanPayload,
