@@ -1,4 +1,5 @@
 from datetime import date, datetime
+from functools import lru_cache
 from typing import Any, Dict, List, Optional, Union
 from uuid import UUID
 
@@ -68,7 +69,12 @@ class YaraScanResult(PlainSnapshot):
     yara_result: YaraResult = Field(...)
 
     @classmethod
+    @lru_cache(maxsize=1)
     def field_keys(cls) -> List[str]:
         keys = list(cls.__fields__.keys())
-        keys.remove("yara_result")
+
+        for non_db_key in ["yara_result", "tags"]:
+            if non_db_key in keys:
+                keys.remove(non_db_key)
+
         return keys

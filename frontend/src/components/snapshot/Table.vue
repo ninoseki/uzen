@@ -24,6 +24,11 @@
         </p>
         <p class="is-size-7"><strong>Status:</strong> {{ props.row.status }}</p>
 
+        <p class="is-size-7" v-if="(props.row.tags || []).length > 0">
+          <strong>Tags:</strong>
+          <Tags :tags="props.row.tags"></Tags>
+        </p>
+
         <p class="is-size-7" v-if="'similarity' in props.row">
           <strong>Similarity:</strong>
           {{ toPercentString(props.row.similarity) }}
@@ -40,6 +45,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from "@vue/composition-api";
 
+import Tags from "@/components/snapshot/Tags.vue";
 import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
 import {
   Snapshot,
@@ -61,6 +67,7 @@ export default defineComponent({
   },
   components: {
     DatetimeWithDiff,
+    Tags,
   },
   setup() {
     const toPercentString = (n: number) => {

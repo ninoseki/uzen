@@ -124,7 +124,7 @@ class SimilarityScanner:
         plain_snapshots: List[Dict[str, Any]] = await models.Snapshot.filter(
             html_id__in=html_ids
         ).values(
-            *schemas.PlainSnapshot.field_keys(),
+            *schemas.SimilarityScanResult.field_keys(),
         )
 
         # add similarity to plain snapshots

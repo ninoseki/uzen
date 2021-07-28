@@ -83,11 +83,7 @@ class SnapshotSearcher(AbstractSearcher):
         query = Q(*queries)
 
         # Run search
-        instance = cls(
-            model=models.Snapshot,
-            query=query,
-            values=schemas.PlainSnapshot.field_keys(),
-        )
+        instance = cls(model=models.Snapshot, query=query, prefetch_related=["_tags"])
 
         results = await instance._search(size=size, offset=offset, id_only=id_only)
 
@@ -96,8 +92,10 @@ class SnapshotSearcher(AbstractSearcher):
                 results=cast(List[UUID], results.results), total=results.total
             )
 
-        results_ = cast(List[Dict[str, Any]], results.results)
+        snapshots = cast(List[models.Snapshot], results.results)
         return schemas.SnapshotsSearchResults(
-            results=[schemas.PlainSnapshot(**result) for result in results_],
+            results=[
+                schemas.PlainSnapshot.from_orm(snapshot) for snapshot in snapshots
+            ],
             total=results.total,
         )

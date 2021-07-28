@@ -1,4 +1,5 @@
 from datetime import date, datetime
+from functools import lru_cache
 from typing import Dict, List, Optional, Union
 
 from pydantic import Field, validator
@@ -43,7 +44,12 @@ class SimilarityScanResult(PlainSnapshot):
     similarity: float = Field(...)
 
     @classmethod
+    @lru_cache(maxsize=1)
     def field_keys(cls) -> List[str]:
         keys = list(cls.__fields__.keys())
-        keys.remove("similarity")
+
+        for non_db_key in ["similarity", "tags"]:
+            if non_db_key in keys:
+                keys.remove(non_db_key)
+
         return keys
