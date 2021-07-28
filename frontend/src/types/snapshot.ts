@@ -75,8 +75,13 @@ export interface SnapshotFilters {
   certificateFingerprint: string | undefined;
   status: number | undefined;
   url: string | undefined;
+  tag: string | undefined;
   fromAt: Date | undefined;
   toAt: Date | undefined;
+}
+
+export interface Tag {
+  name: string;
 }
 
 export interface Snapshot {
@@ -102,6 +107,7 @@ export interface Snapshot {
   dnsRecords: DnsRecord[];
   classifications: Classification[];
   rules: Rule[];
+  tags: Tag[];
 }
 
 export type WaitUntilType = "domcontentloaded" | "load" | "networkidle";

@@ -15,6 +15,7 @@
         :ipAddress="$route.query.ipAddress"
         :hash="$route.query.hash"
         :certificateFingerprint="$route.query.certificateFingerprint"
+        :tag="$route.query.tag"
       />
 
       <br />

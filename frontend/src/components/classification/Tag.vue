@@ -1,5 +1,5 @@
 <template>
-  <b-tag :type="type">
+  <b-tag :type="type" size="is-medium">
     {{ classification.name }}
     <span v-if="classification.note"> ({{ classification.note }}) </span>
   </b-tag>

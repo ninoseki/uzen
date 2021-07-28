@@ -2,7 +2,6 @@
   <div>
     <div v-if="whois">
       <div class="column">
-        <H4>Whois record</H4>
         <table class="table is-completely-borderless">
           <tbody>
             <tr>
@@ -34,7 +33,6 @@
       </div>
 
       <div class="column">
-        <H4>Raw</H4>
         <pre>{{ whois.content }}</pre>
       </div>
     </div>
@@ -45,7 +43,6 @@
 <script lang="ts">
 import { defineComponent, PropType } from "@vue/composition-api";
 
-import H4 from "@/components/ui/H4.vue";
 import NA from "@/components/ui/NA.vue";
 import { Whois } from "@/types/snapshot";
 
@@ -58,7 +55,6 @@ export default defineComponent({
     },
   },
   components: {
-    H4,
     NA,
   },
 });

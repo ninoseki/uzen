@@ -43,8 +43,7 @@ pre {
 }
 
 .container .navbar {
-  margin-bottom: 10px;
-  border-bottom: 2px solid lightgray;
+  border-bottom: none;
 }
 
 table {
