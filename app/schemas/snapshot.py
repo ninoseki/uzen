@@ -86,7 +86,7 @@ class BaseTag(APIModel):
     name: str = Field(..., min_length=1)
 
 
-class Tag(BaseTag, AbstractBaseModel, TimestampMixin):
+class Tag(BaseTag):
     """Tag"""
 
 
@@ -141,10 +141,7 @@ class PlainSnapshot(SnapshotBasicAttributes, AbstractBaseModel, TimestampMixin):
     """Plain model for Snapshot"""
 
     html_id: str = Field(...)
-
-    @classmethod
-    def field_keys(cls) -> List[str]:
-        return list(cls.__fields__.keys())
+    tags: Optional[List[Tag]] = Field(None)
 
 
 class SnapshotsSearchResults(BaseSearchResults):

@@ -1,7 +1,7 @@
 <template>
   <b-taglist class="is-inline-block" v-if="tags.length > 0">
     <b-tag
-      size="is-medium"
+      :size="tagSize"
       class="is-white is-light"
       v-for="tag in tags"
       :key="tag.name"
@@ -28,6 +28,10 @@ export default defineComponent({
     tags: {
       type: Array as PropType<Tag[]>,
       required: true,
+    },
+    tagSize: {
+      type: String,
+      required: false,
     },
   },
 });

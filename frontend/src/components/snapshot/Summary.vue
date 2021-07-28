@@ -15,7 +15,7 @@
             </tr>
             <tr v-if="snapshot.tags.length > 0">
               <th>Tags</th>
-              <td><Tags :tags="snapshot.tags" /></td>
+              <td><Tags :tags="snapshot.tags" tagSize="is-medium" /></td>
             </tr>
             <tr>
               <th>Created at</th>
