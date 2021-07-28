@@ -66,7 +66,7 @@ def remove_sharp_and_question_from_tail(v: str) -> str:
 class BaseRule(Source, Target):
     """Base model for Rule"""
 
-    name: str = Field(...)
+    name: str = Field(..., min_length=1)
 
 
 class Rule(BaseRule, AbstractBaseModel, TimestampMixin):

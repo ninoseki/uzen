@@ -162,6 +162,7 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
             "_dns_records",
             "_classifications",
             "_rules",
+            "_tags",
             "html",
             "whois",
             "certificate",

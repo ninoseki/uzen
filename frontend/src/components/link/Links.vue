@@ -1,6 +1,6 @@
 <template>
   <b-dropdown aria-role="list">
-    <button class="button" slot="trigger" slot-scope="{ active }">
+    <button class="button is-dark" slot="trigger" slot-scope="{ active }">
       <b-icon pack="fas" icon="search" size="is-small" />
       <span>Lookup</span>
       <b-icon :icon="active ? 'menu-up' : 'menu-down'"></b-icon>

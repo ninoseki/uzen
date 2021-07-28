@@ -8,6 +8,7 @@
     >
       <HTMLComponent
         :html="getHTMLTask.last.value.content"
+        :sha256="getHTMLTask.last.value.sha256"
         v-if="getHTMLTask.last.value.content"
       />
       <NA v-else></NA>

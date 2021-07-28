@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div class="mb-4">
     <nav class="navbar">
       <div class="navbar-brand">
-        <H2>
-          {{ truncate(snapshot.url) }}
-        </H2>
+        <h2 class="is-size-4 has-text-weight-bold mt-3">
+          {{ truncate(snapshot.hostname) }}
+        </h2>
       </div>
       <div class="navbar-end">
         <div class="navbar-item">
@@ -14,7 +14,9 @@
           />
         </div>
         <div class="navbar-item">
-          <b-button icon-left="delete" @click="deleteSnapshot">Delete</b-button>
+          <b-button type="is-danger" icon-left="delete" @click="deleteSnapshot"
+            >Delete</b-button
+          >
         </div>
       </div>
     </nav>
@@ -32,7 +34,6 @@ import { useAsyncTask } from "vue-concurrency";
 import { API } from "@/api";
 import Links from "@/components/link/Links.vue";
 import Error from "@/components/ui/Error.vue";
-import H2 from "@/components/ui/H2.vue";
 import { Snapshot } from "@/types";
 import { truncate } from "@/utils/truncate";
 
@@ -40,7 +41,6 @@ export default defineComponent({
   name: "SnapshotNavbar",
   components: {
     Links,
-    H2,
     Error,
   },
   props: {

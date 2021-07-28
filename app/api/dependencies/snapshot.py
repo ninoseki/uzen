@@ -18,6 +18,7 @@ class SearchFilters:
         ),
         status: Optional[int] = Query(None, title="Status"),
         url: Optional[str] = Query(None, title="URL"),
+        tag: Optional[str] = Query(None, title="Tag"),
         from_at: Optional[Union[datetime, date]] = Query(
             None, title="From at", description="Datetime or date in ISO 8601 format"
         ),
@@ -38,5 +39,6 @@ class SearchFilters:
         self.certificate_fingerprint = certificate_fingerprint
         self.status = status
         self.url = url
+        self.tag = tag
         self.from_at = from_at or fromAt
         self.to_at = to_at or toAt

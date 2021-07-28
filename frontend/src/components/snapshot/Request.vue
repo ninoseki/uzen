@@ -5,11 +5,11 @@
       <table class="table is-completely-borderless">
         <tbody>
           <tr>
-            <th>User Agent</th>
+            <th>User agent</th>
             <td>{{ prettyUserAgent }}</td>
           </tr>
           <tr>
-            <th>Accept Language</th>
+            <th>Accept language</th>
             <td>{{ acceptLanguage || "N/A" }}</td>
           </tr>
         </tbody>

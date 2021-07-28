@@ -46,6 +46,7 @@ import {
   Snapshot,
   SnapshotFilters,
   Stylesheet,
+  Tag,
   WaitUntilType,
   Whois,
 } from "@/types/snapshot";
@@ -98,6 +99,7 @@ export {
   SnapshotWithSimilarity,
   SnapshotWithYaraResult,
   Stylesheet,
+  Tag,
   TargetTypes,
   UpdateRulePayload,
   ValidationError,

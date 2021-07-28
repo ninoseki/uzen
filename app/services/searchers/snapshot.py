@@ -65,6 +65,10 @@ class SnapshotSearcher(AbstractSearcher):
         if certificate_fingerprint is not None:
             queries.append(Q(certificate__id=certificate_fingerprint))
 
+        tag = filters.get("tag")
+        if tag is not None:
+            queries.append(Q(_tags__name=tag))
+
         from_at = filters.get("from_at")
         if from_at is not None:
             queries.append(Q(created_at__gt=convert_to_datetime(from_at)))

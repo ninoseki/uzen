@@ -110,6 +110,10 @@ export default defineComponent({
       type: String,
       required: false,
     },
+    tag: {
+      type: String,
+      required: false,
+    },
   },
   setup(props) {
     const filters = reactive<SnapshotFilters>({
@@ -120,6 +124,7 @@ export default defineComponent({
       certificateFingerprint: props.certificateFingerprint,
       status: props.status,
       url: props.url,
+      tag: props.tag,
       fromAt: undefined,
       toAt: undefined,
     });
