@@ -28,3 +28,4 @@ class DnsRecord(TimestampMixin, AbstractBaseModel):
 
     class Meta:
         table = "dns_records"
+        ordering = ["type"]
