@@ -24,7 +24,7 @@ repos:
         args: ["--ignore=E501,W503,E203"]
 
   - repo: https://github.com/timothycrosley/isort
-    rev: 5.9.2
+    rev: 5.9.3
     hooks:
       - id: isort
         additional_dependencies: [toml]
