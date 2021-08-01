@@ -1047,7 +1047,7 @@ description = "A high-level API to automate web browsers"
 name = "playwright"
 optional = false
 python-versions = ">=3.7"
-version = "1.12.1"
+version = "1.13.1"
 
 [package.dependencies]
 greenlet = ">=1.0.0"
@@ -1060,13 +1060,13 @@ description = "A Python implementation version of Playwright's HAR tracer"
 name = "playwright-har-tracer"
 optional = false
 python-versions = ">=3.8,<4.0"
-version = "0.1.3"
+version = "0.2.0"
 
 [package.dependencies]
 boltons = ">=21.0.0,<22.0.0"
 dataclasses-json = ">=0.5.4,<0.6.0"
 poetry-version = ">=0.1.5,<0.2.0"
-python-dateutil = ">=2.8.1,<3.0.0"
+python-dateutil = ">=2.8.2,<3.0.0"
 stringcase = ">=1.2.0,<2.0.0"
 
 [[package]]
@@ -1364,7 +1364,7 @@ description = "Extensions to the standard Python datetime module"
 name = "python-dateutil"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7"
-version = "2.8.1"
+version = "2.8.2"
 
 [package.dependencies]
 six = ">=1.5"
@@ -1836,7 +1836,7 @@ docs = ["sphinx", "jaraco.packaging (>=8.2)", "rst.linker (>=1.9)"]
 testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-cov", "pytest-enabler (>=1.0.1)", "jaraco.itertools", "func-timeout", "pytest-black (>=0.3.7)", "pytest-mypy"]
 
 [metadata]
-content-hash = "c7c039362ed45e47967cc6c20341a4a15130d2f8ecd602130c9d7e5814aca7bd"
+content-hash = "06ada4b639ee51f0d5a8d5299c53de1c1b192b48df0f7d799696974130ef222d"
 lock-version = "1.1"
 python-versions = "^3.9"
 
@@ -2441,15 +2441,15 @@ pathspec = [
     {file = "pathspec-0.8.1.tar.gz", hash = "sha256:86379d6b86d75816baba717e64b1a3a3469deb93bb76d613c9ce79edc5cb68fd"},
 ]
 playwright = [
-    {file = "playwright-1.12.1-py3-none-macosx_10_13_x86_64.whl", hash = "sha256:9aa5809b65948d5512224b275cd4b76b02302e6b1b854a3625bbf89950327db4"},
-    {file = "playwright-1.12.1-py3-none-macosx_11_0_universal2.whl", hash = "sha256:3f7f1d07e14eb35bca2640241cbec50e991fecf90e7a94b40c66a31261eae15e"},
-    {file = "playwright-1.12.1-py3-none-manylinux1_x86_64.whl", hash = "sha256:cbfd3240e35c2836476416d3befb63b43fd537dbd9212a3108e08e7fd756c183"},
-    {file = "playwright-1.12.1-py3-none-win32.whl", hash = "sha256:be387ef47ae4c26eb5bda61d7f54e085e9d4a78d84226a56c995f9ab29e7443a"},
-    {file = "playwright-1.12.1-py3-none-win_amd64.whl", hash = "sha256:714280315b3b02135655d41121427f1e294053ffcfdf988af99241d3c7f1d17a"},
+    {file = "playwright-1.13.1-py3-none-macosx_10_13_x86_64.whl", hash = "sha256:c35faa9f2a75899635e92effeebcae6175526f34f4d11c20d61356e3d9b8d2e4"},
+    {file = "playwright-1.13.1-py3-none-macosx_11_0_universal2.whl", hash = "sha256:3214444249ae5b36ff7c5e378dd151977cee2c4d4a6c05e8a19ce373331ce66e"},
+    {file = "playwright-1.13.1-py3-none-manylinux1_x86_64.whl", hash = "sha256:f3fac1509f3fa5a121e396c2ed57889a8bfe5785435ac0ae8fcce94045853e0b"},
+    {file = "playwright-1.13.1-py3-none-win32.whl", hash = "sha256:b08271b01051094f5ea6b3f89feb5fbffd7131df6243eee2cdcea9845a58e0b3"},
+    {file = "playwright-1.13.1-py3-none-win_amd64.whl", hash = "sha256:d99a7a13c39e6571ba3a4cbed1e772a24742ec1099d4cb6486394752eb725c08"},
 ]
 playwright-har-tracer = [
-    {file = "playwright-har-tracer-0.1.3.tar.gz", hash = "sha256:6cc1fcd3c5d750301aada363374a6cb3b715513c9d1fc1f698425487e6b9cafa"},
-    {file = "playwright_har_tracer-0.1.3-py3-none-any.whl", hash = "sha256:84dae14e1cc9b65ecd4b3e399b8b3a6abc5feb7352e731548f33eb596ee18f7d"},
+    {file = "playwright-har-tracer-0.2.0.tar.gz", hash = "sha256:44934fc17afda5539673317ecdcb1abccdbe21358b1a4b0762c444c586d6dd5b"},
+    {file = "playwright_har_tracer-0.2.0-py3-none-any.whl", hash = "sha256:e9b9ac6a064beb96b6ffe582faad4e84dc7335133dbe131a2f439edafbdbe942"},
 ]
 pluggy = [
     {file = "pluggy-0.13.1-py2.py3-none-any.whl", hash = "sha256:966c145cd83c96502c3c3868f50408687b38434af77734af1e9ca461a4081d2d"},
@@ -2569,8 +2569,8 @@ pytest-timeout = [
     {file = "pytest_timeout-1.4.2-py2.py3-none-any.whl", hash = "sha256:541d7aa19b9a6b4e475c759fd6073ef43d7cdc9a92d95644c260076eb257a063"},
 ]
 python-dateutil = [
-    {file = "python-dateutil-2.8.1.tar.gz", hash = "sha256:73ebfe9dbf22e832286dafa60473e4cd239f8592f699aa5adaf10050e6e1823c"},
-    {file = "python_dateutil-2.8.1-py2.py3-none-any.whl", hash = "sha256:75bb3f31ea686f1197762692a9ee6a7550b59fc6ca3a1f4b5d7e32fb98e2da2a"},
+    {file = "python-dateutil-2.8.2.tar.gz", hash = "sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86"},
+    {file = "python_dateutil-2.8.2-py2.py3-none-any.whl", hash = "sha256:961d03dc3453ebbc59dbdea9e4e11c5651520a876d0f4db161e8674aae935da9"},
 ]
 python-dotenv = [
     {file = "python-dotenv-0.18.0.tar.gz", hash = "sha256:effaac3c1e58d89b3ccb4d04a40dc7ad6e0275fda25fd75ae9d323e2465e202d"},

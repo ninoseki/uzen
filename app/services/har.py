@@ -52,7 +52,7 @@ def find_script_files(har: Har) -> List[dataclasses.ScriptFile]:
 
     for entry in har.log.entries:
         url = entry.request.url
-        ip_address = entry.response._remote_ip_address
+        ip_address = entry.server_ip_address
 
         content = entry.response.content
         if not content:
@@ -75,7 +75,7 @@ def find_stylesheet_files(har: Har) -> List[dataclasses.StylesheetFile]:
 
     for entry in har.log.entries:
         url = entry.request.url
-        ip_address = entry.response._remote_ip_address
+        ip_address = entry.server_ip_address
 
         content = entry.response.content
         if not content:

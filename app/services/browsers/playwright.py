@@ -36,8 +36,6 @@ async def run_playwright_browser(
 
         tracer = HarTracer(context=context, browser_name=playwright.chromium.name)
         page = await context.new_page()
-        client = await context.new_cdp_session(page)
-        await tracer.enable_response_received_event_tracing(client)
 
         # work on copy
         headers = options.headers.copy()
@@ -61,9 +59,6 @@ async def run_playwright_browser(
         content = await page.content()
 
         har = await tracer.flush()
-
-        # detach the CDP session
-        await client.detach()
 
         await context.close()
         await browser.close()

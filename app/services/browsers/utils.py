@@ -30,11 +30,8 @@ def find_ip_address(url: str, har: Optional[Har]) -> str:
     """
     if har is not None:
         for entry in har.log.entries:
-            if (
-                entry.request.url == url
-                and entry.response._remote_ip_address is not None
-            ):
-                return entry.response._remote_ip_address
+            if entry.request.url == url and entry.server_ip_address is not None:
+                return entry.server_ip_address
 
     hostname = cast(str, get_hostname_from_url(url))
     ip_address = cast(str, get_ip_address_by_hostname(hostname))
