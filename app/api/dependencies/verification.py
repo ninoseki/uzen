@@ -38,5 +38,5 @@ async def verify_api_key(
 def verify_secret_api_key(
     secret_api_key: str = Security(secret_api_key_header),
 ) -> None:
-    if secret_api_key != settings.SECRET_API_KEY:
+    if secret_api_key != str(settings.SECRET_API_KEY):
         raise HTTPException(status_code=403, detail="Secret-API-Key header invalid")

@@ -23,10 +23,10 @@ def create_start_app_handler(
         backend: Union[InMemoryBackend, RedisBackend] = InMemoryBackend()
         if settings.REDIS_URL != "" and settings.TESTING is False:
             try:
-                redis = await aioredis.create_redis_pool(settings.REDIS_URL)
+                redis = await aioredis.create_redis_pool(str(settings.REDIS_URL))
                 backend = RedisBackend(redis)
             except ConnectionRefusedError as e:
-                logger.error(f"Failed to connect to Redis: {settings.REDIS_URL}")
+                logger.error("Failed to connect to Redis")
                 logger.exception(e)
 
         FastAPICache.init(backend, prefix="fastapi-cache")
