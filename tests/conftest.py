@@ -87,7 +87,7 @@ async def client(monkeypatch: MonkeyPatch):
         app=app,
         base_url="http://testserver",
     ) as client_:
-        client_.headers = {"secret-api-key": settings.SECRET_API_KEY}
+        client_.headers = {"secret-api-key": str(settings.SECRET_API_KEY)}
         yield client_
 
 
@@ -104,7 +104,7 @@ async def client_without_verity_api_key_override(monkeypatch: MonkeyPatch):
         app=app,
         base_url="http://testserver",
     ) as client_:
-        client_.headers = {"secret-api-key": settings.SECRET_API_KEY}
+        client_.headers = {"secret-api-key": str(settings.SECRET_API_KEY)}
         yield client_
 
 
