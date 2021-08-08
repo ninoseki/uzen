@@ -1,8 +1,8 @@
 import httpx
 
 from app import dataclasses
-from app.arq.tasks.script import ScriptTask
-from app.arq.tasks.stylesheet import StylesheetTask
+from app.arq.tasks.classes.script import ScriptTask
+from app.arq.tasks.classes.stylesheet import StylesheetTask
 
 from .abstract import AbstractBrowser
 from .utils import build_snapshot_model_wrapper

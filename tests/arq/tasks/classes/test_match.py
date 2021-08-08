@@ -1,6 +1,6 @@
 import pytest
 
-from app.arq.tasks.match import MatchingTask
+from app.arq.tasks.classes.match import MatchingTask
 from app.models.match import Match
 from app.models.rule import Rule
 from app.models.snapshot import Snapshot

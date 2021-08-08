@@ -3,7 +3,7 @@ from typing import List
 from loguru import logger
 
 from app import models, schemas
-from app.arq.tasks import AbstractAsyncTask
+from app.arq.tasks.classes.abstract import AbstractAsyncTask
 from app.services.scanners import RuleScanner
 
 

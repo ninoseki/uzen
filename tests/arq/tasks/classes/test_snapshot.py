@@ -1,6 +1,6 @@
 import pytest
 
-from app.arq.tasks.snapshot import UpdateProcessingTask
+from app.arq.tasks.classes.snapshot import UpdateProcessingTask
 from app.models.snapshot import Snapshot
 from tests.helper import first_snapshot_id
 
