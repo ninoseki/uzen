@@ -3,7 +3,7 @@ from typing import List
 from loguru import logger
 
 from app import models
-from app.arq.tasks import EnrichmentTask
+from app.arq.tasks.classes.abstract import EnrichmentTask
 from app.factories.dns_record import DnsRecordFactory
 
 

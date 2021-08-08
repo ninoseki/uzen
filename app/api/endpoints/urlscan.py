@@ -5,7 +5,7 @@ from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 
 from app import models, schemas
 from app.api.dependencies.verification import verify_api_key
-from app.arq.tasks.match import MatchingTask
+from app.arq.tasks.classes.match import MatchingTask
 from app.arq.tasks.snapshot import UpdateProcessingTask
 from app.services.urlscan import URLScan
 

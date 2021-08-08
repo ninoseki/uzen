@@ -4,9 +4,9 @@ from typing import List, cast
 import aiometer
 
 from app import dataclasses, models
-from app.arq.tasks import AbstractAsyncTask
-from app.arq.tasks.classification import ClassificationTask
-from app.arq.tasks.dns_record import DnsRecordTask
+from app.arq.tasks.classes.abstract import AbstractAsyncTask
+from app.arq.tasks.classes.classification import ClassificationTask
+from app.arq.tasks.classes.dns_record import DnsRecordTask
 
 
 class EnrichmentTasks(AbstractAsyncTask):

@@ -4,12 +4,26 @@ from uuid import UUID
 from app import models, schemas
 from app.api.dependencies.arq import get_arq_redis_with_context
 from app.arq.constants import ENRICH_SNAPSHOT_TASK_NAME
+from app.arq.tasks.classes.abstract import AbstractAsyncTask
 from app.arq.tasks.classes.enrichment import EnrichmentTasks
 from app.arq.tasks.classes.match import MatchingTask
 from app.arq.tasks.classes.screenshot import UploadScrenshotTask
-from app.arq.tasks.classes.snapshot import UpdateProcessingTask
 from app.core.exceptions import TakeSnapshotError
 from app.services.browser import Browser
+
+
+class UpdateProcessingTask(AbstractAsyncTask):
+    def __init__(self, snapshot: models.Snapshot):
+        self.snapshot = snapshot
+
+    async def _process(self) -> None:
+        self.snapshot.processing = False
+        await self.snapshot.save()
+
+    @classmethod
+    async def process(cls, snapshot: models.Snapshot) -> None:
+        instance = cls(snapshot)
+        return await instance.safe_process()
 
 
 async def enrich_snapshot_task(
