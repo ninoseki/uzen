@@ -31,6 +31,7 @@ jobs:
           paths:
             - /home/circleci/.cache/pypoetry
             - /home/circleci/.cache/ms-playwright
+            - /home/circleci/.local/lib/python3.9/site-packages/
       - run:
           name: Create Dummy Files
           command: |
