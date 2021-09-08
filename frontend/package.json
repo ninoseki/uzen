@@ -27,7 +27,7 @@
     "@mdi/font": "5.9.55",
     "@vue/composition-api": "1.1.3",
     "@vueuse/core": "6.0.0",
-    "axios": "0.21.1",
+    "axios": "0.21.2",
     "axios-cache-adapter": "2.7.3",
     "bowser": "2.11.0",
     "buefy": "0.9.10",
