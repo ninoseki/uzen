@@ -10,7 +10,7 @@
         <div class="navbar-end">
           <div class="navbar-item">
             <router-link
-              class="button is-link"
+              class="button is-light"
               :to="{
                 name: 'EditRule',
                 params: { id: rule.id },

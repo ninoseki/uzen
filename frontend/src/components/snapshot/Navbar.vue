@@ -19,8 +19,7 @@
             icon-pack="fas"
             icon-left="search"
             tag="router-link"
-            type="is-link"
-            class="is-pulled-right"
+            type="is-light"
             :to="{
               name: 'Similarity',
               query: {
