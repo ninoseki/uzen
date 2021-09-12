@@ -8,14 +8,21 @@
       </div>
       <div class="navbar-menu">
         <div class="navbar-end">
-          <router-link
-            class="button is-link"
-            :to="{
-              name: 'EditRule',
-              params: { id: rule.id },
-            }"
-            >Edit
-          </router-link>
+          <div class="navbar-item">
+            <router-link
+              class="button is-link"
+              :to="{
+                name: 'EditRule',
+                params: { id: rule.id },
+              }"
+              >Edit
+            </router-link>
+          </div>
+          <div class="navbar-item">
+            <b-button type="is-danger" icon-left="delete" @click="deleteRule"
+              >Delete</b-button
+            >
+          </div>
         </div>
       </div>
     </nav>
@@ -71,7 +78,9 @@ import {
   PropType,
 } from "@vue/composition-api";
 import { useTitle } from "@vueuse/core";
+import { useAsyncTask } from "vue-concurrency";
 
+import { API } from "@/api";
 import Counter from "@/components/match/Counter.vue";
 import SnapshotTable from "@/components/snapshot/TableWithScreenshot.vue";
 import H2 from "@/components/ui/H2.vue";
@@ -102,13 +111,30 @@ export default defineComponent({
       return (props.rule.snapshots || []).length > 0;
     });
 
+    const deleteRuleTask = useAsyncTask<void, []>(async () => {
+      return await API.deleteRule(props.rule.id);
+    });
+
+    const deleteRule = async () => {
+      context.root.$buefy.dialog.confirm({
+        title: "Deleting rule",
+        message: "Are you sure you want to delete this rule?",
+        type: "is-danger",
+        hasIcon: true,
+        onConfirm: async () => {
+          await deleteRuleTask.perform();
+          context.root.$router.push({ path: "/" });
+        },
+      });
+    };
+
     onMounted(async () => {
       updateTitle(props.rule.name);
 
       highlightCodeBlocks(context);
     });
 
-    return { hasSnapshots };
+    return { hasSnapshots, deleteRule };
   },
 });
 </script>
