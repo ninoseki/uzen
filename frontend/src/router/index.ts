@@ -89,6 +89,15 @@ const routes = [
     },
   },
   {
+    path: "/rules/new",
+    name: "CreateRule",
+    component: () =>
+      import(/* webpackChunkName: "rules" */ "../views/CreateRule.vue"),
+    meta: {
+      title: "Creat a rule - Uzen",
+    },
+  },
+  {
     path: "/rules/:id",
     name: "Rule",
     component: () => import(/* webpackChunkName: "rule" */ "../views/Rule.vue"),
