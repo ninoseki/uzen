@@ -9,7 +9,7 @@
       <div class="navbar-menu">
         <div class="navbar-end">
           <router-link
-            class="button"
+            class="button is-link"
             :to="{
               name: 'EditRule',
               params: { id: rule.id },
