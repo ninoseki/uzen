@@ -23,9 +23,8 @@ jobs:
           name: Install Python Dependencies
           command: |
             pip install poetry
-            poetry config virtualenvs.create false
             poetry install
-            python -m playwright install chromium
+            poetry run python -m playwright install chromium
       - save_cache:
           key: deps-{{ checksum "poetry.lock" }}
           paths:
@@ -39,10 +38,10 @@ jobs:
             touch frontend/dist/index.html frontend/dist/images/not-found.png
       - run:
           name: Run Pytest (with MySQL)
-          command: pytest -v --cov=uzen --cov-report=term-missing
+          command: poetry run pytest -v --cov=uzen --cov-report=term-missing
       - run:
           name: coveralls
-          command: coveralls
+          command: poetry run coveralls
 
   build-frontend:
     docker:
