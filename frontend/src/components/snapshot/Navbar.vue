@@ -13,6 +13,24 @@
             :ipAddress="snapshot.ipAddress"
           />
         </div>
+
+        <div class="navbar-item">
+          <b-button
+            icon-pack="fas"
+            icon-left="search"
+            tag="router-link"
+            type="is-light"
+            :to="{
+              name: 'Similarity',
+              query: {
+                hash: snapshot.html.sha256,
+                excludeHostname: snapshot.hostname,
+                excludeIPAddress: snapshot.ipAddress,
+              },
+            }"
+            >Find similar snapshtos</b-button
+          >
+        </div>
         <div class="navbar-item">
           <b-button type="is-danger" icon-left="delete" @click="deleteSnapshot"
             >Delete</b-button

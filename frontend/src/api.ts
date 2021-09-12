@@ -113,6 +113,10 @@ export const API = {
     return res.data;
   },
 
+  async deleteRule(ruleId: string): Promise<void> {
+    await client.delete<void>(`/api/rules/${ruleId}`);
+  },
+
   async searchRules(params: SearchParams): Promise<RuleSearchResults> {
     const res = await client.get<RuleSearchResults>(`/api/rules/search`, {
       params,

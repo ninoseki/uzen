@@ -101,23 +101,6 @@
           >{{ snapshot.html.sha256 }}
         </router-link>
       </p>
-
-      <p>
-        <b-button
-          icon-pack="fas"
-          icon-left="search"
-          tag="router-link"
-          :to="{
-            name: 'Similarity',
-            query: {
-              hash: snapshot.html.sha256,
-              excludeHostname: snapshot.hostname,
-              excludeIPAddress: snapshot.ipAddress,
-            },
-          }"
-          >Find similar snapshtos</b-button
-        >
-      </p>
     </div>
 
     <div class="block" v-if="snapshot.classifications.length > 0">

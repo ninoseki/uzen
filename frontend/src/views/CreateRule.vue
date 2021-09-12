@@ -1,16 +1,16 @@
 <template>
-  <Search />
+  <Register />
 </template>
 
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
 
-import Search from "@/components/rule/Search.vue";
+import Register from "@/components/rule/Create.vue";
 
 export default defineComponent({
   name: "RulesView",
   components: {
-    Search,
+    Register,
   },
 });
 </script>

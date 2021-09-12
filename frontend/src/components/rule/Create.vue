@@ -22,7 +22,7 @@
           icon-pack="fas"
           icon-left="keyboard"
           @click="register"
-          >Register</b-button
+          >Create</b-button
         >
       </div>
     </div>

@@ -13,6 +13,9 @@
       <b-navbar-item tag="router-link" :to="{ path: '/snapshots' }"
         >Snapshots</b-navbar-item
       >
+      <b-navbar-item tag="router-link" :to="{ path: '/rules/new' }"
+        >Create rule</b-navbar-item
+      >
       <b-navbar-item tag="router-link" :to="{ path: '/rules' }"
         >Rules</b-navbar-item
       >
