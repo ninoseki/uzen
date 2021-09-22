@@ -38,10 +38,14 @@ jobs:
             touch frontend/dist/index.html frontend/dist/images/not-found.png
       - run:
           name: Run Pytest (with MySQL)
-          command: poetry run pytest -v --cov=uzen --cov-report=term-missing
+          command: poetry run pytest -v --cov=app --cov-report=term-missing --junitxml=test-results/junit.xml
       - run:
           name: coveralls
           command: poetry run coveralls
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: test-results
 
   build-frontend:
     docker:
