@@ -50,7 +50,7 @@
     "@types/crypto-js": "4.0.2",
     "@types/har-format": "1.2.7",
     "@types/highlight.js": "10.1.0",
-    "@types/jest": "27.0.1",
+    "@types/jest": "27.0.2",
     "@types/numeral": "2.0.1",
     "@types/qs": "6.9.7",
     "@types/url-parse": "1.4.4",
