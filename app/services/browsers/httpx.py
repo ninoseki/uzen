@@ -18,7 +18,7 @@ async def run_httpx(
             url,
             headers=options.headers,
             timeout=options.timeout,
-            allow_redirects=True,
+            follow_redirects=True,
         )
 
         return dataclasses.Snapshot(
