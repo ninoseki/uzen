@@ -1,21 +1,24 @@
 from datetime import date, datetime
 from typing import Optional, Union
-from uuid import UUID
 
 from fastapi import Query
+
+from app import types
 
 
 class SearchFilters:
     def __init__(
         self,
-        rule_id: Optional[UUID] = Query(
+        rule_id: Optional[types.ULID] = Query(
             None, title="Rule ID", description="An ID of the rule"
         ),
-        ruleId: Optional[UUID] = Query(None, description="Alias of rule_id"),
-        snapshot_id: Optional[UUID] = Query(
+        ruleId: Optional[types.ULID] = Query(None, description="Alias of rule_id"),
+        snapshot_id: Optional[types.ULID] = Query(
             None, title="Snapshot ID", description="An ID of the snapshot"
         ),
-        snapshotId: Optional[UUID] = Query(None, description="Alias of snapshot_id"),
+        snapshotId: Optional[types.ULID] = Query(
+            None, description="Alias of snapshot_id"
+        ),
         from_at: Optional[Union[datetime, date]] = Query(
             None, title="From at", description="Datetime or date in ISO 8601 format"
         ),

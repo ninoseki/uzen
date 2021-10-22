@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
-from uuid import UUID
 
 from tortoise.exceptions import IntegrityError, NoValuesFetched
 from tortoise.fields.base import RESTRICT
@@ -17,12 +16,13 @@ from tortoise.fields.relational import (
 )
 from tortoise.transactions import in_transaction
 
-from app import schemas
-from app.models.base import AbstractBaseModel
-from app.models.mixin import TimestampMixin
+from app import schemas, types
 from app.models.script import Script
 from app.models.stylesheet import Stylesheet
 from app.models.tag import Tag
+
+from .base import AbstractBaseModel
+from .mixin import TimestampMixin
 
 if TYPE_CHECKING:
     from app.dataclasses import SnapshotModelWrapper
@@ -155,7 +155,7 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
         return model.dict()
 
     @classmethod
-    async def get_by_id(cls, id_: str | UUID) -> Snapshot:
+    async def get_by_id(cls, id_: str | types.ULID) -> Snapshot:
         return await cls.get(id=str(id_)).prefetch_related(
             "_scripts",
             "_stylesheets",

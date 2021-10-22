@@ -1,9 +1,10 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, List, Optional, Type, Union
-from uuid import UUID
 
 from pydantic import BaseModel
 from tortoise.models import Model
+
+from app import types
 
 if TYPE_CHECKING:
     from app import models
@@ -30,5 +31,7 @@ class Enrichments:
 class SearchResults:
     """Search results with total"""
 
-    results: Union[List[Type[Model]], List[Type[BaseModel]], List[dict], List[UUID]]
+    results: Union[
+        List[Type[Model]], List[Type[BaseModel]], List[dict], List[types.ULID]
+    ]
     total: int

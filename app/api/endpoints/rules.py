@@ -1,10 +1,9 @@
 from typing import Any, Dict, Optional
-from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
 from tortoise.exceptions import DoesNotExist
 
-from app import models, schemas
+from app import models, schemas, types
 from app.api.dependencies.rule import SearchFilters
 from app.api.dependencies.verification import verify_api_key
 from app.services.searchers.rule import RuleSearcher
@@ -30,7 +29,7 @@ async def search(
     response_model=schemas.Rule,
     summary="Get a rule",
 )
-async def get(rule_id: UUID) -> schemas.Rule:
+async def get(rule_id: types.ULID) -> schemas.Rule:
     try:
         rule = await models.Rule.get_by_id(rule_id)
     except DoesNotExist:
@@ -45,7 +44,9 @@ async def get(rule_id: UUID) -> schemas.Rule:
     summary="Update a rule",
 )
 async def put(
-    rule_id: UUID, payload: schemas.UpdateRulePayload, _: Any = Depends(verify_api_key)
+    rule_id: types.ULID,
+    payload: schemas.UpdateRulePayload,
+    _: Any = Depends(verify_api_key),
 ) -> schemas.Rule:
     try:
         rule = await models.Rule.get(id=rule_id)
@@ -85,7 +86,9 @@ async def create(
     summary="Delete a rule",
     status_code=204,
 )
-async def delete(rule_id: UUID, _: Any = Depends(verify_api_key)) -> Dict[str, Any]:
+async def delete(
+    rule_id: types.ULID, _: Any = Depends(verify_api_key)
+) -> Dict[str, Any]:
     try:
         await models.Rule.delete_by_id(rule_id)
     except DoesNotExist:

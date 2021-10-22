@@ -1,13 +1,13 @@
 from datetime import date, datetime
 from functools import lru_cache
 from typing import Any, Dict, List, Optional, Union
-from uuid import UUID
 
 from pydantic import Field
 
 from app.schemas.base import APIModel
 from app.schemas.common import Source, Target
 from app.schemas.snapshot import PlainSnapshot
+from app.types import ULID
 
 
 class YaraScanPayload(Source, Target, APIModel):
@@ -55,8 +55,8 @@ class YaraMatch(APIModel):
 class YaraResult(APIModel):
     """YARA scan result"""
 
-    snapshot_id: UUID = Field(...)
-    script_id: Optional[UUID] = Field(
+    snapshot_id: ULID = Field(...)
+    script_id: Optional[ULID] = Field(
         ...,
     )
     target: str = Field(..., description="A target to scan")

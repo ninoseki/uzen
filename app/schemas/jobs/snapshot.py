@@ -1,17 +1,17 @@
 from datetime import datetime
 from typing import Optional
-from uuid import UUID
 
 from arq.jobs import JobDef, JobResult
 from pydantic import Field
 
+from app import types
 from app.schemas.base import APIModel
 from app.schemas.jobs.common import JobStatus
 from app.schemas.snapshot import CreateSnapshotPayload
 
 
 class SnapshotJobResult(APIModel):
-    snapshot_id: UUID = Field(...)
+    snapshot_id: types.ULID = Field(...)
 
 
 class SnapshotJobDefinition(APIModel):

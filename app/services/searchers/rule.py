@@ -1,9 +1,8 @@
 from typing import Any, Dict, List, Optional, cast
-from uuid import UUID
 
 from tortoise.query_utils import Q
 
-from app import models, schemas
+from app import models, schemas, types
 from app.services.searchers import AbstractSearcher
 
 
@@ -52,7 +51,7 @@ class RuleSearcher(AbstractSearcher):
 
         if id_only:
             return schemas.RulesSearchResults(
-                results=cast(List[UUID], results.results), total=results.total
+                results=cast(List[types.ULID], results.results), total=results.total
             )
 
         rules = [rule.to_model() for rule in cast(List[models.Rule], results.results)]

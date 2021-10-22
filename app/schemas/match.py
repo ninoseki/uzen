@@ -1,5 +1,4 @@
 from typing import List, Optional, Union
-from uuid import UUID
 
 from pydantic import Field
 
@@ -9,6 +8,7 @@ from app.schemas.script import Script
 from app.schemas.search import BaseSearchResults
 from app.schemas.snapshot import PlainSnapshot, Rule
 from app.schemas.yara import YaraMatch
+from app.types import ULID
 
 
 class Match(AbstractBaseModel, TimestampMixin):
@@ -35,10 +35,10 @@ class Match(AbstractBaseModel, TimestampMixin):
 class MatchResult(APIModel):
     """Match result"""
 
-    rule_id: UUID = Field(
+    rule_id: ULID = Field(
         ...,
     )
-    script_id: Optional[UUID] = Field(
+    script_id: Optional[ULID] = Field(
         None,
     )
     matches: List[YaraMatch] = Field(
@@ -49,4 +49,4 @@ class MatchResult(APIModel):
 
 
 class MatchesSearchResults(BaseSearchResults):
-    results: Union[List[Match], List[UUID]]
+    results: Union[List[Match], List[ULID]]

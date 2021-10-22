@@ -5,7 +5,8 @@ from tortoise.fields.relational import ReverseRelation
 
 from app import schemas
 from app.models.base import AbstractResourceModel
-from app.models.mixin import TimestampMixin
+
+from .mixin import TimestampMixin
 
 if TYPE_CHECKING:
     from app.models import Snapshot

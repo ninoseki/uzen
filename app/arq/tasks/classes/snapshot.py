@@ -1,7 +1,6 @@
 from typing import Optional, Union
-from uuid import UUID
 
-from app import models, schemas
+from app import models, schemas, types
 from app.api.dependencies.arq import get_arq_redis_with_context
 from app.arq.constants import ENRICH_SNAPSHOT_TASK_NAME
 from app.arq.tasks.classes.abstract import AbstractAsyncTask
@@ -38,7 +37,7 @@ async def enrich_snapshot_task(
 async def take_snapshot_task(
     ctx: dict,
     payload: schemas.CreateSnapshotPayload,
-    api_key: Optional[Union[str, UUID]] = None,
+    api_key: Optional[Union[str, types.ULID]] = None,
 ) -> schemas.JobResultWrapper:
     ignore_https_error = payload.ignore_https_errors or False
     browser = Browser(

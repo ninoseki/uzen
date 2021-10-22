@@ -1,12 +1,11 @@
 from typing import Union
-from uuid import UUID
 
 from fastapi import BackgroundTasks, Security
 from fastapi.exceptions import HTTPException
 from fastapi.security import APIKeyHeader
 from tortoise.exceptions import DoesNotExist
 
-from app import models
+from app import models, types
 from app.core import settings
 
 api_key_header = APIKeyHeader(name="api-key", scheme_name="API key header")
@@ -16,7 +15,7 @@ secret_api_key_header = APIKeyHeader(
 )
 
 
-async def update_api_key_usage(api_key: Union[str, UUID]):
+async def update_api_key_usage(api_key: Union[str, types.ULID]):
     try:
         key = await models.APIKey.get_by_id(api_key)
     except DoesNotExist:

@@ -1,7 +1,7 @@
-from uuid import UUID
-
 from humps import camelize
 from pydantic import BaseModel, Field
+
+from app.types import ULID
 
 
 class APIModel(BaseModel):
@@ -12,7 +12,7 @@ class APIModel(BaseModel):
 
 
 class AbstractBaseModel(APIModel):
-    id: UUID = Field(...)
+    id: ULID = Field(...)
 
 
 class AbstractParentResourceModel(AbstractBaseModel):
