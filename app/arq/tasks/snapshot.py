@@ -1,7 +1,7 @@
 from typing import Optional, Union
 from uuid import UUID
 
-from app import models, schemas
+from app import models, schemas, types
 from app.api.dependencies.arq import get_arq_redis_with_context
 from app.arq.constants import ENRICH_SNAPSHOT_TASK_NAME
 from app.arq.tasks.classes.enrichment import EnrichmentTasks
@@ -40,9 +40,8 @@ async def take_snapshot_task(
     except TakeSnapshotError as e:
         return schemas.JobResultWrapper(result=None, error=str(e))
 
-    id: Optional[str] = ctx.get("job_id")
     snapshot = await models.Snapshot.save_snapshot(
-        wrapper, id=id, api_key=api_key, tag_names=payload.tags
+        wrapper, id=str(types.ULID()), api_key=api_key, tag_names=payload.tags
     )
 
     # upload screenshot

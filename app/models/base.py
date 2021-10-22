@@ -1,13 +1,18 @@
-from typing import Union
-from uuid import UUID
-
 from tortoise.fields.data import CharField, TextField, UUIDField
 from tortoise.models import Model
 
-from app.models.mixin import CountMixin, DeleteMixin
+from .fields import ULIDField
+from .mixin import CountMixin, DeleteMixin
 
 
 class AbstractBaseModel(Model, DeleteMixin, CountMixin):
+    id = ULIDField(pk=True)
+
+    class Meta:
+        abstract = True
+
+
+class AbstractUUIDModel(Model, DeleteMixin, CountMixin):
     id = UUIDField(pk=True)
 
     class Meta:
@@ -22,5 +27,5 @@ class AbstractResourceModel(Model, DeleteMixin, CountMixin):
         abstract = True
 
     @classmethod
-    async def get_by_id(cls, id_: Union[str, UUID]) -> "AbstractResourceModel":
-        return await cls.get(id=str(id_))
+    async def get_by_id(cls, id_: str) -> "AbstractResourceModel":
+        return await cls.get(id=id_)

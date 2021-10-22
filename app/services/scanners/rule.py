@@ -1,14 +1,14 @@
 import itertools
 from functools import partial
 from typing import List, cast
-from uuid import UUID
 
 import aiometer
 
-from app import models, schemas
-from app.services.scanners.constants import CHUNK_SIZE, MAX_AT_ONCE
-from app.services.scanners.yara import YaraScanner
+from app import models, schemas, types
 from app.services.searchers.rule import RuleSearcher
+
+from .constants import CHUNK_SIZE, MAX_AT_ONCE
+from .yara import YaraScanner
 
 
 class RuleScanner:
@@ -42,7 +42,7 @@ class RuleScanner:
                 )
         return results
 
-    async def partial_scan(self, ids: List[UUID]) -> List[schemas.MatchResult]:
+    async def partial_scan(self, ids: List[types.ULID]) -> List[schemas.MatchResult]:
         results: List[schemas.MatchResult] = []
         rules: List[models.Rule] = await models.Rule.filter(id__in=ids)
         for rule in rules:
@@ -63,7 +63,7 @@ class RuleScanner:
 
     async def scan(self) -> List[schemas.MatchResult]:
         search_results = await RuleSearcher.search({}, id_only=True)
-        rule_ids = cast(List[UUID], search_results.results)
+        rule_ids = cast(List[types.ULID], search_results.results)
         if len(rule_ids) == 0:
             return []
 

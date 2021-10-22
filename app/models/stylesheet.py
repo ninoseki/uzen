@@ -1,15 +1,15 @@
 from typing import TYPE_CHECKING, List
-from uuid import UUID
 
 from tortoise.exceptions import IntegrityError
 from tortoise.fields.base import CASCADE, RESTRICT
 from tortoise.fields.data import CharField, TextField
 from tortoise.fields.relational import ForeignKeyField, ForeignKeyRelation
 
-from app import schemas
-from app.models.base import AbstractBaseModel
-from app.models.mixin import TimestampMixin
+from app import schemas, types
 from app.utils.url import normalize_url
+
+from .base import AbstractBaseModel
+from .mixin import TimestampMixin
 
 if TYPE_CHECKING:
     from app.dataclasses import StylesheetFile
@@ -37,7 +37,7 @@ class Stylesheet(TimestampMixin, AbstractBaseModel):
 
     @classmethod
     async def save_stylesheet_files(
-        cls, stylesheet_files: List["StylesheetFile"], snapshot_id: UUID
+        cls, stylesheet_files: List["StylesheetFile"], snapshot_id: types.ULID
     ) -> None:
         files = [stylesheet_file.file for stylesheet_file in stylesheet_files]
         for file in files:

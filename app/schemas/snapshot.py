@@ -1,7 +1,6 @@
 import datetime
 from functools import lru_cache
 from typing import Any, Dict, List, Optional, Union, cast
-from uuid import UUID
 
 import httpx
 from playwright.sync_api import Error, sync_playwright
@@ -18,7 +17,7 @@ from app.schemas.script import Script
 from app.schemas.search import BaseSearchResults
 from app.schemas.stylesheet import Stylesheet
 from app.schemas.whois import WhoisMetaData
-from app.types import WaitUntilType
+from app.types import ULID, WaitUntilType
 from app.utils.network import get_hostname_from_url, get_ip_address_by_hostname
 
 # Declare rules & devices related schemas here to prevent circular reference
@@ -147,7 +146,7 @@ class PlainSnapshot(SnapshotBasicAttributes, AbstractBaseModel, TimestampMixin):
 class SnapshotsSearchResults(BaseSearchResults):
     """Search results of snapshots"""
 
-    results: Union[List[PlainSnapshot], List[UUID]] = Field(...)
+    results: Union[List[PlainSnapshot], List[ULID]] = Field(...)
 
 
 class CreateSnapshotPayload(APIModel):

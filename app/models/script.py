@@ -1,15 +1,15 @@
 from typing import TYPE_CHECKING, List
-from uuid import UUID
 
 from tortoise.exceptions import IntegrityError
 from tortoise.fields.base import CASCADE, RESTRICT
 from tortoise.fields.data import CharField, TextField
 from tortoise.fields.relational import ForeignKeyField, ForeignKeyRelation
 
-from app import schemas
-from app.models.base import AbstractBaseModel
-from app.models.mixin import TimestampMixin
+from app import schemas, types
 from app.utils.url import normalize_url
+
+from .base import AbstractBaseModel
+from .mixin import TimestampMixin
 
 if TYPE_CHECKING:
     from app.dataclasses import ScriptFile
@@ -37,7 +37,7 @@ class Script(TimestampMixin, AbstractBaseModel):
 
     @classmethod
     async def save_script_files(
-        cls, script_files: List["ScriptFile"], snapshot_id: UUID
+        cls, script_files: List["ScriptFile"], snapshot_id: types.ULID
     ) -> None:
         files = [script_file.file for script_file in script_files]
         for file in files:

@@ -1,7 +1,8 @@
 from typing import Union
-from uuid import UUID
 
 from tortoise.fields.data import DatetimeField
+
+from app import types
 
 
 class TimestampMixin:
@@ -10,7 +11,7 @@ class TimestampMixin:
 
 class DeleteMixin:
     @classmethod
-    async def delete_by_id(cls, id_: Union[str, UUID]) -> None:
+    async def delete_by_id(cls, id_: Union[str, types.ULID]) -> None:
         await cls.get(id=str(id_)).delete()
 
 

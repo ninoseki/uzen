@@ -3,7 +3,7 @@ import datetime
 from asyncio.events import AbstractEventLoop
 from typing import List
 from unittest.mock import AsyncMock, Mock
-from uuid import UUID, uuid4
+from uuid import uuid4
 
 import nest_asyncio
 import pytest
@@ -14,7 +14,7 @@ from tortoise import Tortoise
 from tortoise.backends.base.config_generator import generate_config
 from tortoise.exceptions import DBConnectionError
 
-from app import create_app, dataclasses, models
+from app import create_app, dataclasses, models, types
 from app.api.dependencies.arq import get_arq_redis
 from app.api.dependencies.verification import verify_api_key
 from app.core import settings
@@ -233,7 +233,9 @@ def matches_setup(
 
 
 @pytest.fixture
-def first_rule_id(client, rules_setup, event_loop: asyncio.AbstractEventLoop) -> UUID:
+def first_rule_id(
+    client, rules_setup, event_loop: asyncio.AbstractEventLoop
+) -> types.ULID:
     rule = event_loop.run_until_complete(models.Rule.all().first())
     return rule.id
 
@@ -241,7 +243,7 @@ def first_rule_id(client, rules_setup, event_loop: asyncio.AbstractEventLoop) ->
 @pytest.fixture
 def first_snapshot_id(
     client, snapshots_setup, event_loop: asyncio.AbstractEventLoop
-) -> UUID:
+) -> types.ULID:
     snapshot = event_loop.run_until_complete(models.Snapshot.all().first())
     return snapshot.id
 

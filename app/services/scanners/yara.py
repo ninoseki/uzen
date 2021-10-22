@@ -1,12 +1,11 @@
 import itertools
 from functools import partial
 from typing import Any, Dict, List, Optional, cast
-from uuid import UUID
 
 import aiometer
 import yara
 
-from app import models, schemas
+from app import models, schemas, types
 from app.services.matches_converter import MatchesConverter
 from app.services.scanners.constants import CHUNK_SIZE, MAX_AT_ONCE
 from app.services.scanners.utils import search_snapshots
@@ -38,7 +37,7 @@ class YaraScanner:
         return MatchesConverter.convert(self.rule.match(data=data, timeout=60))
 
     async def partial_scan_for_scripts(
-        self, ids: List[UUID]
+        self, ids: List[types.ULID]
     ) -> List[schemas.YaraResult]:
         scripts = await models.Script.filter(snapshot_id__in=ids).prefetch_related(
             "file"
@@ -60,13 +59,13 @@ class YaraScanner:
         return matched_results
 
     async def partial_scan(
-        self, target: str, ids: List[UUID]
+        self, target: str, ids: List[types.ULID]
     ) -> List[schemas.YaraResult]:
         """Scan a list of snapshots with a YARA rule
 
         Arguments:
             target {str} -- A target of a snapshot's attribute
-            ids {List[UUID]} -- A list of ids of snapshots
+            ids {List[ULID]} -- A list of ids of snapshots
 
         Returns:
             List[schemas.YaraResult] -- A list of YARA results
@@ -123,7 +122,7 @@ class YaraScanner:
             offset=offset,
         )
 
-        snapshot_ids = cast(List[UUID], search_results.results)
+        snapshot_ids = cast(List[types.ULID], search_results.results)
         if len(snapshot_ids) == 0:
             return []
 

@@ -1,5 +1,4 @@
 from typing import List, Optional, Union
-from uuid import UUID
 
 import yara
 from pydantic import Field, validator
@@ -8,6 +7,7 @@ from app.schemas.base import APIModel
 from app.schemas.search import BaseSearchResults
 from app.schemas.snapshot import BaseRule, Rule
 from app.schemas.types import TargetTypes
+from app.types import ULID
 
 
 class CreateRulePayload(BaseRule):
@@ -43,4 +43,4 @@ class UpdateRulePayload(APIModel):
 
 
 class RulesSearchResults(BaseSearchResults):
-    results: Union[List[Rule], List[UUID]] = Field(...)
+    results: Union[List[Rule], List[ULID]] = Field(...)

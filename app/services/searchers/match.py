@@ -1,9 +1,8 @@
 from typing import Any, Dict, List, Optional, cast
-from uuid import UUID
 
 from tortoise.query_utils import Q
 
-from app import models, schemas
+from app import models, schemas, types
 from app.services.searchers import AbstractSearcher
 from app.services.searchers.utils import convert_to_datetime
 
@@ -62,7 +61,7 @@ class MatchSearcher(AbstractSearcher):
 
         if id_only:
             return schemas.MatchesSearchResults(
-                results=cast(List[UUID], results.results), total=results.total
+                results=cast(List[types.ULID], results.results), total=results.total
             )
 
         matches: List[schemas.Match] = [

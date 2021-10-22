@@ -1,11 +1,10 @@
 from typing import Any, Dict, List, Optional, cast
-from uuid import UUID, uuid4
 
 from arq.connections import ArqRedis
 from fastapi import APIRouter, Depends, Header, HTTPException
 from tortoise.exceptions import DoesNotExist
 
-from app import models, schemas
+from app import models, schemas, types
 from app.api.dependencies.arq import get_arq_redis
 from app.api.dependencies.snapshot import SearchFilters
 from app.api.dependencies.verification import verify_api_key
@@ -47,7 +46,7 @@ async def search(
     response_model=schemas.Snapshot,
     summary="Get a snapshot",
 )
-async def get(snapshot_id: UUID) -> schemas.Snapshot:
+async def get(snapshot_id: types.ULID) -> schemas.Snapshot:
     try:
         snapshot = await models.Snapshot.get_by_id(snapshot_id)
     except DoesNotExist:
@@ -63,7 +62,7 @@ async def get(snapshot_id: UUID) -> schemas.Snapshot:
     response_model=schemas.Indicators,
     summary="Get indicators related to a snapshot",
 )
-async def get_indicators(snapshot_id: UUID) -> schemas.Indicators:
+async def get_indicators(snapshot_id: types.ULID) -> schemas.Indicators:
     try:
         snapshot = await models.Snapshot.get_by_id(snapshot_id)
     except DoesNotExist:
@@ -87,14 +86,15 @@ async def create(
     _: Any = Depends(verify_api_key),
     arq_redis: ArqRedis = Depends(get_arq_redis),
 ) -> schemas.Job:
-    job_id = str(uuid4())
+    ulid = types.ULID()
+    job_id = str(ulid.to_uuid())
     job = await arq_redis.enqueue_job(
         SNAPSHOT_TASK_NAME, payload, api_key, _job_id=job_id
     )
     if job is None:
         raise HTTPException(status_code=500, detail="Something went wrong...")
 
-    return schemas.Job(id=job.job_id, type="snapshot")
+    return schemas.Job(id=job_id, type="snapshot")
 
 
 @router.delete(
@@ -102,7 +102,9 @@ async def create(
     summary="Delete a snapshot",
     status_code=204,
 )
-async def delete(snapshot_id: UUID, _: Any = Depends(verify_api_key)) -> Dict[str, Any]:
+async def delete(
+    snapshot_id: types.ULID, _: Any = Depends(verify_api_key)
+) -> Dict[str, Any]:
     try:
         await models.Snapshot.delete_by_id(snapshot_id)
     except DoesNotExist:

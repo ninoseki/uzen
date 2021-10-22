@@ -9,8 +9,9 @@ from tortoise.fields.relational import (
 )
 
 from app import schemas
-from app.models.base import AbstractBaseModel
-from app.models.mixin import TimestampMixin
+
+from .base import AbstractBaseModel
+from .mixin import TimestampMixin
 
 if TYPE_CHECKING:
     from app.models import Rule, Script, Snapshot

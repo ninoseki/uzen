@@ -1,5 +1,5 @@
 from typing import Union, cast
-from uuid import UUID, uuid4
+from uuid import uuid4
 
 from arq.connections import ArqRedis
 from fastapi import APIRouter, Depends, HTTPException
@@ -7,7 +7,7 @@ from fastapi.responses import Response
 from fastapi_cache.coder import PickleCoder
 from fastapi_cache.decorator import cache
 
-from app import schemas
+from app import schemas, types
 from app.api.dependencies.arq import get_arq_redis
 from app.arq.constants import PREVIEW_TASK_NAME
 from app.cache.constants import ONE_HOUR
@@ -29,7 +29,7 @@ async def _get_screenshot_by_snapshot_id(snapshot_id: str) -> bytes:
     summary="Get a screenshot",
 )
 async def get_screenshot_by_snapshot_id(
-    snapshot_id: UUID,
+    snapshot_id: types.ULID,
 ) -> Response:
     screenshot = await _get_screenshot_by_snapshot_id(str(snapshot_id))
     return Response(content=screenshot, media_type="image/png")

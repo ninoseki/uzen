@@ -1,9 +1,7 @@
 import asyncio
 import datetime
-import uuid
-from uuid import UUID
 
-from app import dataclasses, models
+from app import dataclasses, models, types
 from app.factories.html import HTMLFactory
 
 
@@ -13,7 +11,7 @@ def make_html() -> models.HTML:
 
 def make_snapshot(hostname: str = "example.com") -> models.Snapshot:
     return models.Snapshot(
-        id=uuid.uuid4(),
+        id=types.ULID(),
         url=f"http://{hostname}/",
         submitted_url=f"http://{hostname}",
         status=200,
@@ -48,22 +46,22 @@ async def make_snapshot_wrapper() -> dataclasses.SnapshotModelWrapper:
     )
 
 
-async def first_rule_id() -> UUID:
+async def first_rule_id() -> types.ULID:
     rule = await models.Rule.all().first()
     return rule.id
 
 
-def first_rule_id_sync(event_loop: asyncio.AbstractEventLoop) -> UUID:
+def first_rule_id_sync(event_loop: asyncio.AbstractEventLoop) -> types.ULID:
     rule = event_loop.run_until_complete(models.Rule.all().first())
     return rule.id
 
 
-async def first_snapshot_id() -> UUID:
+async def first_snapshot_id() -> types.ULID:
     snapshot = await models.Snapshot.all().first()
     return snapshot.id
 
 
-def first_snapshot_id_sync(event_loop: asyncio.AbstractEventLoop) -> UUID:
+def first_snapshot_id_sync(event_loop: asyncio.AbstractEventLoop) -> types.ULID:
     snapshot = event_loop.run_until_complete(models.Snapshot.all().first())
     return snapshot.id
 
