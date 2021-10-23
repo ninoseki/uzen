@@ -1,5 +1,3 @@
-import asyncio
-
 import pytest
 import vcr
 from fastapi.testclient import TestClient
@@ -9,7 +7,7 @@ from fastapi.testclient import TestClient
     "tests/fixtures/vcr_cassettes/ip_address.yaml", ignore_hosts=["testserver"]
 )
 @pytest.mark.usefixtures("patch_whois_lookup")
-def test_get(client: TestClient, event_loop: asyncio.AbstractEventLoop):
+def test_get(client: TestClient):
     ip_address = "93.184.216.34"
     response = client.get(f"/api/ip_address/{ip_address}")
     assert response.status_code == 200
@@ -25,8 +23,6 @@ def test_get(client: TestClient, event_loop: asyncio.AbstractEventLoop):
     assert whois
 
 
-def test_get_with_invalid_input(
-    client: TestClient, event_loop: asyncio.AbstractEventLoop
-):
+def test_get_with_invalid_input(client: TestClient):
     response = client.get("/api/ip_address/example.com")
     assert response.status_code == 404

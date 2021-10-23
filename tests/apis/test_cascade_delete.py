@@ -1,58 +1,56 @@
 import asyncio
+from typing import List
 
-import pytest
 from fastapi.testclient import TestClient
 
+from app import models
 from tests.helper import (
     count_all_matches,
     count_all_rules,
     count_all_scripts,
     count_all_snapshots,
-    first_rule_id_sync,
-    first_snapshot_id_sync,
 )
 
 
-@pytest.mark.usefixtures("scripts_setup")
 def test_delete_snapshot_with_scripts(
-    client: TestClient, event_loop: asyncio.AbstractEventLoop
+    client: TestClient,
+    event_loop: asyncio.AbstractEventLoop,
+    scripts: List[models.Script],
+    snapshots: List[models.Snapshot],
 ):
-    id_ = first_snapshot_id_sync(event_loop)
-    snapshot_count = count_all_snapshots(event_loop)
-    script_count = count_all_scripts(event_loop)
+    id_ = snapshots[0].id
 
     response = client.delete(f"/api/snapshots/{id_}")
     assert response.status_code == 204
 
-    assert count_all_snapshots(event_loop) == snapshot_count - 1
-    assert count_all_scripts(event_loop) == script_count - 1
+    assert count_all_snapshots(event_loop) == len(snapshots) - 1
+    assert count_all_scripts(event_loop) == len(scripts) - 1
 
 
-@pytest.mark.usefixtures("matches_setup")
 def test_delete_snapshot_with_matches(
-    client: TestClient, event_loop: asyncio.AbstractEventLoop
+    client: TestClient,
+    event_loop: asyncio.AbstractEventLoop,
+    matches: List[models.Match],
+    snapshots: List[models.Snapshot],
 ):
-    id_ = first_snapshot_id_sync(event_loop)
-    snapshot_count = count_all_snapshots(event_loop)
-    match_count = count_all_matches(event_loop)
-
+    id_ = snapshots[0].id
     response = client.delete(f"/api/snapshots/{id_}")
     assert response.status_code == 204
 
-    assert count_all_snapshots(event_loop) == snapshot_count - 1
-    assert count_all_matches(event_loop) == match_count - 1
+    assert count_all_snapshots(event_loop) == len(snapshots) - 1
+    assert count_all_matches(event_loop) == len(matches) - 1
 
 
-@pytest.mark.usefixtures("matches_setup")
 def test_delete_rule_with_matches(
-    client: TestClient, event_loop: asyncio.AbstractEventLoop
+    client: TestClient,
+    event_loop: asyncio.AbstractEventLoop,
+    matches: List[models.Match],
+    rules: List[models.Rule],
 ):
-    id_ = first_rule_id_sync(event_loop)
-    rule_count = count_all_rules(event_loop)
-    match_count = count_all_matches(event_loop)
+    id_ = rules[0].id
 
     response = client.delete(f"/api/rules/{id_}")
     assert response.status_code == 204
 
-    assert count_all_rules(event_loop) == rule_count - 1
-    assert count_all_matches(event_loop) == match_count - 1
+    assert count_all_rules(event_loop) == len(rules) - 1
+    assert count_all_matches(event_loop) == len(matches) - 1

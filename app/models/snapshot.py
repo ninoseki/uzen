@@ -61,9 +61,13 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
     ignore_https_errors = BooleanField(default=False)
     processing = BooleanField(default=True)
 
+    api_key: ForeignKeyRelation[APIKey] = ForeignKeyField(
+        "models.APIKey", related_name="snapshots", on_delete=RESTRICT
+    )
     html: ForeignKeyRelation[HTML] = ForeignKeyField(
         "models.HTML", related_name="snapshots", on_delete=RESTRICT
     )
+
     certificate: ForeignKeyNullableRelation[Certificate] = ForeignKeyField(
         "models.Certificate",
         related_name="snapshots",
@@ -72,9 +76,6 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
     )
     whois: ForeignKeyNullableRelation[Whois] = ForeignKeyField(
         "models.Whois", related_name="snapshots", on_delete=RESTRICT, null=True
-    )
-    api_key: ForeignKeyNullableRelation[APIKey] = ForeignKeyField(
-        "models.APIKey", related_name="snapshots", on_delete=RESTRICT, null=True
     )
 
     har = OneToOneRelation["HAR"]

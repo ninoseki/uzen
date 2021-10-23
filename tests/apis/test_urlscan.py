@@ -10,7 +10,7 @@ def mock_import_as_snapshot(url: str):
     return make_snapshot_wrapper()
 
 
-@pytest.mark.usefixtures("snapshots_setup")
+@pytest.mark.usefixtures("api_key")
 def test_snapshot_post(client: TestClient, monkeypatch: MonkeyPatch):
     monkeypatch.setattr(URLScan, "import_as_snapshot", mock_import_as_snapshot)
 

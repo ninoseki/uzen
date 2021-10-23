@@ -1,14 +1,12 @@
-import asyncio
+from typing import List
 
-import pytest
 from fastapi.testclient import TestClient
 
-from tests.helper import first_snapshot_id_sync
+from app import models
 
 
-@pytest.mark.usefixtures("snapshots_setup")
-def test_screenshots(client: TestClient, event_loop: asyncio.AbstractEventLoop):
-    snapshot_id = first_snapshot_id_sync(event_loop)
+def test_screenshots(client: TestClient, snapshots: List[models.Snapshot]):
+    snapshot_id = snapshots[0].id
 
     response = client.get(f"/api/screenshots/{snapshot_id}")
     assert response.status_code == 200

@@ -21,7 +21,7 @@ async def rule_setup():
 
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("rule_setup")
-@pytest.mark.usefixtures("scripts_setup")
+@pytest.mark.usefixtures("scripts")
 async def test_scan():
     snapshot = await models.Snapshot.all().first().prefetch_related("_scripts__file")
     matcher = RuleScanner(snapshot)

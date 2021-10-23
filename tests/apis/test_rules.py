@@ -1,23 +1,20 @@
 import asyncio
+from typing import List
 
-import pytest
 from fastapi.testclient import TestClient
 
+from app import models
 from app.models.rule import Rule
-from tests.helper import count_all_rules, first_rule_id_sync
+from tests.helper import count_all_rules
 
 
-def test_create_rule_with_invalid_target(
-    client: TestClient, event_loop: asyncio.AbstractEventLoop
-):
+def test_create_rule_with_invalid_target(client: TestClient):
     payload = {"name": "test", "target": "foo", "source": "foo"}
     response = client.post("/api/rules/", json=payload)
     assert response.status_code == 422
 
 
-def test_create_rule_with_invalid_source(
-    client: TestClient, event_loop: asyncio.AbstractEventLoop
-):
+def test_create_rule_with_invalid_source(client: TestClient):
     payload = {"name": "test", "target": "html", "source": "foo; bar;"}
     response = client.post("/api/rules/", json=payload)
     assert response.status_code == 422
@@ -36,16 +33,18 @@ def test_create_rule(client: TestClient, event_loop: asyncio.AbstractEventLoop):
     assert count == 1
 
 
-@pytest.mark.usefixtures("rules_setup")
-def test_delete_rule(client: TestClient, event_loop: asyncio.AbstractEventLoop):
-    id_ = first_rule_id_sync(event_loop)
+def test_delete_rule(
+    client: TestClient, event_loop: asyncio.AbstractEventLoop, rules: List[models.Rule]
+):
+    id_ = rules[0].id
     response = client.delete(f"/api/rules/{id_}")
     assert response.status_code == 204
 
 
-@pytest.mark.usefixtures("rules_setup")
-def test_rules_search(client: TestClient, event_loop: asyncio.AbstractEventLoop):
-    count = count_all_rules(event_loop)
+def test_rules_search(
+    client: TestClient, event_loop: asyncio.AbstractEventLoop, rules: List[models.Rule]
+):
+    count = len(rules)
 
     response = client.get("/api/rules/search")
     data = response.json()
@@ -71,9 +70,10 @@ def test_rules_search(client: TestClient, event_loop: asyncio.AbstractEventLoop)
     assert len(rules) == count
 
 
-@pytest.mark.usefixtures("rules_setup")
-def test_update(client: TestClient, event_loop: asyncio.AbstractEventLoop):
-    id_ = first_rule_id_sync(event_loop)
+def test_update(
+    client: TestClient, event_loop: asyncio.AbstractEventLoop, rules: List[models.Rule]
+):
+    id_ = rules[0].id
 
     payload = {"name": "woweee"}
     response = client.put(f"/api/rules/{id_}", json=payload)
