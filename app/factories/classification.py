@@ -1,5 +1,4 @@
 import base64
-import json
 from dataclasses import dataclass
 from functools import partial
 from typing import Any, Dict, List, Optional, cast
@@ -42,9 +41,7 @@ async def gsb_lookup(client: httpx.AsyncClient, url: str) -> Optional[Result]:
     headers = {"Content-type": "application/json"}
 
     try:
-        res = await client.post(
-            api_url, data=json.dumps(data), params=paramas, headers=headers
-        )
+        res = await client.post(api_url, json=data, params=paramas, headers=headers)
         res.raise_for_status()
     except httpx.RequestError:
         return None
