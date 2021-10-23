@@ -1,87 +1,87 @@
-import asyncio
+from typing import List
 
 import pytest
 from _pytest.monkeypatch import MonkeyPatch
 from fastapi.testclient import TestClient
 
+from app import models
 from app.services.browser import Browser
-from tests.helper import (
-    count_all_snapshots,
-    first_snapshot_id_sync,
-    make_snapshot_wrapper,
-)
+from tests.helper import make_snapshot_wrapper
 
 
-@pytest.mark.usefixtures("snapshots_setup")
-def test_snapshot_search(client: TestClient, event_loop: asyncio.AbstractEventLoop):
-    count = count_all_snapshots(event_loop)
+def test_snapshot_search(
+    client: TestClient,
+    snapshots: List[models.Snapshot],
+):
+    count = len(snapshots)
     response = client.get("/api/snapshots/search")
     data = response.json()
-    snapshots = data.get("results")
-    assert len(snapshots) == count
+    results = data.get("results", [])
+    assert len(results) == count
 
     response = client.get("/api/snapshots/search", params={"hostname": "example.com"})
     data = response.json()
-    snapshots = data.get("results")
-    assert len(snapshots) == count
+    results = data.get("results", [])
+    assert len(results) == count
 
     response = client.get(
         "/api/snapshots/search", params={"from_at": "1970-01-01T15:53:00+05:00"}
     )
     data = response.json()
-    snapshots = data.get("results")
-    assert len(snapshots) == count
+    results = data.get("results", [])
+    assert len(results) == count
 
     response = client.get("/api/snapshots/search", params={"from_at": "1970-01-01"})
     data = response.json()
-    snapshots = data.get("results")
-    assert len(snapshots) == count
+    results = data.get("results", [])
+    assert len(results) == count
 
     response = client.get(
         "/api/snapshots/search", params={"to_at": "3000-01-01T15:53:00+05:00"}
     )
     data = response.json()
-    snapshots = data.get("results")
-    assert len(snapshots) == count
+    results = data.get("results", [])
+    assert len(results) == count
 
     # it doesn't match any snapshot
     response = client.get("/api/snapshots/search", params={"status": 404})
     data = response.json()
-    snapshots = data.get("results")
-    assert len(snapshots) == 0
+    results = data.get("results", [])
+    assert len(results) == 0
 
 
-@pytest.mark.usefixtures("snapshots_setup")
+@pytest.mark.usefixtures("snapshots")
 def test_snapshot_list_with_size(
-    client: TestClient, event_loop: asyncio.AbstractEventLoop
+    client: TestClient,
 ):
     payload = {"size": 1}
     response = client.get("/api/snapshots/search", params=payload)
     data = response.json()
-    snapshots = data.get("results")
-    assert len(snapshots) == 1
-    first = snapshots[0]
+    results = data.get("results", [])
+    assert len(results) == 1
+
+    first = results[0]
     assert first.get("url") == "http://example10.com/"
 
 
-@pytest.mark.usefixtures("snapshots_setup")
 def test_snapshot_list_with_offset_and_size(
-    client: TestClient, event_loop: asyncio.AbstractEventLoop
+    client: TestClient,
+    snapshots: List[models.Snapshot],
 ):
     payload = {"offset": 0, "size": 1}
     response = client.get("/api/snapshots/search", params=payload)
     data = response.json()
-    snapshots = data.get("results")
-    assert len(snapshots) == 1
+    results = data.get("results", [])
+    assert len(results) == 1
 
     offset = 0
     size = 10
     payload = {"offset": offset, "size": size}
     response = client.get("/api/snapshots/search", params=payload)
     data = response.json()
-    snapshots = data.get("results")
-    assert len(snapshots) == size - offset
-    first = snapshots[0]
+    results = data.get("results", [])
+    assert len(results) == size - offset
+    first = results[0]
     assert first.get("url") == f"http://example{size - offset}.com/"
 
     offset = 5
@@ -89,15 +89,13 @@ def test_snapshot_list_with_offset_and_size(
     payload = {"offset": offset, "size": size}
     response = client.get("/api/snapshots/search", params=payload)
     data = response.json()
-    snapshots = data.get("results")
-    assert len(snapshots) == count_all_snapshots(event_loop) - offset
-    first = snapshots[0]
+    results = data.get("results", [])
+    assert len(results) == len(snapshots) - offset
+    first = results[0]
     assert first.get("url") == f"http://example{offset}.com/"
 
 
-def test_snapshot_post_without_url(
-    client: TestClient, event_loop: asyncio.AbstractEventLoop
-):
+def test_snapshot_post_without_url(client: TestClient):
     payload = {}
     response = client.post("/api/snapshots/", json=payload)
     assert response.status_code == 422
@@ -125,19 +123,23 @@ def test_snapshot_post(client: TestClient, monkeypatch: MonkeyPatch):
     assert snapshot.get("type") == "snapshot"
 
 
-@pytest.mark.usefixtures("snapshots_setup")
-def test_snapshot_get(client: TestClient, event_loop: asyncio.AbstractEventLoop):
-    id_ = first_snapshot_id_sync(event_loop)
+@pytest.mark.usefixtures("snapshots")
+def test_snapshot_get(
+    client: TestClient,
+    snapshots: List[models.Snapshot],
+):
+    id_ = snapshots[0].id
     response = client.get(f"/api/snapshots/{id_}")
     assert response.status_code == 200
     assert response.json().get("id") == str(id_)
 
 
-@pytest.mark.usefixtures("dns_records_setup")
+@pytest.mark.usefixtures("dns_records")
 def test_snapshot_get_with_dns_records(
-    client: TestClient, event_loop: asyncio.AbstractEventLoop
+    client: TestClient,
+    snapshots: List[models.Snapshot],
 ):
-    id_ = first_snapshot_id_sync(event_loop)
+    id_ = snapshots[0].id
     response = client.get(f"/api/snapshots/{id_}")
     assert response.status_code == 200
 
@@ -147,11 +149,12 @@ def test_snapshot_get_with_dns_records(
     assert len(snapshot.get("classifications")) == 0
 
 
-@pytest.mark.usefixtures("classifications_setup")
+@pytest.mark.usefixtures("classifications")
 def test_snapshot_get_with_classifications(
-    client: TestClient, event_loop: asyncio.AbstractEventLoop
+    client: TestClient,
+    snapshots: List[models.Snapshot],
 ):
-    id_ = first_snapshot_id_sync(event_loop)
+    id_ = snapshots[0].id
     response = client.get(f"/api/snapshots/{id_}")
     assert response.status_code == 200
 
@@ -161,11 +164,11 @@ def test_snapshot_get_with_classifications(
     assert len(snapshot.get("scripts")) == 0
 
 
-@pytest.mark.usefixtures("scripts_setup")
+@pytest.mark.usefixtures("scripts")
 def test_snapshot_get_with_scripts(
-    client: TestClient, event_loop: asyncio.AbstractEventLoop
+    client: TestClient, snapshots: List[models.Snapshot]
 ):
-    id_ = first_snapshot_id_sync(event_loop)
+    id_ = snapshots[0].id
     response = client.get(f"/api/snapshots/{id_}")
     assert response.status_code == 200
 
@@ -175,9 +178,11 @@ def test_snapshot_get_with_scripts(
     assert len(snapshot.get("dnsRecords")) == 0
 
 
-@pytest.mark.usefixtures("snapshots_setup")
-def test_count(client: TestClient, event_loop: asyncio.AbstractEventLoop):
-    count = count_all_snapshots(event_loop)
+def test_count(
+    client: TestClient,
+    snapshots: List[models.Snapshot],
+):
+    count = len(snapshots)
 
     response = client.get("/api/snapshots/count")
     assert response.status_code == 200
@@ -187,8 +192,11 @@ def test_count(client: TestClient, event_loop: asyncio.AbstractEventLoop):
     assert count == count_
 
 
-@pytest.mark.usefixtures("scripts_setup")
-def test_indicators(client: TestClient, event_loop: asyncio.AbstractEventLoop):
-    id_ = first_snapshot_id_sync(event_loop)
+@pytest.mark.usefixtures("scripts")
+def test_indicators(
+    client: TestClient,
+    snapshots: List[models.Snapshot],
+):
+    id_ = snapshots[0].id
     response = client.get(f"/api/snapshots/{id_}/indicators")
     assert response.status_code == 200

@@ -1,11 +1,9 @@
-import asyncio
-
 import pytest
 from fastapi.testclient import TestClient
 
 
 @pytest.mark.usefixtures("patch_whois_lookup")
-def test_get(client: TestClient, event_loop: asyncio.AbstractEventLoop):
+def test_get(client: TestClient):
     hostname = "example.com"
     response = client.get(f"/api/domain/{hostname}")
     assert response.status_code == 200
@@ -20,8 +18,6 @@ def test_get(client: TestClient, event_loop: asyncio.AbstractEventLoop):
     assert whois
 
 
-def test_get_with_invalid_input(
-    client: TestClient, event_loop: asyncio.AbstractEventLoop
-):
+def test_get_with_invalid_input(client: TestClient):
     response = client.get("/api/domain/1.1.1.1")
     assert response.status_code == 404

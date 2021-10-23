@@ -1,14 +1,12 @@
-import asyncio
+from typing import List
 
-import pytest
 from fastapi.testclient import TestClient
 
-from tests.helper import first_snapshot_id_sync
+from app import models
 
 
-@pytest.mark.usefixtures("snapshots_setup")
-def test_html(client: TestClient, event_loop: asyncio.AbstractEventLoop):
-    id_ = first_snapshot_id_sync(event_loop)
+def test_html(client: TestClient, snapshots: List[models.Snapshot]):
+    id_ = snapshots[0].id
 
     response = client.get(f"/api/snapshots/{id_}")
     snapshot = response.json()

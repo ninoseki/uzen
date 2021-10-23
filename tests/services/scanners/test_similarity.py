@@ -5,7 +5,7 @@ from app.services.scanners import SimilarityScanner
 
 
 @pytest.mark.asyncio
-@pytest.mark.usefixtures("snapshots_setup")
+@pytest.mark.usefixtures("snapshots")
 async def test_scan():
     scanner = SimilarityScanner("<p>foo</p>")
     results = await scanner.scan_snapshots()
@@ -21,7 +21,7 @@ async def test_scan():
 
 
 @pytest.mark.asyncio
-@pytest.mark.usefixtures("snapshots_setup")
+@pytest.mark.usefixtures("snapshots")
 async def test_scan_with_threshold():
     scanner = SimilarityScanner(html="<div>foo</div>")
     results = await scanner.scan_snapshots()

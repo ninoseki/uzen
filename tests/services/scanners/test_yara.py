@@ -5,7 +5,7 @@ from app.services.scanners import YaraScanner
 
 
 @pytest.mark.asyncio
-@pytest.mark.usefixtures("snapshots_setup")
+@pytest.mark.usefixtures("snapshots")
 async def test_scan():
     # it matches with all snapshots
     scanner = YaraScanner('rule foo: bar {strings: $a = "foo" condition: $a}')
@@ -18,7 +18,7 @@ async def test_scan():
 
 
 @pytest.mark.asyncio
-@pytest.mark.usefixtures("scripts_setup")
+@pytest.mark.usefixtures("scripts")
 async def test_scan_against_script():
     # it matches with all snapshots
     scanner = YaraScanner('rule foo: bar {strings: $a = "foo" condition: $a}')

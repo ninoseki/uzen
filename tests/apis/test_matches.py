@@ -1,12 +1,14 @@
 import asyncio
+from typing import List
 
 import pytest
 from fastapi.testclient import TestClient
 
-from tests.helper import count_all_matches, first_rule_id_sync, first_snapshot_id_sync
+from app import models
+from tests.helper import count_all_matches
 
 
-@pytest.mark.usefixtures("matches_setup")
+@pytest.mark.usefixtures("matches")
 def test_matches_search(client: TestClient, event_loop: asyncio.AbstractEventLoop):
     count = count_all_matches(event_loop)
 
@@ -25,45 +27,48 @@ def test_matches_search(client: TestClient, event_loop: asyncio.AbstractEventLoo
     assert total == count
 
 
-@pytest.mark.usefixtures("matches_setup")
 def test_matches_search_with_filters(
-    client: TestClient, event_loop: asyncio.AbstractEventLoop
+    client: TestClient,
+    matches: List[models.Match],
+    snapshots: List[models.Snapshot],
+    rules: List[models.Rule],
 ):
-    snapshot_id = first_snapshot_id_sync(event_loop)
+    snapshot_id = snapshots[0].id
     response = client.get("/api/matches/search", params={"snapshot_id": snapshot_id})
     assert response.status_code == 200
     data = response.json()
-    matches = data.get("results")
-    assert len(matches) == 1
+    results = data.get("results", [])
+    assert len(results) == 1
 
-    rule_id = first_rule_id_sync(event_loop)
+    rule_id = rules[0].id
     response = client.get("/api/matches/search", params={"rule_id": rule_id})
     assert response.status_code == 200
     data = response.json()
-    matches = data.get("results")
-    assert len(matches) == 1
+    results = data.get("results", [])
+    assert len(results) == 1
 
     response = client.get(
         "/api/matches/search", params={"rule_id": rule_id, "snapshot_id": snapshot_id}
     )
     assert response.status_code == 200
     data = response.json()
-    matches = data.get("results")
-    assert len(matches) == 1
+    results = data.get("results", [])
+    assert len(results) == 1
 
 
-@pytest.mark.usefixtures("matches_setup")
 def test_matches_search_with_daterange(
-    client: TestClient, event_loop: asyncio.AbstractEventLoop
+    client: TestClient,
+    event_loop: asyncio.AbstractEventLoop,
+    matches: List[models.Match],
 ):
     response = client.get("/api/matches/search", params={"from_at": "1970-01-01"})
     assert response.status_code == 200
     data = response.json()
-    matches = data.get("results")
-    assert len(matches) == count_all_matches(event_loop)
+    results = data.get("results", [])
+    assert len(results) == count_all_matches(event_loop)
 
     response = client.get("/api/matches/search", params={"to_at": "1970-01-01"})
     assert response.status_code == 200
     data = response.json()
-    matches = data.get("results")
-    assert len(matches) == 0
+    results = data.get("results", [])
+    assert len(results) == 0

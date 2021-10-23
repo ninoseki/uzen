@@ -6,7 +6,7 @@ from fastapi.testclient import TestClient
 from app.models.script import Script
 
 
-@pytest.mark.usefixtures("scripts_setup")
+@pytest.mark.usefixtures("scripts")
 def test_files(client: TestClient, event_loop: asyncio.AbstractEventLoop):
     first = event_loop.run_until_complete(Script.all().first())
     sha256 = first.file_id

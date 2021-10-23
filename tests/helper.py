@@ -22,6 +22,7 @@ def make_snapshot(hostname: str = "example.com") -> models.Snapshot:
         response_headers={},
         request_headers={},
         created_at=datetime.datetime.now(),
+        api_key_id="2e08d082-1ebc-4a7b-824f-3c08c6a305db",
     )
 
 
@@ -44,26 +45,6 @@ async def make_snapshot_wrapper() -> dataclasses.SnapshotModelWrapper:
         certificate=None,
         har=None,
     )
-
-
-async def first_rule_id() -> types.ULID:
-    rule = await models.Rule.all().first()
-    return rule.id
-
-
-def first_rule_id_sync(event_loop: asyncio.AbstractEventLoop) -> types.ULID:
-    rule = event_loop.run_until_complete(models.Rule.all().first())
-    return rule.id
-
-
-async def first_snapshot_id() -> types.ULID:
-    snapshot = await models.Snapshot.all().first()
-    return snapshot.id
-
-
-def first_snapshot_id_sync(event_loop: asyncio.AbstractEventLoop) -> types.ULID:
-    snapshot = event_loop.run_until_complete(models.Snapshot.all().first())
-    return snapshot.id
 
 
 def count_all_rules(event_loop: asyncio.AbstractEventLoop) -> int:
