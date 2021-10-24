@@ -7,7 +7,7 @@ from app.dataclasses.browser import (
 )
 from app.dataclasses.certificate import Certificate
 from app.dataclasses.ip2asn import IP2ASNResponse
-from app.dataclasses.search import SearchResults
+from app.dataclasses.search import SearchResults, SearchResultsForIDs
 from app.dataclasses.similarity import SimilarityResult
 from app.dataclasses.utils import Enrichments, HttpResource
 from app.dataclasses.whois import Whois
@@ -21,7 +21,7 @@ __all__ = [
     "IP2ASNResponse",
     "ScriptFile",
     "SearchResults",
-    "SearchResults",
+    "SearchResultsForIDs",
     "SimilarityResult",
     "SnapshotModelWrapper",
     "StylesheetFile",

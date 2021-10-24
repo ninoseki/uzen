@@ -10,6 +10,10 @@ from app import types
 @dataclass
 class SearchResults:
     total: int
-    results: Union[
-        List[Type[Model]], List[Type[BaseModel]], List[dict], List[types.ULID]
-    ]
+    results: Union[List[Type[Model]], List[Type[BaseModel]], List[dict]]
+
+
+@dataclass
+class SearchResultsForIDs:
+    total: int
+    results: List[types.ULID]
