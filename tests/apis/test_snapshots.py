@@ -9,45 +9,26 @@ from app.services.browser import Browser
 from tests.helper import make_snapshot_wrapper
 
 
+@pytest.mark.parametrize(
+    "params",
+    [
+        {},
+        {"hostname": "example.com"},
+        {"from_at": "1970-01-01T15:53:00+05:00"},
+        {"fromAt": "1970-01-01T15:53:00+05:00"},
+        {"from_at": "1970-01-01"},
+        {"to_at": "3000-01-01T15:53:00+05:00"},
+        {"toAt": "3000-01-01T15:53:00+05:00"},
+    ],
+)
 def test_snapshot_search(
-    client: TestClient,
-    snapshots: List[models.Snapshot],
+    client: TestClient, snapshots: List[models.Snapshot], params: dict
 ):
     count = len(snapshots)
-    response = client.get("/api/snapshots/search")
+    response = client.get("/api/snapshots/search", params=params)
     data = response.json()
     results = data.get("results", [])
     assert len(results) == count
-
-    response = client.get("/api/snapshots/search", params={"hostname": "example.com"})
-    data = response.json()
-    results = data.get("results", [])
-    assert len(results) == count
-
-    response = client.get(
-        "/api/snapshots/search", params={"from_at": "1970-01-01T15:53:00+05:00"}
-    )
-    data = response.json()
-    results = data.get("results", [])
-    assert len(results) == count
-
-    response = client.get("/api/snapshots/search", params={"from_at": "1970-01-01"})
-    data = response.json()
-    results = data.get("results", [])
-    assert len(results) == count
-
-    response = client.get(
-        "/api/snapshots/search", params={"to_at": "3000-01-01T15:53:00+05:00"}
-    )
-    data = response.json()
-    results = data.get("results", [])
-    assert len(results) == count
-
-    # it doesn't match any snapshot
-    response = client.get("/api/snapshots/search", params={"status": 404})
-    data = response.json()
-    results = data.get("results", [])
-    assert len(results) == 0
 
 
 @pytest.mark.usefixtures("snapshots")

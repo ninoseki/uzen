@@ -1,6 +1,6 @@
 import itertools
 from functools import partial
-from typing import Any, Dict, List, Optional, cast
+from typing import Any, Dict, List, Optional
 
 import aiometer
 import yara
@@ -8,7 +8,7 @@ import yara
 from app import models, schemas, types
 from app.services.matches_converter import MatchesConverter
 from app.services.scanners.constants import CHUNK_SIZE, MAX_AT_ONCE
-from app.services.scanners.utils import search_snapshots
+from app.services.scanners.utils import search_snapshots_for_ids
 
 
 def build_snapshot_table(snapshots: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -115,14 +115,13 @@ class YaraScanner:
             filters = {}
 
         # get snapshots ids based on filters
-        search_results = await search_snapshots(
+        search_results = await search_snapshots_for_ids(
             filters=filters,
-            id_only=True,
             size=size,
             offset=offset,
         )
 
-        snapshot_ids = cast(List[types.ULID], search_results.results)
+        snapshot_ids = search_results.results
         if len(snapshot_ids) == 0:
             return []
 

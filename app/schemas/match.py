@@ -1,4 +1,4 @@
-from typing import List, Optional, Union
+from typing import List, Optional
 
 from pydantic import Field
 
@@ -49,4 +49,4 @@ class MatchResult(APIModel):
 
 
 class MatchesSearchResults(BaseSearchResults):
-    results: Union[List[Match], List[ULID]]
+    results: List[Match]

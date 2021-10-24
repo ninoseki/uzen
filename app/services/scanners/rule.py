@@ -62,8 +62,8 @@ class RuleScanner:
         return results
 
     async def scan(self) -> List[schemas.MatchResult]:
-        search_results = await RuleSearcher.search({}, id_only=True)
-        rule_ids = cast(List[types.ULID], search_results.results)
+        search_results = await RuleSearcher.search_for_ids({})
+        rule_ids = search_results.results
         if len(rule_ids) == 0:
             return []
 

@@ -20,16 +20,16 @@ class SearchFilters:
         url: Optional[str] = Query(None, title="URL"),
         tag: Optional[str] = Query(None, title="Tag"),
         from_at: Optional[Union[datetime, date]] = Query(
-            None, title="From at", description="Datetime or date in ISO 8601 format"
-        ),
-        fromAt: Optional[Union[datetime, date]] = Query(
-            None, description="Alias of from_at"
+            None,
+            title="From at",
+            description="Datetime or date in ISO 8601 format",
+            alias="fromAt",
         ),
         to_at: Optional[Union[datetime, date]] = Query(
-            None, title="To at", description="Datetime or date in ISO 8601 format"
-        ),
-        toAt: Optional[Union[datetime, date]] = Query(
-            None, description="Alias of to_at"
+            None,
+            title="To at",
+            description="Datetime or date in ISO 8601 format",
+            alias="toAt",
         ),
     ):
         self.asn = asn
@@ -40,5 +40,5 @@ class SearchFilters:
         self.status = status
         self.url = url
         self.tag = tag
-        self.from_at = from_at or fromAt
-        self.to_at = to_at or toAt
+        self.from_at = from_at
+        self.to_at = to_at

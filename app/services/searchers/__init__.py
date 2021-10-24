@@ -6,7 +6,7 @@ from typing import Any
 from tortoise.models import Model, QuerySet
 from tortoise.query_utils import Q
 
-from app import dataclasses
+from app import dataclasses, types
 
 
 class AbstractSearcher(ABC):
@@ -28,8 +28,8 @@ class AbstractSearcher(ABC):
     async def _total(self) -> int:
         return await self.model.filter(self.query).count()
 
-    def build_queryset(
-        self, size: int | None = None, offset: int | None = None, id_only: bool = False
+    def _build_queryset(
+        self, size: int | None = None, offset: int | None = None
     ) -> QuerySet[type[Model]]:
         size = 100 if size is None else size
 
@@ -37,24 +37,36 @@ class AbstractSearcher(ABC):
         if offset is not None:
             queryset = queryset.offset(offset)
 
-        if id_only:
-            return queryset.values_list("id", flat=True)
-
-        if self.values is not None:
-            return queryset.values(*self.values)
-
         return queryset.prefetch_related(*self.prefetch_related)
 
     async def _search(
         self,
         size: int | None = None,
         offset: int | None = None,
-        id_only: bool = False,
     ) -> dataclasses.SearchResults:
         total = await self._total()
-        queryset = self.build_queryset(size=size, offset=offset, id_only=id_only)
-        results = await queryset
+
+        queryset = self._build_queryset(size=size, offset=offset)
+
+        if self.values is not None:
+            results = await queryset.values(*self.values)
+        else:
+            results = await queryset
+
         return dataclasses.SearchResults(results=results, total=total)
+
+    async def _search_for_ids(
+        self,
+        size: int | None = None,
+        offset: int | None = None,
+    ) -> dataclasses.SearchResultsForIDs:
+        total = await self._total()
+
+        queryset = self._build_queryset(size=size, offset=offset)
+        ids = await queryset.values_list("id", flat=True)
+        results = [types.ULID.from_str(id) for id in ids]
+
+        return dataclasses.SearchResultsForIDs(results=results, total=total)
 
     @classmethod
     @abstractmethod
@@ -63,9 +75,22 @@ class AbstractSearcher(ABC):
         filters: dict[str, Any],
         size: int | None = None,
         offset: int | None = None,
-        id_only: bool = False,
     ) -> Any:
         """Search a table.
+
+        Override this method in child classes.
+        """
+        raise NotImplementedError()
+
+    @classmethod
+    @abstractmethod
+    async def search_for_ids(
+        cls,
+        filters: dict[str, Any],
+        size: int | None = None,
+        offset: int | None = None,
+    ) -> dataclasses.SearchResultsForIDs:
+        """Search a table for IDs.
 
         Override this method in child classes.
         """

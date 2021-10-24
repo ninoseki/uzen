@@ -2,23 +2,16 @@ from typing import Any, Dict, List, Optional
 
 from tortoise.query_utils import Q
 
-from app import schemas
+from app import dataclasses, schemas
 from app.services.searchers.snapshot import SnapshotSearcher
 
 
-async def search_snapshots(
+def build_additional_queries(
     html_id: Optional[str] = None,
-    id_only: bool = False,
     exclude_hostname: Optional[str] = None,
     exclude_ip_address: Optional[str] = None,
-    filters: Optional[Dict[str, Any]] = None,
-    size: Optional[int] = None,
-    offset: Optional[int] = None,
-) -> schemas.SnapshotsSearchResults:
-    if filters is None:
-        filters = {}
-
-    additional_queries: List[Q] = [~Q(html__id=html_id)]
+) -> List[Q]:
+    additional_queries: List[Q] = []
 
     if html_id is not None:
         additional_queries.append(~Q(html__id=html_id))
@@ -29,10 +22,50 @@ async def search_snapshots(
     if exclude_ip_address is not None:
         additional_queries.append(~Q(ip_address=exclude_ip_address))
 
+    return additional_queries
+
+
+async def search_snapshots(
+    html_id: Optional[str] = None,
+    exclude_hostname: Optional[str] = None,
+    exclude_ip_address: Optional[str] = None,
+    filters: Optional[Dict[str, Any]] = None,
+    size: Optional[int] = None,
+    offset: Optional[int] = None,
+) -> schemas.SnapshotsSearchResults:
+    if filters is None:
+        filters = {}
+
+    additional_queries = build_additional_queries(
+        html_id, exclude_hostname, exclude_ip_address
+    )
+
     return await SnapshotSearcher.search(
         filters,
         size=size,
         offset=offset,
-        id_only=id_only,
+        additional_queries=additional_queries,
+    )
+
+
+async def search_snapshots_for_ids(
+    html_id: Optional[str] = None,
+    exclude_hostname: Optional[str] = None,
+    exclude_ip_address: Optional[str] = None,
+    filters: Optional[Dict[str, Any]] = None,
+    size: Optional[int] = None,
+    offset: Optional[int] = None,
+) -> dataclasses.SearchResultsForIDs:
+    if filters is None:
+        filters = {}
+
+    additional_queries = build_additional_queries(
+        html_id, exclude_hostname, exclude_ip_address
+    )
+
+    return await SnapshotSearcher.search_for_ids(
+        filters,
+        size=size,
+        offset=offset,
         additional_queries=additional_queries,
     )
