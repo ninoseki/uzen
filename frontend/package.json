@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "@types/crypto-js": "4.0.2",
-    "@types/har-format": "1.2.7",
+    "@types/har-format": "1.2.8",
     "@types/highlight.js": "10.1.0",
     "@types/jest": "27.0.2",
     "@types/numeral": "2.0.2",
