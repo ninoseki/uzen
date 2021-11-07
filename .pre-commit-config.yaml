@@ -24,14 +24,14 @@ repos:
         args: ["--ignore=E501,W503,E203"]
 
   - repo: https://github.com/timothycrosley/isort
-    rev: 5.9.3
+    rev: 5.10.0
     hooks:
       - id: isort
         additional_dependencies: [toml]
         exclude: ^.*/?setup\.py$
 
   - repo: https://github.com/psf/black
-    rev: 21.9b0
+    rev: 21.10b0
     hooks:
       - id: black
 
