@@ -140,7 +140,11 @@ class PlainSnapshot(SnapshotBasicAttributes, AbstractBaseModel, TimestampMixin):
     """Plain model for Snapshot"""
 
     html_id: str = Field(...)
-    tags: Optional[List[Tag]] = Field(None)
+
+    @classmethod
+    @lru_cache()
+    def field_keys(cls) -> List[str]:
+        return list(cls.__fields__.keys())
 
 
 class SnapshotsSearchResults(BaseSearchResults):

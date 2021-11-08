@@ -71,13 +71,20 @@ class SnapshotSearcher(AbstractSearcher):
         additional_queries: Optional[List[Q]] = None,
     ) -> schemas.SnapshotsSearchResults:
         query = build_query(filters, additional_queries)
+
         # Run search
-        instance = cls(model=models.Snapshot, query=query, prefetch_related=["_tags"])
+        instance = cls(
+            model=models.Snapshot,
+            query=query,
+            prefetch_related=["_tags"],
+            values=schemas.PlainSnapshot.field_keys(),
+            group_by=["id"],
+        )
         results = await instance._search(size=size, offset=offset)
-        snapshots = cast(List[models.Snapshot], results.results)
+        snapshots = cast(List[dict], results.results)
         return schemas.SnapshotsSearchResults(
             results=[
-                schemas.PlainSnapshot.from_orm(snapshot) for snapshot in snapshots
+                schemas.PlainSnapshot.parse_obj(snapshot) for snapshot in snapshots
             ],
             total=results.total,
         )
