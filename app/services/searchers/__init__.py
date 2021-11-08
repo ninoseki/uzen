@@ -3,6 +3,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any
 
+from tortoise.expressions import Subquery
 from tortoise.models import Model, QuerySet
 from tortoise.query_utils import Q
 
@@ -15,6 +16,7 @@ class AbstractSearcher(ABC):
         model: type[Model],
         query: Q,
         values: list[str] | None = None,
+        group_by: list[str] | None = None,
         prefetch_related: list[str] | None = None,
     ):
         if prefetch_related is None:
@@ -23,10 +25,13 @@ class AbstractSearcher(ABC):
         self.model = model
         self.query = query
         self.values = values
+        self.group_by = group_by
         self.prefetch_related = prefetch_related
 
     async def _total(self) -> int:
-        return await self.model.filter(self.query).count()
+        return await self.model.filter(
+            pk__in=Subquery(self.model.filter(self.query).group_by("id").values("id"))
+        ).count()
 
     def _build_queryset(
         self, size: int | None = None, offset: int | None = None
@@ -49,7 +54,10 @@ class AbstractSearcher(ABC):
         queryset = self._build_queryset(size=size, offset=offset)
 
         if self.values is not None:
-            results = await queryset.values(*self.values)
+            if self.group_by is not None:
+                results = await queryset.group_by(*self.group_by).values(*self.values)
+            else:
+                results = await queryset.values(*self.values)
         else:
             results = await queryset
 
@@ -63,7 +71,12 @@ class AbstractSearcher(ABC):
         total = await self._total()
 
         queryset = self._build_queryset(size=size, offset=offset)
-        ids = await queryset.values_list("id", flat=True)
+
+        if self.group_by is not None:
+            ids = await queryset.group_by(*self.group_by).values_list("id", flat=True)
+        else:
+            ids = await queryset.group_by("id").values_list("id", flat=True)
+
         results = [types.ULID.from_str(id) for id in ids]
 
         return dataclasses.SearchResultsForIDs(results=results, total=total)

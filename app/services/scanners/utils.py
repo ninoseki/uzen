@@ -14,7 +14,7 @@ def build_additional_queries(
     additional_queries: List[Q] = []
 
     if html_id is not None:
-        additional_queries.append(~Q(html__id=html_id))
+        additional_queries.append(~Q(html_id=html_id))
 
     if exclude_hostname is not None:
         additional_queries.append(~Q(hostname=exclude_hostname))
