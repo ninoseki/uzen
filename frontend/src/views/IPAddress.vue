@@ -3,8 +3,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
 import { useTitle } from "@vueuse/core";
+import { defineComponent } from "vue";
+import { useRoute } from "vue-router";
 
 import IPAddress from "@/components/ip_address/IPAddressWrapper.vue";
 
@@ -13,9 +14,11 @@ export default defineComponent({
   components: {
     IPAddress,
   },
-  setup(_, { root }) {
+  setup() {
+    const route = useRoute();
+
     const updateTitle = (): void => {
-      const ipAddress = root.$route.params.ipAddress;
+      const ipAddress = route.params.ipAddress;
       useTitle(`${ipAddress} - Uzen`);
     };
 

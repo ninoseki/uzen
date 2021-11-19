@@ -1,8 +1,10 @@
 <template>
   <div class="content">
-    <b-message type="is-info" has-icon>
-      Connected IP addresses, domains and hashes.
-    </b-message>
+    <article class="message is-info">
+      <div class="message-body">
+        Connected IP addresses, domains and hashes.
+      </div>
+    </article>
     <ul v-if="hasIndicators">
       <li v-for="ipAddress in indicators.ipAddresses" :key="ipAddress">
         <router-link
@@ -42,7 +44,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from "@vue/composition-api";
+import { computed, defineComponent, PropType } from "vue";
 
 import NA from "@/components/ui/NA.vue";
 import { Indicators } from "@/types";

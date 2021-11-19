@@ -1,44 +1,69 @@
 <template>
   <div>
     <div class="box">
-      <b-message type="is-info">Scan snapshots with HTML similarity</b-message>
+      <article class="message is-info">
+        <div class="message-body">Scan snapshots with HTML similarity</div>
+      </article>
 
       <div class="columns">
         <div class="column is-half">
-          <b-field label="Hash (SHA256)">
-            <b-input
-              placeholder="ea8fac7c65fb589b0d53560f5251f74f9e9b243478dcb6b3ea79b5e36449c8d9"
-              v-model="hash"
-            ></b-input>
-          </b-field>
+          <div class="field">
+            <label class="label">Hash (SHA256)</label>
+            <div class="control">
+              <input
+                class="input"
+                type="text"
+                placeholder="ea8fac7c65fb589b0d53560f5251f74f9e9b243478dcb6b3ea79b5e36449c8d9"
+                v-model="hash"
+              />
+            </div>
+          </div>
         </div>
 
         <div class="column is-half">
-          <b-field label="Threshold">
-            <b-numberinput
-              type="is-light"
-              step="0.1"
-              v-model="threshold"
-              min="0.0"
-              max="1.0"
-            ></b-numberinput>
-          </b-field>
+          <div class="field">
+            <label class="label">Threshold</label>
+            <div class="control">
+              <input
+                class="input"
+                type="number"
+                placeholder="Text input"
+                step="0.1"
+                v-model="threshold"
+                min="0.0"
+                max="1.0"
+              />
+            </div>
+          </div>
         </div>
       </div>
 
       <div class="columns">
         <div class="column is-half">
-          <b-field label="Hostname to exclude">
-            <b-input
-              placeholder="example.com"
-              v-model="excludeHostname"
-            ></b-input>
-          </b-field>
+          <div class="field">
+            <label class="label">Hostname to exclude</label>
+            <div class="control">
+              <input
+                class="input"
+                type="text"
+                placeholder="example.com"
+                v-model="excludeHostname"
+              />
+            </div>
+          </div>
         </div>
         <div class="column is-half">
-          <b-field label="IP address to exclude">
-            <b-input placeholder="1.1.1.1" v-model="excludeIPAddress"></b-input>
-          </b-field>
+          <div class="field">
+            <label class="label">IP address to exclude</label>
+            <div class="control">
+              <input
+                class="input"
+                type="text"
+                placeholder="1.1.1.1"
+                v-model="excludeIPAddress"
+              />
+            </div>
+          </div>
         </div>
       </div>
 
@@ -47,29 +72,30 @@
       <SnapshotForm ref="form" />
 
       <div class="has-text-centered mt-5">
-        <b-button
-          type="is-light"
-          icon-pack="fas"
-          icon-left="search"
-          @click="scan"
-          >Scan</b-button
-        >
+        <button class="button" @click="scan">
+          <span class="icon">
+            <i class="fas fa-search"></i>
+          </span>
+          <span>Scan</span>
+        </button>
       </div>
     </div>
     <Error
       :error="scanTask.last.error.response.data"
-      v-if="scanTask.isError && scanTask.last !== undefined"
+      v-if="scanTask.isError && scanTask.last"
     ></Error>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "@vue/composition-api";
+import { useRouteQuery } from "@vueuse/router";
+import { defineComponent, Ref, ref } from "vue";
 import { useAsyncTask } from "vue-concurrency";
+import { useRoute, useRouter } from "vue-router";
 
 import { API } from "@/api";
 import SnapshotForm from "@/components/snapshot/SearchForm.vue";
-import Error from "@/components/ui/Error.vue";
+import Error from "@/components/ui/SimpleError.vue";
 import { Job, SimilarityScanPayload } from "@/types";
 
 export default defineComponent({
@@ -78,18 +104,22 @@ export default defineComponent({
     SnapshotForm,
     Error,
   },
-  setup(_, context) {
-    const hash = ref(
-      (context.root.$route.query["hash"] as string | null) || ""
-    );
-    const excludeHostname = ref<string | undefined>(
-      (context.root.$route.query["excludeHostname"] as string | null) ||
-        undefined
-    );
-    const excludeIPAddress = ref<string | undefined>(
-      (context.root.$route.query["excludeIPAddress"] as string | null) ||
-        undefined
-    );
+  setup() {
+    const router = useRouter();
+    const route = useRoute();
+    const options = { route, router };
+
+    const hash = useRouteQuery("hash", "", options) as Ref<string>;
+    const excludeHostname = useRouteQuery(
+      "excludeHostname",
+      undefined,
+      options
+    ) as Ref<string | undefined>;
+    const excludeIPAddress = useRouteQuery(
+      "excludeIPAddress",
+      undefined,
+      options
+    ) as Ref<string | undefined>;
     const threshold = ref<number>(0.9);
 
     const form = ref<InstanceType<typeof SnapshotForm>>();
@@ -123,16 +153,16 @@ export default defineComponent({
 
     const scan = async () => {
       const job = await scanTask.perform();
-      context.root.$router.push({ path: `/jobs/similarity/${job.id}` });
+      router.push({ path: `/jobs/similarity/${job.id}` });
     };
 
     return {
-      hash,
-      threshold,
-      excludeIPAddress,
       excludeHostname,
+      excludeIPAddress,
       form,
+      hash,
       scanTask,
+      threshold,
       scan,
     };
   },

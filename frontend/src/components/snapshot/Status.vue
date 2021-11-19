@@ -1,7 +1,7 @@
 <template>
   <p
     class="has-text-grey-light has-text-right"
-    v-if="getStatusTask.last && getStatusTask.last.value"
+    v-if="getStatusTask.last?.value"
   >
     You are going to take a snapshot from
     {{ countryCodeToEmoji(getStatusTask.last.value.countryCode) }}
@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from "@vue/composition-api";
+import { defineComponent, onMounted } from "vue";
 import { useAsyncTask } from "vue-concurrency";
 
 import { API } from "@/api";

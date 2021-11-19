@@ -1,13 +1,15 @@
 <template>
   <div>
     <div class="column">
-      <b-message v-if="snapshot.processing" type="is-warning" has-icon>
-        <p><strong>Background tasks in progress...</strong></p>
-        <p>
-          The information below may be incomplete. Please reload this page after
-          a while.
-        </p>
-      </b-message>
+      <article class="message is-warning" v-if="snapshot.processing">
+        <div class="message-body">
+          <p><strong>Background tasks in progress...</strong></p>
+          <p>
+            The information below may be incomplete. Please reload this page
+            after a while.
+          </p>
+        </div>
+      </article>
     </div>
     <div class="columns">
       <aside class="column is-2 section">
@@ -77,7 +79,7 @@
             <a
               @click="changeActiveState('yaraMatches')"
               :class="[activeState == 'yaraMatches' ? 'is-active' : '']"
-              v-if="yaraResult !== undefined"
+              v-if="yaraResult"
             >
               YARA matches
             </a>
@@ -99,10 +101,7 @@
             <TextComponent :sha256="snapshot.html.sha256"></TextComponent>
           </div>
           <div v-else-if="activeState === 'whois'">
-            <Whois
-              :whoisId="snapshot.whois.id"
-              v-if="snapshot.whois && snapshot.whois.id"
-            />
+            <Whois :whoisId="snapshot.whois.id" v-if="snapshot.whois?.id" />
           </div>
           <div v-else-if="activeState === 'certificate'">
             <Certificate
@@ -136,7 +135,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from "@vue/composition-api";
+import { defineComponent, PropType, ref } from "vue";
 
 import Certificate from "@/components/certificate/CertificateWrapper.vue";
 import DnsRecords from "@/components/dns_record/DnsRecords.vue";
@@ -204,8 +203,8 @@ export default defineComponent({
     };
 
     return {
-      changeActiveState,
       activeState,
+      changeActiveState,
     };
   },
 });

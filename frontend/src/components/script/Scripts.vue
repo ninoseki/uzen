@@ -1,11 +1,11 @@
 <template>
   <div class="content">
-    <b-message type="is-info" has-icon>
-      Number of scripts: {{ scripts.length }}
-    </b-message>
+    <article class="message is-info">
+      <div class="message-body">Number of scripts: {{ scripts.length }}</div>
+    </article>
 
     <ul>
-      <li v-for="script in scripts" :key="script.id">
+      <li v-for="(script, index) in scripts" :key="index">
         <router-link
           target="_blank"
           :to="{
@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "@vue/composition-api";
+import { defineComponent, PropType } from "vue";
 
 import { Script } from "@/types";
 

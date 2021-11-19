@@ -1,34 +1,26 @@
 <template>
   <div>
     <Loading v-if="getIPAddressTask.isRunning"></Loading>
-
     <Error
-      :backToRoute="true"
       :error="getIPAddressTask.last.error.response.data"
-      v-else-if="
-        getIPAddressTask.isError && getIPAddressTask.last !== undefined
-      "
+      v-else-if="getIPAddressTask.isError && getIPAddressTask.last"
     ></Error>
-
     <IPAddress
-      v-else-if="
-        getIPAddressTask.last &&
-        getIPAddressTask.last.value &&
-        !getIPAddressTask.isError
-      "
+      v-else-if="getIPAddressTask.last?.value && !getIPAddressTask.isError"
       :ipAddress="getIPAddressTask.last.value"
     ></IPAddress>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useAsyncTask } from "vue-concurrency";
+import { useRoute } from "vue-router";
 
 import { API } from "@/api";
 import IPAddress from "@/components/ip_address/IPAddress.vue";
-import Error from "@/components/ui/Error.vue";
-import Loading from "@/components/ui/Loading.vue";
+import Error from "@/components/ui/SimpleError.vue";
+import Loading from "@/components/ui/SimpleLoading.vue";
 import { IPAddressInformation } from "@/types";
 
 export default defineComponent({
@@ -38,8 +30,9 @@ export default defineComponent({
     Loading,
     IPAddress,
   },
-  setup(_, context) {
-    const hostname = context.root.$route.params.ipAddress;
+  setup() {
+    const route = useRoute();
+    const hostname = route.params.ipAddress as string;
 
     const getIPAddressTask = useAsyncTask<IPAddressInformation, []>(
       async () => {

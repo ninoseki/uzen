@@ -8,9 +8,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "@vue/composition-api";
+import { defineComponent, PropType } from "vue";
 
-import SnapshotTable from "@/components/snapshot/Table.vue";
+import SnapshotTable from "@/components/snapshot/TableWithMatches.vue";
 import { YaraScanJobStatus } from "@/types";
 
 export default defineComponent({

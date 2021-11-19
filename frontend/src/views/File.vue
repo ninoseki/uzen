@@ -3,8 +3,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
 import { useTitle } from "@vueuse/core";
+import { defineComponent } from "vue";
+import { useRoute } from "vue-router";
 
 import File from "@/components/file/FileWrapper.vue";
 
@@ -13,9 +14,11 @@ export default defineComponent({
   components: {
     File,
   },
-  setup(_, { root }) {
+  setup() {
+    const route = useRoute();
+
     const updateTitle = (): void => {
-      const hash = root.$route.params.hash;
+      const hash = route.params.hash;
       useTitle(`${hash} - Uzen`);
     };
 

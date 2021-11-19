@@ -1,30 +1,23 @@
 <template>
   <div>
-    <div v-if="getCertificateTask.isRunning">Loading...</div>
+    <Loading v-if="getCertificateTask.isRunning"></Loading>
     <div
-      v-else-if="
-        !getCertificateTask.isError &&
-        getCertificateTask.last &&
-        getCertificateTask.last.value
-      "
+      v-else-if="!getCertificateTask.isError && getCertificateTask.last?.value"
     >
-      <CertificateComponent
-        :certificate="getCertificateTask.last.value"
-        v-if="getCertificateTask.last.value"
-      />
-      <NA v-else></NA>
+      <CertificateComponent :certificate="getCertificateTask.last.value" />
     </div>
     <NA v-else></NA>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useAsyncTask } from "vue-concurrency";
 
 import { API } from "@/api";
 import CertificateComponent from "@/components/certificate/Certificate.vue";
 import NA from "@/components/ui/NA.vue";
+import Loading from "@/components/ui/SimpleLoading.vue";
 import { Certificate } from "@/types";
 
 export default defineComponent({
@@ -36,6 +29,7 @@ export default defineComponent({
     },
   },
   components: {
+    Loading,
     CertificateComponent,
     NA,
   },

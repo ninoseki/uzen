@@ -1,15 +1,17 @@
 <template>
-  <b-message type="is-danger" has-icon>
-    <ul>
-      <li v-for="(message, index) in errorMessages" :key="index">
-        {{ message }}
-      </li>
-    </ul>
-  </b-message>
+  <article class="message is-danger">
+    <div class="message-body">
+      <ul>
+        <li v-for="(message, index) in errorMessages" :key="index">
+          {{ message }}
+        </li>
+      </ul>
+    </div>
+  </article>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from "@vue/composition-api";
+import { computed, defineComponent, PropType } from "vue";
 
 import { ErrorData } from "@/types";
 
@@ -23,6 +25,10 @@ export default defineComponent({
   },
   setup(props) {
     const errorMessages = computed(() => {
+      if (typeof props.error === "string") {
+        return [props.error];
+      }
+
       if (typeof props.error.detail === "string") {
         return [props.error.detail];
       }

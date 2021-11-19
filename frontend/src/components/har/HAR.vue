@@ -16,8 +16,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "@vue/composition-api";
 import fileDownload from "js-file-download";
+import { defineComponent, PropType } from "vue";
 
 import HarTable from "@/components/har/Table.vue";
 import { HAR } from "@/types";

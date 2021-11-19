@@ -1,9 +1,9 @@
 <template>
   <div class="screenshot">
     <div v-if="isLoading">
-      <b-notification :closable="false">
-        <b-loading :is-full-page="false" v-model="isLoading"> </b-loading>
-      </b-notification>
+      <div class="notification">
+        <Loading></Loading>
+      </div>
     </div>
     <img
       class="loading"
@@ -16,7 +16,9 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from "@vue/composition-api";
+import { computed, defineComponent, ref } from "vue";
+
+import Loading from "@/components/ui/SimpleLoading.vue";
 
 export default defineComponent({
   name: "Preview",
@@ -26,7 +28,9 @@ export default defineComponent({
       required: true,
     },
   },
-
+  components: {
+    Loading,
+  },
   setup(props) {
     const isLoading = ref(true);
 

@@ -1,42 +1,53 @@
 <template>
-  <div class="box table-container" v-if="matches.length > 0">
-    <b-table :data="matches">
-      <b-table-column field="snapshot" label="Snapshot" v-slot="props">
-        <router-link
-          :to="{
-            name: 'Snapshot',
-            params: { id: props.row.snapshot.id },
-          }"
-        >
-          {{ truncate(props.row.snapshot.url) }}
-        </router-link>
-        <p v-if="props.row.script">({{ props.row.script.url }})</p>
-      </b-table-column>
-
-      <b-table-column field="rule" label="Matched rule" v-slot="props">
-        <router-link
-          :to="{
-            name: 'Rule',
-            params: { id: props.row.rule.id },
-          }"
-        >
-          {{ props.row.rule.name }}
-        </router-link>
-      </b-table-column>
-
-      <b-table-column field="matches" label="Matches" v-slot="props">
-        <pre><code class="json">{{ props.row.matches }}</code></pre>
-      </b-table-column>
-
-      <b-table-column field="createdAt" label="Created at" v-slot="props">
-        <DatetimeWithDiff v-bind:datetime="props.row.createdAt" />
-      </b-table-column>
-    </b-table>
+  <div ref="root">
+    <div class="box table-container" v-if="matches.length > 0">
+      <table class="table is-fullwidth">
+        <thead>
+          <tr>
+            <th>Snapshot</th>
+            <th>Matched rule</th>
+            <th>Matches</th>
+            <th>Created at</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="match in matches" :key="match.id">
+            <td>
+              <router-link
+                :to="{
+                  name: 'Snapshot',
+                  params: { id: match.snapshot.id },
+                }"
+              >
+                {{ truncate(match.snapshot.url) }}
+              </router-link>
+              <p v-if="match.script">({{ match.script.url }})</p>
+            </td>
+            <td>
+              <router-link
+                :to="{
+                  name: 'Rule',
+                  params: { id: match.rule.id },
+                }"
+              >
+                {{ match.rule.name }}
+              </router-link>
+            </td>
+            <td>
+              <pre><code class="json">{{ match.matches }}</code></pre>
+            </td>
+            <td>
+              <DatetimeWithDiff v-bind:datetime="match.createdAt" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onUpdated, PropType } from "@vue/composition-api";
+import { defineComponent, onUpdated, PropType, ref } from "vue";
 
 import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
 import { Match } from "@/types";
@@ -54,12 +65,16 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(_, context) {
+  setup() {
+    const root = ref<HTMLElement | null>(null);
+
     onUpdated(() => {
-      highlightCodeBlocks(context);
+      if (root.value !== null) {
+        highlightCodeBlocks(root.value);
+      }
     });
 
-    return { truncate };
+    return { root, truncate };
   },
 });
 </script>

@@ -1,19 +1,29 @@
 <template>
   <div>
-    <b-message type="is-warning" has-icon>
-      Some operations are not allowed without your API key.
-    </b-message>
+    <article class="message is-warning">
+      <div class="message-body">
+        Some operations are not allowed without your API key.
+      </div>
+    </article>
 
     <div class="box">
-      <b-field label="Your API key">
-        <b-input v-model="apiKey" @input="updateApiKey"></b-input>
-      </b-field>
+      <div class="field">
+        <label class="label">Your API key</label>
+        <div class="control">
+          <input
+            class="input"
+            type="text"
+            v-model="apiKey"
+            @input="updateApiKey"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "@vue/composition-api";
+import { defineComponent, ref } from "vue";
 
 import { updateClient } from "@/api";
 import { useGlobalState } from "@/store";

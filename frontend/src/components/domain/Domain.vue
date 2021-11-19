@@ -42,7 +42,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from "@vue/composition-api";
+import { computed, defineComponent, PropType } from "vue";
 
 import DnsRecords from "@/components/dns_record/DnsRecords.vue";
 import Links from "@/components/link/Links.vue";

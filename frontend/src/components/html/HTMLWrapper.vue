@@ -1,11 +1,7 @@
 <template>
   <div>
-    <div v-if="getHTMLTask.isRunning">Loading...</div>
-    <div
-      v-else-if="
-        !getHTMLTask.isError && getHTMLTask.last && getHTMLTask.last.value
-      "
-    >
+    <Loading v-if="getHTMLTask.isRunning"></Loading>
+    <div v-else-if="!getHTMLTask.isError && getHTMLTask.last?.value">
       <HTMLComponent
         :html="getHTMLTask.last.value.content"
         :sha256="getHTMLTask.last.value.sha256"
@@ -18,12 +14,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useAsyncTask } from "vue-concurrency";
 
 import { API } from "@/api";
 import HTMLComponent from "@/components/html/HTML.vue";
 import NA from "@/components/ui/NA.vue";
+import Loading from "@/components/ui/SimpleLoading.vue";
 import { HTML } from "@/types";
 
 export default defineComponent({
@@ -37,6 +34,7 @@ export default defineComponent({
   components: {
     HTMLComponent,
     NA,
+    Loading,
   },
   setup(props) {
     const getHTMLTask = useAsyncTask<HTML, []>(async () => {

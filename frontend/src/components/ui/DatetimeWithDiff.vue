@@ -6,11 +6,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "@vue/composition-api";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
+import { computed, defineComponent } from "vue";
 
 dayjs.extend(relativeTime);
 dayjs.extend(timezone);

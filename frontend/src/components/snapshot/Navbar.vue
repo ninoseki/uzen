@@ -15,11 +15,8 @@
         </div>
 
         <div class="navbar-item">
-          <b-button
-            icon-pack="fas"
-            icon-left="search"
-            tag="router-link"
-            type="is-light"
+          <router-link
+            class="button is-light"
             :to="{
               name: 'Similarity',
               query: {
@@ -28,30 +25,38 @@
                 excludeIPAddress: snapshot.ipAddress,
               },
             }"
-            >Find similar snapshtos</b-button
           >
+            <span class="icon">
+              <i class="fas fa-search"></i>
+            </span>
+            <span>Find similar snapshtos</span>
+          </router-link>
         </div>
         <div class="navbar-item">
-          <b-button type="is-danger" icon-left="delete" @click="deleteSnapshot"
-            >Delete</b-button
-          >
+          <button class="button is-danger" @click="deleteSnapshot">
+            <span class="icon">
+              <i class="fas fa-trash"></i>
+            </span>
+            <span>Delete</span>
+          </button>
         </div>
       </div>
     </nav>
     <Error
       :error="deleteSnapshotTask.last.error.response.data"
-      v-if="deleteSnapshotTask.isError && deleteSnapshotTask.last !== undefined"
+      v-if="deleteSnapshotTask.isError && deleteSnapshotTask.last"
     ></Error>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "@vue/composition-api";
+import { defineComponent, PropType } from "vue";
 import { useAsyncTask } from "vue-concurrency";
+import { useRouter } from "vue-router";
 
 import { API } from "@/api";
 import Links from "@/components/link/Links.vue";
-import Error from "@/components/ui/Error.vue";
+import Error from "@/components/ui/SimpleError.vue";
 import { Snapshot } from "@/types";
 import { truncate } from "@/utils/truncate";
 
@@ -67,25 +72,25 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props, context) {
+  setup(props) {
+    const router = useRouter();
+
     const deleteSnapshotTask = useAsyncTask<void, []>(async () => {
       return await API.deleteSnapshot(props.snapshot.id);
     });
 
     const deleteSnapshot = async () => {
-      context.root.$buefy.dialog.confirm({
-        title: "Deleting snapshot",
-        message: "Are you sure you want to delete this snapshot?",
-        type: "is-danger",
-        hasIcon: true,
-        onConfirm: async () => {
-          await deleteSnapshotTask.perform();
-          context.root.$router.push({ path: "/" });
-        },
-      });
+      const decision = confirm(
+        "Are you sure you want to delete this snapshot?"
+      );
+
+      if (decision) {
+        await deleteSnapshotTask.perform();
+        router.push({ path: "/" });
+      }
     };
 
-    return { truncate, deleteSnapshot, deleteSnapshotTask };
+    return { deleteSnapshotTask, deleteSnapshot, truncate };
   },
 });
 </script>

@@ -1,22 +1,18 @@
 <template>
   <div>
     <div v-if="rules.length > 0" class="buttons">
-      <b-button
-        v-for="rule in uniqueRules"
-        :key="rule.id"
-        tag="router-link"
-        :to="{ name: 'Rule', params: { id: rule.id } }"
-        type="is-info"
-      >
-        {{ rule.name }}
-      </b-button>
+      <button class="button is-info" v-for="rule in uniqueRules" :key="rule.id">
+        <router-link :to="{ name: 'Rule', params: { id: rule.id } }">
+          {{ rule.name }}
+        </router-link>
+      </button>
     </div>
     <div v-else>N/A</div>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from "@vue/composition-api";
+import { computed, defineComponent, PropType } from "vue";
 
 import { Rule } from "@/types";
 

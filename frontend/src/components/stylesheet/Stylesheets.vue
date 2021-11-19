@@ -1,10 +1,12 @@
 <template>
   <div class="content">
-    <b-message type="is-info" has-icon>
-      Number of stylesheets: {{ stylesheets.length }}
-    </b-message>
+    <article class="message is-info">
+      <div class="message-body">
+        Number of stylesheets: {{ stylesheets.length }}
+      </div>
+    </article>
     <ul>
-      <li v-for="stylesheet in stylesheets" :key="stylesheet.id">
+      <li v-for="(stylesheet, index) in stylesheets" :key="index">
         <router-link
           target="_blank"
           :to="{
@@ -21,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "@vue/composition-api";
+import { defineComponent, PropType } from "vue";
 
 import { Stylesheet } from "@/types";
 

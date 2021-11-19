@@ -1,15 +1,14 @@
 <template>
   <div>
-    <b-progress size="is-medium" show-value v-if="isLoading">
-      Loading...
-    </b-progress>
+    <Loading v-if="isLoading"></Loading>
     <pre v-else><code class="hljs" v-html="highlightedHTML"></code></pre>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, watch } from "@vue/composition-api";
+import { defineComponent, onMounted, ref, watch } from "vue";
 
+import Loading from "@/components/ui/SimpleLoading.vue";
 import { highlightWorkerFn } from "@/utils/highlight.worker";
 
 export default defineComponent({
@@ -19,6 +18,9 @@ export default defineComponent({
       type: String,
       required: true,
     },
+  },
+  components: {
+    Loading,
   },
   setup(props) {
     const highlightedHTML = ref("");
@@ -37,8 +39,7 @@ export default defineComponent({
 
     watch(
       () => props.data,
-      // eslint-disable-next-line no-unused-vars
-      async (_first, _second) => {
+      async () => {
         isLoading.value = true;
 
         await highlight();

@@ -2,52 +2,58 @@
   <div>
     <div class="columns">
       <div class="column is-half">
-        <b-field label="Rule ID">
-          <b-input v-model="filters.ruleId"></b-input>
-        </b-field>
+        <div class="field">
+          <label class="label">Rule ID</label>
+          <div class="control">
+            <input class="input" type="text" v-model="filters.ruleId" />
+          </div>
+        </div>
       </div>
       <div class="column is-half">
-        <b-field label="Snapshot ID">
-          <b-input v-model="filters.snapshotId"></b-input>
-        </b-field>
+        <div class="field">
+          <label class="label">Snapshot ID</label>
+          <div class="control">
+            <input class="input" type="text" v-model="filters.snapshotId" />
+          </div>
+        </div>
       </div>
     </div>
     <div class="columns">
       <div class="column is-half">
-        <b-field label="From">
-          <b-datetimepicker
-            placeholder="Click to select..."
-            icon="calendar-today"
-            v-model="filters.fromAt"
-            :datetime-formatter="datetimeFormatter"
-          ></b-datetimepicker>
-        </b-field>
+        <div class="field">
+          <label class="label">From</label>
+          <div class="control">
+            <Datepicker v-model="filters.fromAt" />
+          </div>
+        </div>
       </div>
       <div class="column is-half">
-        <b-field label="To">
-          <b-datetimepicker
-            placeholder="Click to select..."
-            icon="calendar-today"
-            v-model="filters.toAt"
-            :datetime-formatter="datetimeFormatter"
-          ></b-datetimepicker>
-        </b-field>
+        <div class="field">
+          <label class="label">To</label>
+          <div class="control">
+            <Datepicker v-model="filters.toAt" />
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from "@vue/composition-api";
+import { defineComponent, reactive } from "vue";
+import Datepicker from "vue3-date-time-picker";
 
 import { MatchFilters } from "@/types";
-import { datetimeFormatter, normalizeFilterValue } from "@/utils/form";
+import { normalizeFilterValue } from "@/utils/form";
 
 export default defineComponent({
   name: "MatchesForm",
   props: {
     ruleId: String,
     snapshotId: String,
+  },
+  components: {
+    Datepicker,
   },
   setup(props) {
     const filters = reactive<MatchFilters>({
@@ -69,7 +75,7 @@ export default defineComponent({
       return obj;
     };
 
-    return { filters, filtersParams, datetimeFormatter };
+    return { filters, filtersParams };
   },
 });
 </script>

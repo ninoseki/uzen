@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "@vue/composition-api";
+import { defineComponent, PropType } from "vue";
 
 import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
 import { SnapshotJobStatus } from "@/types";

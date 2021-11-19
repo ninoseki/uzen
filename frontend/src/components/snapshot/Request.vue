@@ -19,8 +19,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "@vue/composition-api";
 import * as Bowser from "bowser";
+import { defineComponent, PropType, toRefs } from "vue";
 
 import H3 from "@/components/ui/H3.vue";
 import { Headers } from "@/types";
@@ -37,19 +37,15 @@ export default defineComponent({
     },
   },
   setup(props) {
-    let userAgent = "";
-
-    const _userAgent = props.requestHeaders["user-agent"];
-    if (typeof _userAgent === "string") {
-      userAgent = _userAgent;
-    }
+    const { requestHeaders } = toRefs(props);
+    const userAgent = (requestHeaders.value["user-agent"] || "") as string;
 
     const browser = Bowser.getParser(userAgent);
     const prettyUserAgent = `${browser.getBrowserName()}${browser.getBrowserVersion()} (${browser.getPlatformType()})`;
 
-    const acceptLanguage = props.requestHeaders["accept-language"];
+    const acceptLanguage = requestHeaders.value["accept-language"];
 
-    return { prettyUserAgent, acceptLanguage };
+    return { acceptLanguage, prettyUserAgent };
   },
 });
 </script>

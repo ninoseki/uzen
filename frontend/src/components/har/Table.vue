@@ -23,8 +23,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "@vue/composition-api";
 import * as harFormat from "har-format";
+import { defineComponent, PropType } from "vue";
 
 import Row from "@/components/har/Row.vue";
 

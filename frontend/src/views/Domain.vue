@@ -3,8 +3,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
 import { useTitle } from "@vueuse/core";
+import { defineComponent } from "vue";
+import { useRoute } from "vue-router";
 
 import Domain from "@/components/domain/DomainWrapper.vue";
 
@@ -13,10 +14,11 @@ export default defineComponent({
   components: {
     Domain,
   },
+  setup() {
+    const route = useRoute();
 
-  setup(_, { root }) {
     const updateTitle = (): void => {
-      const hostname = root.$route.params.hostname;
+      const hostname = route.params.hostname;
       useTitle(`${hostname} - Uzen`);
     };
 

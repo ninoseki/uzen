@@ -1,15 +1,5 @@
 <template>
   <div>
-    <Loading v-if="getRuleTask.isRunning || editRuleTask.isRunning"></Loading>
-    <Error
-      :error="getRuleTask.last.error.response.data"
-      v-else-if="getRuleTask.isError && getRuleTask.last !== undefined"
-    ></Error>
-    <Error
-      :error="editRuleTask.last.error.response.data"
-      v-else-if="editRuleTask.isError && editRuleTask.last !== undefined"
-    ></Error>
-
     <div class="box">
       <InputForm
         v-if="hasRule"
@@ -22,26 +12,36 @@
       ></InputForm>
 
       <div class="has-text-centered">
-        <b-button
-          type="is-light"
-          icon-pack="fas"
-          icon-left="keyboard"
-          @click="edit"
-          >Edit</b-button
-        >
+        <button class="button is-light" @click="edit">
+          <span class="icon">
+            <i class="fas fa-keyboard"></i>
+          </span>
+          <span>Edit</span>
+        </button>
       </div>
     </div>
+
+    <Loading v-if="getRuleTask.isRunning || editRuleTask.isRunning"></Loading>
+    <Error
+      :error="getRuleTask.last.error.response.data"
+      v-else-if="getRuleTask.isError && getRuleTask.last"
+    ></Error>
+    <Error
+      :error="editRuleTask.last.error.response.data"
+      v-else-if="editRuleTask.isError && editRuleTask.last"
+    ></Error>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "@vue/composition-api";
+import { defineComponent, ref } from "vue";
 import { useAsyncTask } from "vue-concurrency";
+import { useRouter } from "vue-router";
 
 import { API } from "@/api";
 import InputForm from "@/components/rule/InputForm.vue";
-import Error from "@/components/ui/Error.vue";
-import Loading from "@/components/ui/Loading.vue";
+import Error from "@/components/ui/SimpleError.vue";
+import Loading from "@/components/ui/SimpleLoading.vue";
 import { Rule } from "@/types";
 
 export default defineComponent({
@@ -57,7 +57,9 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props, context) {
+  setup(props) {
+    const router = useRouter();
+
     const name = ref<string | undefined>(undefined);
     const target = ref<string | undefined>(undefined);
     const source = ref<string | undefined>(undefined);
@@ -91,7 +93,7 @@ export default defineComponent({
 
     const edit = async () => {
       await editRuleTask.perform();
-      context.root.$router.push({ path: `/rules/${props.ruleId}` });
+      router.push({ path: `/rules/${props.ruleId}` });
     };
 
     const updateName = (newName: string) => {
@@ -107,13 +109,13 @@ export default defineComponent({
     };
 
     return {
+      editRuleTask,
       getRuleTask,
-      source,
+      hasRule,
       name,
+      source,
       target,
       edit,
-      editRuleTask,
-      hasRule,
       updateName,
       updateSource,
       updateTarget,
