@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "@vue/composition-api";
+import { defineComponent, PropType } from "vue";
 
 import H2 from "@/components/ui/H2.vue";
 import HighlightedCode from "@/components/ui/HighlightedCode.vue";

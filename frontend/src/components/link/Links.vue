@@ -1,33 +1,42 @@
 <template>
-  <b-dropdown aria-role="list">
-    <button class="button is-dark" slot="trigger" slot-scope="{ active }">
-      <b-icon pack="fas" icon="search" size="is-small" />
-      <span>Lookup</span>
-      <b-icon :icon="active ? 'menu-up' : 'menu-down'"></b-icon>
-    </button>
-
-    <b-dropdown-item
-      v-for="link in selectedLinks"
-      :key="link.name"
-      aria-role="listitem"
-      has-link
-    >
-      <LinkComponent
-        v-if="link.type === 'domain' && hostname"
-        :hostname="hostname"
-        :link="link"
-      />
-      <LinkComponent
-        v-if="link.type === 'ip_address' && ipAddress"
-        :hostname="ipAddress"
-        :link="link"
-      />
-    </b-dropdown-item>
-  </b-dropdown>
+  <div class="dropdown is-hoverable">
+    <div class="dropdown-trigger">
+      <button
+        class="button is-dark"
+        aria-haspopup="true"
+        aria-controls="navbar-lookup-menu"
+      >
+        <span>Lookup</span>
+        <span class="icon is-small">
+          <i class="fas fa-search" aria-hidden="true"></i>
+        </span>
+      </button>
+    </div>
+    <div class="dropdown-menu" id="navbar-lookup-menu" role="menu">
+      <div class="dropdown-content">
+        <div
+          class="dropdown-item"
+          v-for="link in selectedLinks"
+          :key="link.name"
+        >
+          <LinkComponent
+            v-if="link.type === 'domain' && hostname"
+            :hostname="hostname"
+            :link="link"
+          />
+          <LinkComponent
+            v-if="link.type === 'ip_address' && ipAddress"
+            :hostname="ipAddress"
+            :link="link"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "@vue/composition-api";
+import { computed, defineComponent } from "vue";
 
 import LinkComponent from "@/components/link/Link.vue";
 import { Links } from "@/links";

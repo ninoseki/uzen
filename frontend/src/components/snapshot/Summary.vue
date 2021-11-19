@@ -120,7 +120,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "@vue/composition-api";
+import { defineComponent, PropType } from "vue";
 
 import ClassificationTags from "@/components/classification/Tags.vue";
 import Rules from "@/components/rule/Buttons.vue";

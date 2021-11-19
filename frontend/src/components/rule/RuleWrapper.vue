@@ -4,9 +4,8 @@
     <Error
       :backToRoute="true"
       :error="getRuleTask.last.error.response.data"
-      v-else-if="getRuleTask.isError && getRuleTask.last !== undefined"
+      v-else-if="getRuleTask.isError && getRuleTask.last"
     ></Error>
-
     <RuleComponent
       v-if="getRuleTask.last && getRuleTask.last.value && !getRuleTask.isError"
       :rule="getRuleTask.last.value"
@@ -15,13 +14,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from "@vue/composition-api";
+import { defineComponent, onMounted } from "vue";
 import { useAsyncTask } from "vue-concurrency";
 
 import { API } from "@/api";
 import RuleComponent from "@/components/rule/Rule.vue";
-import Error from "@/components/ui/Error.vue";
-import Loading from "@/components/ui/Loading.vue";
+import Error from "@/components/ui/SimpleError.vue";
+import Loading from "@/components/ui/SimpleLoading.vue";
 import { Rule } from "@/types";
 
 export default defineComponent({

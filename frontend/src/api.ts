@@ -1,4 +1,4 @@
-import { setup } from "axios-cache-adapter";
+import axios from "axios";
 
 import { useGlobalState } from "@/store";
 import {
@@ -32,24 +32,18 @@ import {
 
 const state = useGlobalState();
 
-let client = setup({
+let client = axios.create({
   headers: {
     Accept: "application/json",
     "Api-key": state.value.apiKey,
   },
-  cache: {
-    maxAge: 0,
-  },
 });
 
 export function updateClient(): void {
-  client = setup({
+  client = axios.create({
     headers: {
       Accept: "application/json",
       "Api-key": state.value.apiKey,
-    },
-    cache: {
-      maxAge: 0,
     },
   });
 }
@@ -61,6 +55,16 @@ export const API = {
   },
 
   async searchSnapshots(params: SearchParams): Promise<SnapshotSearchResults> {
+    const toAt = params["toAt"];
+    if (toAt) {
+      params["toAt"] = new Date(toAt).toISOString();
+    }
+
+    const fromAt = params["fromAt"];
+    if (fromAt) {
+      params["fromAt"] = new Date(fromAt).toISOString();
+    }
+
     const res = await client.get<SnapshotSearchResults>(
       "/api/snapshots/search",
       {
@@ -164,65 +168,37 @@ export const API = {
   },
 
   async getDevices(): Promise<Device[]> {
-    const res = await client.get<Device[]>("/api/devices/", {
-      cache: {
-        maxAge: 60 * 60 * 1000,
-      },
-    });
+    const res = await client.get<Device[]>("/api/devices/");
     return res.data;
   },
 
   async getFile(sha256: string): Promise<File> {
-    const res = await client.get<File>(`/api/files/${sha256}`, {
-      cache: {
-        maxAge: 60 * 60 * 1000,
-      },
-    });
+    const res = await client.get<File>(`/api/files/${sha256}`);
     return res.data;
   },
 
   async getWhois(sha256: string): Promise<Whois> {
-    const res = await client.get<Whois>(`/api/whoises/${sha256}`, {
-      cache: {
-        maxAge: 60 * 60 * 1000,
-      },
-    });
+    const res = await client.get<Whois>(`/api/whoises/${sha256}`);
     return res.data;
   },
 
   async getHTML(sha256: string): Promise<HTML> {
-    const res = await client.get<HTML>(`/api/htmls/${sha256}`, {
-      cache: {
-        maxAge: 60 * 60 * 1000,
-      },
-    });
+    const res = await client.get<HTML>(`/api/htmls/${sha256}`);
     return res.data;
   },
 
   async getText(sha256: string): Promise<string> {
-    const res = await client.get<string>(`/api/htmls/${sha256}/text`, {
-      cache: {
-        maxAge: 60 * 60 * 1000,
-      },
-    });
+    const res = await client.get<string>(`/api/htmls/${sha256}/text`);
     return res.data;
   },
 
   async getCertificate(sha256: string): Promise<Certificate> {
-    const res = await client.get<Certificate>(`/api/certificates/${sha256}`, {
-      cache: {
-        maxAge: 60 * 60 * 1000,
-      },
-    });
+    const res = await client.get<Certificate>(`/api/certificates/${sha256}`);
     return res.data;
   },
 
   async getStatus(): Promise<Status> {
-    const res = await client.get<Status>("/api/status/", {
-      cache: {
-        maxAge: 60 * 60 * 1000,
-      },
-    });
+    const res = await client.get<Status>("/api/status/");
     return res.data;
   },
 

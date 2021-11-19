@@ -1,45 +1,33 @@
 <template>
   <div>
     <div class="box">
-      <SimpleError
+      <Error
         :error="getJobStatusTask.last.error.response.data"
-        v-if="getJobStatusTask.isError && getJobStatusTask.last !== undefined"
-      ></SimpleError>
+        v-if="getJobStatusTask.isError && getJobStatusTask.last"
+      ></Error>
       <div
         v-else-if="
           getJobStatusTask.last === undefined ||
-          (getJobStatusTask.last !== undefined &&
-            getJobStatusTask.last.value !== null &&
-            getJobStatusTask.last.value.definition !== null &&
-            getJobStatusTask.last.value.result === null)
+          (getJobStatusTask.last.value?.definition !== null &&
+            getJobStatusTask.last.value?.result === null)
         "
       >
-        <b-message type="is-info" has-icon>
-          <p>Scanning snapshtos with YARA...</p>
-          <div class="buttons">
-            <b-button
-              type="is-ghost"
-              size="is-large"
-              expanded
-              loading
-            ></b-button>
+        <article class="message is-info">
+          <div class="message-body">
+            <p>Scanning snapshtos with YARA...</p>
+            <Loading></Loading>
           </div>
-        </b-message>
+        </article>
       </div>
       <div v-else>
-        <b-message type="is-success" has-icon>
-          <p>Scan finished!</p>
-        </b-message>
+        <article class="message is-success">
+          <div class="message-body">
+            <p>Scan finished!</p>
+          </div>
+        </article>
       </div>
 
-      <div
-        class="mt-4"
-        v-if="
-          getJobStatusTask.last !== undefined &&
-          getJobStatusTask.last.value !== null &&
-          getJobStatusTask.last.value.definition !== null
-        "
-      >
+      <div class="mt-4" v-if="getJobStatusTask.last?.value?.definition">
         <H3
           >Source (Target:
           {{ getJobStatusTask.last.value.definition.payload.target }})</H3
@@ -52,23 +40,21 @@
 
     <YaraScanJob
       :jobStatus="getJobStatusTask.last.value"
-      v-if="
-        getJobStatusTask.last !== undefined &&
-        getJobStatusTask.last.value !== null
-      "
+      v-if="getJobStatusTask.last?.value"
     ></YaraScanJob>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from "@vue/composition-api";
 import { useTitle } from "@vueuse/core";
+import { defineComponent, onMounted } from "vue";
 import { useAsyncTask } from "vue-concurrency";
 
 import { API } from "@/api";
 import YaraScanJob from "@/components/job/YaraScanJob.vue";
 import H3 from "@/components/ui/H3.vue";
-import SimpleError from "@/components/ui/SimpleError.vue";
+import Error from "@/components/ui/SimpleError.vue";
+import Loading from "@/components/ui/SimpleLoading.vue";
 import YaraSource from "@/components/yara/Source.vue";
 import { JOB_CHECK_INTERVAL } from "@/constants";
 import { YaraScanJobStatus } from "@/types/job";
@@ -76,7 +62,8 @@ import { YaraScanJobStatus } from "@/types/job";
 export default defineComponent({
   name: "YaraScanJobWrapper",
   components: {
-    SimpleError,
+    Error,
+    Loading,
     YaraScanJob,
     YaraSource,
     H3,

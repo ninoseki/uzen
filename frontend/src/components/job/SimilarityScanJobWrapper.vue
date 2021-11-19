@@ -1,45 +1,33 @@
 <template>
   <div>
     <div class="box">
-      <SimpleError
+      <Error
         :error="getJobStatusTask.last.error.response.data"
-        v-if="getJobStatusTask.isError && getJobStatusTask.last !== undefined"
-      ></SimpleError>
+        v-if="getJobStatusTask.isError && getJobStatusTask.last"
+      ></Error>
       <div
         v-else-if="
           getJobStatusTask.last === undefined ||
-          (getJobStatusTask.last !== undefined &&
-            getJobStatusTask.last.value !== null &&
-            getJobStatusTask.last.value.definition !== null &&
-            getJobStatusTask.last.value.result === null)
+          (getJobStatusTask.last.value?.definition !== null &&
+            getJobStatusTask.last.value?.result === null)
         "
       >
-        <b-message type="is-info" has-icon>
-          <p>Scanning snapshtos...</p>
-          <div class="buttons">
-            <b-button
-              type="is-ghost"
-              size="is-large"
-              expanded
-              loading
-            ></b-button>
+        <article class="message is-info">
+          <div class="message-body">
+            <p>Scanning snapshtos...</p>
+            <Loading></Loading>
           </div>
-        </b-message>
+        </article>
       </div>
       <div v-else>
-        <b-message type="is-success" has-icon>
-          <p>Scan finished!</p>
-        </b-message>
+        <article class="message is-success">
+          <div class="message-body">
+            <p>Scan finished!</p>
+          </div>
+        </article>
       </div>
 
-      <div
-        class="mt-4"
-        v-if="
-          getJobStatusTask.last !== undefined &&
-          getJobStatusTask.last.value !== null &&
-          getJobStatusTask.last.value.definition !== null
-        "
-      >
+      <div class="mt-4" v-if="getJobStatusTask.last?.value?.definition">
         <div class="table-container">
           <table class="table is-completely-borderless">
             <tbody>
@@ -87,31 +75,30 @@
 
     <SimilarityScanJob
       :jobStatus="getJobStatusTask.last.value"
-      v-if="
-        getJobStatusTask.last !== undefined &&
-        getJobStatusTask.last.value !== null
-      "
+      v-if="getJobStatusTask.last?.value"
     ></SimilarityScanJob>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from "@vue/composition-api";
 import { useTitle } from "@vueuse/core";
 import { sha256 } from "js-sha256";
+import { defineComponent, onMounted } from "vue";
 import { useAsyncTask } from "vue-concurrency";
 
 import { API } from "@/api";
 import SimilarityScanJob from "@/components/job/SimilarityScanJob.vue";
 import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
-import SimpleError from "@/components/ui/SimpleError.vue";
+import Error from "@/components/ui/SimpleError.vue";
+import Loading from "@/components/ui/SimpleLoading.vue";
 import { JOB_CHECK_INTERVAL } from "@/constants";
 import { SimilarityScanJobStatus } from "@/types/job";
 
 export default defineComponent({
   name: "SimilarityScanJobWrapper",
   components: {
-    SimpleError,
+    Error,
+    Loading,
     SimilarityScanJob,
     DatetimeWithDiff,
   },

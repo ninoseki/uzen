@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div ref="root" v-if="yaraResult">
     <div
       class="table-container"
       v-for="match in yaraResult.matches"
@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, PropType } from "@vue/composition-api";
+import { defineComponent, onMounted, PropType, ref } from "vue";
 
 import { YaraResult } from "@/types";
 import { highlightCodeBlocks } from "@/utils/highlight";
@@ -34,13 +34,19 @@ export default defineComponent({
   props: {
     yaraResult: {
       type: Object as PropType<YaraResult>,
-      required: true,
+      required: false,
     },
   },
-  setup(_, context) {
+  setup() {
+    const root = ref<HTMLElement | null>(null);
+
     onMounted(() => {
-      highlightCodeBlocks(context);
+      if (root.value) {
+        highlightCodeBlocks(root.value);
+      }
     });
+
+    return { root };
   },
 });
 </script>

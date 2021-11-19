@@ -1,12 +1,12 @@
 <template>
-  <b-tag :type="type" size="is-medium">
+  <div :class="type" class="tag is-medium">
     {{ classification.name }}
     <span v-if="classification.note"> ({{ classification.note }}) </span>
-  </b-tag>
+  </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from "@vue/composition-api";
+import { computed, defineComponent, PropType } from "vue";
 
 import { Classification } from "@/types";
 

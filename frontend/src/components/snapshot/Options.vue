@@ -1,95 +1,151 @@
 <template>
   <div>
-    <b-field label="Device">
-      <b-select
-        v-model="deviceName"
-        placeholder="Select a device to emulate"
-        @input="onDeviceChange"
-      >
-        <option></option>
-        <option
-          v-for="device in devices"
-          :value="device.name"
-          :key="device.name"
-        >
-          {{ device.name }}
-        </option>
-      </b-select>
-    </b-field>
+    <div class="field">
+      <label class="label">Device</label>
+      <div class="control">
+        <div class="select">
+          <select v-model="deviceName" placeholder="Select a device to emulate">
+            <option></option>
+            <option
+              v-for="device in devices"
+              :value="device.name"
+              :key="device.name"
+            >
+              {{ device.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
 
-    <b-field label="User agent">
-      <b-input placeholder="User agent" v-model="userAgent"></b-input>
-    </b-field>
+    <div class="field">
+      <label class="label">User agent</label>
+      <div class="control">
+        <input
+          class="input"
+          type="text"
+          placeholder="User agent"
+          v-model="userAgent"
+        />
+      </div>
+    </div>
 
-    <b-field label="Referer">
-      <b-input placeholder="Referer" v-model="referer"></b-input>
-    </b-field>
+    <div class="field">
+      <label class="label">Referer</label>
+      <div class="control">
+        <input
+          class="input"
+          type="text"
+          placeholder="Referer"
+          v-model="referer"
+        />
+      </div>
+    </div>
 
-    <b-field label="Accept language">
-      <b-select
-        v-model="acceptLanguage"
-        placeholder="Select Accept Language HTTP header to use"
-      >
-        <option></option>
-        <option v-for="langKey in languagKeys" :value="langKey" :key="langKey">
-          {{ langKey }}
-        </option>
-      </b-select>
-    </b-field>
+    <div class="field">
+      <label class="label">Accept language</label>
+      <div class="control">
+        <div class="select">
+          <select
+            v-model="acceptLanguage"
+            placeholder="Select Accept Language HTTP header to use"
+          >
+            <option></option>
+            <option
+              v-for="langKey in languagKeys"
+              :value="langKey"
+              :key="langKey"
+            >
+              {{ langKey }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
 
-    <b-field label="Other headers">
+    <div class="field">
+      <label class="label">Other headers</label>
+
       <div class="columns" v-for="(header, index) in otherHeaders" :key="index">
         <div class="column is-half">
-          <b-field label="Name">
-            <b-input v-model="header.key"></b-input>
-          </b-field>
+          <div class="field">
+            <label class="label">Name</label>
+            <div class="control">
+              <input class="input" type="text" v-model="header.key" />
+            </div>
+          </div>
         </div>
         <div class="column is-half">
-          <b-field label="Value">
-            <b-input v-model="header.value"></b-input>
-          </b-field>
+          <div class="field">
+            <label class="label">Value</label>
+            <div class="control">
+              <input class="input" type="text" v-model="header.value" />
+            </div>
+          </div>
         </div>
       </div>
       <div class="column">
-        <b-button class="is-pulled-right" @click="addEmptyHeader">Add</b-button>
+        <button class="button is-pulled-right" @click="addEmptyHeader">
+          Add
+        </button>
       </div>
-    </b-field>
+    </div>
 
     <div class="column">
       <hr />
     </div>
 
-    <b-field
-      label="Timeout (milliseconds)"
-      message="Maximum navigation time in milliseconds, defaults to 30 seconds, pass 0 to disable timeout"
-    >
-      <b-input v-model="timeout" type="number"></b-input>
-    </b-field>
+    <div class="field">
+      <label class="label">Timeout (milliseconds)</label>
+      <div class="control">
+        <input class="input" type="number" v-model="timeout" />
+      </div>
+      <p class="help">
+        Maximum navigation time in milliseconds, defaults to 30 seconds, pass 0
+        to disable timeout
+      </p>
+    </div>
 
-    <b-field label="Wait until" message=" When to consider operation succeeded">
-      <b-select v-model="waitUntil" required>
-        <option value="load">load</option>
-        <option value="domcontentloaded">domcontentloaded</option>
-        <option value="networkidle">networkidle</option>
-      </b-select>
-    </b-field>
+    <div class="field">
+      <label class="label">Wait until</label>
+      <div class="control">
+        <div class="select">
+          <select v-model="waitUntil" required>
+            <option value="load">load</option>
+            <option value="domcontentloaded">domcontentloaded</option>
+            <option value="networkidle">networkidle</option>
+          </select>
+        </div>
+      </div>
+      <p class="help">When to consider operation succeeded</p>
+    </div>
 
     <div class="column">
       <hr />
     </div>
 
-    <b-field label="Ignore HTTPS errors">
-      <b-checkbox v-model="ignoreHttpsErrors"></b-checkbox>
-    </b-field>
+    <div class="field">
+      <label class="label">Ignore HTTPS errors</label>
+      <div class="control">
+        <label class="checkbox">
+          <input type="checkbox" v-model="ignoreHttpsErrors" />
+        </label>
+      </div>
+    </div>
 
-    <b-field label="Enable HAR">
-      <b-checkbox v-model="enableHAR"></b-checkbox>
-    </b-field>
+    <div class="field">
+      <label class="label">Eanble HAR</label>
+      <div class="control">
+        <label class="checkbox">
+          <input type="checkbox" v-model="enableHAR" />
+        </label>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, watch } from "@vue/composition-api";
+import { defineComponent, onMounted, ref, watchEffect } from "vue";
 import { useAsyncTask } from "vue-concurrency";
 
 import { API } from "@/api";
@@ -139,52 +195,40 @@ export default defineComponent({
       await getDevices();
     });
 
-    watch(
-      [
-        acceptLanguage,
-        otherHeaders,
-        ignoreHttpsErrors,
-        referer,
-        timeout,
-        userAgent,
-        enableHAR,
-        deviceName,
-        waitUntil,
-      ],
-      // eslint-disable-next-line no-unused-vars
-      (_first, _second) => {
-        context.emit("update:acceptLanguage", acceptLanguage.value);
-        context.emit("update:otherHeaders", otherHeaders.value);
-        context.emit("update:ignoreHttpsErrors", ignoreHttpsErrors.value);
-        context.emit("update:enableHAR", enableHAR.value);
-        context.emit("update:referer", referer.value);
-        context.emit("update:userAgent", userAgent.value);
-        context.emit("update:deviceName", deviceName.value);
-        context.emit("update:waitUntil", waitUntil.value);
+    watchEffect(() => {
+      onDeviceChange(deviceName.value);
 
-        if (typeof timeout.value === "string") {
-          context.emit("update:timeout", parseInt(timeout.value));
-        } else {
-          context.emit("update:timeout", timeout.value);
-        }
+      context.emit("update:acceptLanguage", acceptLanguage.value);
+      context.emit("update:otherHeaders", otherHeaders.value);
+      context.emit("update:ignoreHttpsErrors", ignoreHttpsErrors.value);
+      context.emit("update:enableHAR", enableHAR.value);
+      context.emit("update:referer", referer.value);
+      context.emit("update:userAgent", userAgent.value);
+      context.emit("update:deviceName", deviceName.value);
+      context.emit("update:waitUntil", waitUntil.value);
+
+      if (typeof timeout.value === "string") {
+        context.emit("update:timeout", parseInt(timeout.value));
+      } else {
+        context.emit("update:timeout", timeout.value);
       }
-    );
+    });
 
     return {
       acceptLanguage,
-      otherHeaders,
+      deviceName,
+      devices,
+      enableHAR,
       ignoreHttpsErrors,
+      languages,
+      languagKeys,
+      otherHeaders,
       referer,
       timeout,
       userAgent,
-      languages,
-      languagKeys,
-      enableHAR,
-      deviceName,
-      devices,
       waitUntil,
-      onDeviceChange,
       addEmptyHeader,
+      onDeviceChange,
     };
   },
 });

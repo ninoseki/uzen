@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "@vue/composition-api";
+import { defineComponent, PropType } from "vue";
 
 import NA from "@/components/ui/NA.vue";
 import { Whois } from "@/types/snapshot";

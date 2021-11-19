@@ -1,30 +1,25 @@
 <template>
   <div>
-    <Loading v-if="searchTask.isRunning"></Loading>
-    <Error
-      :error="searchTask.last.error.response.data"
-      v-else-if="searchTask.isError && searchTask.last !== undefined"
-    ></Error>
-
     <div class="box">
-      <Form
-        ref="form"
-        :name="$route.query.name"
-        :type="$route.query.type"
-        :source="$route.query.source"
-      />
+      <Form ref="form" :name="name" :type="type" :source="source" />
+
       <br />
 
       <div class="has-text-centered">
-        <b-button
-          type="is-light"
-          icon-pack="fas"
-          icon-left="search"
-          @click="initSearch()"
-          >Search</b-button
-        >
+        <button class="button is-light" @click="initSearch">
+          <span class="icon">
+            <i class="fas fa-search"></i>
+          </span>
+          <span>Sesrch</span>
+        </button>
       </div>
     </div>
+
+    <Loading v-if="searchTask.isRunning"></Loading>
+    <Error
+      :error="searchTask.last?.error.response.data"
+      v-if="searchTask.isError"
+    ></Error>
 
     <h2 v-if="count !== undefined">
       Search results ({{ count }} / {{ totalCount }})
@@ -32,24 +27,27 @@
 
     <RulesTable v-bind:rules="rules" />
 
-    <b-button
+    <button
+      class="button is-dark"
       v-if="hasLoadMore(count, totalCount)"
-      type="is-dark"
       @click="loadMore"
-      >Load more...</b-button
     >
+      Load more...
+    </button>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "@vue/composition-api";
+import { useRouteQuery } from "@vueuse/router";
+import { defineComponent, onMounted, Ref, ref } from "vue";
 import { useAsyncTask } from "vue-concurrency";
+import { useRoute, useRouter } from "vue-router";
 
 import { API } from "@/api";
 import Form from "@/components/rule/Form.vue";
 import RulesTable from "@/components/rule/Table.vue";
-import Error from "@/components/ui/Error.vue";
-import Loading from "@/components/ui/Loading.vue";
+import Error from "@/components/ui/SimpleError.vue";
+import Loading from "@/components/ui/SimpleLoading.vue";
 import { Rule, RuleSearchResults } from "@/types";
 import { DEFAULT_OFFSET, DEFAULT_PAGE_SIZE, hasLoadMore } from "@/utils/form";
 
@@ -61,7 +59,21 @@ export default defineComponent({
     Loading,
     RulesTable,
   },
-  setup(_, context) {
+  setup() {
+    const route = useRoute();
+    const router = useRouter();
+    const options = { route, router };
+
+    const name = useRouteQuery("name", undefined, options) as Ref<
+      string | undefined
+    >;
+    const type = useRouteQuery("name", undefined, options) as Ref<
+      string | undefined
+    >;
+    const source = useRouteQuery("name", undefined, options) as Ref<
+      string | undefined
+    >;
+
     const rules = ref<Rule[]>([]);
     const count = ref<number | undefined>(undefined);
     const totalCount = ref(0);
@@ -112,20 +124,23 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      if (Object.keys(context.root.$route.query).length > 0) {
+      if (Object.keys(route.query).length > 0) {
         initSearch();
       }
     });
 
     return {
-      form,
-      initSearch,
-      rules,
       count,
-      totalCount,
-      loadMore,
-      hasLoadMore,
+      form,
+      name,
+      rules,
       searchTask,
+      source,
+      totalCount,
+      type,
+      hasLoadMore,
+      initSearch,
+      loadMore,
     };
   },
 });

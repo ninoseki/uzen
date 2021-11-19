@@ -1,34 +1,43 @@
 <template>
   <div class="box table-container" v-if="rules.length > 0">
-    <b-table :data="rules">
-      <b-table-column field="name" label="Name" v-slot="props">
-        <router-link
-          :to="{
-            name: 'Rule',
-            params: { id: props.row.id },
-          }"
-        >
-          {{ props.row.name }}
-        </router-link>
-      </b-table-column>
-
-      <b-table-column field="target" label="Target" v-slot="props">
-        {{ props.row.target }}
-      </b-table-column>
-
-      <b-table-column field="createdAt" label="Created at" v-slot="props">
-        <DatetimeWithDiff v-bind:datetime="props.row.createdAt" />
-      </b-table-column>
-
-      <b-table-column field="updatedAt" label="Updated at" v-slot="props">
-        <DatetimeWithDiff v-bind:datetime="props.row.updatedAt" />
-      </b-table-column>
-    </b-table>
+    <table class="table is-fullwidth">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Target</th>
+          <th>Created at</th>
+          <th>Updated at</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="rule in rules" :key="rule.id">
+          <td>
+            <router-link
+              :to="{
+                name: 'Rule',
+                params: { id: rule.id },
+              }"
+            >
+              {{ rule.name }}
+            </router-link>
+          </td>
+          <td>
+            {{ rule.target }}
+          </td>
+          <td>
+            <DatetimeWithDiff v-bind:datetime="rule.createdAt" />
+          </td>
+          <td>
+            <DatetimeWithDiff v-bind:datetime="rule.updatedAt" />
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "@vue/composition-api";
+import { defineComponent, PropType } from "vue";
 
 import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
 import { Rule } from "@/types";

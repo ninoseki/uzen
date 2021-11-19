@@ -1,38 +1,41 @@
 <template>
   <div>
     <div class="box">
-      <b-message type="is-info">Scan snapshots with YARA</b-message>
+      <article class="message is-info">
+        <div class="message-body">Scan snapshots with YARA</div>
+      </article>
 
-      <BasicForm :source.sync="source" :target.sync="target" />
+      <BasicForm v-model:source="source" v-model:target="target" />
 
       <hr />
 
       <SnapshotForm ref="form" />
 
       <div class="has-text-centered mt-5">
-        <b-button
-          type="is-light"
-          icon-pack="fas"
-          icon-left="search"
-          @click="scan"
-          >Scan</b-button
-        >
+        <button class="button is-light" @click="scan">
+          <span class="icon">
+            <i class="fas fa-search"></i>
+          </span>
+          <span>Scan</span>
+        </button>
       </div>
     </div>
+
     <Error
       :error="scanTask.last.error.response.data"
-      v-if="scanTask.isError && scanTask.last !== undefined"
+      v-if="scanTask.isError && scanTask.last"
     ></Error>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "@vue/composition-api";
+import { defineComponent, ref } from "vue";
 import { useAsyncTask } from "vue-concurrency";
+import { useRouter } from "vue-router";
 
 import { API } from "@/api";
 import SnapshotForm from "@/components/snapshot/SearchForm.vue";
-import Error from "@/components/ui/Error.vue";
+import Error from "@/components/ui/SimpleError.vue";
 import BasicForm from "@/components/yara/BasicForm.vue";
 import { Job, TargetTypes, YaraScanPayload } from "@/types";
 
@@ -43,7 +46,9 @@ export default defineComponent({
     SnapshotForm,
     Error,
   },
-  setup(_, context) {
+  setup() {
+    const router = useRouter();
+
     const source = ref("");
     const target = ref<TargetTypes>("html");
 
@@ -71,7 +76,7 @@ export default defineComponent({
 
     const scan = async () => {
       const job = await scanTask.perform();
-      context.root.$router.push({ path: `/jobs/yara/${job.id}` });
+      router.push({ path: `/jobs/yara/${job.id}` });
     };
 
     return { source, target, form, scanTask, scan };

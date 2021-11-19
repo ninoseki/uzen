@@ -1,11 +1,7 @@
 <template>
   <div>
-    <div v-if="getWhoisTask.isRunning">Loading...</div>
-    <div
-      v-else-if="
-        !getWhoisTask.isError && getWhoisTask.last && getWhoisTask.last.value
-      "
-    >
+    <Loading v-if="getWhoisTask.isRunning"></Loading>
+    <div v-else-if="!getWhoisTask.isError && getWhoisTask.last?.value">
       <WhoisComponent :whois="getWhoisTask.last.value" />
     </div>
     <NA v-else></NA>
@@ -13,11 +9,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useAsyncTask } from "vue-concurrency";
 
 import { API } from "@/api";
 import NA from "@/components/ui/NA.vue";
+import Loading from "@/components/ui/SimpleLoading.vue";
 import WhoisComponent from "@/components/whois/Whois.vue";
 import { Whois } from "@/types/snapshot";
 
@@ -32,6 +29,7 @@ export default defineComponent({
   components: {
     WhoisComponent,
     NA,
+    Loading,
   },
   setup(props) {
     const getWhoisTask = useAsyncTask<Whois, []>(async () => {

@@ -1,39 +1,44 @@
 <template>
   <div class="row">
     <div v-if="takeSnapshotTask.isRunning">
-      <b-message>Loading {{ url }}...</b-message>
+      <article class="message">
+        <div class="message-body">Loading {{ url }}...</div>
+      </article>
     </div>
     <div v-else-if="takeSnapshotTask.isError">
-      <b-message type="is-danger" has-icon>
-        Failed to take a snapshot of <strong>{{ url }}</strong
-        >.
-      </b-message>
+      <article class="message is-danger">
+        <div class="message-body">
+          Failed to take a snapshot of <strong>{{ url }}</strong>
+        </div>
+      </article>
     </div>
     <div v-else>
       <div v-if="takeSnapshotTask.last && takeSnapshotTask.last.value">
-        <b-message type="is-success" has-icon>
-          <p><strong>Submitted URL:</strong> {{ url }}</p>
-          <p>
-            <strong>Job ID:</strong>
-            <router-link
-              :to="{
-                name: 'SnapshotJob',
-                params: {
-                  id: takeSnapshotTask.last.value.id,
-                },
-              }"
-            >
-              {{ takeSnapshotTask.last.value.id }}
-            </router-link>
-          </p>
-        </b-message>
+        <article class="message is-success">
+          <div class="message-body">
+            <p><strong>Submitted URL:</strong> {{ url }}</p>
+            <p>
+              <strong>Job ID:</strong>
+              <router-link
+                :to="{
+                  name: 'SnapshotJob',
+                  params: {
+                    id: takeSnapshotTask.last.value.id,
+                  },
+                }"
+              >
+                {{ takeSnapshotTask.last.value.id }}
+              </router-link>
+            </p>
+          </div>
+        </article>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "@vue/composition-api";
+import { defineComponent, PropType } from "vue";
 import { useAsyncTask } from "vue-concurrency";
 
 import { API } from "@/api";

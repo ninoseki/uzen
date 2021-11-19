@@ -1,29 +1,35 @@
 <template>
   <div>
-    <div class="columns">
-      <div class="column is-half">
-        <b-field label="Name">
-          <b-input v-model="filters.name"></b-input>
-        </b-field>
-      </div>
-      <div class="column is-half">
-        <b-field label="Target">
-          <b-input placeholder="html" v-model="filters.target"></b-input>
-        </b-field>
+    <div class="field">
+      <label class="label">Name</label>
+      <div class="control">
+        <input class="input" type="text" v-model="filters.name" />
       </div>
     </div>
-    <div class="columns">
-      <div class="column">
-        <b-field label="Source">
-          <b-input v-model="filters.source"></b-input>
-        </b-field>
+    <div class="field">
+      <label class="label">Target</label>
+      <div class="control">
+        <div class="select">
+          <select placeholder="Target for a YARA rule" v-model="filters.target">
+            <option></option>
+            <option v-for="t in targets" :value="t" :key="t">
+              {{ t }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="label">Source</label>
+      <div class="control">
+        <input class="input" type="text" v-model="filters.source" />
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, reactive } from "@vue/composition-api";
+import { defineComponent, PropType, reactive } from "vue";
 
 import { RuleFilters, TargetTypes } from "@/types";
 
@@ -37,6 +43,8 @@ export default defineComponent({
     source: String,
   },
   setup(props) {
+    const targets: TargetTypes[] = ["html", "whois", "certificate", "script"];
+
     const filters = reactive<RuleFilters>({
       name: props.name,
       target: props.target,
@@ -55,7 +63,7 @@ export default defineComponent({
       return obj;
     };
 
-    return { filters, filtersParams };
+    return { filters, targets, filtersParams };
   },
 });
 </script>

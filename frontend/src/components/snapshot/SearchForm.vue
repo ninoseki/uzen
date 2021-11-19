@@ -2,82 +2,115 @@
   <div>
     <div class="columns">
       <div class="column is-half">
-        <b-field label="URL">
-          <b-input
-            placeholder="http://example.com"
-            v-model="filters.url"
-          ></b-input>
-        </b-field>
+        <div class="field">
+          <label class="label">URL</label>
+          <div class="control">
+            <input
+              class="input"
+              type="text"
+              placeholder="http://example.com"
+              v-model="filters.url"
+            />
+          </div>
+        </div>
       </div>
       <div class="column is-half">
-        <b-field label="Hostname">
-          <b-input
-            placeholder="example.com"
-            v-model="filters.hostname"
-          ></b-input>
-        </b-field>
-      </div>
-    </div>
-    <div class="columns">
-      <div class="column is-half">
-        <b-field label="IP address">
-          <b-input placeholder="1.1.1.1" v-model="filters.ipAddress"></b-input>
-        </b-field>
-      </div>
-      <div class="column is-half">
-        <b-field label="ASN">
-          <b-input placeholder="AS15133" v-model="filters.asn"></b-input>
-        </b-field>
+        <div class="field">
+          <label class="label">Hostname</label>
+          <div class="control">
+            <input
+              class="input"
+              type="text"
+              placeholder="example.com"
+              v-model="filters.hostname"
+            />
+          </div>
+        </div>
       </div>
     </div>
     <div class="columns">
       <div class="column is-half">
-        <b-field label="Hash (SHA256)">
-          <b-input
-            placeholder="ea8fac7c65fb589b0d53560f5251f74f9e9b243478dcb6b3ea79b5e36449c8d9"
-            v-model="filters.hash"
-          ></b-input>
-        </b-field>
+        <div class="field">
+          <label class="label">IP address</label>
+          <div class="control">
+            <input
+              class="input"
+              type="text"
+              placeholder="1.1.1.1"
+              v-model="filters.ipAddress"
+            />
+          </div>
+        </div>
       </div>
       <div class="column is-half">
-        <b-field label="X509 certificate fingerprint (SHA256)">
-          <b-input
-            placeholder="ea8fac7c65fb589b0d53560f5251f74f9e9b243478dcb6b3ea79b5e36449c8d9"
-            v-model="filters.certificateFingerprint"
-          ></b-input>
-        </b-field>
+        <div class="field">
+          <label class="label">ASN</label>
+          <div class="control">
+            <input
+              class="input"
+              type="text"
+              placeholder="AS15133"
+              v-model="filters.asn"
+            />
+          </div>
+        </div>
       </div>
     </div>
     <div class="columns">
       <div class="column is-half">
-        <b-field label="From">
-          <b-datetimepicker
-            placeholder="Click to select..."
-            icon="calendar-today"
-            v-model="filters.fromAt"
-            :datetime-formatter="datetimeFormatter"
-          ></b-datetimepicker>
-        </b-field>
+        <div class="field">
+          <label class="label">Hash (SHA256)</label>
+          <div class="control">
+            <input
+              class="input"
+              type="text"
+              placeholder="ea8fac7c65fb589b0d53560f5251f74f9e9b243478dcb6b3ea79b5e36449c8d9"
+              v-model="filters.hash"
+            />
+          </div>
+        </div>
       </div>
       <div class="column is-half">
-        <b-field label="To">
-          <b-datetimepicker
-            placeholder="Click to select..."
-            icon="calendar-today"
-            v-model="filters.toAt"
-            :datetime-formatter="datetimeFormatter"
-          ></b-datetimepicker>
-        </b-field>
+        <div class="field">
+          <label class="label">X509 certificate fingerprint (SHA256)</label>
+          <div class="control">
+            <input
+              class="input"
+              type="text"
+              placeholder="ea8fac7c65fb589b0d53560f5251f74f9e9b243478dcb6b3ea79b5e36449c8d9"
+              v-model="filters.certificateFingerprint"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="columns">
+      <div class="column is-half">
+        <div class="field">
+          <label class="label">From</label>
+          <div class="control">
+            <Datepicker v-model="filters.fromAt" />
+          </div>
+        </div>
+      </div>
+      <div class="column is-half">
+        <div class="field">
+          <label class="label">To</label>
+          <div class="control">
+            <Datepicker v-model="filters.toAt" />
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from "@vue/composition-api";
+import { defineComponent, reactive } from "vue";
+import Datepicker from "vue3-date-time-picker";
 
 import { SnapshotFilters } from "@/types";
-import { datetimeFormatter, normalizeFilterValue } from "@/utils/form";
+import { normalizeFilterValue } from "@/utils/form";
 
 export default defineComponent({
   name: "SnapshotSearchForm",
@@ -115,6 +148,9 @@ export default defineComponent({
       required: false,
     },
   },
+  components: {
+    Datepicker,
+  },
   setup(props) {
     const filters = reactive<SnapshotFilters>({
       asn: props.asn,
@@ -141,7 +177,7 @@ export default defineComponent({
       return obj;
     };
 
-    return { filters, filtersParams, datetimeFormatter };
+    return { filters, filtersParams };
   },
 });
 </script>

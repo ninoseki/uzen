@@ -1,42 +1,42 @@
 <template>
   <div class="box">
-    <SimpleError
+    <Error
       :error="getJobStatusTask.last.error.response.data"
-      v-if="getJobStatusTask.isError && getJobStatusTask.last !== undefined"
-    ></SimpleError>
+      v-if="getJobStatusTask.isError && getJobStatusTask.last"
+    ></Error>
     <div v-else>
-      <b-message type="is-info" has-icon>
-        <p>Taking a snapshot...</p>
-        <div class="buttons">
-          <b-button type="is-ghost" size="is-large" expanded loading></b-button>
+      <article class="message is-info">
+        <div class="message-body">
+          <p>Taking a snapshot...</p>
+          <Loading></Loading>
         </div>
-      </b-message>
+      </article>
     </div>
     <SnapshotJob
       :jobStatus="getJobStatusTask.last.value"
-      v-if="
-        getJobStatusTask.last !== undefined &&
-        getJobStatusTask.last.value !== null
-      "
+      v-if="getJobStatusTask.last?.value"
     ></SnapshotJob>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from "@vue/composition-api";
 import { useTitle } from "@vueuse/core";
+import { defineComponent, onMounted } from "vue";
 import { useAsyncTask } from "vue-concurrency";
+import { useRouter } from "vue-router";
 
 import { API } from "@/api";
 import SnapshotJob from "@/components/job/SnapshotJob.vue";
-import SimpleError from "@/components/ui/SimpleError.vue";
+import Error from "@/components/ui/SimpleError.vue";
+import Loading from "@/components/ui/SimpleLoading.vue";
 import { JOB_CHECK_INTERVAL } from "@/constants";
 import { SnapshotJobStatus } from "@/types";
 
 export default defineComponent({
   name: "SnapshotJobWrapper",
   components: {
-    SimpleError,
+    Error,
+    Loading,
     SnapshotJob,
   },
   props: {
@@ -46,7 +46,9 @@ export default defineComponent({
     },
   },
 
-  setup(props, context) {
+  setup(props) {
+    const router = useRouter();
+
     const updateTitle = (): void => {
       useTitle(`${props.jobId} - Uzen`);
     };
@@ -68,8 +70,7 @@ export default defineComponent({
 
           if (status.isRunning === false && status.result !== null) {
             clearInterval(refreshId);
-
-            context.root.$router.push({
+            router.push({
               path: `/snapshots/${status.result.snapshotId}`,
             });
           }

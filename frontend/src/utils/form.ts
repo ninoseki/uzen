@@ -33,10 +33,6 @@ export function normalizeFilterValue(
   return value;
 }
 
-export function datetimeFormatter(datetime: Date): string {
-  return dayjs(datetime).local().format();
-}
-
 export function nowDatetime(): string {
   return dayjs().toISOString();
 }

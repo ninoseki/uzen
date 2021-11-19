@@ -3,16 +3,12 @@
     <Loading v-if="getSnapshotTask.isRunning"></Loading>
     <Error
       :backToRoute="true"
-      :error="getSnapshotTask.last.error.response.data"
-      v-else-if="getSnapshotTask.isError && getSnapshotTask.last !== undefined"
+      :error="getSnapshotTask.last?.error.response.data"
+      v-else-if="getSnapshotTask.isError"
     ></Error>
 
     <SnapshotComponent
-      v-if="
-        getSnapshotTask.last &&
-        getSnapshotTask.last.value &&
-        !getSnapshotTask.isError
-      "
+      v-if="getSnapshotTask.last?.value && !getSnapshotTask.isError"
       :snapshot="getSnapshotTask.last.value"
       :yaraResult="yaraResult"
     ></SnapshotComponent>
@@ -20,14 +16,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "@vue/composition-api";
 import { useTitle } from "@vueuse/core";
+import { defineComponent, PropType } from "vue";
 import { useAsyncTask } from "vue-concurrency";
 
 import { API } from "@/api";
 import SnapshotComponent from "@/components/snapshot/Snapshot.vue";
-import Error from "@/components/ui/Error.vue";
-import Loading from "@/components/ui/Loading.vue";
+import Error from "@/components/ui/SimpleError.vue";
+import Loading from "@/components/ui/SimpleLoading.vue";
 import { Snapshot, YaraResult } from "@/types";
 import { countryCodeToEmoji } from "@/utils/country";
 

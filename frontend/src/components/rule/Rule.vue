@@ -1,5 +1,5 @@
 <template>
-  <div class="box">
+  <div ref="root" class="box">
     <nav class="navbar">
       <div class="navbar-brand">
         <H2>
@@ -19,9 +19,12 @@
             </router-link>
           </div>
           <div class="navbar-item">
-            <b-button type="is-danger" icon-left="delete" @click="deleteRule"
-              >Delete</b-button
-            >
+            <button class="button is-danger" @click="deleteRule">
+              <span class="icon">
+                <i class="fas fa-trash"></i>
+              </span>
+              <span>Delete</span>
+            </button>
           </div>
         </div>
       </div>
@@ -71,14 +74,10 @@
 </template>
 
 <script lang="ts">
-import {
-  computed,
-  defineComponent,
-  onMounted,
-  PropType,
-} from "@vue/composition-api";
 import { useTitle } from "@vueuse/core";
+import { computed, defineComponent, onMounted, PropType, ref } from "vue";
 import { useAsyncTask } from "vue-concurrency";
+import { useRouter } from "vue-router";
 
 import { API } from "@/api";
 import Counter from "@/components/match/Counter.vue";
@@ -102,7 +101,11 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props, context) {
+  setup(props) {
+    const router = useRouter();
+
+    const root = ref<HTMLElement | null>(null);
+
     const updateTitle = (ruleName: string): void => {
       useTitle(`${ruleName} - Uzen`);
     };
@@ -116,25 +119,22 @@ export default defineComponent({
     });
 
     const deleteRule = async () => {
-      context.root.$buefy.dialog.confirm({
-        title: "Deleting rule",
-        message: "Are you sure you want to delete this rule?",
-        type: "is-danger",
-        hasIcon: true,
-        onConfirm: async () => {
-          await deleteRuleTask.perform();
-          context.root.$router.push({ path: "/" });
-        },
-      });
+      const decision = confirm("Are you sure you want to delete this rule?");
+      if (decision) {
+        await deleteRuleTask.perform();
+        router.push({ path: "/" });
+      }
     };
 
     onMounted(async () => {
       updateTitle(props.rule.name);
 
-      highlightCodeBlocks(context);
+      if (root.value !== null) {
+        highlightCodeBlocks(root.value);
+      }
     });
 
-    return { hasSnapshots, deleteRule };
+    return { hasSnapshots, root, deleteRule };
   },
 });
 </script>

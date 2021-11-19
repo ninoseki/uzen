@@ -1,60 +1,59 @@
 <template>
   <div>
-    <Loading v-if="searchTask.isRunning"></Loading>
-    <Error
-      :error="searchTask.last.error.response.data"
-      v-else-if="searchTask.isError && searchTask.last !== undefined"
-    ></Error>
-
     <div class="box">
       <Form
         ref="form"
-        :sha256="$route.query.sha256"
-        :asn="$route.query.asn"
-        :hostname="$route.query.hostname"
-        :ipAddress="$route.query.ipAddress"
-        :hash="$route.query.hash"
-        :certificateFingerprint="$route.query.certificateFingerprint"
-        :tag="$route.query.tag"
+        :asn="asn"
+        :hostname="hostname"
+        :ipAddress="ipAddress"
+        :hash="hash"
+        :certificateFingerprint="certificateFingerprint"
+        :tag="tag"
       />
 
       <br />
 
       <div class="has-text-centered">
-        <b-button
-          type="is-light"
-          icon-pack="fas"
-          icon-left="search"
-          @click="initSearch()"
-          >Search</b-button
-        >
+        <button class="button is-light" @click="initSearch">
+          <span class="icon">
+            <i class="fas fa-search"></i>
+          </span>
+          <span>Sesrch</span>
+        </button>
       </div>
     </div>
 
-    <h2 v-if="count !== undefined">
-      Search results ({{ count }} / {{ totalCount }})
-    </h2>
+    <Loading v-if="searchTask.isRunning"></Loading>
+    <Error
+      :error="searchTask.last?.error.response.data"
+      v-else-if="searchTask.isError"
+    ></Error>
+
+    <h2 v-if="count">Search results ({{ count }} / {{ totalCount }})</h2>
 
     <SnapshotsTable v-bind:snapshots="snapshots" />
 
-    <b-button
+    <button
+      class="button is-dark"
       v-if="hasLoadMore(count, totalCount)"
-      type="is-dark"
       @click="loadMore"
-      >Load more...</b-button
     >
+      Load more...
+    </button>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "@vue/composition-api";
+import { useRouteQuery } from "@vueuse/router";
+import { defineComponent, onMounted, Ref, ref } from "vue";
 import { useAsyncTask } from "vue-concurrency";
+import { useRoute, useRouter } from "vue-router";
 
 import { API } from "@/api";
 import Form from "@/components/snapshot/SearchForm.vue";
 import SnapshotsTable from "@/components/snapshot/Table.vue";
-import Error from "@/components/ui/Error.vue";
-import Loading from "@/components/ui/Loading.vue";
+import Error from "@/components/ui/SimpleError.vue";
+import Loading from "@/components/ui/SimpleLoading.vue";
 import { Snapshot, SnapshotSearchResults } from "@/types";
 import {
   DEFAULT_PAGE_SIZE,
@@ -71,10 +70,35 @@ export default defineComponent({
     Loading,
     SnapshotsTable,
   },
-  setup(_, context) {
+  setup() {
+    const route = useRoute();
+    const router = useRouter();
+    const options = { route, router };
+
     const snapshots = ref<Snapshot[]>([]);
     const count = ref<number | undefined>(undefined);
     const totalCount = ref(0);
+
+    const asn = useRouteQuery("asn", undefined, options) as Ref<
+      string | undefined
+    >;
+    const hostname = useRouteQuery("hostname", undefined, options) as Ref<
+      string | undefined
+    >;
+    const ipAddress = useRouteQuery("ipAddress", undefined, options) as Ref<
+      string | undefined
+    >;
+    const hash = useRouteQuery("hash", undefined, options) as Ref<
+      string | undefined
+    >;
+    const certificateFingerprint = useRouteQuery(
+      "certificateFingerprint",
+      undefined,
+      options
+    ) as Ref<string | undefined>;
+    const tag = useRouteQuery("tag", undefined, options) as Ref<
+      string | undefined
+    >;
 
     let oldestCreatedAt: string | undefined = undefined;
     let size = DEFAULT_PAGE_SIZE;
@@ -91,6 +115,7 @@ export default defineComponent({
       const params = form.value?.filtersParams() || {};
       params["size"] = size;
       params["toAt"] = minDatetime(params["toAt"], oldestCreatedAt);
+
       return await API.searchSnapshots(params);
     });
 
@@ -103,7 +128,10 @@ export default defineComponent({
 
       snapshots.value = snapshots.value.concat(res.results);
       count.value = snapshots.value.length;
-      oldestCreatedAt = snapshots.value[count.value - 1].createdAt;
+
+      if (snapshots.value.length > 0) {
+        oldestCreatedAt = snapshots.value[count.value - 1].createdAt;
+      }
 
       if (!additonalLoading) {
         totalCount.value = res.total;
@@ -121,20 +149,26 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      if (Object.keys(context.root.$route.query).length > 0) {
+      if (Object.keys(route.query).length > 0) {
         initSearch();
       }
     });
 
     return {
-      form,
-      initSearch,
-      snapshots,
+      asn,
+      certificateFingerprint,
       count,
-      totalCount,
-      loadMore,
-      hasLoadMore,
+      form,
+      hash,
+      hostname,
+      ipAddress,
       searchTask,
+      snapshots,
+      tag,
+      totalCount,
+      hasLoadMore,
+      initSearch,
+      loadMore,
     };
   },
 });

@@ -4,7 +4,9 @@ Description: YARA is the pattern matching swiss knife
 Website: https://github.com/virustotal/yara
 */
 
-export default function (hljs) {
+import { HLJSApi, LanguageDetail } from "highlight.js";
+
+export default function (hljs: HLJSApi): LanguageDetail {
   return {
     name: "YARA",
     aliases: ["yara", "yar"],

@@ -1,11 +1,5 @@
 <template>
   <div>
-    <Loading v-if="createRuleTask.isRunning"></Loading>
-    <Error
-      :error="createRuleTask.last.error.response.data"
-      v-else-if="createRuleTask.isError && createRuleTask.last !== undefined"
-    ></Error>
-
     <div class="box">
       <InputForm
         :name="name"
@@ -17,26 +11,32 @@
       />
 
       <div class="has-text-centered">
-        <b-button
-          type="is-light"
-          icon-pack="fas"
-          icon-left="keyboard"
-          @click="register"
-          >Create</b-button
-        >
+        <button class="button is-light" @click="register">
+          <span class="icon">
+            <i class="fas fa-keyboard"></i>
+          </span>
+          <span>Create</span>
+        </button>
       </div>
     </div>
+
+    <Loading v-if="createRuleTask.isRunning"></Loading>
+    <Error
+      :error="createRuleTask.last?.error.response.data"
+      v-else-if="createRuleTask.isError"
+    ></Error>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "@vue/composition-api";
+import { defineComponent, ref } from "vue";
 import { useAsyncTask } from "vue-concurrency";
+import { useRouter } from "vue-router";
 
 import { API } from "@/api";
 import InputForm from "@/components/rule/InputForm.vue";
-import Error from "@/components/ui/Error.vue";
-import Loading from "@/components/ui/Loading.vue";
+import Error from "@/components/ui/SimpleError.vue";
+import Loading from "@/components/ui/SimpleLoading.vue";
 import { Rule, TargetTypes } from "@/types";
 
 export default defineComponent({
@@ -46,7 +46,9 @@ export default defineComponent({
     InputForm,
     Loading,
   },
-  setup(_, context) {
+  setup() {
+    const router = useRouter();
+
     const name = ref("");
     const target = ref<TargetTypes>("html");
     const source = ref("");
@@ -63,7 +65,7 @@ export default defineComponent({
 
     const register = async () => {
       const rule = await createRuleTask.perform();
-      context.root.$router.push({ path: `/rules/${rule.id}` });
+      router.push({ path: `/rules/${rule.id}` });
     };
 
     const updateName = (newName: string) => {
@@ -79,11 +81,11 @@ export default defineComponent({
     };
 
     return {
-      name,
-      target,
-      source,
-      register,
       createRuleTask,
+      name,
+      source,
+      target,
+      register,
       updateName,
       updateSource,
       updateTarget,

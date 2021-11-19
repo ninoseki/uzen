@@ -1,18 +1,18 @@
 <template>
   <div>
-    <b-taglist v-if="classifications.length > 0">
+    <div class="tags" v-if="classifications.length > 0">
       <Tag
-        v-for="classification in classifications"
-        :key="classification.id"
+        v-for="(classification, index) in classifications"
+        :key="index"
         :classification="classification"
       ></Tag>
-    </b-taglist>
+    </div>
     <div v-else>N/A</div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "@vue/composition-api";
+import { defineComponent, PropType } from "vue";
 
 import Tag from "@/components/classification/Tag.vue";
 import { Classification } from "@/types";

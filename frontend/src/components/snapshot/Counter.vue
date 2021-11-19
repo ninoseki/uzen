@@ -1,10 +1,7 @@
 <template>
   <span
     v-if="
-      !searchTask.isRunning &&
-      searchTask.last &&
-      searchTask.last.value &&
-      !searchTask.isError
+      !searchTask.isRunning && searchTask.last?.value && !searchTask.isError
     "
   >
     (
@@ -20,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useAsyncTask } from "vue-concurrency";
 
 import { API } from "@/api";

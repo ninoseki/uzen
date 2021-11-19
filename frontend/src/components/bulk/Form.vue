@@ -1,44 +1,45 @@
 <template>
   <div>
     <div class="box">
-      <b-field label="URL">
-        <b-input
-          class="control is-expanded"
-          placeholder="http://example.com"
-          type="textarea"
-          v-model="urlText"
-        ></b-input>
-      </b-field>
+      <div class="field">
+        <label class="label"> URL </label>
+        <p class="control">
+          <textarea
+            class="textarea is-expanded"
+            placeholder="http://example.com"
+            type="textarea"
+            v-model="urlText"
+          />
+        </p>
+      </div>
 
       <br />
 
       <div class="buttons is-centered">
-        <b-button
-          type="is-light"
-          icon-pack="fas"
-          icon-left="search"
-          @click="bulkSubmit"
-          >Submit</b-button
-        >
-        <b-button
-          type="is-info"
-          icon-pack="fas"
-          icon-left="cogs"
-          @click="showOptions = !showOptions"
-          >Options</b-button
-        >
+        <button class="button is-light" @click="bulkSubmit">
+          <span class="icon">
+            <i class="fas fa-search"></i>
+          </span>
+          <span>Submit</span>
+        </button>
+        <button class="button is-info" @click="showOptions = !showOptions">
+          <span class="icon">
+            <i class="fas fa-cogs"></i>
+          </span>
+          <span>Options</span>
+        </button>
       </div>
 
       <Options
         v-if="showOptions"
-        :acceptLanguage.sync="acceptLanguage"
-        :otherHeaders.sync="otherHeaders"
-        :ignoreHttpSErrors.sync="ignoreHttpsErrors"
-        :referer.sync="referer"
-        :timeout.sync="timeout"
-        :userAgent.sync="userAgent"
-        :deviceName.sync="deviceName"
-        :waitUntil.sync="waitUntil"
+        v-model:acceptLanguage="acceptLanguage"
+        v-model:otherHeaders="otherHeaders"
+        v-model:ignoreHttpSErrors="ignoreHttpsErrors"
+        v-model:referer="referer"
+        v-model:timeout="timeout"
+        v-model:userAgent="userAgent"
+        v-model:deviceName="deviceName"
+        v-model:waitUntil="waitUntil"
       />
     </div>
 
@@ -63,7 +64,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "@vue/composition-api";
+import { defineComponent, ref } from "vue";
 
 import Row from "@/components/bulk/Row.vue";
 import Options from "@/components/snapshot/Options.vue";
@@ -101,20 +102,20 @@ export default defineComponent({
     };
 
     return {
-      urlText,
-      showOptions,
       acceptLanguage,
+      deviceName,
+      enableHar,
       ignoreHttpsErrors,
+      otherHeaders,
       referer,
+      showOptions,
       timeout,
+      urls,
+      urlText,
       userAgent,
+      waitUntil,
       bulkSubmit,
       hasURLs,
-      urls,
-      enableHar,
-      deviceName,
-      otherHeaders,
-      waitUntil,
     };
   },
 });

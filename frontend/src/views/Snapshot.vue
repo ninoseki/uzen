@@ -1,9 +1,10 @@
 <template>
-  <Snapshot :snapshotId="$route.params.id" :yaraResult="yaraResult" />
+  <Snapshot :snapshotId="snapshotId" :yaraResult="yaraResult" />
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "@vue/composition-api";
+import { defineComponent, PropType } from "vue";
+import { useRoute } from "vue-router";
 
 import Snapshot from "@/components/snapshot/SnapshotWrapper.vue";
 import { YaraResult } from "@/types";
@@ -18,6 +19,12 @@ export default defineComponent({
       type: Object as PropType<YaraResult>,
       required: false,
     },
+  },
+  setup() {
+    const route = useRoute();
+    const snapshotId = route.params.id as string;
+
+    return { snapshotId };
   },
 });
 </script>

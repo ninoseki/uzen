@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="getHARTask.isRunning">Loading...</div>
+    <Loading v-if="getHARTask.isRunning"></Loading>
     <div
       v-else-if="
         getHARTask.last && getHARTask.last.value && !getHARTask.isError
@@ -16,17 +16,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useAsyncTask } from "vue-concurrency";
 
 import { API } from "@/api";
 import HARComponent from "@/components/har/HAR.vue";
 import NA from "@/components/ui/NA.vue";
+import Loading from "@/components/ui/SimpleLoading.vue";
 import { HAR } from "@/types";
 
 export default defineComponent({
   name: "HARWrapper",
-  components: { HARComponent, NA },
+  components: { HARComponent, NA, Loading },
   props: {
     snapshotId: {
       type: String,

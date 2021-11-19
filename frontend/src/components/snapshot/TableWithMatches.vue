@@ -1,11 +1,11 @@
 <template>
-  <div v-if="hasSnapshots">
+  <div v-if="hasSnapshots" ref="root">
     <table class="table is-fullwidth">
       <thead>
         <tr>
           <th>URL</th>
           <th>Created at</th>
-          <th>Screenshot</th>
+          <th>Matches</th>
         </tr>
       </thead>
       <tbody>
@@ -41,7 +41,7 @@
             <DatetimeWithDiff :datetime="snapshot.createdAt" />
           </td>
           <td>
-            <Screenshot :snapshotId="snapshot.id" />
+            <pre><code class="json">{{ snapshot.yaraResult?.matches }}</code></pre>
           </td>
         </tr>
       </tbody>
@@ -50,38 +50,39 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from "vue";
+import { computed, defineComponent, PropType, ref, watchEffect } from "vue";
 
-import Screenshot from "@/components/screenshot/Screenshot.vue";
 import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
-import { Snapshot } from "@/types";
+import { SnapshotWithYaraResult } from "@/types/job";
 import { countryCodeToEmoji } from "@/utils/country";
+import { highlightCodeBlocks } from "@/utils/highlight";
 import { truncate } from "@/utils/truncate";
 
 export default defineComponent({
-  name: "SnapshotTableWithScreenshot",
+  name: "SnapshotTableWithYaraResult",
   props: {
     snapshots: {
-      type: Array as PropType<Snapshot[]>,
+      type: Array as PropType<SnapshotWithYaraResult[]>,
       required: true,
     },
   },
   components: {
     DatetimeWithDiff,
-    Screenshot,
   },
   setup(props) {
+    const root = ref<HTMLElement | null>(null);
+
     const hasSnapshots = computed((): boolean => {
       return props.snapshots.length > 0;
     });
 
-    return { hasSnapshots, truncate, countryCodeToEmoji };
+    watchEffect(() => {
+      if (root.value !== null) {
+        highlightCodeBlocks(root.value);
+      }
+    });
+
+    return { hasSnapshots, truncate, countryCodeToEmoji, root };
   },
 });
 </script>
-
-<style>
-.table img {
-  max-width: 180px;
-}
-</style>

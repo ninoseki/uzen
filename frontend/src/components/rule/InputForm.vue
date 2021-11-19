@@ -1,29 +1,48 @@
 <template>
   <div id="form">
-    <b-field label="Name">
-      <b-input placeholder="Name of a YARA rule" v-model="name_"></b-input>
-    </b-field>
+    <div class="field">
+      <label class="label">Name</label>
+      <div class="control">
+        <input
+          class="input"
+          type="text"
+          placeholder="Name of a YARA rule"
+          v-model="name_"
+        />
+      </div>
+    </div>
 
-    <b-field label="Target">
-      <b-select placeholder="Target for a YARA rule" v-model="target_">
-        <option v-for="t in targets" :value="t" :key="t">{{ t }}</option>
-      </b-select>
-    </b-field>
+    <div class="field">
+      <label class="label">Target</label>
+      <div class="control">
+        <div class="select">
+          <select placeholder="Target for a YARA rule" v-model="target_">
+            <option v-for="t in targets" :value="t" :key="t">{{ t }}</option>
 
-    <b-field label="Source of a YARA rule">
-      <b-input
-        class="is-expanded"
-        type="textarea"
-        rows="10"
-        placeholder="rule foo: bar {strings: $a = 'lmn' condition: $a}"
-        v-model="source_"
-      ></b-input>
-    </b-field>
+            <option>Select dropdown</option>
+            <option>With options</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">Source of a YARA rule</label>
+      <div class="control">
+        <textarea
+          class="textarea is-expanded"
+          type="textarea"
+          rows="10"
+          placeholder="rule foo: bar {strings: $a = 'lmn' condition: $a}"
+          v-model="source_"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from "@vue/composition-api";
+import { defineComponent, ref, watchEffect } from "vue";
 
 import { TargetTypes } from "@/types";
 
@@ -49,8 +68,7 @@ export default defineComponent({
     const target_ = ref(props.target);
     const source_ = ref(props.source);
 
-    // eslint-disable-next-line no-unused-vars
-    watch([name_, target_, source_], (_first, _second) => {
+    watchEffect(() => {
       context.emit("update-name", name_.value);
       context.emit("update-source", source_.value);
       context.emit("update-target", target_.value);

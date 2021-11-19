@@ -1,11 +1,7 @@
 <template>
   <div>
-    <div v-if="getTextTask.isRunning">Loading...</div>
-    <div
-      v-else-if="
-        !getTextTask.isError && getTextTask.last && getTextTask.last.value
-      "
-    >
+    <Loading v-if="getTextTask.isRunning"></Loading>
+    <div v-else-if="!getTextTask.isError && getTextTask.last?.value">
       <TextComponent
         :text="getTextTask.last.value"
         v-if="getTextTask.last.value"
@@ -17,12 +13,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useAsyncTask } from "vue-concurrency";
 
 import { API } from "@/api";
 import TextComponent from "@/components/text/Text.vue";
 import NA from "@/components/ui/NA.vue";
+import Loading from "@/components/ui/SimpleLoading.vue";
 
 export default defineComponent({
   name: "TextWrapper",
@@ -34,6 +31,7 @@ export default defineComponent({
   },
   components: {
     TextComponent,
+    Loading,
     NA,
   },
   setup(props) {

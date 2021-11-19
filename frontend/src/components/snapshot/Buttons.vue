@@ -1,22 +1,24 @@
 <template>
   <div>
     <div v-if="hasSnapshots" class="buttons">
-      <b-button
+      <button
+        class="button is-info"
         v-for="snapshot in uniqueSnapshots"
         :key="snapshot.id"
-        tag="router-link"
-        :to="{ name: 'Snapshot', params: { id: snapshot.id } }"
-        type="is-info"
       >
-        {{ snapshot.hostname }} ({{ (snapshot.createdAt || "").split("T")[0] }})
-      </b-button>
+        <router-link :to="{ name: 'Snapshot', params: { id: snapshot.id } }">
+          {{ snapshot.hostname }} ({{
+            (snapshot.createdAt || "").split("T")[0]
+          }})
+        </router-link>
+      </button>
     </div>
     <div v-else>N/A</div>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from "@vue/composition-api";
+import { computed, defineComponent, PropType } from "vue";
 
 import { Snapshot } from "@/types";
 

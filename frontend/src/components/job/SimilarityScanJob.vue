@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "@vue/composition-api";
+import { defineComponent, PropType } from "vue";
 
 import SnapshotTable from "@/components/snapshot/Table.vue";
 import { SimilarityScanJobStatus } from "@/types";

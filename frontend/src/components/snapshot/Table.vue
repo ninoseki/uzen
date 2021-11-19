@@ -1,49 +1,62 @@
 <template>
   <div class="box table-container" v-if="$props.snapshots.length > 0">
-    <b-table :data="snapshots">
-      <b-table-column field="url" label="URL" v-slot="props">
-        <p>
-          <strong>URL:</strong>
-          <router-link
-            :to="{
-              name: 'Snapshot',
-              params: { id: props.row.id, yaraResult: props.row.yaraResult },
-            }"
-          >
-            {{ truncate(props.row.url) }}
-          </router-link>
-        </p>
-        <p class="is-size-7">
-          <strong>Submitted URL:</strong>
-          {{ truncate(props.row.submittedUrl) }}
-        </p>
-        <p class="is-size-7">
-          <strong>IP address:</strong> {{ props.row.ipAddress }}
-          {{ countryCodeToEmoji(props.row.countryCode) }} -
-          <strong>ASN:</strong> {{ props.row.asn.split(" ")[0] }}
-        </p>
-        <p class="is-size-7"><strong>Status:</strong> {{ props.row.status }}</p>
+    <table class="table is-fullwidth">
+      <thead>
+        <tr>
+          <th>URL</th>
+          <th>Created at</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="snapshot in snapshots" :key="snapshot.id">
+          <td>
+            <p>
+              <strong>URL:</strong>
+              <router-link
+                :to="{
+                  name: 'Snapshot',
+                  params: {
+                    id: snapshot.id,
+                  },
+                }"
+              >
+                {{ truncate(snapshot.url) }}
+              </router-link>
+            </p>
+            <p class="is-size-7">
+              <strong>Submitted URL:</strong>
+              {{ truncate(snapshot.submittedUrl) }}
+            </p>
+            <p class="is-size-7">
+              <strong>IP address:</strong> {{ snapshot.ipAddress }}
+              {{ countryCodeToEmoji(snapshot.countryCode) }} -
+              <strong>ASN:</strong> {{ snapshot.asn.split(" ")[0] }}
+            </p>
+            <p class="is-size-7">
+              <strong>Status:</strong> {{ snapshot.status }}
+            </p>
 
-        <p class="is-size-7" v-if="(props.row.tags || []).length > 0">
-          <strong>Tags:</strong>
-          <Tags :tags="props.row.tags"></Tags>
-        </p>
+            <p class="is-size-7" v-if="(snapshot.tags || []).length > 0">
+              <strong>Tags:</strong>
+              <Tags :tags="snapshot.tags"></Tags>
+            </p>
 
-        <p class="is-size-7" v-if="'similarity' in props.row">
-          <strong>Similarity:</strong>
-          {{ toPercentString(props.row.similarity) }}
-        </p>
-      </b-table-column>
-
-      <b-table-column field="createdAt" label="Created at" v-slot="props">
-        <DatetimeWithDiff :datetime="props.row.createdAt" />
-      </b-table-column>
-    </b-table>
+            <p class="is-size-7" v-if="'similarity' in snapshot">
+              <strong>Similarity:</strong>
+              {{ toPercentString(snapshot.similarity) }}
+            </p>
+          </td>
+          <td>
+            <DatetimeWithDiff :datetime="snapshot.createdAt" />
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "@vue/composition-api";
+import { defineComponent, PropType } from "vue";
 
 import Tags from "@/components/snapshot/Tags.vue";
 import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";

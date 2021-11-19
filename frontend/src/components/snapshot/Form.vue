@@ -3,63 +3,58 @@
     <Loading v-if="takeSnapshotTask.isRunning"></Loading>
     <Error
       :error="takeSnapshotTask.last.error.response.data"
-      v-else-if="
-        takeSnapshotTask.isError && takeSnapshotTask.last !== undefined
-      "
+      v-else-if="takeSnapshotTask.isError && takeSnapshotTask.last"
     ></Error>
 
     <div class="box">
-      <b-field>
-        <b-input
-          class="control is-expanded"
-          placeholder="URL"
-          v-model="url"
-        ></b-input>
+      <div class="field has-addons">
+        <div class="control is-expanded">
+          <input class="input" type="text" placeholder="URL" v-model="url" />
+        </div>
         <p class="control">
-          <b-button
-            type="is-light"
-            icon-pack="fas"
-            icon-left="camera"
-            @click="takeSnapshot"
-            >Take a snapshot</b-button
-          >
-          <b-button
-            type="is-info"
-            icon-pack="fas"
-            icon-left="cogs"
-            @click="showOptions = !showOptions"
-            >Options</b-button
-          >
+          <button class="button is-light" @click="takeSnapshot">
+            <span class="icon">
+              <i class="fas fa-camera"></i>
+            </span>
+            <span>Take a snapshot</span>
+          </button>
+          <button class="button is-info" @click="showOptions = !showOptions">
+            <span class="icon">
+              <i class="fas fa-cogs"></i>
+            </span>
+            <span>Options</span>
+          </button>
         </p>
-      </b-field>
+      </div>
 
       <Status></Status>
 
       <Options
         v-if="showOptions"
-        :acceptLanguage.sync="acceptLanguage"
-        :otherHeaders.sync="otherHeaders"
-        :ignoreHttpsErrors.sync="ignoreHttpsErrors"
-        :enableHAR.sync="enableHar"
-        :referer.sync="referer"
-        :timeout.sync="timeout"
-        :userAgent.sync="userAgent"
-        :deviceName.sync="deviceName"
-        :waitUntil.sync="waitUntil"
+        v-model:acceptLanguage="acceptLanguage"
+        v-model:otherHeaders="otherHeaders"
+        v-model:ignoreHttpsErrors="ignoreHttpsErrors"
+        v-model:enableHAR="enableHar"
+        v-model:referer="referer"
+        v-model:timeout="timeout"
+        v-model:userAgent="userAgent"
+        v-model:deviceName="deviceName"
+        v-model:waitUntil="waitUntil"
       />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "@vue/composition-api";
+import { defineComponent, ref } from "vue";
 import { useAsyncTask } from "vue-concurrency";
+import { useRouter } from "vue-router";
 
 import { API } from "@/api";
 import Options from "@/components/snapshot/Options.vue";
 import Status from "@/components/snapshot/Status.vue";
-import Error from "@/components/ui/Error.vue";
-import Loading from "@/components/ui/Loading.vue";
+import Error from "@/components/ui/SimpleError.vue";
+import Loading from "@/components/ui/SimpleLoading.vue";
 import { CreateSnapshotPayload, Header, Headers, Job } from "@/types";
 import { WaitUntilType } from "@/types";
 
@@ -71,7 +66,9 @@ export default defineComponent({
     Options,
     Status,
   },
-  setup(_, context) {
+  setup() {
+    const router = useRouter();
+
     const url = ref("");
     const showOptions = ref(false);
     const acceptLanguage = ref("");
@@ -116,23 +113,23 @@ export default defineComponent({
 
     const takeSnapshot = async () => {
       const job = await takeSnapshotTask.perform();
-      context.root.$router.push({ path: `/jobs/snapshots/${job.id}` });
+      router.push({ path: `/jobs/snapshots/${job.id}` });
     };
 
     return {
-      takeSnapshot,
-      takeSnapshotTask,
-      url,
-      showOptions,
       acceptLanguage,
-      userAgent,
-      ignoreHttpsErrors,
-      referer,
-      timeout,
-      enableHar,
       deviceName,
-      waitUntil,
+      enableHar,
+      ignoreHttpsErrors,
       otherHeaders,
+      referer,
+      showOptions,
+      takeSnapshotTask,
+      timeout,
+      url,
+      userAgent,
+      waitUntil,
+      takeSnapshot,
     };
   },
 });

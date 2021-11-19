@@ -20,10 +20,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "@vue/composition-api";
 import * as harFormat from "har-format";
 import numeral from "numeral";
 import URL from "url-parse";
+import { defineComponent, PropType } from "vue";
 
 export default defineComponent({
   name: "HarTableRow",
@@ -60,10 +60,10 @@ export default defineComponent({
     };
 
     return {
+      numeral,
+      getContentLength,
       getHostname,
       getPathname,
-      getContentLength,
-      numeral,
       normalizeMIMEType,
     };
   },
