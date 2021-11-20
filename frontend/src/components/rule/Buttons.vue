@@ -1,11 +1,14 @@
 <template>
   <div>
     <div v-if="rules.length > 0" class="buttons">
-      <button class="button is-info" v-for="rule in uniqueRules" :key="rule.id">
-        <router-link :to="{ name: 'Rule', params: { id: rule.id } }">
-          {{ rule.name }}
-        </router-link>
-      </button>
+      <router-link
+        class="button is-info"
+        :to="{ name: 'Rule', params: { id: rule.id } }"
+        v-for="rule in uniqueRules"
+        :key="rule.id"
+      >
+        {{ rule.name }}
+      </router-link>
     </div>
     <div v-else>N/A</div>
   </div>
