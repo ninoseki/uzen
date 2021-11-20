@@ -32,6 +32,10 @@ def test_create_rule(client: TestClient, event_loop: asyncio.AbstractEventLoop):
     count = count_all_rules(event_loop)
     assert count == 1
 
+    # cannot use the same rule name twice
+    response = client.post("/api/rules/", json=payload)
+    assert response.status_code == 400
+
 
 def test_delete_rule(
     client: TestClient, event_loop: asyncio.AbstractEventLoop, rules: List[models.Rule]

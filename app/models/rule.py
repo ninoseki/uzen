@@ -14,7 +14,7 @@ LIMIT_OF_PREFETCH = 20
 
 
 class Rule(TimestampMixin, AbstractBaseModel):
-    name = CharField(max_length=255)
+    name = CharField(max_length=255, unique=True)
     target = CharField(max_length=255)
     source = TextField()
     updated_at = DatetimeField(auto_now=True)
