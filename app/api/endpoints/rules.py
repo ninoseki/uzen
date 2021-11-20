@@ -1,7 +1,7 @@
 from typing import Any, Dict, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
-from tortoise.exceptions import DoesNotExist
+from tortoise.exceptions import DoesNotExist, IntegrityError
 
 from app import models, schemas, types
 from app.api.dependencies.rule import SearchFilters
@@ -77,8 +77,14 @@ async def create(
     payload: schemas.CreateRulePayload, _: Any = Depends(verify_api_key)
 ) -> schemas.Rule:
     rule = models.Rule(name=payload.name, target=payload.target, source=payload.source)
-    await rule.save()
-    return rule.to_model()
+    try:
+        await rule.save()
+        return rule.to_model()
+    except IntegrityError:
+        raise HTTPException(
+            status_code=400,
+            detail=f"{payload.name} is already registered as a rule's name",
+        )
 
 
 @router.delete(
