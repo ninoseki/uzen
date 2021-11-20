@@ -81,7 +81,7 @@ export default defineComponent({
 
     const resetPagination = () => {
       matches.value = [];
-      totalCount.value = 0;
+      count.value = undefined;
       size = DEFAULT_PAGE_SIZE;
       oldestCreatedAt = nowDatetime();
     };

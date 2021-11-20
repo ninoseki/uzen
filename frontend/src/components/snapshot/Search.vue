@@ -29,7 +29,9 @@
       v-else-if="searchTask.isError"
     ></Error>
 
-    <h2 v-if="count">Search results ({{ count }} / {{ totalCount }})</h2>
+    <h2 v-if="count !== undefined">
+      Search results ({{ count }} / {{ totalCount }})
+    </h2>
 
     <SnapshotsTable v-bind:snapshots="snapshots" />
 
@@ -107,6 +109,7 @@ export default defineComponent({
 
     const resetPagination = () => {
       snapshots.value = [];
+      count.value = undefined;
       size = DEFAULT_PAGE_SIZE;
       oldestCreatedAt = nowDatetime();
     };
