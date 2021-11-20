@@ -10,7 +10,7 @@
         @update-target="updateTarget"
       />
 
-      <div class="has-text-centered">
+      <div class="has-text-centered mt-5">
         <button class="button is-light" @click="register">
           <span class="icon">
             <i class="fas fa-keyboard"></i>

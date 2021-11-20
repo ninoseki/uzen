@@ -11,9 +11,7 @@
         :tag="tag"
       />
 
-      <br />
-
-      <div class="has-text-centered">
+      <div class="has-text-centered mt-5">
         <button class="button is-light" @click="initSearch">
           <span class="icon">
             <i class="fas fa-search"></i>
@@ -29,7 +27,9 @@
       v-else-if="searchTask.isError"
     ></Error>
 
-    <h2 v-if="count">Search results ({{ count }} / {{ totalCount }})</h2>
+    <h2 v-if="count !== undefined">
+      Search results ({{ count }} / {{ totalCount }})
+    </h2>
 
     <SnapshotsTable v-bind:snapshots="snapshots" />
 
@@ -107,6 +107,7 @@ export default defineComponent({
 
     const resetPagination = () => {
       snapshots.value = [];
+      count.value = undefined;
       size = DEFAULT_PAGE_SIZE;
       oldestCreatedAt = nowDatetime();
     };

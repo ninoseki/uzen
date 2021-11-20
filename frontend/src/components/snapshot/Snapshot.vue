@@ -76,13 +76,6 @@
             >
               HAR
             </a>
-            <a
-              @click="changeActiveState('yaraMatches')"
-              :class="[activeState == 'yaraMatches' ? 'is-active' : '']"
-              v-if="yaraResult"
-            >
-              YARA matches
-            </a>
           </li>
         </ul>
       </aside>
@@ -125,9 +118,6 @@
           <div v-else-if="activeState === 'har'">
             <HAR :snapshotId="snapshot.id" />
           </div>
-          <div v-else-if="activeState === 'yaraMatches'">
-            <YaraResultComponent :yaraResult="yaraResult" />
-          </div>
         </div>
       </div>
     </div>
@@ -149,8 +139,7 @@ import Stylesheets from "@/components/stylesheet/Stylesheets.vue";
 import TextComponent from "@/components/text/TextWrapper.vue";
 import NA from "@/components/ui/NA.vue";
 import Whois from "@/components/whois/WhoisWrapper.vue";
-import YaraResultComponent from "@/components/yara/Result.vue";
-import { Snapshot, YaraResult } from "@/types";
+import { Snapshot } from "@/types";
 
 type States =
   | "certificate"
@@ -163,8 +152,7 @@ type States =
   | "stylesheets"
   | "summary"
   | "text"
-  | "whois"
-  | "yaraMatches";
+  | "whois";
 
 export default defineComponent({
   name: "Snapshot",
@@ -181,16 +169,11 @@ export default defineComponent({
     Stylesheets,
     TextComponent,
     Whois,
-    YaraResultComponent,
   },
   props: {
     snapshot: {
       type: Object as PropType<Snapshot>,
       required: true,
-    },
-    yaraResult: {
-      type: Object as PropType<YaraResult>,
-      required: false,
     },
   },
 

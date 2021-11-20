@@ -11,31 +11,7 @@
       <tbody>
         <tr v-for="snapshot in snapshots" :key="snapshot.id">
           <td>
-            <p>
-              <strong>URL:</strong>
-              <router-link
-                :to="{
-                  name: 'Snapshot',
-                  params: {
-                    id: snapshot.id,
-                  },
-                }"
-              >
-                {{ snapshot.url }}
-              </router-link>
-            </p>
-            <p class="is-size-7">
-              <strong>Submitted URL:</strong>
-              {{ truncate(snapshot.submittedUrl) }}
-            </p>
-            <p class="is-size-7">
-              <strong>IP address:</strong> {{ snapshot.ipAddress }}
-              {{ countryCodeToEmoji(snapshot.countryCode) }} -
-              <strong>ASN:</strong> {{ snapshot.asn.split(" ")[0] }}
-            </p>
-            <p class="is-size-7">
-              <strong>Status:</strong> {{ snapshot.status }}
-            </p>
+            <URL :snapshot="snapshot"></URL>
           </td>
           <td>
             <DatetimeWithDiff :datetime="snapshot.createdAt" />
@@ -52,11 +28,11 @@
 <script lang="ts">
 import { computed, defineComponent, PropType } from "vue";
 
+import URL from "@/components/snapshot/table/URL.vue";
+
 import Screenshot from "@/components/screenshot/Screenshot.vue";
 import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
 import { Snapshot } from "@/types";
-import { countryCodeToEmoji } from "@/utils/country";
-import { truncate } from "@/utils/truncate";
 
 export default defineComponent({
   name: "SnapshotTableWithScreenshot",
@@ -69,13 +45,14 @@ export default defineComponent({
   components: {
     DatetimeWithDiff,
     Screenshot,
+    URL,
   },
   setup(props) {
     const hasSnapshots = computed((): boolean => {
       return props.snapshots.length > 0;
     });
 
-    return { hasSnapshots, truncate, countryCodeToEmoji };
+    return { hasSnapshots };
   },
 });
 </script>

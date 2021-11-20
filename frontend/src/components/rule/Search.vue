@@ -85,7 +85,7 @@ export default defineComponent({
 
     const resetPagination = () => {
       rules.value = [];
-      totalCount.value = 0;
+      count.value = undefined;
       size = DEFAULT_PAGE_SIZE;
       offset = DEFAULT_OFFSET;
     };
