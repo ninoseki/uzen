@@ -11,31 +11,7 @@
       <tbody>
         <tr v-for="snapshot in snapshots" :key="snapshot.id">
           <td>
-            <p>
-              <strong>URL:</strong>
-              <router-link
-                :to="{
-                  name: 'Snapshot',
-                  params: {
-                    id: snapshot.id,
-                  },
-                }"
-              >
-                {{ snapshot.url }}
-              </router-link>
-            </p>
-            <p class="is-size-7">
-              <strong>Submitted URL:</strong>
-              {{ truncate(snapshot.submittedUrl) }}
-            </p>
-            <p class="is-size-7">
-              <strong>IP address:</strong> {{ snapshot.ipAddress }}
-              {{ countryCodeToEmoji(snapshot.countryCode) }} -
-              <strong>ASN:</strong> {{ snapshot.asn.split(" ")[0] }}
-            </p>
-            <p class="is-size-7">
-              <strong>Status:</strong> {{ snapshot.status }}
-            </p>
+            <URL :snapshot="snapshot"></URL>
           </td>
           <td>
             <DatetimeWithDiff :datetime="snapshot.createdAt" />
@@ -52,11 +28,10 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, ref, watchEffect } from "vue";
 
+import URL from "@/components/snapshot/table/URL.vue";
 import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
 import { SnapshotWithYaraResult } from "@/types/job";
-import { countryCodeToEmoji } from "@/utils/country";
 import { highlightCodeBlocks } from "@/utils/highlight";
-import { truncate } from "@/utils/truncate";
 
 export default defineComponent({
   name: "SnapshotTableWithYaraResult",
@@ -68,6 +43,7 @@ export default defineComponent({
   },
   components: {
     DatetimeWithDiff,
+    URL,
   },
   setup(props) {
     const root = ref<HTMLElement | null>(null);
@@ -82,7 +58,7 @@ export default defineComponent({
       }
     });
 
-    return { hasSnapshots, truncate, countryCodeToEmoji, root };
+    return { hasSnapshots, root };
   },
 });
 </script>
