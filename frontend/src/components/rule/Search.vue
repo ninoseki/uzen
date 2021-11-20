@@ -10,7 +10,7 @@
           <span class="icon">
             <i class="fas fa-search"></i>
           </span>
-          <span>Sesrch</span>
+          <span>Search</span>
         </button>
       </div>
     </div>
