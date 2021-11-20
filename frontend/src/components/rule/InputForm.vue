@@ -78,9 +78,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped>
-#form {
-  margin-bottom: 0.75rem;
-}
-</style>

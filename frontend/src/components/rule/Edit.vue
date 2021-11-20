@@ -11,7 +11,7 @@
         @update-target="updateTarget"
       ></InputForm>
 
-      <div class="has-text-centered">
+      <div class="has-text-centered mt-5">
         <button class="button is-light" @click="edit">
           <span class="icon">
             <i class="fas fa-keyboard"></i>

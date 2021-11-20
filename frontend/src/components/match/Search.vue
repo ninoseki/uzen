@@ -3,9 +3,7 @@
     <div class="box">
       <Form ref="form" :ruleId="ruleId" :snapshotId="snapshotId" />
 
-      <br />
-
-      <div class="has-text-centered">
+      <div class="has-text-centered mt-5">
         <button class="button is-light" @click="initSearch">
           <span class="icon">
             <i class="fas fa-search"></i>

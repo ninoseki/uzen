@@ -13,9 +13,7 @@
         </p>
       </div>
 
-      <br />
-
-      <div class="buttons is-centered">
+      <div class="buttons is-centered mt-5">
         <button class="button is-light" @click="bulkSubmit">
           <span class="icon">
             <i class="fas fa-search"></i>
