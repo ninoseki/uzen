@@ -30,37 +30,56 @@
       </div>
     </nav>
 
-    <div class="column is-full">
-      <div class="columns">
-        <div class="column is-half">
-          <div class="table-container">
-            <table class="table is-completely-borderless">
-              <tbody>
-                <tr>
-                  <th>ID</th>
-                  <td>{{ rule.id }}</td>
-                </tr>
-                <tr>
-                  <th>Target</th>
-                  <td>{{ rule.target }}</td>
-                </tr>
-                <tr>
-                  <th>Created at</th>
-                  <td>{{ rule.createdAt || "N/A" }}</td>
-                </tr>
-                <tr>
-                  <th>Updated at</th>
-                  <td>{{ rule.updatedAt || "N/A" }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div class="column is-half">
-          <H3>Source</H3>
-          <pre><code class="yara">{{ rule.source || "N/A" }}</code></pre>
-        </div>
+    <div class="column">
+      <div class="table-container">
+        <table class="table is-completely-borderless">
+          <tbody>
+            <tr>
+              <th>ID</th>
+              <td>{{ rule.id }}</td>
+            </tr>
+            <tr>
+              <th>Target</th>
+              <td>{{ rule.target }}</td>
+            </tr>
+            <tr>
+              <th>Allowed network addresses</th>
+              <td>
+                <ValueTags :value="rule.allowedNetworkAddresses"></ValueTags>
+              </td>
+            </tr>
+            <tr>
+              <th>Disallowed network addresses</th>
+              <td>
+                <ValueTags :value="rule.disallowedNetworkAddresses"></ValueTags>
+              </td>
+            </tr>
+            <tr>
+              <th>Allowed resource hashes</th>
+              <td>
+                <ValueTags :value="rule.allowedResourceHashes"></ValueTags>
+              </td>
+            </tr>
+            <tr>
+              <th>Disallowed resource hashes</th>
+              <td>
+                <ValueTags :value="rule.disallowedResourceHashes"></ValueTags>
+              </td>
+            </tr>
+            <tr>
+              <th>Created at</th>
+              <td>{{ rule.createdAt || "N/A" }}</td>
+            </tr>
+            <tr>
+              <th>Updated at</th>
+              <td>{{ rule.updatedAt || "N/A" }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <H3>Source</H3>
+        <pre><code class="yara">{{ rule.source || "N/A" }}</code></pre>
       </div>
+
       <div class="column">
         <H3>
           Recent related snapshots
@@ -81,6 +100,7 @@ import { useRouter } from "vue-router";
 
 import { API } from "@/api";
 import Counter from "@/components/match/Counter.vue";
+import ValueTags from "@/components/rule/ValueTags.vue";
 import SnapshotTable from "@/components/snapshot/TableWithScreenshot.vue";
 import H2 from "@/components/ui/H2.vue";
 import H3 from "@/components/ui/H3.vue";
@@ -94,6 +114,7 @@ export default defineComponent({
     H2,
     H3,
     SnapshotTable,
+    ValueTags,
   },
   props: {
     rule: {

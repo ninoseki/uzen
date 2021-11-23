@@ -16,7 +16,9 @@ class MatchingTask(AbstractAsyncTask):
 
         snapshot_: models.Snapshot = await models.Snapshot.get(
             id=self.snapshot.id
-        ).prefetch_related("_scripts__file", "whois", "certificate", "html")
+        ).prefetch_related(
+            "_scripts__file", "_stylesheets__file", "whois", "certificate", "html"
+        )
 
         scanner = RuleScanner(snapshot_)
         results: List[schemas.MatchResult] = await scanner.scan()

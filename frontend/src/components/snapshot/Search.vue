@@ -120,8 +120,8 @@ export default defineComponent({
       return await API.searchSnapshots(params);
     });
 
-    const search = async (additonalLoading = false) => {
-      if (!additonalLoading) {
+    const search = async (additionalLoading = false) => {
+      if (!additionalLoading) {
         resetPagination();
       }
 
@@ -134,7 +134,7 @@ export default defineComponent({
         oldestCreatedAt = snapshots.value[count.value - 1].createdAt;
       }
 
-      if (!additonalLoading) {
+      if (!additionalLoading) {
         totalCount.value = res.total;
       }
 

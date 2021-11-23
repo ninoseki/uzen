@@ -1,6 +1,6 @@
 import itertools
 from functools import partial
-from typing import List, cast
+from typing import Any, List, cast
 
 import aiometer
 
@@ -9,6 +9,57 @@ from app.services.searchers.rule import RuleSearcher
 
 from .constants import CHUNK_SIZE, MAX_AT_ONCE
 from .yara import YaraScanner
+
+
+def has_intersection(list1: List[Any], list2: List[Any]) -> bool:
+    intersection = set(list1).intersection(list2)
+    return len(intersection) > 0
+
+
+def is_snapshot_allowed_by_rule(snapshot: models.Snapshot, rule: models.Rule) -> bool:
+    if rule.allowed_network_addresses is not None:
+        values = rule.allowed_network_addresses.split(",")
+        network_values = [
+            str(snapshot.ip_address),
+            str(snapshot.asn),
+            str(snapshot.hostname),
+        ]
+        return has_intersection(values, network_values)
+
+    if rule.allowed_resource_hashes is not None:
+        values = rule.allowed_resource_hashes.split(",")
+
+        scripts = [str(script.file.id) for script in snapshot._scripts]
+        stylesheets = [str(stylesheet.file.id) for stylesheet in snapshot._stylesheets]
+        hashes = scripts + stylesheets
+
+        return has_intersection(values, hashes)
+
+    return True
+
+
+def is_snapshot_disallowed_by_rule(
+    snapshot: models.Snapshot, rule: models.Rule
+) -> bool:
+    if rule.disallowed_network_addresses is not None:
+        values = rule.disallowed_network_addresses.split(",")
+        network_values = [
+            str(snapshot.ip_address),
+            str(snapshot.asn),
+            str(snapshot.hostname),
+        ]
+        return has_intersection(values, network_values)
+
+    if rule.disallowed_resource_hashes is not None:
+        values = rule.disallowed_resource_hashes.split(",")
+
+        scripts = [str(script.file.id) for script in snapshot._scripts]
+        stylesheets = [str(stylesheet.file.id) for stylesheet in snapshot._stylesheets]
+        hashes = scripts + stylesheets
+
+        return has_intersection(values, hashes)
+
+    return False
 
 
 class RuleScanner:
@@ -43,9 +94,18 @@ class RuleScanner:
         return results
 
     async def partial_scan(self, ids: List[types.ULID]) -> List[schemas.MatchResult]:
-        results: List[schemas.MatchResult] = []
         rules: List[models.Rule] = await models.Rule.filter(id__in=ids)
+
+        results: List[schemas.MatchResult] = []
         for rule in rules:
+            # check pre-conditions
+            if not is_snapshot_allowed_by_rule(self.snapshot, rule):
+                continue
+
+            if is_snapshot_disallowed_by_rule(self.snapshot, rule):
+                continue
+
+            # check with YARA
             scanner = YaraScanner(rule.source)
 
             if rule.target == "script":

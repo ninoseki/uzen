@@ -3,7 +3,6 @@ from typing import List, Optional
 import yara
 from pydantic import Field, validator
 
-from app.schemas.base import APIModel
 from app.schemas.search import BaseSearchResults
 from app.schemas.snapshot import BaseRule, Rule
 from app.schemas.types import TargetTypes
@@ -13,7 +12,7 @@ class CreateRulePayload(BaseRule):
     """Payload to create a rule"""
 
 
-class UpdateRulePayload(APIModel):
+class UpdateRulePayload(BaseRule):
     """Payload to update a rule"""
 
     name: Optional[str] = Field(None, description="A name of the YARA rule")
