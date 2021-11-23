@@ -60,6 +60,12 @@ async def put(
         if payload.source is not None:
             rule.source = payload.source
 
+        rule.allowed_network_addresses = payload.allowed_network_addresses
+        rule.disallowed_network_addresses = payload.disallowed_network_addresses
+
+        rule.allowed_resource_hashes = payload.allowed_resource_hashes
+        rule.disallowed_resource_hashes = payload.disallowed_resource_hashes
+
         await rule.save()
     except DoesNotExist:
         raise HTTPException(status_code=404, detail=f"Rule:{rule_id} is not found")
@@ -76,7 +82,15 @@ async def put(
 async def create(
     payload: schemas.CreateRulePayload, _: Any = Depends(verify_api_key)
 ) -> schemas.Rule:
-    rule = models.Rule(name=payload.name, target=payload.target, source=payload.source)
+    rule = models.Rule(
+        name=payload.name,
+        target=payload.target,
+        source=payload.source,
+        allowed_network_addresses=payload.allowed_network_addresses,
+        disallowed_network_addresses=payload.disallowed_network_addresses,
+        allowed_resource_hashes=payload.allowed_resource_hashes,
+        disallowed_resource_hashes=payload.disallowed_resource_hashes,
+    )
     try:
         await rule.save()
         return rule.to_model()

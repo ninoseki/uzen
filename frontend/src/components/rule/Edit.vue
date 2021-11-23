@@ -6,9 +6,11 @@
         :name="name"
         :target="target"
         :source="source"
-        @update-name="updateName"
-        @update-source="updateSource"
-        @update-target="updateTarget"
+        :allowedNetworkAddresses="allowedNetworkAddresses"
+        :disallowedNetworkAddresses="disallowedNetworkAddresses"
+        :allowedResourceHashes="allowedResourceHashes"
+        :disallowedResourceHashes="disallowedResourceHashes"
+        ref="form"
       ></InputForm>
 
       <div class="has-text-centered mt-5">
@@ -60,9 +62,16 @@ export default defineComponent({
   setup(props) {
     const router = useRouter();
 
-    const name = ref<string | undefined>(undefined);
-    const target = ref<string | undefined>(undefined);
-    const source = ref<string | undefined>(undefined);
+    const form = ref<InstanceType<typeof InputForm>>();
+
+    const name = ref<string>("");
+    const target = ref<string>("");
+    const source = ref<string>("");
+
+    const allowedNetworkAddresses = ref<string | undefined>(undefined);
+    const disallowedNetworkAddresses = ref<string | undefined>(undefined);
+    const allowedResourceHashes = ref<string | undefined>(undefined);
+    const disallowedResourceHashes = ref<string | undefined>(undefined);
 
     const hasRule = ref(false);
 
@@ -76,17 +85,21 @@ export default defineComponent({
       target.value = rule.target;
       source.value = rule.source;
 
+      allowedNetworkAddresses.value = rule.allowedNetworkAddresses;
+      disallowedNetworkAddresses.value = rule.disallowedNetworkAddresses;
+      allowedResourceHashes.value = rule.allowedResourceHashes;
+      disallowedResourceHashes.value = rule.disallowedResourceHashes;
+
       hasRule.value = true;
     };
 
     getRule();
 
     const editRuleTask = useAsyncTask<Rule, []>(async () => {
-      const payload = {
-        name: name.value === "" ? undefined : name.value,
-        target: target.value,
-        source: source.value === "" ? undefined : source.value,
-      };
+      const payload = form.value?.getPayload();
+      if (payload === undefined) {
+        throw "The input form is not mounted!";
+      }
 
       return API.editRule(props.ruleId, payload);
     });
@@ -96,29 +109,19 @@ export default defineComponent({
       router.push({ path: `/rules/${props.ruleId}` });
     };
 
-    const updateName = (newName: string) => {
-      name.value = newName;
-    };
-
-    const updateSource = (newSource: string) => {
-      source.value = newSource;
-    };
-
-    const updateTarget = (newTarget: string) => {
-      target.value = newTarget;
-    };
-
     return {
+      allowedNetworkAddresses,
+      allowedResourceHashes,
+      disallowedNetworkAddresses,
+      disallowedResourceHashes,
       editRuleTask,
+      form,
       getRuleTask,
       hasRule,
       name,
       source,
       target,
       edit,
-      updateName,
-      updateSource,
-      updateTarget,
     };
   },
 });

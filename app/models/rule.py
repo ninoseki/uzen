@@ -17,6 +17,12 @@ class Rule(TimestampMixin, AbstractBaseModel):
     name = CharField(max_length=255, unique=True)
     target = CharField(max_length=255)
     source = TextField()
+
+    allowed_network_addresses = TextField(null=True)
+    disallowed_network_addresses = TextField(null=True)
+    allowed_resource_hashes = TextField(null=True)
+    disallowed_resource_hashes = TextField(null=True)
+
     updated_at = DatetimeField(auto_now=True)
 
     _snapshots: ManyToManyRelation[models.Snapshot]

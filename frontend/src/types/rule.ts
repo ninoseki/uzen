@@ -3,7 +3,14 @@ import { YaraMatch } from "@/types/yara";
 
 export type TargetTypes = "html" | "whois" | "certificate" | "script";
 
-export interface Rule {
+interface RuleOptions {
+  allowedNetworkAddresses: string | undefined;
+  disallowedNetworkAddresses: string | undefined;
+  allowedResourceHashes: string | undefined;
+  disallowedResourceHashes: string | undefined;
+}
+
+export interface Rule extends RuleOptions {
   id: string;
   name: string;
   target: TargetTypes;
@@ -35,13 +42,13 @@ export interface MatchFilters {
   toAt: Date | undefined;
 }
 
-export interface CreateRulePayload {
+export interface CreateRulePayload extends RuleOptions {
   name: string;
   target: string;
   source: string;
 }
 
-export interface UpdateRulePayload {
+export interface UpdateRulePayload extends RuleOptions {
   name: string | undefined;
   target: string | undefined;
   source: string | undefined;

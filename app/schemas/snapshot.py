@@ -19,6 +19,7 @@ from app.schemas.stylesheet import Stylesheet
 from app.schemas.whois import WhoisMetaData
 from app.types import WaitUntilType
 from app.utils.network import get_hostname_from_url, get_ip_address_by_hostname
+from app.utils.validator import is_hash, is_network_address
 
 # Declare rules & devices related schemas here to prevent circular reference
 
@@ -66,6 +67,41 @@ class BaseRule(Source, Target):
     """Base model for Rule"""
 
     name: str = Field(..., min_length=1)
+
+    allowed_network_addresses: Optional[str] = Field(None)
+    disallowed_network_addresses: Optional[str] = Field(None)
+    allowed_resource_hashes: Optional[str] = Field(None)
+    disallowed_resource_hashes: Optional[str] = Field(None)
+
+    @validator("allowed_network_addresses", "disallowed_network_addresses")
+    def validate_network_addresses(cls, v: Optional[str]) -> Optional[str]:
+        if v is None:
+            return v
+
+        values = v.split(",")
+        for value in values:
+            if not is_network_address(value):
+                raise ValueError(f"{value} is not a valid network address")
+
+        if len(values) != len(list(set(values))):
+            raise ValueError(f"{v} has duplicate values")
+
+        return v
+
+    @validator("allowed_resource_hashes", "disallowed_resource_hashes")
+    def validate_resource_hashes(cls, v: Optional[str]) -> Optional[str]:
+        if v is None:
+            return v
+
+        values = v.split(",")
+        for value in values:
+            if not is_hash(value):
+                raise ValueError(f"{value} is not a valid hash")
+
+        if len(values) != len(list(set(values))):
+            raise ValueError(f"{v} has duplicate values")
+
+        return v
 
 
 class Rule(BaseRule, AbstractBaseModel, TimestampMixin):

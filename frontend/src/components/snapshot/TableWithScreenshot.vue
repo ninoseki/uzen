@@ -28,9 +28,8 @@
 <script lang="ts">
 import { computed, defineComponent, PropType } from "vue";
 
-import URL from "@/components/snapshot/table/URL.vue";
-
 import Screenshot from "@/components/screenshot/Screenshot.vue";
+import URL from "@/components/snapshot/table/URL.vue";
 import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
 import { Snapshot } from "@/types";
 

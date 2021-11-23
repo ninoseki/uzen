@@ -37,6 +37,19 @@ def test_create_rule(client: TestClient, event_loop: asyncio.AbstractEventLoop):
     assert response.status_code == 400
 
 
+def test_create_rule_with_options(
+    client: TestClient, event_loop: asyncio.AbstractEventLoop
+):
+    payload = {
+        "name": "test2",
+        "target": "html",
+        "source": 'rule foo: bar {strings: $a = "lmn" condition: $a}',
+        "allowedNetworkAddresses": "1.1.1.1,example.com",
+    }
+    response = client.post("/api/rules/", json=payload)
+    assert response.status_code == 201
+
+
 def test_delete_rule(
     client: TestClient, event_loop: asyncio.AbstractEventLoop, rules: List[models.Rule]
 ):

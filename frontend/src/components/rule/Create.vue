@@ -5,9 +5,11 @@
         :name="name"
         :target="target"
         :source="source"
-        @update-name="updateName"
-        @update-source="updateSource"
-        @update-target="updateTarget"
+        :allowedNetworkAddresses="allowedNetworkAddresses"
+        :disallowedNetworkAddresses="disallowedNetworkAddresses"
+        :allowedResourceHashes="allowedResourceHashes"
+        :disallowedResourceHashes="disallowedResourceHashes"
+        ref="form"
       />
 
       <div class="has-text-centered mt-5">
@@ -49,17 +51,22 @@ export default defineComponent({
   setup() {
     const router = useRouter();
 
+    const form = ref<InstanceType<typeof InputForm>>();
+
     const name = ref("");
     const target = ref<TargetTypes>("html");
     const source = ref("");
 
-    const createRuleTask = useAsyncTask<Rule, []>(async () => {
-      const payload = {
-        name: name.value,
-        target: target.value,
-        source: source.value,
-      };
+    const allowedNetworkAddresses = ref<string | undefined>(undefined);
+    const disallowedNetworkAddresses = ref<string | undefined>(undefined);
+    const allowedResourceHashes = ref<string | undefined>(undefined);
+    const disallowedResourceHashes = ref<string | undefined>(undefined);
 
+    const createRuleTask = useAsyncTask<Rule, []>(async () => {
+      const payload = form.value?.getPayload();
+      if (payload === undefined) {
+        throw "The input form is not mounted!";
+      }
       return await API.createRule(payload);
     });
 
@@ -68,27 +75,17 @@ export default defineComponent({
       router.push({ path: `/rules/${rule.id}` });
     };
 
-    const updateName = (newName: string) => {
-      name.value = newName;
-    };
-
-    const updateSource = (newSource: string) => {
-      source.value = newSource;
-    };
-
-    const updateTarget = (newTarget: TargetTypes) => {
-      target.value = newTarget;
-    };
-
     return {
+      allowedNetworkAddresses,
+      allowedResourceHashes,
       createRuleTask,
+      disallowedNetworkAddresses,
+      disallowedResourceHashes,
+      form,
       name,
       source,
       target,
       register,
-      updateName,
-      updateSource,
-      updateTarget,
     };
   },
 });
