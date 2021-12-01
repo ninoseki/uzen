@@ -11,7 +11,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
     "@mdi/font": "^6.5.95",
-    "@vueuse/core": "^6.9.1",
+    "@vueuse/core": "6.9.2",
     "@vueuse/router": "^6.9.1",
     "axios": "^0.24.0",
     "bowser": "^2.11.0",
