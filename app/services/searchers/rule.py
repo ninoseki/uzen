@@ -29,10 +29,13 @@ class RuleSearcher(AbstractSearcher):
     @classmethod
     async def search(
         cls,
-        filters: Dict[str, Any],
+        filters: Optional[Dict[str, Any]] = None,
         size: Optional[int] = None,
         offset: Optional[int] = None,
     ) -> schemas.RulesSearchResults:
+        if filters is None:
+            filters = {}
+
         query = build_query(filters)
         # Run search
         instance = cls(model=models.Rule, query=query)
@@ -44,10 +47,13 @@ class RuleSearcher(AbstractSearcher):
     @classmethod
     async def search_for_ids(
         cls,
-        filters: Dict[str, Any],
+        filters: Dict[str, Any] = None,
         size: Optional[int] = None,
         offset: Optional[int] = None,
     ) -> dataclasses.SearchResultsForIDs:
+        if filters is None:
+            filters = {}
+
         query = build_query(filters)
         # Run search
         instance = cls(model=models.Rule, query=query)

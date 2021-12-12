@@ -9,6 +9,7 @@ from app import models, schemas, types
 from app.services.matches_converter import MatchesConverter
 from app.services.scanners.constants import CHUNK_SIZE, MAX_AT_ONCE
 from app.services.scanners.utils import search_snapshots_for_ids
+from app.utils.chunk import chunknize
 
 
 def build_snapshot_table(snapshots: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -126,10 +127,8 @@ class YaraScanner:
             return []
 
         # split ids into chunks
-        chunks = [
-            snapshot_ids[i : i + CHUNK_SIZE]
-            for i in range(0, len(snapshot_ids), CHUNK_SIZE)
-        ]
+        chunks = chunknize(snapshot_ids, chunk_size=CHUNK_SIZE)
+
         # make scan tasks
         tasks = [partial(self.partial_scan, target, chunk) for chunk in chunks]
         results = await aiometer.run_all(tasks, max_at_once=MAX_AT_ONCE)

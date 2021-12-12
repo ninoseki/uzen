@@ -10,6 +10,7 @@ from niteru.similarity import similarity, similarity_by_tags_and_classes
 from app import dataclasses, models, schemas
 from app.services.scanners.constants import CHUNK_SIZE, MAX_AT_ONCE
 from app.services.scanners.utils import search_snapshots
+from app.utils.chunk import chunknize
 
 
 def build_similarity_result_table(
@@ -110,9 +111,8 @@ class SimilarityScanner:
             return []
 
         # split IDs into chunks
-        chunks = [
-            html_ids[i : i + CHUNK_SIZE] for i in range(0, len(html_ids), CHUNK_SIZE)
-        ]
+        chunks = chunknize(html_ids, chunk_size=CHUNK_SIZE)
+
         # make scan tasks
         tasks = [partial(self.partial_scan, chunk) for chunk in chunks]
         results = await aiometer.run_all(tasks, max_at_once=MAX_AT_ONCE)
