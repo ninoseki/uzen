@@ -6,6 +6,7 @@ import aiometer
 
 from app import models, schemas, types
 from app.services.searchers.rule import RuleSearcher
+from app.utils.chunk import chunknize
 
 from .constants import CHUNK_SIZE, MAX_AT_ONCE
 from .yara import YaraScanner
@@ -122,15 +123,14 @@ class RuleScanner:
         return results
 
     async def scan(self) -> List[schemas.MatchResult]:
-        search_results = await RuleSearcher.search_for_ids({})
+        search_results = await RuleSearcher.search_for_ids()
         rule_ids = search_results.results
         if len(rule_ids) == 0:
             return []
 
         # split ids into chunks
-        chunks = [
-            rule_ids[i : i + CHUNK_SIZE] for i in range(0, len(rule_ids), CHUNK_SIZE)
-        ]
+        chunks = chunknize(rule_ids, chunk_size=CHUNK_SIZE)
+
         # make scan tasks
         tasks = [partial(self.partial_scan, chunk) for chunk in chunks]
         results = await aiometer.run_all(tasks, max_at_once=MAX_AT_ONCE)
