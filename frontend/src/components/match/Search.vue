@@ -37,21 +37,20 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
-import { useAsyncTask } from "vue-concurrency";
 import { useRoute } from "vue-router";
 
-import { API } from "@/api";
 import Form from "@/components/match/Form.vue";
 import MatchesTable from "@/components/match/Table.vue";
 import Error from "@/components/ui/SimpleError.vue";
 import Loading from "@/components/ui/SimpleLoading.vue";
-import { Match, MatchSearchResults } from "@/types";
+import { Match } from "@/types";
 import {
   DEFAULT_PAGE_SIZE,
   hasLoadMore,
   minDatetime,
   nowDatetime,
 } from "@/utils/form";
+import { generateSearchMatchesTask } from "@/api-helper";
 
 export default defineComponent({
   name: "MatchesSearch",
@@ -84,20 +83,22 @@ export default defineComponent({
       oldestCreatedAt = nowDatetime();
     };
 
-    const searchTask = useAsyncTask<MatchSearchResults, []>(async () => {
+    const searchTask = generateSearchMatchesTask();
+
+    const search = async () => {
       const params = form.value?.filtersParams() || {};
       params["size"] = size;
       params["toAt"] = minDatetime(params["toAt"], oldestCreatedAt);
 
-      return await API.searchMatches(params);
-    });
+      return await searchTask.perform(params);
+    };
 
-    const search = async (additonalLoading = false) => {
-      if (!additonalLoading) {
+    const searchWithAdditionalLoading = async (additionalLoading = false) => {
+      if (!additionalLoading) {
         resetPagination();
       }
 
-      const res = await searchTask.perform();
+      const res = await search();
 
       matches.value = matches.value.concat(res.results);
       count.value = matches.value.length;
@@ -106,24 +107,24 @@ export default defineComponent({
         oldestCreatedAt = matches.value[count.value - 1].createdAt;
       }
 
-      if (!additonalLoading) {
+      if (!additionalLoading) {
         totalCount.value = res.total;
       }
 
       return;
     };
 
-    const loadMore = () => {
-      search(true);
+    const loadMore = async () => {
+      await searchWithAdditionalLoading(true);
     };
 
-    const initSearch = () => {
-      search(false);
+    const initSearch = async () => {
+      await searchWithAdditionalLoading(false);
     };
 
-    onMounted(() => {
+    onMounted(async () => {
       if (Object.keys(route.query).length > 0) {
-        initSearch();
+        await initSearch();
       }
     });
 

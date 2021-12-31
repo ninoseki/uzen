@@ -30,13 +30,11 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import { useAsyncTask } from "vue-concurrency";
 import { useRouter } from "vue-router";
 
-import { API } from "@/api";
 import Error from "@/components/ui/SimpleError.vue";
 import Loading from "@/components/ui/SimpleLoading.vue";
-import { Snapshot } from "@/types";
+import { generateImportFromUrlscanTask } from "@/api-helper";
 
 export default defineComponent({
   name: "Import",
@@ -49,12 +47,10 @@ export default defineComponent({
 
     const uuid = ref<string>("");
 
-    const importTask = useAsyncTask<Snapshot, []>(async () => {
-      return await API.importFromUrlscan(uuid.value);
-    });
+    const importTask = generateImportFromUrlscanTask();
 
     const importFromUrlscan = async () => {
-      const snapshot = await importTask.perform();
+      const snapshot = await importTask.perform(uuid.value);
       router.push({ path: `/snapshots/${snapshot.id}` });
     };
 

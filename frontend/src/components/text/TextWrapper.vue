@@ -13,13 +13,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import { useAsyncTask } from "vue-concurrency";
+import { defineComponent, onMounted } from "vue";
 
-import { API } from "@/api";
 import TextComponent from "@/components/text/Text.vue";
 import NA from "@/components/ui/NA.vue";
 import Loading from "@/components/ui/SimpleLoading.vue";
+import { generateGetTextTask } from "@/api-helper";
 
 export default defineComponent({
   name: "TextWrapper",
@@ -35,11 +34,11 @@ export default defineComponent({
     NA,
   },
   setup(props) {
-    const getTextTask = useAsyncTask<string, []>(async () => {
-      return await API.getText(props.sha256);
-    });
+    const getTextTask = generateGetTextTask();
 
-    getTextTask.perform();
+    onMounted(async () => {
+      await getTextTask.perform(props.sha256);
+    });
 
     return { getTextTask };
   },

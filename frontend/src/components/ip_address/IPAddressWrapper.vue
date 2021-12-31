@@ -13,15 +13,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import { useAsyncTask } from "vue-concurrency";
+import { defineComponent, onMounted } from "vue";
 import { useRoute } from "vue-router";
 
-import { API } from "@/api";
 import IPAddress from "@/components/ip_address/IPAddress.vue";
 import Error from "@/components/ui/SimpleError.vue";
 import Loading from "@/components/ui/SimpleLoading.vue";
-import { IPAddressInformation } from "@/types";
+import { generateGetIPAddressTask } from "@/api-helper";
 
 export default defineComponent({
   name: "IPAddressWrapper",
@@ -34,13 +32,11 @@ export default defineComponent({
     const route = useRoute();
     const hostname = route.params.ipAddress as string;
 
-    const getIPAddressTask = useAsyncTask<IPAddressInformation, []>(
-      async () => {
-        return API.getIPAddressInformation(hostname);
-      }
-    );
+    const getIPAddressTask = generateGetIPAddressTask();
 
-    getIPAddressTask.perform();
+    onMounted(async () => {
+      await getIPAddressTask.perform(hostname);
+    });
 
     return { getIPAddressTask };
   },

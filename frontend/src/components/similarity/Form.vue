@@ -90,13 +90,13 @@
 <script lang="ts">
 import { useRouteQuery } from "@vueuse/router";
 import { defineComponent, Ref, ref } from "vue";
-import { useAsyncTask } from "vue-concurrency";
 import { useRoute, useRouter } from "vue-router";
 
 import { API } from "@/api";
 import SnapshotForm from "@/components/snapshot/SearchForm.vue";
 import Error from "@/components/ui/SimpleError.vue";
-import { Job, SimilarityScanPayload } from "@/types";
+import { SimilarityScanPayload } from "@/types";
+import { generateSimilarityScanTask } from "@/api-helper";
 
 export default defineComponent({
   name: "SimilarityForm",
@@ -124,7 +124,9 @@ export default defineComponent({
 
     const form = ref<InstanceType<typeof SnapshotForm>>();
 
-    const scanTask = useAsyncTask<Job, []>(async () => {
+    const scanTask = generateSimilarityScanTask();
+
+    const scan = async () => {
       // get parameters from the child component
       const params = form.value?.filtersParams() || {};
 
@@ -148,11 +150,8 @@ export default defineComponent({
           excludeIPAddress.value === "" ? undefined : excludeIPAddress.value,
       };
 
-      return await API.similarityScan(payload, params);
-    });
+      const job = await scanTask.perform(payload, params);
 
-    const scan = async () => {
-      const job = await scanTask.perform();
       router.push({ path: `/jobs/similarity/${job.id}` });
     };
 

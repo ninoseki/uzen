@@ -14,7 +14,7 @@
       >
         <article class="message is-info">
           <div class="message-body">
-            <p>Scanning snapshtos with YARA...</p>
+            <p>Scanning snapshots with YARA...</p>
             <Loading></Loading>
           </div>
         </article>
@@ -48,9 +48,7 @@
 <script lang="ts">
 import { useTitle } from "@vueuse/core";
 import { defineComponent, onMounted } from "vue";
-import { useAsyncTask } from "vue-concurrency";
 
-import { API } from "@/api";
 import YaraScanJob from "@/components/job/YaraScanJob.vue";
 import H3 from "@/components/ui/H3.vue";
 import Error from "@/components/ui/SimpleError.vue";
@@ -58,6 +56,7 @@ import Loading from "@/components/ui/SimpleLoading.vue";
 import YaraSource from "@/components/yara/Source.vue";
 import { JOB_CHECK_INTERVAL } from "@/constants";
 import { YaraScanJobStatus } from "@/types/job";
+import { generateGetYaraScanJobStatusTask } from "@/api-helper";
 
 export default defineComponent({
   name: "YaraScanJobWrapper",
@@ -80,12 +79,10 @@ export default defineComponent({
       useTitle(`${props.jobId} - Uzen`);
     };
 
-    const getJobStatusTask = useAsyncTask<YaraScanJobStatus, []>(async () => {
-      return await API.getYaraScanJobStatus(props.jobId);
-    });
+    const getJobStatusTask = generateGetYaraScanJobStatusTask();
 
     const getJobStatus = async (): Promise<YaraScanJobStatus> => {
-      return await getJobStatusTask.perform();
+      return await getJobStatusTask.perform(props.jobId);
     };
 
     onMounted(async () => {

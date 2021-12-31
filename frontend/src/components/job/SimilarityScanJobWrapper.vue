@@ -14,7 +14,7 @@
       >
         <article class="message is-info">
           <div class="message-body">
-            <p>Scanning snapshtos...</p>
+            <p>Scanning snapshots...</p>
             <Loading></Loading>
           </div>
         </article>
@@ -84,15 +84,14 @@
 import { useTitle } from "@vueuse/core";
 import { sha256 } from "js-sha256";
 import { defineComponent, onMounted } from "vue";
-import { useAsyncTask } from "vue-concurrency";
 
-import { API } from "@/api";
 import SimilarityScanJob from "@/components/job/SimilarityScanJob.vue";
 import DatetimeWithDiff from "@/components/ui/DatetimeWithDiff.vue";
 import Error from "@/components/ui/SimpleError.vue";
 import Loading from "@/components/ui/SimpleLoading.vue";
 import { JOB_CHECK_INTERVAL } from "@/constants";
 import { SimilarityScanJobStatus } from "@/types/job";
+import { generateGetSimilarityScanJobStatusTask } from "@/api-helper";
 
 export default defineComponent({
   name: "SimilarityScanJobWrapper",
@@ -114,14 +113,10 @@ export default defineComponent({
       useTitle(`${props.jobId} - Uzen`);
     };
 
-    const getJobStatusTask = useAsyncTask<SimilarityScanJobStatus, []>(
-      async () => {
-        return await API.getSimilarityScanJobStatus(props.jobId);
-      }
-    );
+    const getJobStatusTask = generateGetSimilarityScanJobStatusTask();
 
     const getJobStatus = async (): Promise<SimilarityScanJobStatus> => {
-      return await getJobStatusTask.perform();
+      return await getJobStatusTask.perform(props.jobId);
     };
 
     onMounted(async () => {

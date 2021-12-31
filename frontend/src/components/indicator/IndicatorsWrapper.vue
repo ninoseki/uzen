@@ -11,14 +11,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import { useAsyncTask } from "vue-concurrency";
+import { defineComponent, onMounted } from "vue";
 
-import { API } from "@/api";
 import IndicatorsComponent from "@/components/indicator/Indicators.vue";
 import NA from "@/components/ui/NA.vue";
 import Loading from "@/components/ui/SimpleLoading.vue";
-import { Indicators } from "@/types";
+import { generateGetIndicatorsTask } from "@/api-helper";
 
 export default defineComponent({
   name: "IndicatorsWrapper",
@@ -34,11 +32,11 @@ export default defineComponent({
     Loading,
   },
   setup(props) {
-    const getIndicatorsTask = useAsyncTask<Indicators, []>(async () => {
-      return await API.getIndicators(props.snapshotId);
-    });
+    const getIndicatorsTask = generateGetIndicatorsTask();
 
-    getIndicatorsTask.perform();
+    onMounted(async () => {
+      await getIndicatorsTask.perform(props.snapshotId);
+    });
 
     return { getIndicatorsTask };
   },

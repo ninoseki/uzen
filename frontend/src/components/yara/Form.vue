@@ -30,14 +30,14 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import { useAsyncTask } from "vue-concurrency";
 import { useRouter } from "vue-router";
 
 import { API } from "@/api";
 import SnapshotForm from "@/components/snapshot/SearchForm.vue";
 import Error from "@/components/ui/SimpleError.vue";
 import BasicForm from "@/components/yara/BasicForm.vue";
-import { Job, TargetTypes, YaraScanPayload } from "@/types";
+import { TargetTypes, YaraScanPayload } from "@/types";
+import { generateYaraScanTask } from "@/api-helper";
 
 export default defineComponent({
   name: "YaraForm",
@@ -54,7 +54,8 @@ export default defineComponent({
 
     const form = ref<InstanceType<typeof SnapshotForm>>();
 
-    const scanTask = useAsyncTask<Job, []>(async () => {
+    const scanTask = generateYaraScanTask();
+    const scan = async () => {
       // get parameters from the child component
       const params = form.value?.filtersParams() || {};
 
@@ -71,11 +72,8 @@ export default defineComponent({
         target: target.value,
       };
 
-      return await API.yaraScan(payload, params);
-    });
+      const job = await scanTask.perform(payload, params);
 
-    const scan = async () => {
-      const job = await scanTask.perform();
       router.push({ path: `/jobs/yara/${job.id}` });
     };
 

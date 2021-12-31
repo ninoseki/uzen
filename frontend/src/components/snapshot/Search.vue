@@ -46,21 +46,20 @@
 <script lang="ts">
 import { useRouteQuery } from "@vueuse/router";
 import { defineComponent, onMounted, Ref, ref } from "vue";
-import { useAsyncTask } from "vue-concurrency";
 import { useRoute, useRouter } from "vue-router";
 
-import { API } from "@/api";
 import Form from "@/components/snapshot/SearchForm.vue";
 import SnapshotsTable from "@/components/snapshot/Table.vue";
 import Error from "@/components/ui/SimpleError.vue";
 import Loading from "@/components/ui/SimpleLoading.vue";
-import { Snapshot, SnapshotSearchResults } from "@/types";
+import { Snapshot } from "@/types";
 import {
   DEFAULT_PAGE_SIZE,
   hasLoadMore,
   minDatetime,
   nowDatetime,
 } from "@/utils/form";
+import { generateSearchSnapshotsTask } from "@/api-helper";
 
 export default defineComponent({
   name: "SnapshotSearch",
@@ -112,20 +111,22 @@ export default defineComponent({
       oldestCreatedAt = nowDatetime();
     };
 
-    const searchTask = useAsyncTask<SnapshotSearchResults, []>(async () => {
+    const searchTask = generateSearchSnapshotsTask();
+
+    const search = async () => {
       const params = form.value?.filtersParams() || {};
       params["size"] = size;
       params["toAt"] = minDatetime(params["toAt"], oldestCreatedAt);
 
-      return await API.searchSnapshots(params);
-    });
+      return await searchTask.perform(params);
+    };
 
-    const search = async (additionalLoading = false) => {
+    const searchWithAdditionalLoading = async (additionalLoading = false) => {
       if (!additionalLoading) {
         resetPagination();
       }
 
-      const res = await searchTask.perform();
+      const res = await search();
 
       snapshots.value = snapshots.value.concat(res.results);
       count.value = snapshots.value.length;
@@ -141,17 +142,17 @@ export default defineComponent({
       return;
     };
 
-    const loadMore = () => {
-      search(true);
+    const loadMore = async () => {
+      await searchWithAdditionalLoading(true);
     };
 
-    const initSearch = () => {
-      search(false);
+    const initSearch = async () => {
+      await searchWithAdditionalLoading(false);
     };
 
-    onMounted(() => {
+    onMounted(async () => {
       if (Object.keys(route.query).length > 0) {
-        initSearch();
+        await initSearch();
       }
     });
 

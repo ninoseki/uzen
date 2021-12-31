@@ -51,14 +51,13 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import { useAsyncTask } from "vue-concurrency";
 import { useRouter } from "vue-router";
 
-import { API } from "@/api";
 import Links from "@/components/link/Links.vue";
 import Error from "@/components/ui/SimpleError.vue";
 import { Snapshot } from "@/types";
 import { truncate } from "@/utils/truncate";
+import { generateDeleteSnapshotTask } from "@/api-helper";
 
 export default defineComponent({
   name: "SnapshotNavbar",
@@ -75,9 +74,7 @@ export default defineComponent({
   setup(props) {
     const router = useRouter();
 
-    const deleteSnapshotTask = useAsyncTask<void, []>(async () => {
-      return await API.deleteSnapshot(props.snapshot.id);
-    });
+    const deleteSnapshotTask = generateDeleteSnapshotTask();
 
     const deleteSnapshot = async () => {
       const decision = confirm(
@@ -85,7 +82,7 @@ export default defineComponent({
       );
 
       if (decision) {
-        await deleteSnapshotTask.perform();
+        await deleteSnapshotTask.perform(props.snapshot.id);
         router.push({ path: "/" });
       }
     };

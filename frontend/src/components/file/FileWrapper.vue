@@ -10,16 +10,14 @@
 
 <script lang="ts">
 import { useRouteQuery } from "@vueuse/router";
-import { defineComponent } from "vue";
-import { useAsyncTask } from "vue-concurrency";
+import { defineComponent, onMounted } from "vue";
 import { Ref } from "vue-concurrency/dist/vue3/src/utils/api";
 import { useRoute, useRouter } from "vue-router";
 
-import { API } from "@/api";
 import FileComponent from "@/components/file/File.vue";
 import NA from "@/components/ui/NA.vue";
 import Loading from "@/components/ui/SimpleLoading.vue";
-import { File } from "@/types";
+import { generateGetFileTask } from "@/api-helper";
 
 export default defineComponent({
   name: "FileWrapper",
@@ -38,11 +36,11 @@ export default defineComponent({
       string | undefined
     >;
 
-    const getFileTask = useAsyncTask<File, []>(async () => {
-      return await API.getFile(hash);
-    });
+    const getFileTask = generateGetFileTask();
 
-    getFileTask.perform();
+    onMounted(async () => {
+      await getFileTask.perform(hash);
+    });
 
     return { url, getFileTask };
   },

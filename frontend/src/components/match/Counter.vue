@@ -17,11 +17,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import { useAsyncTask } from "vue-concurrency";
+import { defineComponent, onMounted } from "vue";
 
-import { API } from "@/api";
-import { MatchSearchResults } from "@/types";
+import { generateSearchMatchesTask } from "@/api-helper";
 
 export default defineComponent({
   name: "MatchesCounter",
@@ -32,15 +30,19 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const searchTask = useAsyncTask<MatchSearchResults, []>(async () => {
+    const searchTask = generateSearchMatchesTask();
+
+    const search = async () => {
       const params = {
         size: 0,
         ruleId: props.ruleId,
       };
-      return API.searchMatches(params);
-    });
+      return searchTask.perform(params);
+    };
 
-    searchTask.perform();
+    onMounted(async () => {
+      await search();
+    });
 
     return { searchTask };
   },

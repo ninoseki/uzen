@@ -95,10 +95,8 @@
 <script lang="ts">
 import { useTitle } from "@vueuse/core";
 import { computed, defineComponent, onMounted, PropType, ref } from "vue";
-import { useAsyncTask } from "vue-concurrency";
 import { useRouter } from "vue-router";
 
-import { API } from "@/api";
 import Counter from "@/components/match/Counter.vue";
 import ValueTags from "@/components/rule/ValueTags.vue";
 import SnapshotTable from "@/components/snapshot/TableWithScreenshot.vue";
@@ -106,6 +104,7 @@ import H2 from "@/components/ui/H2.vue";
 import H3 from "@/components/ui/H3.vue";
 import { Rule } from "@/types";
 import { highlightCodeBlocks } from "@/utils/highlight";
+import { generateDeleteRuleTask } from "@/api-helper";
 
 export default defineComponent({
   name: "Rule",
@@ -135,14 +134,12 @@ export default defineComponent({
       return (props.rule.snapshots || []).length > 0;
     });
 
-    const deleteRuleTask = useAsyncTask<void, []>(async () => {
-      return await API.deleteRule(props.rule.id);
-    });
+    const deleteRuleTask = generateDeleteRuleTask();
 
     const deleteRule = async () => {
       const decision = confirm("Are you sure you want to delete this rule?");
       if (decision) {
-        await deleteRuleTask.perform();
+        await deleteRuleTask.perform(props.rule.id);
         router.push({ path: "/" });
       }
     };

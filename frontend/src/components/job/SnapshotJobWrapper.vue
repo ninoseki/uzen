@@ -22,15 +22,14 @@
 <script lang="ts">
 import { useTitle } from "@vueuse/core";
 import { defineComponent, onMounted } from "vue";
-import { useAsyncTask } from "vue-concurrency";
 import { useRouter } from "vue-router";
 
-import { API } from "@/api";
 import SnapshotJob from "@/components/job/SnapshotJob.vue";
 import Error from "@/components/ui/SimpleError.vue";
 import Loading from "@/components/ui/SimpleLoading.vue";
 import { JOB_CHECK_INTERVAL } from "@/constants";
 import { SnapshotJobStatus } from "@/types";
+import { generateGetSnapshotJobStatusTask } from "@/api-helper";
 
 export default defineComponent({
   name: "SnapshotJobWrapper",
@@ -53,12 +52,10 @@ export default defineComponent({
       useTitle(`${props.jobId} - Uzen`);
     };
 
-    const getJobStatusTask = useAsyncTask<SnapshotJobStatus, []>(async () => {
-      return await API.getSnapshotJobStatus(props.jobId);
-    });
+    const getJobStatusTask = generateGetSnapshotJobStatusTask();
 
     const getJobStatus = async (): Promise<SnapshotJobStatus> => {
-      return await getJobStatusTask.perform();
+      return await getJobStatusTask.perform(props.jobId);
     };
 
     onMounted(async () => {

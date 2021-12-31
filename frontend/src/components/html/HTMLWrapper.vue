@@ -14,14 +14,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import { useAsyncTask } from "vue-concurrency";
+import { defineComponent, onMounted } from "vue";
 
-import { API } from "@/api";
 import HTMLComponent from "@/components/html/HTML.vue";
 import NA from "@/components/ui/NA.vue";
 import Loading from "@/components/ui/SimpleLoading.vue";
-import { HTML } from "@/types";
+import { generateGetHTMLTask } from "@/api-helper";
 
 export default defineComponent({
   name: "HTMLWrapper",
@@ -37,11 +35,11 @@ export default defineComponent({
     Loading,
   },
   setup(props) {
-    const getHTMLTask = useAsyncTask<HTML, []>(async () => {
-      return await API.getHTML(props.sha256);
-    });
+    const getHTMLTask = generateGetHTMLTask();
 
-    getHTMLTask.perform();
+    onMounted(async () => {
+      await getHTMLTask.perform(props.sha256);
+    });
 
     return { getHTMLTask };
   },

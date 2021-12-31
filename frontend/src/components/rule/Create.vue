@@ -32,14 +32,13 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import { useAsyncTask } from "vue-concurrency";
 import { useRouter } from "vue-router";
 
-import { API } from "@/api";
 import InputForm from "@/components/rule/InputForm.vue";
 import Error from "@/components/ui/SimpleError.vue";
 import Loading from "@/components/ui/SimpleLoading.vue";
-import { Rule, TargetTypes } from "@/types";
+import { TargetTypes } from "@/types";
+import { generateCreateRuleTask } from "@/api-helper";
 
 export default defineComponent({
   name: "RuleRegister",
@@ -62,16 +61,18 @@ export default defineComponent({
     const allowedResourceHashes = ref<string | undefined>(undefined);
     const disallowedResourceHashes = ref<string | undefined>(undefined);
 
-    const createRuleTask = useAsyncTask<Rule, []>(async () => {
+    const createRuleTask = generateCreateRuleTask();
+
+    const createRule = async () => {
       const payload = form.value?.getPayload();
       if (payload === undefined) {
         throw "The input form is not mounted!";
       }
-      return await API.createRule(payload);
-    });
+      return await createRuleTask.perform(payload);
+    };
 
     const register = async () => {
-      const rule = await createRuleTask.perform();
+      const rule = await createRule();
       router.push({ path: `/rules/${rule.id}` });
     };
 

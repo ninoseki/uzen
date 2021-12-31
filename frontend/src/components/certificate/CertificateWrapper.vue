@@ -11,14 +11,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import { useAsyncTask } from "vue-concurrency";
+import { defineComponent, onMounted } from "vue";
 
-import { API } from "@/api";
 import CertificateComponent from "@/components/certificate/Certificate.vue";
 import NA from "@/components/ui/NA.vue";
 import Loading from "@/components/ui/SimpleLoading.vue";
-import { Certificate } from "@/types";
+import { generateGetCertificateTask } from "@/api-helper";
 
 export default defineComponent({
   name: "CertificateWrapper",
@@ -34,11 +32,11 @@ export default defineComponent({
     NA,
   },
   setup(props) {
-    const getCertificateTask = useAsyncTask<Certificate, []>(async () => {
-      return await API.getCertificate(props.id);
-    });
+    const getCertificateTask = generateGetCertificateTask();
 
-    getCertificateTask.perform();
+    onMounted(async () => {
+      await getCertificateTask.perform(props.id);
+    });
 
     return { getCertificateTask };
   },

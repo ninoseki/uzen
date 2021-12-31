@@ -47,16 +47,15 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import { useAsyncTask } from "vue-concurrency";
 import { useRouter } from "vue-router";
 
-import { API } from "@/api";
 import Options from "@/components/snapshot/Options.vue";
 import Status from "@/components/snapshot/Status.vue";
 import Error from "@/components/ui/SimpleError.vue";
 import Loading from "@/components/ui/SimpleLoading.vue";
-import { CreateSnapshotPayload, Header, Headers, Job } from "@/types";
+import { CreateSnapshotPayload, Header, Headers } from "@/types";
 import { WaitUntilType } from "@/types";
+import { generateTakeSnapshotTask } from "@/api-helper";
 
 export default defineComponent({
   name: "SnapshotForm",
@@ -81,7 +80,9 @@ export default defineComponent({
     const waitUntil = ref<WaitUntilType>("load");
     const otherHeaders = ref<Header[]>([]);
 
-    const takeSnapshotTask = useAsyncTask<Job, []>(async () => {
+    const takeSnapshotTask = generateTakeSnapshotTask();
+
+    const takeSnapshot = async () => {
       const headers: Headers = {
         "User-Agent": userAgent.value,
       };
@@ -108,11 +109,8 @@ export default defineComponent({
         headers,
       };
 
-      return await API.takeSnapshot(payload);
-    });
+      const job = await takeSnapshotTask.perform(payload);
 
-    const takeSnapshot = async () => {
-      const job = await takeSnapshotTask.perform();
       router.push({ path: `/jobs/snapshots/${job.id}` });
     };
 
