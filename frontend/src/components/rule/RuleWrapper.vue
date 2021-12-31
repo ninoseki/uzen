@@ -15,13 +15,11 @@
 
 <script lang="ts">
 import { defineComponent, onMounted } from "vue";
-import { useAsyncTask } from "vue-concurrency";
 
-import { API } from "@/api";
 import RuleComponent from "@/components/rule/Rule.vue";
 import Error from "@/components/ui/SimpleError.vue";
 import Loading from "@/components/ui/SimpleLoading.vue";
-import { Rule } from "@/types";
+import { generateGetRuleTask } from "@/api-helper";
 
 export default defineComponent({
   name: "RuleWrapper",
@@ -37,12 +35,10 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const getRuleTask = useAsyncTask<Rule, []>(async () => {
-      return await API.getRule(props.ruleId);
-    });
+    const getRuleTask = generateGetRuleTask();
 
     onMounted(async () => {
-      await getRuleTask.perform();
+      await getRuleTask.perform(props.ruleId);
     });
 
     return { getRuleTask };

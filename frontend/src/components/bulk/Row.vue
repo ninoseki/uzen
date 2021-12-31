@@ -38,17 +38,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
-import { useAsyncTask } from "vue-concurrency";
+import { defineComponent, onMounted, PropType } from "vue";
 
-import { API } from "@/api";
-import {
-  CreateSnapshotPayload,
-  Header,
-  Headers,
-  Job,
-  WaitUntilType,
-} from "@/types";
+import { CreateSnapshotPayload, Header, Headers, WaitUntilType } from "@/types";
+import { generateTakeSnapshotTask } from "@/api-helper";
 
 export default defineComponent({
   name: "BulkRow",
@@ -104,7 +97,9 @@ export default defineComponent({
       return new Promise((resolve) => setTimeout(resolve, timeout));
     };
 
-    const takeSnapshotTask = useAsyncTask<Job, []>(async () => {
+    const takeSnapshotTask = generateTakeSnapshotTask();
+
+    const takeSnapshot = async () => {
       await sleep();
 
       const headers: Headers = {};
@@ -133,10 +128,12 @@ export default defineComponent({
         headers,
       };
 
-      return await API.takeSnapshot(payload);
-    });
+      return await takeSnapshotTask.perform(payload);
+    };
 
-    takeSnapshotTask.perform();
+    onMounted(async () => {
+      await takeSnapshot();
+    });
 
     return { takeSnapshotTask };
   },

@@ -36,15 +36,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-import { useAsyncTask } from "vue-concurrency";
+import { defineComponent, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
-import { API } from "@/api";
 import InputForm from "@/components/rule/InputForm.vue";
 import Error from "@/components/ui/SimpleError.vue";
 import Loading from "@/components/ui/SimpleLoading.vue";
-import { Rule } from "@/types";
+import { generateEditRuleTask, generateGetRuleTask } from "@/api-helper";
 
 export default defineComponent({
   name: "RuleEdit",
@@ -75,12 +73,10 @@ export default defineComponent({
 
     const hasRule = ref(false);
 
-    const getRuleTask = useAsyncTask<Rule, []>(async () => {
-      return API.getRule(props.ruleId);
-    });
+    const getRuleTask = generateGetRuleTask();
 
     const getRule = async () => {
-      const rule = await getRuleTask.perform();
+      const rule = await getRuleTask.perform(props.ruleId);
       name.value = rule.name;
       target.value = rule.target;
       source.value = rule.source;
@@ -93,21 +89,22 @@ export default defineComponent({
       hasRule.value = true;
     };
 
-    getRule();
+    const editRuleTask = generateEditRuleTask();
 
-    const editRuleTask = useAsyncTask<Rule, []>(async () => {
+    const edit = async () => {
       const payload = form.value?.getPayload();
       if (payload === undefined) {
         throw "The input form is not mounted!";
       }
 
-      return API.editRule(props.ruleId, payload);
-    });
+      await editRuleTask.perform(props.ruleId, payload);
 
-    const edit = async () => {
-      await editRuleTask.perform();
       router.push({ path: `/rules/${props.ruleId}` });
     };
+
+    onMounted(async () => {
+      await getRule();
+    });
 
     return {
       allowedNetworkAddresses,

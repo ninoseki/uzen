@@ -14,15 +14,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import { useAsyncTask } from "vue-concurrency";
+import { defineComponent, onMounted } from "vue";
 import { useRoute } from "vue-router";
 
-import { API } from "@/api";
 import Domain from "@/components/domain/Domain.vue";
 import Error from "@/components/ui/SimpleError.vue";
 import Loading from "@/components/ui/SimpleLoading.vue";
-import { DomainInformation } from "@/types";
+import { generateGetDomainTask } from "@/api-helper";
 
 export default defineComponent({
   name: "DomainWrapper",
@@ -35,11 +33,11 @@ export default defineComponent({
     const route = useRoute();
     const hostname = route.params.hostname as string;
 
-    const getDomainTask = useAsyncTask<DomainInformation, []>(async () => {
-      return API.getDomainInformation(hostname);
-    });
+    const getDomainTask = generateGetDomainTask();
 
-    getDomainTask.perform();
+    onMounted(async () => {
+      await getDomainTask.perform(hostname);
+    });
 
     return { getDomainTask };
   },

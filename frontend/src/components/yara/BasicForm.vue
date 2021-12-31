@@ -31,7 +31,7 @@ import { defineComponent, ref, watchEffect } from "vue";
 import { TargetTypes } from "@/types";
 
 export default defineComponent({
-  name: "YaraBasicForom",
+  name: "YaraBasicForm",
   setup(_, context) {
     const source = ref("");
     const target = ref<TargetTypes>("html");

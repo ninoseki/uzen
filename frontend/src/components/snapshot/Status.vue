@@ -7,12 +7,10 @@
 
 <script lang="ts">
 import { defineComponent, onMounted } from "vue";
-import { useAsyncTask } from "vue-concurrency";
 import { useSessionStorage } from "@vueuse/core";
 
-import { API } from "@/api";
-import { Status } from "@/types";
 import { countryCodeToEmoji } from "@/utils/country";
+import { generateGetStatusTask } from "@/api-helper";
 
 export default defineComponent({
   name: "Status",
@@ -22,9 +20,7 @@ export default defineComponent({
       countryCode: "",
     });
 
-    const getStatusTask = useAsyncTask<Status, []>(async () => {
-      return API.getStatus();
-    });
+    const getStatusTask = generateGetStatusTask();
 
     onMounted(async () => {
       if (statusState.value.ipAddress === "") {

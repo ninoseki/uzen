@@ -52,7 +52,7 @@
           >
             <option></option>
             <option
-              v-for="langKey in languagKeys"
+              v-for="langKey in languageKeys"
               :value="langKey"
               :key="langKey"
             >
@@ -134,7 +134,7 @@
     </div>
 
     <div class="field">
-      <label class="label">Eanble HAR</label>
+      <label class="label">Enable HAR</label>
       <div class="control">
         <label class="checkbox">
           <input type="checkbox" v-model="enableHAR" />
@@ -146,12 +146,11 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref, watchEffect } from "vue";
-import { useAsyncTask } from "vue-concurrency";
 
-import { API } from "@/api";
 import { languages } from "@/languages";
 import { Device, Header } from "@/types";
 import { WaitUntilType } from "@/types";
+import { generateGetDevicesTask } from "@/api-helper";
 
 export default defineComponent({
   name: "SnapshotOptions",
@@ -166,15 +165,13 @@ export default defineComponent({
     const waitUntil = ref<WaitUntilType>("load");
     const otherHeaders = ref<Header[]>([]);
     const devices = ref<Device[]>([]);
-    const languagKeys = Object.keys(languages);
+    const languageKeys = Object.keys(languages);
 
     const addEmptyHeader = () => {
       otherHeaders.value.push({ key: "", value: "" });
     };
 
-    const getDevicesTask = useAsyncTask<Device[], []>(async () => {
-      return await API.getDevices();
-    });
+    const getDevicesTask = generateGetDevicesTask();
 
     const getDevices = async () => {
       devices.value = await getDevicesTask.perform();
@@ -221,7 +218,7 @@ export default defineComponent({
       enableHAR,
       ignoreHttpsErrors,
       languages,
-      languagKeys,
+      languageKeys,
       otherHeaders,
       referer,
       timeout,

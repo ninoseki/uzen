@@ -17,11 +17,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import { useAsyncTask } from "vue-concurrency";
+import { defineComponent, onMounted } from "vue";
 
-import { API } from "@/api";
-import { SnapshotSearchResults } from "@/types";
+import { generateSearchSnapshotsTask } from "@/api-helper";
 
 export default defineComponent({
   name: "SnapshotsCounter",
@@ -30,16 +28,20 @@ export default defineComponent({
     ipAddress: String,
   },
   setup(props) {
-    const searchTask = useAsyncTask<SnapshotSearchResults, []>(async () => {
-      const options = {
+    const searchTask = generateSearchSnapshotsTask();
+
+    const search = async () => {
+      const params = {
         size: 0,
         hostname: props.hostname,
         ipAddress: props.ipAddress,
       };
-      return API.searchSnapshots(options);
-    });
+      return searchTask.perform(params);
+    };
 
-    searchTask.perform();
+    onMounted(async () => {
+      await search();
+    });
 
     return { searchTask };
   },

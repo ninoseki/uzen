@@ -8,7 +8,7 @@ import { defineComponent, onMounted, ref } from "vue";
 import { highlightCodeBlocks } from "@/utils/highlight";
 
 export default defineComponent({
-  name: "YaraSoure",
+  name: "YaraSource",
   props: {
     source: {
       type: String,
@@ -18,7 +18,7 @@ export default defineComponent({
   setup() {
     const root = ref<HTMLElement | null>(null);
 
-    onMounted(async () => {
+    onMounted(() => {
       if (root.value !== null) {
         highlightCodeBlocks(root.value);
       }

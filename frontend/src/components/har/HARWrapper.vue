@@ -16,14 +16,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import { useAsyncTask } from "vue-concurrency";
+import { defineComponent, onMounted } from "vue";
 
-import { API } from "@/api";
 import HARComponent from "@/components/har/HAR.vue";
 import NA from "@/components/ui/NA.vue";
 import Loading from "@/components/ui/SimpleLoading.vue";
-import { HAR } from "@/types";
+import { generateGetHARTask } from "@/api-helper";
 
 export default defineComponent({
   name: "HARWrapper",
@@ -35,11 +33,11 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const getHARTask = useAsyncTask<HAR, []>(async () => {
-      return await API.getHAR(props.snapshotId);
-    });
+    const getHARTask = generateGetHARTask();
 
-    getHARTask.perform();
+    onMounted(async () => {
+      await getHARTask.perform(props.snapshotId);
+    });
 
     return { getHARTask };
   },

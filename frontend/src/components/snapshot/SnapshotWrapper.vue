@@ -17,15 +17,14 @@
 
 <script lang="ts">
 import { useTitle } from "@vueuse/core";
-import { defineComponent, PropType } from "vue";
-import { useAsyncTask } from "vue-concurrency";
+import { defineComponent, onMounted, PropType } from "vue";
 
-import { API } from "@/api";
 import SnapshotComponent from "@/components/snapshot/Snapshot.vue";
 import Error from "@/components/ui/SimpleError.vue";
 import Loading from "@/components/ui/SimpleLoading.vue";
-import { Snapshot, YaraResult } from "@/types";
+import { YaraResult } from "@/types";
 import { countryCodeToEmoji } from "@/utils/country";
+import { generateGetSnapshotTask } from "@/api-helper";
 
 export default defineComponent({
   name: "SnapshotWrapper",
@@ -51,17 +50,16 @@ export default defineComponent({
       useTitle(`${url} - Uzen`);
     };
 
-    // get snapshot
-    const getSnapshotTask = useAsyncTask<Snapshot, []>(async () => {
-      return await API.getSnapshot(props.snapshotId);
-    });
+    const getSnapshotTask = generateGetSnapshotTask();
 
     const getSnapshot = async () => {
-      const snapshot = await getSnapshotTask.perform();
-      updateTitle(snapshot.url);
+      return await getSnapshotTask.perform(props.snapshotId);
     };
 
-    getSnapshot();
+    onMounted(async () => {
+      const snapshot = await getSnapshot();
+      updateTitle(snapshot.url);
+    });
 
     return {
       countryCodeToEmoji,

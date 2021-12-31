@@ -9,14 +9,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import { useAsyncTask } from "vue-concurrency";
+import { defineComponent, onMounted } from "vue";
 
-import { API } from "@/api";
 import NA from "@/components/ui/NA.vue";
 import Loading from "@/components/ui/SimpleLoading.vue";
 import WhoisComponent from "@/components/whois/Whois.vue";
-import { Whois } from "@/types/snapshot";
+import { generateGetWhoisTask } from "@/api-helper";
 
 export default defineComponent({
   name: "WhoisWrapper",
@@ -32,11 +30,11 @@ export default defineComponent({
     Loading,
   },
   setup(props) {
-    const getWhoisTask = useAsyncTask<Whois, []>(async () => {
-      return await API.getWhois(props.whoisId);
-    });
+    const getWhoisTask = generateGetWhoisTask();
 
-    getWhoisTask.perform();
+    onMounted(async () => {
+      await getWhoisTask.perform(props.whoisId);
+    });
 
     return { getWhoisTask };
   },
