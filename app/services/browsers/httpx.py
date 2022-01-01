@@ -13,13 +13,13 @@ async def run_httpx(
 ) -> dataclasses.Snapshot:
     verify = not options.ignore_https_errors
 
-    async with httpx.AsyncClient(verify=verify) as client:
-        res = await client.get(
-            url,
-            headers=options.headers,
-            timeout=options.timeout,
-            follow_redirects=True,
-        )
+    async with httpx.AsyncClient(
+        verify=verify,
+        headers=options.headers,
+        timeout=options.timeout,
+        follow_redirects=True,
+    ) as client:
+        res = await client.get(url)
 
         return dataclasses.Snapshot(
             url=str(res.url),
