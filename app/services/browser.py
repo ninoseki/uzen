@@ -1,3 +1,4 @@
+import ssl
 from typing import Dict, Optional
 
 import httpx
@@ -101,7 +102,11 @@ class Browser:
         logger.debug("Fallback to HTTPX")
         try:
             result = await HttpxBrowser.take_snapshot(url, self.options)
-        except (httpx.HTTPError, httpx.TransportError) as e:
+        except (
+            httpx.HTTPError,
+            httpx.TransportError,
+            ssl.SSLCertVerificationError,
+        ) as e:
             message = "Failed to take a snapshot by HTTPX"
             logger.debug(message)
             logger.exception(e)
