@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Optional, cast
 
-from tortoise.query_utils import Q
+from tortoise.expressions import Q
 
 from app import dataclasses, models, schemas
 from app.services.searchers import AbstractSearcher

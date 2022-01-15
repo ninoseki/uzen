@@ -3,9 +3,8 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any
 
-from tortoise.expressions import Subquery
+from tortoise.expressions import Q, Subquery
 from tortoise.models import Model, QuerySet
-from tortoise.query_utils import Q
 
 from app import dataclasses, types
 

@@ -39,4 +39,7 @@ ENV PORT 8000
 
 EXPOSE $PORT
 
-CMD uvicorn --host 0.0.0.0 --port $PORT app:app
+COPY gunicorn.conf.py /uzen
+
+CMD gunicorn -k uvicorn.workers.UvicornWorker app:app
+
