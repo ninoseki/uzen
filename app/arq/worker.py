@@ -20,9 +20,11 @@ from app.arq.tasks.yara import yara_scan_task
 from app.cache.constants import ONE_DAY, ONE_HOUR
 from app.core import settings
 from app.database import init_db
+from app.sentry import init_sentry
 
 
 async def startup(ctx: dict) -> None:
+    init_sentry()
     await init_db()
 
 
