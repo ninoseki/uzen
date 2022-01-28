@@ -1,5 +1,5 @@
 import sys
-from typing import TextIO
+from typing import Optional, TextIO
 
 from starlette.config import Config
 from starlette.datastructures import CommaSeparatedStrings, Secret
@@ -52,3 +52,6 @@ GOOGLE_SAFE_BROWSING_API_KEY: Secret = config(
     "GOOGLE_SAFE_BROWSING_API_KEY", cast=Secret, default=""
 )
 VIRUSTOTAL_API_KEY: Secret = config("VIRUSTOTAL_API_KEY", cast=Secret, default="")
+
+# Sentry
+SENTRY_DNS: Optional[Secret] = config("SENTRY_DNS", cast=Secret, default=None)

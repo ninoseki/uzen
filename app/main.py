@@ -2,10 +2,13 @@ from fastapi import FastAPI
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
 from loguru import logger
+from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 
 from app.api.api import api_router
 from app.core import settings
 from app.core.events import create_start_app_handler, create_stop_app_handler
+
+from .sentry import init_sentry
 
 
 def create_app() -> FastAPI:
@@ -19,6 +22,10 @@ def create_app() -> FastAPI:
     )
     # add middleware
     app.add_middleware(GZipMiddleware, minimum_size=1000)
+
+    if settings.SENTRY_DNS is not None:
+        init_sentry()
+        app.add_middleware(SentryAsgiMiddleware)
 
     # add event handlers
     app.add_event_handler("startup", create_start_app_handler(app))
