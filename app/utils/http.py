@@ -3,10 +3,10 @@ from typing import Any, Dict, List, Optional
 
 import httpx
 from bs4 import BeautifulSoup
-from d8s_urls import url_base_form
 
 from app import dataclasses
 from app.dataclasses.utils import HttpResource
+from app.utils.url import url_base_form
 
 
 def convert_to_absolute_url(url: str, source: str) -> str:

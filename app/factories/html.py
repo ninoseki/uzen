@@ -1,7 +1,7 @@
-from d8s_hashes import sha256, ssdeep
 from niteru.html_parser import parse_html
 
 from app import models
+from app.utils.hash import sha256, ssdeep
 
 
 class HTMLFactory:

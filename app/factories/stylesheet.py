@@ -3,10 +3,10 @@ from typing import List
 
 import aiometer
 import httpx
-from d8s_hashes import sha256
 
 from app import dataclasses, models
 from app.services.har import is_stylesheet_content_type
+from app.utils.hash import sha256
 from app.utils.http import get_http_resource, get_stylesheet_urls
 
 MAX_AT_ONCE = 10

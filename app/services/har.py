@@ -1,10 +1,10 @@
 import base64
 from typing import List, Optional
 
-from d8s_hashes import sha256
 from playwright_har_tracer.dataclasses.har import Entry, Har, Request
 
 from app import dataclasses, models
+from app.utils.hash import sha256
 
 
 def is_js_content_type(content_type: Optional[str]) -> bool:

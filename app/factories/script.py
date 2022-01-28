@@ -3,9 +3,9 @@ from typing import List
 
 import aiometer
 import httpx
-from d8s_hashes import sha256
 
 from app import dataclasses, models
+from app.utils.hash import sha256
 from app.utils.http import get_http_resource, get_script_urls
 
 MAX_AT_ONCE = 10
