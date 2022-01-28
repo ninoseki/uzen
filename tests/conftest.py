@@ -8,7 +8,6 @@ from uuid import uuid4
 import nest_asyncio
 import pytest
 from _pytest.monkeypatch import MonkeyPatch
-from d8s_hashes import sha256
 from starlette.config import environ
 from tortoise import Tortoise
 from tortoise.backends.base.config_generator import generate_config
@@ -22,6 +21,7 @@ from app.factories.html import HTMLFactory
 from app.services.certificate import Certificate
 from app.services.ip2asn import IP2ASN
 from app.services.whois import Whois
+from app.utils.hash import sha256
 from tests.fake_arq import FakeArqRedis
 from tests.testclient import TestClient
 

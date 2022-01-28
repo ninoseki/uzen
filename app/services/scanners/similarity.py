@@ -3,7 +3,6 @@ from functools import partial
 from typing import Any, Dict, List, Optional
 
 import aiometer
-from d8s_hashes import sha256
 from niteru.html_parser import parse_html
 from niteru.similarity import similarity, similarity_by_tags_and_classes
 
@@ -11,6 +10,7 @@ from app import dataclasses, models, schemas
 from app.services.scanners.constants import CHUNK_SIZE, MAX_AT_ONCE
 from app.services.scanners.utils import search_snapshots
 from app.utils.chunk import chunknize
+from app.utils.hash import sha256
 
 
 def build_similarity_result_table(

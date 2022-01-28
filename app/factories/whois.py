@@ -1,9 +1,8 @@
 from datetime import datetime
 from typing import Optional, Union
 
-from d8s_hashes import sha256
-
 from app import dataclasses, models
+from app.utils.hash import sha256
 
 
 def normalize_datetime_like_value(
