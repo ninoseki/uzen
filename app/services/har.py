@@ -60,7 +60,11 @@ def find_script_files(har: Har) -> List[dataclasses.ScriptFile]:
 
         if is_js_content_type(content.mime_type):
             encoded_text = str(content.text)
-            text = base64.b64decode(encoded_text).decode()
+            try:
+                text = base64.b64decode(encoded_text).decode()
+            except UnicodeDecodeError:
+                continue
+
             file_id = sha256(text)
 
             script = models.Script(url=url, ip_address=ip_address, file_id=file_id)
@@ -83,7 +87,11 @@ def find_stylesheet_files(har: Har) -> List[dataclasses.StylesheetFile]:
 
         if is_stylesheet_content_type(content.mime_type):
             encoded_text = str(content.text)
-            text = base64.b64decode(encoded_text).decode()
+            try:
+                text = base64.b64decode(encoded_text).decode()
+            except UnicodeDecodeError:
+                continue
+
             file_id = sha256(text)
 
             stylesheet = models.Stylesheet(
