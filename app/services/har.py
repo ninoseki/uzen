@@ -60,10 +60,7 @@ def find_script_files(har: Har) -> List[dataclasses.ScriptFile]:
 
         if is_js_content_type(content.mime_type):
             encoded_text = str(content.text)
-            try:
-                text = base64.b64decode(encoded_text).decode()
-            except UnicodeDecodeError:
-                continue
+            text = base64.b64decode(encoded_text).decode("utf8", "replace")
 
             file_id = sha256(text)
 
@@ -87,10 +84,7 @@ def find_stylesheet_files(har: Har) -> List[dataclasses.StylesheetFile]:
 
         if is_stylesheet_content_type(content.mime_type):
             encoded_text = str(content.text)
-            try:
-                text = base64.b64decode(encoded_text).decode()
-            except UnicodeDecodeError:
-                continue
+            text = base64.b64decode(encoded_text).decode("utf8", "replace")
 
             file_id = sha256(text)
 
