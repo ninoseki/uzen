@@ -37,7 +37,7 @@
     "@types/jest": "^27.4.0",
     "@types/numeral": "^2.0.2",
     "@types/qs": "^6.9.7",
-    "@types/url-parse": "^1.4.7",
+    "@types/url-parse": "1.4.8",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
     "@vue/cli-plugin-babel": "~4.5.15",
