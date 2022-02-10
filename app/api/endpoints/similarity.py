@@ -31,7 +31,7 @@ async def scan(
         exclude_ip_address=payload.exclude_ip_address,
         size=size,
         offset=offset,
-        filters=vars(filters),
+        filters=filters.to_model(),
     )
     job_id = str(uuid4())
     job = await arq_redis.enqueue_job(

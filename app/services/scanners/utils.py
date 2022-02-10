@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional
+from typing import List, Optional
 
 from tortoise.expressions import Q
 
@@ -29,12 +29,12 @@ async def search_snapshots(
     html_id: Optional[str] = None,
     exclude_hostname: Optional[str] = None,
     exclude_ip_address: Optional[str] = None,
-    filters: Optional[Dict[str, Any]] = None,
+    filters: Optional[schemas.SnapshotSearchFilters] = None,
     size: Optional[int] = None,
     offset: Optional[int] = None,
 ) -> schemas.SnapshotsSearchResults:
     if filters is None:
-        filters = {}
+        filters = schemas.SnapshotSearchFilters()
 
     additional_queries = build_additional_queries(
         html_id, exclude_hostname, exclude_ip_address
@@ -52,12 +52,12 @@ async def search_snapshots_for_ids(
     html_id: Optional[str] = None,
     exclude_hostname: Optional[str] = None,
     exclude_ip_address: Optional[str] = None,
-    filters: Optional[Dict[str, Any]] = None,
+    filters: Optional[schemas.SnapshotSearchFilters] = None,
     size: Optional[int] = None,
     offset: Optional[int] = None,
 ) -> dataclasses.SearchResultsForIDs:
     if filters is None:
-        filters = {}
+        filters = schemas.SnapshotSearchFilters()
 
     additional_queries = build_additional_queries(
         html_id, exclude_hostname, exclude_ip_address

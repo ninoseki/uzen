@@ -1,4 +1,5 @@
-from typing import List, Optional
+from datetime import date, datetime
+from typing import List, Optional, Union
 
 from pydantic import Field
 
@@ -50,3 +51,10 @@ class MatchResult(APIModel):
 
 class MatchesSearchResults(BaseSearchResults):
     results: List[Match]
+
+
+class MatchSearchFilters(APIModel):
+    rule_id: Optional[ULID] = Field(None)
+    snapshot_id: Optional[ULID] = Field(None)
+    from_at: Optional[Union[datetime, date]] = Field(None)
+    to_at: Optional[Union[datetime, date]] = Field(None)

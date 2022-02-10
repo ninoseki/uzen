@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, cast
+from typing import List, Optional, cast
 
 from tortoise.expressions import Q
 
@@ -7,26 +7,20 @@ from app.services.searchers import AbstractSearcher
 from app.services.searchers.utils import convert_to_datetime
 
 
-def build_query(filters: Dict[str, Any]) -> Q:
+def build_query(filters: schemas.MatchSearchFilters) -> Q:
     queries: List[Q] = []
 
-    rule_id = filters.get("rule_id")
-    if rule_id is not None:
-        queries.append(Q(rule_id=rule_id))
+    if filters.rule_id is not None:
+        queries.append(Q(rule_id=filters.rule_id))
 
-    snapshot_id = filters.get("snapshot_id")
-    if snapshot_id is not None:
-        queries.append(Q(snapshot_id=snapshot_id))
+    if filters.snapshot_id is not None:
+        queries.append(Q(snapshot_id=filters.snapshot_id))
 
-    from_at = filters.get("from_at")
-    if from_at is not None:
-        from_at = convert_to_datetime(from_at)
-        queries.append(Q(created_at__gt=from_at))
+    if filters.from_at is not None:
+        queries.append(Q(created_at__gt=convert_to_datetime(filters.from_at)))
 
-    to_at = filters.get("to_at")
-    if to_at is not None:
-        to_at = convert_to_datetime(to_at)
-        queries.append(Q(created_at__lt=to_at))
+    if filters.to_at is not None:
+        queries.append(Q(created_at__lt=convert_to_datetime(filters.to_at)))
 
     return Q(*queries)
 
@@ -35,7 +29,7 @@ class MatchSearcher(AbstractSearcher):
     @classmethod
     async def search(
         cls,
-        filters: Dict[str, Any],
+        filters: schemas.MatchSearchFilters,
         size: Optional[int] = None,
         offset: Optional[int] = None,
     ) -> schemas.MatchesSearchResults:
@@ -54,7 +48,7 @@ class MatchSearcher(AbstractSearcher):
     @classmethod
     async def search_for_ids(
         cls,
-        filters: Dict[str, Any],
+        filters: schemas.MatchSearchFilters,
         size: Optional[int] = None,
         offset: Optional[int] = None,
     ) -> dataclasses.SearchResultsForIDs:

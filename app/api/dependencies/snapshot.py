@@ -3,6 +3,8 @@ from typing import Optional, Union
 
 from fastapi import Query
 
+from app import schemas
+
 
 class SearchFilters:
     def __init__(
@@ -42,3 +44,17 @@ class SearchFilters:
         self.tag = tag
         self.from_at = from_at
         self.to_at = to_at
+
+    def to_model(self) -> schemas.SnapshotSearchFilters:
+        return schemas.SnapshotSearchFilters(
+            asn=self.asn,
+            hostname=self.hostname,
+            ip_address=self.ip_address,
+            hash=self.hash,
+            certificate_fingerprint=self.certificate_fingerprint,
+            status=self.status,
+            url=self.url,
+            tag=self.tag,
+            from_at=self.from_at,
+            to_at=self.to_at,
+        )

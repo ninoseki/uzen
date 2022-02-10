@@ -29,7 +29,7 @@ async def scan(
         source=payload.source,
         size=size,
         offset=offset,
-        filters=vars(filters),
+        filters=filters.to_model(),
     )
     job_id = str(uuid4())
     job = await arq_redis.enqueue_job(YARA_SCAN_TASK_NAME, task_payload, _job_id=job_id)
