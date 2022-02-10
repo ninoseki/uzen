@@ -77,7 +77,7 @@ class SimilarityScanner:
 
     async def scan_snapshots(
         self,
-        filters: Optional[Dict[str, Any]] = None,
+        filters: Optional[schemas.SnapshotSearchFilters] = None,
         size: Optional[int] = None,
         offset: Optional[int] = None,
         exclude_hostname: Optional[str] = None,
@@ -92,7 +92,7 @@ class SimilarityScanner:
             List[schemas.SimilarityScanResult] -- A list of similarity scan results
         """
         if filters is None:
-            filters = {}
+            filters = schemas.SnapshotSearchFilters()
 
         # get snapshots IDs based on filters
         search_results = await search_snapshots(

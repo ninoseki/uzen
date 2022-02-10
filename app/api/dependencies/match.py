@@ -3,7 +3,7 @@ from typing import Optional, Union
 
 from fastapi import Query
 
-from app import types
+from app import schemas, types
 
 
 class SearchFilters:
@@ -36,3 +36,11 @@ class SearchFilters:
         self.snapshot_id = snapshot_id or snapshotId
         self.from_at = from_at or fromAt
         self.to_at = to_at or toAt
+
+    def to_model(self) -> schemas.MatchSearchFilters:
+        return schemas.MatchSearchFilters(
+            rule_id=self.rule_id,
+            snapshot_id=self.snapshot_id,
+            from_at=self.from_at,
+            to_at=self.to_at,
+        )

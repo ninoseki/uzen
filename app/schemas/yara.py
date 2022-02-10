@@ -1,12 +1,11 @@
-from datetime import date, datetime
 from functools import lru_cache
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional
 
 from pydantic import Field
 
 from app.schemas.base import APIModel
 from app.schemas.common import Source, Target
-from app.schemas.snapshot import PlainSnapshot
+from app.schemas.snapshot import PlainSnapshot, SnapshotSearchFilters
 from app.types import ULID
 
 
@@ -19,7 +18,7 @@ class YaraScanPayloadWithSearchOptions(YaraScanPayload):
 
     size: Optional[int] = Field(None)
     offset: Optional[int] = Field(None)
-    filters: Dict[str, Union[str, int, date, datetime, None]] = Field(...)
+    filters: SnapshotSearchFilters = Field(...)
 
 
 class YaraMatchString(APIModel):

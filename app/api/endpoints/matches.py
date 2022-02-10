@@ -19,4 +19,4 @@ async def search(
     offset: Optional[int] = None,
     filters: SearchFilters = Depends(),
 ) -> schemas.MatchesSearchResults:
-    return await MatchSearcher.search(vars(filters), size=size, offset=offset)
+    return await MatchSearcher.search(filters.to_model(), size=size, offset=offset)

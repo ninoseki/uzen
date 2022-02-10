@@ -36,7 +36,9 @@ async def search(
     offset: Optional[int] = None,
     filters: SearchFilters = Depends(),
 ) -> schemas.SnapshotsSearchResults:
-    results = await SnapshotSearcher.search(vars(filters), size=size, offset=offset)
+    results = await SnapshotSearcher.search(
+        filters.to_model(), size=size, offset=offset
+    )
     snapshots = cast(List[schemas.PlainSnapshot], results.results)
     return schemas.SnapshotsSearchResults(results=snapshots, total=results.total)
 

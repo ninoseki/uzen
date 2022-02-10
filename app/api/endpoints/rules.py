@@ -21,7 +21,7 @@ async def search(
     offset: Optional[int] = None,
     filters: SearchFilters = Depends(),
 ) -> schemas.RulesSearchResults:
-    return await RuleSearcher.search(vars(filters), size=size, offset=offset)
+    return await RuleSearcher.search(filters.to_model(), size=size, offset=offset)
 
 
 @router.get(

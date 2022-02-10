@@ -3,6 +3,7 @@ from typing import List, Optional
 import yara
 from pydantic import Field, validator
 
+from app.schemas.base import APIModel
 from app.schemas.search import BaseSearchResults
 from app.schemas.snapshot import BaseRule, Rule
 from app.schemas.types import TargetTypes
@@ -42,3 +43,9 @@ class UpdateRulePayload(BaseRule):
 
 class RulesSearchResults(BaseSearchResults):
     results: List[Rule] = Field(...)
+
+
+class RuleSearchFilters(APIModel):
+    name: Optional[str] = Field(None)
+    target: Optional[str] = Field(None)
+    source: Optional[str] = Field(None)

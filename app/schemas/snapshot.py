@@ -1,6 +1,6 @@
 import datetime
 from functools import lru_cache
-from typing import Any, Dict, List, Optional, cast
+from typing import Any, Dict, List, Optional, Union, cast
 
 import httpx
 from playwright.sync_api import Error, sync_playwright
@@ -246,6 +246,19 @@ class CreateSnapshotPayload(APIModel):
         # translates header names to lowercase for consistency
         headers_ = httpx.Headers(headers)
         return dict(headers_)
+
+
+class SnapshotSearchFilters(APIModel):
+    asn: Optional[str] = Field(None)
+    hostname: Optional[str] = Field(None)
+    ip_address: Optional[str] = Field(None)
+    hash: Optional[str] = Field(None)
+    certificate_fingerprint: Optional[str] = Field(None)
+    status: Optional[int] = Field(None)
+    url: Optional[str] = Field(None)
+    tag: Optional[str] = Field(None)
+    from_at: Optional[Union[datetime.datetime, datetime.date]] = Field(None)
+    to_at: Optional[Union[datetime.datetime, datetime.date]] = Field(None)
 
 
 # Update forward references

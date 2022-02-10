@@ -99,7 +99,7 @@ class YaraScanner:
     async def scan_snapshots(
         self,
         target: str = "html",
-        filters: Optional[Dict[str, Any]] = None,
+        filters: Optional[schemas.SnapshotSearchFilters] = None,
         size: Optional[int] = None,
         offset: Optional[int] = None,
     ) -> List[schemas.YaraScanResult]:
@@ -113,7 +113,7 @@ class YaraScanner:
             List[schemas.YaraScanResult] -- A list of YARA scan results
         """
         if filters is None:
-            filters = {}
+            filters = schemas.SnapshotSearchFilters()
 
         # get snapshots ids based on filters
         search_results = await search_snapshots_for_ids(

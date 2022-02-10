@@ -2,6 +2,8 @@ from typing import Optional
 
 from fastapi import Query
 
+from app import schemas
+
 
 class SearchFilters:
     def __init__(
@@ -21,3 +23,8 @@ class SearchFilters:
         self.name = name
         self.target = target
         self.source = source
+
+    def to_model(self) -> schemas.RuleSearchFilters:
+        return schemas.RuleSearchFilters(
+            name=self.name, target=self.target, source=self.source
+        )

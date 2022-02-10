@@ -21,8 +21,18 @@ from app.schemas.jobs import (
     YaraScanJobResult,
     YaraScanJobStatus,
 )
-from app.schemas.match import Match, MatchesSearchResults, MatchResult
-from app.schemas.rule import CreateRulePayload, RulesSearchResults, UpdateRulePayload
+from app.schemas.match import (
+    Match,
+    MatchesSearchResults,
+    MatchResult,
+    MatchSearchFilters,
+)
+from app.schemas.rule import (
+    CreateRulePayload,
+    RuleSearchFilters,
+    RulesSearchResults,
+    UpdateRulePayload,
+)
 from app.schemas.screenshot import Screenshot
 from app.schemas.script import Script
 from app.schemas.similarity import (
@@ -37,6 +47,7 @@ from app.schemas.snapshot import (
     PlainSnapshot,
     Rule,
     Snapshot,
+    SnapshotSearchFilters,
     SnapshotsSearchResults,
     Tag,
 )
@@ -75,9 +86,11 @@ __all__ = [
     "Match",
     "MatchesSearchResults",
     "MatchResult",
+    "MatchSearchFilters",
     "PlainSnapshot",
     "RevokeOrActivateAPIKey",
     "Rule",
+    "RuleSearchFilters",
     "RulesSearchResults",
     "Screenshot",
     "Script",
@@ -91,6 +104,7 @@ __all__ = [
     "SnapshotJobDefinition",
     "SnapshotJobResult",
     "SnapshotJobStatus",
+    "SnapshotSearchFilters",
     "SnapshotsSearchResults",
     "Status",
     "Stylesheet",

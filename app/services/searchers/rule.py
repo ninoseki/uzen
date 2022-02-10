@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, cast
+from typing import List, Optional, cast
 
 from tortoise.expressions import Q
 
@@ -6,21 +6,18 @@ from app import dataclasses, models, schemas
 from app.services.searchers import AbstractSearcher
 
 
-def build_query(filters: Dict[str, Any]) -> Q:
+def build_query(filters: schemas.RuleSearchFilters) -> Q:
     # build queirs from filters
     queries = []
 
-    name = filters.get("name")
-    if name is not None:
-        queries.append(Q(name__contains=name))
+    if filters.name is not None:
+        queries.append(Q(name__contains=filters.name))
 
-    target = filters.get("target")
-    if target is not None:
-        queries.append(Q(target=target))
+    if filters.target is not None:
+        queries.append(Q(target=filters.target))
 
-    source = filters.get("source")
-    if source is not None:
-        queries.append(Q(source__contains=source))
+    if filters.source is not None:
+        queries.append(Q(source__contains=filters.source))
 
     return Q(*queries)
 
@@ -29,12 +26,12 @@ class RuleSearcher(AbstractSearcher):
     @classmethod
     async def search(
         cls,
-        filters: Optional[Dict[str, Any]] = None,
+        filters: Optional[schemas.RuleSearchFilters] = None,
         size: Optional[int] = None,
         offset: Optional[int] = None,
     ) -> schemas.RulesSearchResults:
         if filters is None:
-            filters = {}
+            filters = schemas.RuleSearchFilters()
 
         query = build_query(filters)
         # Run search
@@ -47,12 +44,12 @@ class RuleSearcher(AbstractSearcher):
     @classmethod
     async def search_for_ids(
         cls,
-        filters: Dict[str, Any] = None,
+        filters: Optional[schemas.RuleSearchFilters] = None,
         size: Optional[int] = None,
         offset: Optional[int] = None,
     ) -> dataclasses.SearchResultsForIDs:
         if filters is None:
-            filters = {}
+            filters = schemas.RuleSearchFilters()
 
         query = build_query(filters)
         # Run search
