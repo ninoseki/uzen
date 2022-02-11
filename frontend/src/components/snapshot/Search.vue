@@ -1,46 +1,44 @@
 <template>
-  <div>
-    <div class="box">
-      <Form
-        ref="form"
-        :asn="asn"
-        :hostname="hostname"
-        :ipAddress="ipAddress"
-        :hash="hash"
-        :certificateFingerprint="certificateFingerprint"
-        :tag="tag"
-      />
+  <div class="box">
+    <Form
+      ref="form"
+      :asn="asn"
+      :hostname="hostname"
+      :ipAddress="ipAddress"
+      :hash="hash"
+      :certificateFingerprint="certificateFingerprint"
+      :tag="tag"
+    />
 
-      <div class="has-text-centered mt-5">
-        <button class="button is-light" @click="initSearch">
-          <span class="icon">
-            <i class="fas fa-search"></i>
-          </span>
-          <span>Search</span>
-        </button>
-      </div>
+    <div class="has-text-centered mt-5">
+      <button class="button is-light" @click="initSearch">
+        <span class="icon">
+          <i class="fas fa-search"></i>
+        </span>
+        <span>Search</span>
+      </button>
     </div>
-
-    <Loading v-if="searchTask.isRunning"></Loading>
-    <Error
-      :error="searchTask.last?.error.response.data"
-      v-else-if="searchTask.isError"
-    ></Error>
-
-    <h2 v-if="count !== undefined">
-      Search results ({{ count }} / {{ totalCount }})
-    </h2>
-
-    <SnapshotsTable v-bind:snapshots="snapshots" />
-
-    <button
-      class="button is-dark"
-      v-if="hasLoadMore(count, totalCount)"
-      @click="loadMore"
-    >
-      Load more...
-    </button>
   </div>
+
+  <Loading v-if="searchTask.isRunning"></Loading>
+  <Error
+    :error="searchTask.last?.error.response.data"
+    v-else-if="searchTask.isError"
+  ></Error>
+
+  <h2 v-if="count !== undefined">
+    Search results ({{ count }} / {{ totalCount }})
+  </h2>
+
+  <SnapshotsTable v-bind:snapshots="snapshots" />
+
+  <button
+    class="button is-dark"
+    v-if="hasLoadMore(count, totalCount)"
+    @click="loadMore"
+  >
+    Load more...
+  </button>
 </template>
 
 <script lang="ts">
@@ -53,12 +51,7 @@ import SnapshotsTable from "@/components/snapshot/Table.vue";
 import Error from "@/components/ui/SimpleError.vue";
 import Loading from "@/components/ui/SimpleLoading.vue";
 import { Snapshot } from "@/types";
-import {
-  DEFAULT_PAGE_SIZE,
-  hasLoadMore,
-  minDatetime,
-  nowDatetime,
-} from "@/utils/form";
+import { DEFAULT_PAGE_SIZE, hasLoadMore } from "@/utils/form";
 import { generateSearchSnapshotsTask } from "@/api-helper";
 
 export default defineComponent({
@@ -77,6 +70,7 @@ export default defineComponent({
     const snapshots = ref<Snapshot[]>([]);
     const count = ref<number | undefined>(undefined);
     const totalCount = ref(0);
+    const searchBefore = ref<string | undefined>(undefined);
 
     const asn = useRouteQuery("asn", undefined, options) as Ref<
       string | undefined
@@ -99,16 +93,13 @@ export default defineComponent({
       string | undefined
     >;
 
-    let oldestCreatedAt: string | undefined = undefined;
-    let size = DEFAULT_PAGE_SIZE;
-
+    const size = DEFAULT_PAGE_SIZE;
     const form = ref<InstanceType<typeof Form>>();
 
     const resetPagination = () => {
       snapshots.value = [];
       count.value = undefined;
-      size = DEFAULT_PAGE_SIZE;
-      oldestCreatedAt = nowDatetime();
+      searchBefore.value = undefined;
     };
 
     const searchTask = generateSearchSnapshotsTask();
@@ -116,7 +107,10 @@ export default defineComponent({
     const search = async () => {
       const params = form.value?.filtersParams() || {};
       params["size"] = size;
-      params["toAt"] = minDatetime(params["toAt"], oldestCreatedAt);
+
+      if (searchBefore.value) {
+        params["searchBefore"] = searchBefore.value;
+      }
 
       return await searchTask.perform(params);
     };
@@ -131,8 +125,8 @@ export default defineComponent({
       snapshots.value = snapshots.value.concat(res.results);
       count.value = snapshots.value.length;
 
-      if (snapshots.value.length > 0) {
-        oldestCreatedAt = snapshots.value[count.value - 1].createdAt;
+      if (count.value > 0) {
+        searchBefore.value = snapshots.value[count.value - 1].id;
       }
 
       if (!additionalLoading) {

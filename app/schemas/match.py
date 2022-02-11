@@ -58,3 +58,5 @@ class MatchSearchFilters(APIModel):
     snapshot_id: Optional[ULID] = Field(None)
     from_at: Optional[Union[datetime, date]] = Field(None)
     to_at: Optional[Union[datetime, date]] = Field(None)
+    search_after: Optional[ULID] = Field(None)
+    search_before: Optional[ULID] = Field(None)

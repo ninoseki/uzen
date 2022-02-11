@@ -1,4 +1,5 @@
-from typing import List, Optional
+import datetime
+from typing import List, Optional, Union
 
 import yara
 from pydantic import Field, validator
@@ -7,6 +8,7 @@ from app.schemas.base import APIModel
 from app.schemas.search import BaseSearchResults
 from app.schemas.snapshot import BaseRule, Rule
 from app.schemas.types import TargetTypes
+from app.types import ULID
 
 
 class CreateRulePayload(BaseRule):
@@ -49,3 +51,7 @@ class RuleSearchFilters(APIModel):
     name: Optional[str] = Field(None)
     target: Optional[str] = Field(None)
     source: Optional[str] = Field(None)
+    from_at: Optional[Union[datetime.datetime, datetime.date]] = Field(None)
+    to_at: Optional[Union[datetime.datetime, datetime.date]] = Field(None)
+    search_after: Optional[ULID] = Field(None)
+    search_before: Optional[ULID] = Field(None)

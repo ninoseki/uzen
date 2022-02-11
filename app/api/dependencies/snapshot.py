@@ -3,7 +3,7 @@ from typing import Optional, Union
 
 from fastapi import Query
 
-from app import schemas
+from app import schemas, types
 
 
 class SearchFilters:
@@ -33,6 +33,14 @@ class SearchFilters:
             description="Datetime or date in ISO 8601 format",
             alias="toAt",
         ),
+        search_after: Optional[types.ULID] = Query(
+            None,
+            alias="searchAfter",
+        ),
+        search_before: Optional[types.ULID] = Query(
+            None,
+            alias="searchBefore",
+        ),
     ):
         self.asn = asn
         self.hostname = hostname
@@ -44,6 +52,8 @@ class SearchFilters:
         self.tag = tag
         self.from_at = from_at
         self.to_at = to_at
+        self.search_after = search_after
+        self.search_before = search_before
 
     def to_model(self) -> schemas.SnapshotSearchFilters:
         return schemas.SnapshotSearchFilters(
@@ -57,4 +67,6 @@ class SearchFilters:
             tag=self.tag,
             from_at=self.from_at,
             to_at=self.to_at,
+            search_after=self.search_after,
+            search_before=self.search_before,
         )

@@ -34,21 +34,21 @@ def test_matches_search_with_filters(
     rules: List[models.Rule],
 ):
     snapshot_id = snapshots[0].id
-    response = client.get("/api/matches/search", params={"snapshot_id": snapshot_id})
+    response = client.get("/api/matches/search", params={"snapshotId": snapshot_id})
     assert response.status_code == 200
     data = response.json()
     results = data.get("results", [])
     assert len(results) == 1
 
     rule_id = rules[0].id
-    response = client.get("/api/matches/search", params={"rule_id": rule_id})
+    response = client.get("/api/matches/search", params={"ruleId": rule_id})
     assert response.status_code == 200
     data = response.json()
     results = data.get("results", [])
     assert len(results) == 1
 
     response = client.get(
-        "/api/matches/search", params={"rule_id": rule_id, "snapshot_id": snapshot_id}
+        "/api/matches/search", params={"ruleId": rule_id, "snapshotId": snapshot_id}
     )
     assert response.status_code == 200
     data = response.json()
@@ -61,13 +61,13 @@ def test_matches_search_with_daterange(
     event_loop: asyncio.AbstractEventLoop,
     matches: List[models.Match],
 ):
-    response = client.get("/api/matches/search", params={"from_at": "1970-01-01"})
+    response = client.get("/api/matches/search", params={"fromAt": "1970-01-01"})
     assert response.status_code == 200
     data = response.json()
     results = data.get("results", [])
     assert len(results) == count_all_matches(event_loop)
 
-    response = client.get("/api/matches/search", params={"to_at": "1970-01-01"})
+    response = client.get("/api/matches/search", params={"toAt": "1970-01-01"})
     assert response.status_code == 200
     data = response.json()
     results = data.get("results", [])

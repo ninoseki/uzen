@@ -22,6 +22,12 @@ def build_query(filters: schemas.MatchSearchFilters) -> Q:
     if filters.to_at is not None:
         queries.append(Q(created_at__lt=convert_to_datetime(filters.to_at)))
 
+    if filters.search_after is not None:
+        queries.append(Q(id__gt=filters.search_after))
+
+    if filters.search_before is not None:
+        queries.append(Q(id__lt=filters.search_before))
+
     return Q(*queries)
 
 

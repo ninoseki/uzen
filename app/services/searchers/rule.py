@@ -4,6 +4,7 @@ from tortoise.expressions import Q
 
 from app import dataclasses, models, schemas
 from app.services.searchers import AbstractSearcher
+from app.services.searchers.utils import convert_to_datetime
 
 
 def build_query(filters: schemas.RuleSearchFilters) -> Q:
@@ -18,6 +19,18 @@ def build_query(filters: schemas.RuleSearchFilters) -> Q:
 
     if filters.source is not None:
         queries.append(Q(source__contains=filters.source))
+
+    if filters.from_at is not None:
+        queries.append(Q(created_at__gt=convert_to_datetime(filters.from_at)))
+
+    if filters.to_at is not None:
+        queries.append(Q(created_at__lt=convert_to_datetime(filters.to_at)))
+
+    if filters.search_after is not None:
+        queries.append(Q(id__gt=filters.search_after))
+
+    if filters.search_before is not None:
+        queries.append(Q(id__lt=filters.search_before))
 
     return Q(*queries)
 

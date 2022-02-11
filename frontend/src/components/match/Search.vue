@@ -1,38 +1,36 @@
 <template>
-  <div>
-    <div class="box">
-      <Form ref="form" :ruleId="ruleId" :snapshotId="snapshotId" />
+  <div class="box">
+    <Form ref="form" :ruleId="ruleId" :snapshotId="snapshotId" />
 
-      <div class="has-text-centered mt-5">
-        <button class="button is-light" @click="initSearch">
-          <span class="icon">
-            <i class="fas fa-search"></i>
-          </span>
-          <span>Search</span>
-        </button>
-      </div>
+    <div class="has-text-centered mt-5">
+      <button class="button is-light" @click="initSearch">
+        <span class="icon">
+          <i class="fas fa-search"></i>
+        </span>
+        <span>Search</span>
+      </button>
     </div>
-
-    <Loading v-if="searchTask.isRunning"></Loading>
-    <Error
-      :error="searchTask.last?.error.response.data"
-      v-else-if="searchTask.isError"
-    ></Error>
-
-    <h2 v-if="count !== undefined">
-      Search results ({{ count }} / {{ totalCount }})
-    </h2>
-
-    <MatchesTable v-bind:matches="matches" />
-
-    <button
-      class="button is-dark"
-      v-if="hasLoadMore(count, totalCount)"
-      @click="loadMore"
-    >
-      Load more...
-    </button>
   </div>
+
+  <Loading v-if="searchTask.isRunning"></Loading>
+  <Error
+    :error="searchTask.last?.error.response.data"
+    v-else-if="searchTask.isError"
+  ></Error>
+
+  <h2 v-if="count !== undefined">
+    Search results ({{ count }} / {{ totalCount }})
+  </h2>
+
+  <MatchesTable v-bind:matches="matches" />
+
+  <button
+    class="button is-dark"
+    v-if="hasLoadMore(count, totalCount)"
+    @click="loadMore"
+  >
+    Load more...
+  </button>
 </template>
 
 <script lang="ts">
@@ -44,12 +42,7 @@ import MatchesTable from "@/components/match/Table.vue";
 import Error from "@/components/ui/SimpleError.vue";
 import Loading from "@/components/ui/SimpleLoading.vue";
 import { Match } from "@/types";
-import {
-  DEFAULT_PAGE_SIZE,
-  hasLoadMore,
-  minDatetime,
-  nowDatetime,
-} from "@/utils/form";
+import { DEFAULT_PAGE_SIZE, hasLoadMore } from "@/utils/form";
 import { generateSearchMatchesTask } from "@/api-helper";
 
 export default defineComponent({
@@ -70,17 +63,16 @@ export default defineComponent({
     const matches = ref<Match[]>([]);
     const count = ref<number | undefined>(undefined);
     const totalCount = ref(0);
+    const searchBefore = ref<string | undefined>(undefined);
 
-    let oldestCreatedAt: string | undefined = undefined;
-    let size = DEFAULT_PAGE_SIZE;
+    const size = DEFAULT_PAGE_SIZE;
 
     const form = ref<InstanceType<typeof Form>>();
 
     const resetPagination = () => {
       matches.value = [];
       count.value = undefined;
-      size = DEFAULT_PAGE_SIZE;
-      oldestCreatedAt = nowDatetime();
+      searchBefore.value = undefined;
     };
 
     const searchTask = generateSearchMatchesTask();
@@ -88,7 +80,10 @@ export default defineComponent({
     const search = async () => {
       const params = form.value?.filtersParams() || {};
       params["size"] = size;
-      params["toAt"] = minDatetime(params["toAt"], oldestCreatedAt);
+
+      if (searchBefore.value) {
+        params["searchBefore"] = searchBefore.value;
+      }
 
       return await searchTask.perform(params);
     };
@@ -103,8 +98,8 @@ export default defineComponent({
       matches.value = matches.value.concat(res.results);
       count.value = matches.value.length;
 
-      if (matches.value.length > 0) {
-        oldestCreatedAt = matches.value[count.value - 1].createdAt;
+      if (count.value > 0) {
+        searchBefore.value = matches.value[count.value - 1].id;
       }
 
       if (!additionalLoading) {

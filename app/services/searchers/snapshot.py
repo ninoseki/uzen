@@ -47,6 +47,12 @@ def build_query(
     if filters.to_at is not None:
         queries.append(Q(created_at__lt=convert_to_datetime(filters.to_at)))
 
+    if filters.search_after is not None:
+        queries.append(Q(id__gt=filters.search_after))
+
+    if filters.search_before is not None:
+        queries.append(Q(id__lt=filters.search_before))
+
     if additional_queries is not None:
         queries.extend(additional_queries)
 
