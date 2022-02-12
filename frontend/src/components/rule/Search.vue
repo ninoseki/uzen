@@ -47,7 +47,7 @@ import RulesTable from "@/components/rule/Table.vue";
 import Error from "@/components/ui/SimpleError.vue";
 import Loading from "@/components/ui/SimpleLoading.vue";
 import { Rule } from "@/types";
-import { DEFAULT_OFFSET, DEFAULT_PAGE_SIZE, hasLoadMore } from "@/utils/form";
+import { DEFAULT_PAGE_SIZE, hasLoadMore } from "@/utils/form";
 import { generateSearchRulesTask } from "@/api-helper";
 
 export default defineComponent({
@@ -76,17 +76,16 @@ export default defineComponent({
     const rules = ref<Rule[]>([]);
     const count = ref<number | undefined>(undefined);
     const totalCount = ref(0);
+    const searchBefore = ref<string | undefined>(undefined);
 
-    let size = DEFAULT_PAGE_SIZE;
-    let offset = DEFAULT_OFFSET;
+    const size = DEFAULT_PAGE_SIZE;
 
     const form = ref<InstanceType<typeof Form>>();
 
     const resetPagination = () => {
       rules.value = [];
       count.value = undefined;
-      size = DEFAULT_PAGE_SIZE;
-      offset = DEFAULT_OFFSET;
+      searchBefore.value = undefined;
     };
 
     const searchTask = generateSearchRulesTask();
@@ -94,7 +93,11 @@ export default defineComponent({
     const search = async () => {
       const params = form.value?.filtersParams() || {};
       params["size"] = size;
-      params["offset"] = offset;
+
+      if (searchBefore.value) {
+        params["searchBefore"] = searchBefore.value;
+      }
+
       return await searchTask.perform(params);
     };
 
@@ -108,6 +111,10 @@ export default defineComponent({
       rules.value = rules.value.concat(res.results);
       count.value = rules.value.length;
 
+      if (count.value > 0) {
+        searchBefore.value = rules.value[count.value - 1].id;
+      }
+
       if (!additionalLoading) {
         totalCount.value = res.total;
       }
@@ -116,7 +123,6 @@ export default defineComponent({
     };
 
     const loadMore = async () => {
-      offset += size;
       await searchWithAdditionalLoading(true);
     };
 

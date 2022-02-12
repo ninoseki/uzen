@@ -17,7 +17,7 @@ from app.schemas.script import Script
 from app.schemas.search import BaseSearchResults
 from app.schemas.stylesheet import Stylesheet
 from app.schemas.whois import WhoisMetaData
-from app.types import WaitUntilType
+from app.types import ULID, WaitUntilType
 from app.utils.network import get_hostname_from_url, get_ip_address_by_hostname
 from app.utils.validator import is_hash, is_network_address
 
@@ -259,6 +259,8 @@ class SnapshotSearchFilters(APIModel):
     tag: Optional[str] = Field(None)
     from_at: Optional[Union[datetime.datetime, datetime.date]] = Field(None)
     to_at: Optional[Union[datetime.datetime, datetime.date]] = Field(None)
+    search_after: Optional[ULID] = Field(None)
+    search_before: Optional[ULID] = Field(None)
 
 
 # Update forward references
