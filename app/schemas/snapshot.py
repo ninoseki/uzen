@@ -3,13 +3,14 @@ from functools import lru_cache
 from typing import Any, Dict, List, Optional, Union, cast
 
 import httpx
-from playwright.sync_api import Error, sync_playwright
+from playwright.sync_api import Error
 from pydantic import AnyHttpUrl, Field, IPvAnyAddress, validator
 
 from app.schemas.base import AbstractBaseModel, APIModel
 from app.schemas.certificate import CertificateMetaData
 from app.schemas.classification import Classification
 from app.schemas.common import Source, Target
+from app.schemas.device import Device, get_devices
 from app.schemas.dns_record import DnsRecord
 from app.schemas.html import BaseHTML
 from app.schemas.mixin import TimestampMixin
@@ -21,42 +22,7 @@ from app.types import ULID, WaitUntilType
 from app.utils.network import get_hostname_from_url, get_ip_address_by_hostname
 from app.utils.validator import is_hash, is_network_address
 
-# Declare rules & devices related schemas here to prevent circular reference
-
-
-class Viewport(APIModel):
-    """View port"""
-
-    width: int = Field(...)
-    height: int = Field(...)
-
-
-class DeviceDescriptor(APIModel):
-    """Device descriptor"""
-
-    user_agent: str = Field(...)
-    viewport: Viewport = Field(...)
-    device_scale_factor: float = Field(...)
-    is_mobile: bool = Field(...)
-    has_touch: bool = Field(...)
-
-
-class Device(APIModel):
-    """Device to be used with a browser"""
-
-    name: str = Field(...)
-    descriptor: DeviceDescriptor = Field(...)
-
-
-@lru_cache()
-def get_devices() -> List[Device]:
-    devices: List[Device] = []
-
-    with sync_playwright() as playwright:
-        for name, descriptor in playwright.devices.items():
-            devices.append(Device.parse_obj({"name": name, "descriptor": descriptor}))
-
-        return devices
+# Declare rule related schemas here to prevent circular reference
 
 
 def remove_sharp_and_question_from_tail(v: str) -> str:
