@@ -1,34 +1,18 @@
-import Vue from "vue";
-import VueRouter from "vue-router";
+import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 
-import Bulk from "@/views/Bulk.vue";
-import Domain from "@/views/Domain.vue";
-import EditRule from "@/views/EditRule.vue";
 import Home from "@/views/Home.vue";
-import Import from "@/views/Import.vue";
-import IPAddress from "@/views/IPAddress.vue";
-import Matches from "@/views/Matches.vue";
-import Rule from "@/views/Rule.vue";
-import Rules from "@/views/Rules.vue";
-import Snapshot from "@/views/Snapshot.vue";
-import Snapshots from "@/views/Snapshots.vue";
-import Yara from "@/views/Yara.vue";
 
-Vue.use(VueRouter);
-
-const routes = [
+const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
     name: "Home",
     component: Home,
-    meta: {
-      title: "Uzen",
-    },
   },
   {
     path: "/snapshots",
     name: "Snapshots",
-    component: Snapshots,
+    component: () =>
+      import(/* webpackChunkName: "snapshots" */ "@/views/Snapshots.vue"),
     meta: {
       title: "Snapshots - Uzen",
     },
@@ -36,21 +20,55 @@ const routes = [
   {
     path: "/snapshots/:id",
     name: "Snapshot",
-    component: Snapshot,
+    component: () =>
+      import(/* webpackChunkName: "snapshot" */ "@/views/Snapshot.vue"),
+    props: true,
+  },
+  {
+    path: "/jobs/snapshots/:id",
+    name: "SnapshotJob",
+    component: () =>
+      import(/* webpackChunkName: "snapshotJob" */ "@/views/SnapshotJob.vue"),
+    props: true,
+  },
+  {
+    path: "/jobs/yara/:id",
+    name: "YaraScanJob",
+    component: () =>
+      import(/* webpackChunkName: "yaraScanJob" */ "@/views/YaraScanJob.vue"),
+    props: true,
+  },
+  {
+    path: "/jobs/similarity/:id",
+    name: "SimilarityScanJob",
+    component: () =>
+      import(
+        /* webpackChunkName: "similarityScanJob" */ "@/views/SimilarityScanJob.vue"
+      ),
     props: true,
   },
   {
     path: "/yara",
     name: "Yara",
-    component: Yara,
+    component: () => import(/* webpackChunkName: "yara" */ "@/views/Yara.vue"),
     meta: {
       title: "YARA - Uzen",
     },
   },
   {
+    path: "/similarity",
+    name: "Similarity",
+    component: () =>
+      import(/* webpackChunkName: "similarity" */ "@/views/Similarity.vue"),
+    meta: {
+      title: "Similarity - Uzen",
+    },
+  },
+  {
     path: "/import",
     name: "Import",
-    component: Import,
+    component: () =>
+      import(/* webpackChunkName: "import" */ "@/views/Import.vue"),
     meta: {
       title: "Import - Uzen",
     },
@@ -58,20 +76,31 @@ const routes = [
   {
     path: "/rules",
     name: "Rules",
-    component: Rules,
+    component: () =>
+      import(/* webpackChunkName: "rules" */ "@/views/Rules.vue"),
     meta: {
       title: "Rules - Uzen",
     },
   },
   {
+    path: "/rules/new",
+    name: "CreateRule",
+    component: () =>
+      import(/* webpackChunkName: "rules" */ "@/views/CreateRule.vue"),
+    meta: {
+      title: "Creat a rule - Uzen",
+    },
+  },
+  {
     path: "/rules/:id",
     name: "Rule",
-    component: Rule,
+    component: () => import(/* webpackChunkName: "rule" */ "@/views/Rule.vue"),
   },
   {
     path: "/rules/edit/:id",
     name: "EditRule",
-    component: EditRule,
+    component: () =>
+      import(/* webpackChunkName: "editRule" */ "@/views/EditRule.vue"),
     meta: {
       title: "Edit a rule - Uzen",
     },
@@ -79,7 +108,8 @@ const routes = [
   {
     path: "/matches",
     name: "Matches",
-    component: Matches,
+    component: () =>
+      import(/* webpackChunkName: "matches" */ "@/views/Matches.vue"),
     meta: {
       title: "Matches - Uzen",
     },
@@ -87,31 +117,44 @@ const routes = [
   {
     path: "/ip_address/:ipAddress",
     name: "IP address",
-    component: IPAddress,
+    component: () =>
+      import(/* webpackChunkName: "ipAddress" */ "@/views/IPAddress.vue"),
   },
   {
     path: "/domain/:hostname",
     name: "Domain",
-    component: Domain,
+    component: () =>
+      import(/* webpackChunkName: "domain" */ "@/views/Domain.vue"),
+  },
+  {
+    path: "/file/:hash",
+    name: "File",
+    component: () => import(/* webpackChunkName: "file" */ "@/views/File.vue"),
   },
   {
     path: "/bulk",
     name: "Bulk",
-    component: Bulk,
+    component: () => import(/* webpackChunkName: "bulk" */ "@/views/Bulk.vue"),
     meta: {
       title: "Bulk - Uzen",
     },
   },
+  {
+    path: "/configuration",
+    name: "Configuration",
+    component: () =>
+      import(
+        /* webpackChunkName: "configuration" */ "@/views/Configuration.vue"
+      ),
+    meta: {
+      title: "Configuration - Uzen",
+    },
+  },
 ];
 
-const router = new VueRouter({
+const router = createRouter({
+  history: createWebHashHistory(process.env.BASE_URL),
   routes,
-});
-
-router.beforeEach((to, _from, next) => {
-  document.title = to.meta.title || "";
-
-  next();
 });
 
 export default router;

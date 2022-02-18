@@ -1,30 +1,28 @@
 import pytest
 import vcr
-
-from uzen.services.whois import Whois
-
-
-def mock_whois(hostname: str):
-    return "foo"
+from fastapi.testclient import TestClient
 
 
-@pytest.mark.asyncio
 @vcr.use_cassette(
     "tests/fixtures/vcr_cassettes/ip_address.yaml", ignore_hosts=["testserver"]
 )
-async def test_get(client, monkeypatch):
-    monkeypatch.setattr(Whois, "whois", mock_whois)
-
-    ip_address = "1.1.1.1"
-    response = await client.get(f"/api/ip_address/{ip_address}")
+@pytest.mark.usefixtures("patch_whois_lookup")
+def test_get(client: TestClient):
+    ip_address = "93.184.216.34"
+    response = client.get(f"/api/ip_address/{ip_address}")
     assert response.status_code == 200
 
-    json = response.json()
-    ip_address_ = json.get("ipAddress", "")
+    data = response.json()
+    ip_address_ = data.get("ipAddress", "")
     assert ip_address_ == ip_address
 
-    snapshots = json.get("snapshots", [])
+    snapshots = data.get("snapshots", [])
     assert len(snapshots) == 0
 
-    whois = json.get("whois", "")
-    assert whois == whois
+    whois = data.get("whois", "")
+    assert whois
+
+
+def test_get_with_invalid_input(client: TestClient):
+    response = client.get("/api/ip_address/example.com")
+    assert response.status_code == 404

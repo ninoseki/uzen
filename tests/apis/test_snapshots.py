@@ -1,168 +1,127 @@
-import json
+from typing import List
 
 import pytest
+from _pytest.monkeypatch import MonkeyPatch
+from fastapi.testclient import TestClient
 
-from tests.utils import first_snapshot_id, make_snapshot_result
-from uzen.models.snapshots import Snapshot
-from uzen.services.browser import Browser
-
-
-@pytest.mark.asyncio
-@pytest.mark.usefixtures("snapshots_setup")
-async def test_snapshot_search(client):
-    count = await Snapshot.all().count()
-    response = await client.get("/api/snapshots/search")
-    json = response.json()
-    snapshots = json.get("results")
-    assert len(snapshots) == count
-
-    response = await client.get(
-        "/api/snapshots/search", params={"hostname": "example.com"}
-    )
-    json = response.json()
-    snapshots = json.get("results")
-    assert len(snapshots) == count
-
-    response = await client.get("/api/snapshots/search", params={"server": "ECS"})
-    json = response.json()
-    snapshots = json.get("results")
-    assert len(snapshots) == count
-
-    response = await client.get(
-        "/api/snapshots/search", params={"from_at": "1970-01-01T15:53:00+05:00"}
-    )
-    json = response.json()
-    snapshots = json.get("results")
-    assert len(snapshots) == count
-
-    response = await client.get(
-        "/api/snapshots/search", params={"from_at": "1970-01-01"}
-    )
-    json = response.json()
-    snapshots = json.get("results")
-    assert len(snapshots) == count
-
-    response = await client.get(
-        "/api/snapshots/search", params={"to_at": "3000-01-01T15:53:00+05:00"}
-    )
-    json = response.json()
-    snapshots = json.get("results")
-    assert len(snapshots) == count
-
-    # it doesn't match any snapshot
-    response = await client.get("/api/snapshots/search", params={"server": "Tomcat"})
-    json = response.json()
-    snapshots = json.get("results")
-    assert len(snapshots) == 0
-
-    # it doesn't match any snapshot
-    response = await client.get("/api/snapshots/search", params={"status": 404})
-    json = response.json()
-    snapshots = json.get("results")
-    assert len(snapshots) == 0
+from app import models
+from app.services.browser import Browser
+from tests.helper import make_snapshot_wrapper
 
 
-@pytest.mark.asyncio
-@pytest.mark.usefixtures("snapshots_setup")
-async def test_snapshot_list_with_size(client):
+@pytest.mark.parametrize(
+    "params",
+    [
+        {},
+        {"hostname": "example.com"},
+        {"from_at": "1970-01-01T15:53:00+05:00"},
+        {"fromAt": "1970-01-01T15:53:00+05:00"},
+        {"from_at": "1970-01-01"},
+        {"to_at": "3000-01-01T15:53:00+05:00"},
+        {"toAt": "3000-01-01T15:53:00+05:00"},
+    ],
+)
+def test_snapshot_search(
+    client: TestClient, snapshots: List[models.Snapshot], params: dict
+):
+    count = len(snapshots)
+    response = client.get("/api/snapshots/search", params=params)
+    data = response.json()
+    results = data.get("results", [])
+    assert len(results) == count
+
+
+@pytest.mark.usefixtures("snapshots")
+def test_snapshot_list_with_size(
+    client: TestClient,
+):
     payload = {"size": 1}
-    response = await client.get("/api/snapshots/search", params=payload)
-    json = response.json()
-    snapshots = json.get("results")
-    assert len(snapshots) == 1
-    first = snapshots[0]
+    response = client.get("/api/snapshots/search", params=payload)
+    data = response.json()
+    results = data.get("results", [])
+    assert len(results) == 1
+
+    first = results[0]
     assert first.get("url") == "http://example10.com/"
 
 
-@pytest.mark.asyncio
-@pytest.mark.usefixtures("snapshots_setup")
-async def test_snapshot_list_with_offset_and_size(client):
+def test_snapshot_list_with_offset_and_size(
+    client: TestClient,
+    snapshots: List[models.Snapshot],
+):
     payload = {"offset": 0, "size": 1}
-    response = await client.get("/api/snapshots/search", params=payload)
-    json = response.json()
-    snapshots = json.get("results")
-    assert len(snapshots) == 1
+    response = client.get("/api/snapshots/search", params=payload)
+    data = response.json()
+    results = data.get("results", [])
+    assert len(results) == 1
 
     offset = 0
     size = 10
     payload = {"offset": offset, "size": size}
-    response = await client.get("/api/snapshots/search", params=payload)
-    json = response.json()
-    snapshots = json.get("results")
-    assert len(snapshots) == size - offset
-    first = snapshots[0]
+    response = client.get("/api/snapshots/search", params=payload)
+    data = response.json()
+    results = data.get("results", [])
+    assert len(results) == size - offset
+    first = results[0]
     assert first.get("url") == f"http://example{size - offset}.com/"
 
     offset = 5
     size = 100000
     payload = {"offset": offset, "size": size}
-    response = await client.get("/api/snapshots/search", params=payload)
-    json = response.json()
-    snapshots = json.get("results")
-    assert len(snapshots) == await Snapshot.all().count() - offset
-    first = snapshots[0]
+    response = client.get("/api/snapshots/search", params=payload)
+    data = response.json()
+    results = data.get("results", [])
+    assert len(results) == len(snapshots) - offset
+    first = results[0]
     assert first.get("url") == f"http://example{offset}.com/"
 
 
-@pytest.mark.asyncio
-async def test_snapshot_post_without_url(client):
+def test_snapshot_post_without_url(client: TestClient):
     payload = {}
-    response = await client.post("/api/snapshots/", data=json.dumps(payload))
+    response = client.post("/api/snapshots/", json=payload)
     assert response.status_code == 422
 
 
-@pytest.mark.asyncio
-async def test_snapshot_post_with_invalid_url(client):
+def test_snapshot_post_with_invalid_url(client):
     payload = {"url": "foo"}
-    response = await client.post("/api/snapshots/", data=json.dumps(payload))
+    response = client.post("/api/snapshots/", json=payload)
     assert response.status_code == 422
 
 
 def mock_take_snapshot(*args, **kwargs):
-    return make_snapshot_result()
+    return make_snapshot_wrapper()
 
 
-@pytest.mark.asyncio
-async def test_snapshot_post(client, monkeypatch):
+def test_snapshot_post(client: TestClient, monkeypatch: MonkeyPatch):
     monkeypatch.setattr(Browser, "take_snapshot", mock_take_snapshot)
 
     payload = {"url": "http://example.com"}
-    response = await client.post("/api/snapshots/", data=json.dumps(payload))
+    response = client.post("/api/snapshots/", json=payload)
 
     assert response.status_code == 201
 
     snapshot = response.json()
-    assert snapshot.get("url") == "http://example.com/"
-    assert snapshot.get("body") == "foo bar"
-
-    snapshot = await Snapshot.get(id=snapshot.get("id"))
-    await snapshot.fetch_related("_scripts")
-    assert len(snapshot.scripts) == 0
+    assert snapshot.get("type") == "snapshot"
 
 
-@pytest.mark.asyncio
-@pytest.mark.usefixtures("snapshots_setup")
-async def test_snapshot_get(client):
-    id_ = await first_snapshot_id()
-    response = await client.get(f"/api/snapshots/{id_}")
+@pytest.mark.usefixtures("snapshots")
+def test_snapshot_get(
+    client: TestClient,
+    snapshots: List[models.Snapshot],
+):
+    id_ = snapshots[0].id
+    response = client.get(f"/api/snapshots/{id_}")
     assert response.status_code == 200
-    assert response.json().get("screenshot") is None
-
-    id_ = await first_snapshot_id()
-    response = await client.get(
-        f"/api/snapshots/{id_}", params={"include_screenshot": True}
-    )
-    assert response.status_code == 200
-    assert response.json().get("screenshot") is not None
-    json = response.json()
-    assert json.get("screenshot", {}).get("data") == ""
+    assert response.json().get("id") == str(id_)
 
 
-@pytest.mark.asyncio
-@pytest.mark.usefixtures("dns_records_setup")
-async def test_snapshot_get_with_dns_records(client):
-    id_ = await first_snapshot_id()
-    response = await client.get(f"/api/snapshots/{id_}")
+@pytest.mark.usefixtures("dns_records")
+def test_snapshot_get_with_dns_records(
+    client: TestClient,
+    snapshots: List[models.Snapshot],
+):
+    id_ = snapshots[0].id
+    response = client.get(f"/api/snapshots/{id_}")
     assert response.status_code == 200
 
     snapshot = response.json()
@@ -171,11 +130,13 @@ async def test_snapshot_get_with_dns_records(client):
     assert len(snapshot.get("classifications")) == 0
 
 
-@pytest.mark.asyncio
-@pytest.mark.usefixtures("classifications_setup")
-async def test_snapshot_get_with_classifications(client):
-    id_ = await first_snapshot_id()
-    response = await client.get(f"/api/snapshots/{id_}")
+@pytest.mark.usefixtures("classifications")
+def test_snapshot_get_with_classifications(
+    client: TestClient,
+    snapshots: List[models.Snapshot],
+):
+    id_ = snapshots[0].id
+    response = client.get(f"/api/snapshots/{id_}")
     assert response.status_code == 200
 
     snapshot = response.json()
@@ -184,11 +145,12 @@ async def test_snapshot_get_with_classifications(client):
     assert len(snapshot.get("scripts")) == 0
 
 
-@pytest.mark.asyncio
-@pytest.mark.usefixtures("scripts_setup")
-async def test_snapshot_get_with_scripts(client):
-    id_ = await first_snapshot_id()
-    response = await client.get(f"/api/snapshots/{id_}")
+@pytest.mark.usefixtures("scripts")
+def test_snapshot_get_with_scripts(
+    client: TestClient, snapshots: List[models.Snapshot]
+):
+    id_ = snapshots[0].id
+    response = client.get(f"/api/snapshots/{id_}")
     assert response.status_code == 200
 
     snapshot = response.json()
@@ -197,14 +159,25 @@ async def test_snapshot_get_with_scripts(client):
     assert len(snapshot.get("dnsRecords")) == 0
 
 
-@pytest.mark.asyncio
-@pytest.mark.usefixtures("snapshots_setup")
-async def test_count(client):
-    count = await Snapshot.all().count()
+def test_count(
+    client: TestClient,
+    snapshots: List[models.Snapshot],
+):
+    count = len(snapshots)
 
-    response = await client.get(f"/api/snapshots/count")
+    response = client.get("/api/snapshots/count")
     assert response.status_code == 200
 
-    json = response.json()
-    count_ = json.get("count")
+    data = response.json()
+    count_ = data.get("count")
     assert count == count_
+
+
+@pytest.mark.usefixtures("scripts")
+def test_indicators(
+    client: TestClient,
+    snapshots: List[models.Snapshot],
+):
+    id_ = snapshots[0].id
+    response = client.get(f"/api/snapshots/{id_}/indicators")
+    assert response.status_code == 200

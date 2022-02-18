@@ -1,49 +1,56 @@
-import pytest
+import asyncio
+from typing import List
 
-from tests.utils import first_rule_id, first_snapshot_id
-from uzen.models.matches import Match
-from uzen.models.rules import Rule
-from uzen.models.scripts import Script
-from uzen.models.snapshots import Snapshot
+from fastapi.testclient import TestClient
+
+from app import models
+from tests.helper import (
+    count_all_matches,
+    count_all_rules,
+    count_all_scripts,
+    count_all_snapshots,
+)
 
 
-@pytest.mark.asyncio
-@pytest.mark.usefixtures("scripts_setup")
-async def test_delete_snapshot_with_scripts(client):
-    id_ = await first_snapshot_id()
-    snapshot_count = await Snapshot.all().count()
-    script_count = await Script.all().count()
+def test_delete_snapshot_with_scripts(
+    client: TestClient,
+    event_loop: asyncio.AbstractEventLoop,
+    scripts: List[models.Script],
+    snapshots: List[models.Snapshot],
+):
+    id_ = snapshots[0].id
 
-    response = await client.delete(f"/api/snapshots/{id_}")
+    response = client.delete(f"/api/snapshots/{id_}")
     assert response.status_code == 204
 
-    assert await Snapshot.all().count() == snapshot_count - 1
-    assert await Script.all().count() == script_count - 1
+    assert count_all_snapshots(event_loop) == len(snapshots) - 1
+    assert count_all_scripts(event_loop) == len(scripts) - 1
 
 
-@pytest.mark.asyncio
-@pytest.mark.usefixtures("matches_setup")
-async def test_delete_snapshot_with_matches(client):
-    id_ = await first_snapshot_id()
-    snapshot_count = await Snapshot.all().count()
-    match_count = await Match.all().count()
-
-    response = await client.delete(f"/api/snapshots/{id_}")
+def test_delete_snapshot_with_matches(
+    client: TestClient,
+    event_loop: asyncio.AbstractEventLoop,
+    matches: List[models.Match],
+    snapshots: List[models.Snapshot],
+):
+    id_ = snapshots[0].id
+    response = client.delete(f"/api/snapshots/{id_}")
     assert response.status_code == 204
 
-    assert await Snapshot.all().count() == snapshot_count - 1
-    assert await Match.all().count() == match_count - 1
+    assert count_all_snapshots(event_loop) == len(snapshots) - 1
+    assert count_all_matches(event_loop) == len(matches) - 1
 
 
-@pytest.mark.asyncio
-@pytest.mark.usefixtures("matches_setup")
-async def test_delete_rule_with_matches(client):
-    id_ = await first_rule_id()
-    rule_count = await Rule.all().count()
-    match_count = await Match.all().count()
+def test_delete_rule_with_matches(
+    client: TestClient,
+    event_loop: asyncio.AbstractEventLoop,
+    matches: List[models.Match],
+    rules: List[models.Rule],
+):
+    id_ = rules[0].id
 
-    response = await client.delete(f"/api/rules/{id_}")
+    response = client.delete(f"/api/rules/{id_}")
     assert response.status_code == 204
 
-    assert await Rule.all().count() == rule_count - 1
-    assert await Match.all().count() == match_count - 1
+    assert count_all_rules(event_loop) == len(rules) - 1
+    assert count_all_matches(event_loop) == len(matches) - 1

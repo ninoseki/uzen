@@ -1,42 +1,57 @@
 <template>
-  <b-navbar :fixed-top="true">
-    <template slot="brand">
-      <b-navbar-item>
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <img src="/images/logo.png" alt="Uzen" />
+      </div>
+
+      <div class="navbar-item">
         <h1 class="title">Uzen</h1>
-      </b-navbar-item>
-    </template>
-    <template slot="end">
-      <b-navbar-item tag="router-link" :to="{ path: '/' }">Home</b-navbar-item>
-      <b-navbar-item tag="router-link" :to="{ path: '/snapshots' }"
-        >Snapshots</b-navbar-item
-      >
-      <b-navbar-item tag="router-link" :to="{ path: '/rules' }"
-        >Rules</b-navbar-item
-      >
-      <b-navbar-item tag="router-link" :to="{ path: '/matches' }"
-        >Matches</b-navbar-item
-      >
-      <b-navbar-item tag="router-link" :to="{ path: '/yara' }"
-        >YARA scan</b-navbar-item
-      >
-      <b-navbar-item tag="router-link" :to="{ path: '/import' }"
-        >Import</b-navbar-item
-      >
-      <b-navbar-item tag="router-link" :to="{ path: '/bulk' }"
-        >Bulk submission</b-navbar-item
-      >
-      <b-navbar-item>
+      </div>
+    </div>
+
+    <div class="navbar-menu">
+      <div class="navbar-end">
+        <router-link class="navbar-item" :to="{ path: '/' }">Home</router-link>
+        <router-link class="navbar-item" :to="{ path: '/snapshots' }"
+          >Snapshots</router-link
+        >
+        <router-link class="navbar-item" :to="{ path: '/rules/new' }"
+          >New rule</router-link
+        >
+        <router-link class="navbar-item" :to="{ path: '/rules' }"
+          >Rules</router-link
+        >
+        <router-link class="navbar-item" :to="{ path: '/matches' }"
+          >Matches</router-link
+        >
+        <router-link class="navbar-item" :to="{ path: '/yara' }"
+          >YARA</router-link
+        >
+        <router-link class="navbar-item" :to="{ path: '/similarity' }"
+          >Similarity</router-link
+        >
+        <router-link class="navbar-item" :to="{ path: '/import' }"
+          >Import</router-link
+        >
+        <router-link class="navbar-item" :to="{ path: '/bulk' }"
+          >Bulk submission</router-link
+        >
+        <router-link class="navbar-item" :to="{ path: '/configuration' }"
+          >Configuration</router-link
+        >
         <a href="/docs" target="_blank" class="navbar-item">API</a>
-      </b-navbar-item>
-    </template>
-  </b-navbar>
+      </div>
+    </div>
+  </nav>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { defineComponent } from "vue";
 
-@Component
-export default class Navbar extends Vue {}
+export default defineComponent({
+  name: "NavBar",
+});
 </script>
 
 <style>

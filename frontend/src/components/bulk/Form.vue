@@ -1,88 +1,120 @@
 <template>
   <div>
     <div class="box">
-      <b-field label="URL">
-        <b-input
-          class="control is-expanded"
-          placeholder="http://example.com"
-          type="textarea"
-          v-model="urlText"
-        ></b-input>
-      </b-field>
+      <div class="field">
+        <label class="label"> URL </label>
+        <p class="control">
+          <textarea
+            class="textarea is-expanded"
+            placeholder="http://example.com"
+            type="textarea"
+            v-model="urlText"
+          />
+        </p>
+      </div>
 
-      <br />
-
-      <div class="buttons is-centered">
-        <b-button
-          type="is-light"
-          icon-pack="fas"
-          icon-left="search"
-          @click="bulkSubmit"
-          >Submit</b-button
-        >
-        <b-button
-          type="is-info"
-          icon-pack="fas"
-          icon-left="cogs"
-          @click="showOptions = !showOptions"
-          >Options</b-button
-        >
+      <div class="buttons is-centered mt-5">
+        <button class="button is-light" @click="bulkSubmit">
+          <span class="icon">
+            <i class="fas fa-search"></i>
+          </span>
+          <span>Submit</span>
+        </button>
+        <button class="button is-info" @click="showOptions = !showOptions">
+          <span class="icon">
+            <i class="fas fa-cogs"></i>
+          </span>
+          <span>Options</span>
+        </button>
       </div>
 
       <Options
         v-if="showOptions"
-        v-bind:acceptLanguage.sync="acceptLanguage"
-        v-bind:host.sync="host"
-        v-bind:ignoreHTTPSErrors.sync="ignoreHTTPSErrors"
-        v-bind:referer.sync="referer"
-        v-bind:timeout.sync="timeout"
-        v-bind:userAgent.sync="userAgent"
+        v-model:acceptLanguage="acceptLanguage"
+        v-model:otherHeaders="otherHeaders"
+        v-model:ignoreHttpSErrors="ignoreHttpsErrors"
+        v-model:referer="referer"
+        v-model:timeout="timeout"
+        v-model:userAgent="userAgent"
+        v-model:deviceName="deviceName"
+        v-model:waitUntil="waitUntil"
       />
     </div>
 
-    <div class="box" v-if="hasURLs">
+    <div class="box" v-if="hasURLs()">
       <Row
         v-for="(url, index) in urls"
         :key="url + index"
         :url="url"
         :index="index"
         :acceptLanguage="acceptLanguage"
-        :host="host"
-        :ignoreHTTPSErrors="ignoreHTTPSErrors"
+        :enableHar="enableHar"
+        :otherHeaders="otherHeaders"
+        :ignoreHttpsErrors="ignoreHttpsErrors"
         :referer="referer"
         :timeout="timeout"
         :userAgent="userAgent"
+        :deviceName="deviceName"
+        :waitUntil="waitUntil"
       />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { defineComponent, ref } from "vue";
 
 import Row from "@/components/bulk/Row.vue";
-import Options from "@/components/snapshots/Options.vue";
+import Options from "@/components/snapshot/Options.vue";
+import { Header, WaitUntilType } from "@/types";
 
-@Component({ components: { Options, Row } })
-export default class Form extends Vue {
-  private urlText = "";
-  private showOptions = false;
+export default defineComponent({
+  name: "Form",
+  components: {
+    Options,
+    Row,
+  },
+  setup() {
+    const urlText = ref("");
+    const showOptions = ref(false);
+    const acceptLanguage = ref("");
+    const ignoreHttpsErrors = ref(false);
+    const enableHar = ref(false);
+    const referer = ref("");
+    const timeout = ref(30000);
+    const userAgent = ref("");
+    const deviceName = ref("");
+    const otherHeaders = ref<Header[]>([]);
+    const waitUntil = ref<WaitUntilType>("load");
 
-  private acceptLanguage = "";
-  private host = "";
-  private ignoreHTTPSErrors = false;
-  private referer = "";
-  private timeout = 30000;
-  private userAgent = "";
+    const urls = ref<string[]>([]);
 
-  private urls: string[] = [];
+    const bulkSubmit = () => {
+      if (urlText.value.trim() !== "") {
+        urls.value = urlText.value.split("\n");
+      }
+    };
 
-  bulkSubmit() {
-    this.urls = this.urlText.split("\n");
-  }
+    const hasURLs = (): boolean => {
+      return urls.value.length > 0;
+    };
 
-  get hasURLs(): boolean {
-    return this.urls.length > 0;
-  }
-}
+    return {
+      acceptLanguage,
+      deviceName,
+      enableHar,
+      ignoreHttpsErrors,
+      otherHeaders,
+      referer,
+      showOptions,
+      timeout,
+      urls,
+      urlText,
+      userAgent,
+      waitUntil,
+      bulkSubmit,
+      hasURLs,
+    };
+  },
+});
 </script>

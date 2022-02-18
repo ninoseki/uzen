@@ -3,16 +3,17 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: circleci/python:3.8-buster-browsers
+      - image: circleci/python:3.9-buster-browsers
         environment:
           TESTING: "true"
           GOOGLE_SAFE_BROWSING_API_KEY: foo
-          DATABASE_URL: mysql://root:rootpass@127.0.0.1:3306/ci_test
+          TORTOISE_TEST_DB: mysql://root:rootpass@127.0.0.1:3306/ci_test
+          REDIS_URL: redis://localhost:6379
       - image: circleci/mysql:8
         environment:
-          MYSQL_DATABASE: 'ci_test'
-          MYSQL_USER: 'root'
-          MYSQL_ROOT_PASSWORD: 'rootpass'
+          MYSQL_DATABASE: "ci_test"
+          MYSQL_ROOT_PASSWORD: "rootpass"
+      - image: redis:6.2
     steps:
       - checkout
       - restore_cache:
@@ -22,14 +23,14 @@ jobs:
           name: Install Python Dependencies
           command: |
             pip install poetry
-            poetry config virtualenvs.create false
             poetry install
-            python -m playwright install
+            poetry run python -m playwright install chromium
       - save_cache:
           key: deps-{{ checksum "poetry.lock" }}
           paths:
             - /home/circleci/.cache/pypoetry
             - /home/circleci/.cache/ms-playwright
+            - /home/circleci/.local/lib/python3.9/site-packages/
       - run:
           name: Create Dummy Files
           command: |
@@ -37,12 +38,14 @@ jobs:
             touch frontend/dist/index.html frontend/dist/images/not-found.png
       - run:
           name: Run Pytest (with MySQL)
-          environment:
-            DATABASE_URL: mysql://root:rootpass@127.0.0.1:3306/ci_test
-          command: pytest -v --cov=uzen --cov-report=term-missing
+          command: poetry run pytest -v --cov=app --cov-report=term-missing --junitxml=test-results/junit.xml
       - run:
           name: coveralls
-          command: coveralls
+          command: poetry run coveralls
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: test-results
 
   build-frontend:
     docker:

@@ -1,96 +1,143 @@
 <template>
   <div class="row">
-    <div v-if="hasResult()">
-      <div v-if="isErrorResult()">
-        <b-message type="is-danger">
-          Failed to take snapshot of {{ url }}
-        </b-message>
-      </div>
-      <div v-else>
-        <b-message type="is-success">
-          <router-link
-            :to="{
-              name: 'Snapshot',
-              params: {
-                id: result.id,
-              },
-            }"
-          >
-            {{ result.url | truncate }}
-          </router-link>
-          <p><strong>Submitted URL:</strong> {{ url }}</p>
-          <p><strong>ID:</strong> {{ result.id }}</p>
-        </b-message>
-      </div>
+    <div v-if="takeSnapshotTask.isRunning">
+      <article class="message">
+        <div class="message-body">Loading {{ url }}...</div>
+      </article>
+    </div>
+    <div v-else-if="takeSnapshotTask.isError">
+      <article class="message is-danger">
+        <div class="message-body">
+          Failed to take a snapshot of <strong>{{ url }}</strong>
+        </div>
+      </article>
     </div>
     <div v-else>
-      <b-message>Loading {{ url }}...</b-message>
+      <div v-if="takeSnapshotTask.last && takeSnapshotTask.last.value">
+        <article class="message is-success">
+          <div class="message-body">
+            <p><strong>Submitted URL:</strong> {{ url }}</p>
+            <p>
+              <strong>Job ID:</strong>
+              <router-link
+                :to="{
+                  name: 'SnapshotJob',
+                  params: {
+                    id: takeSnapshotTask.last.value.id,
+                  },
+                }"
+              >
+                {{ takeSnapshotTask.last.value.id }}
+              </router-link>
+            </p>
+          </div>
+        </article>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import axios from "axios";
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { defineComponent, onMounted, PropType } from "vue";
 
-import { ErrorData, Snapshot } from "@/types";
+import { CreateSnapshotPayload, Header, Headers, WaitUntilType } from "@/types";
+import { generateTakeSnapshotTask } from "@/api-helper";
 
-@Component
-export default class Row extends Vue {
-  @Prop() private url!: string;
-  @Prop() private index!: number;
+export default defineComponent({
+  name: "BulkRow",
+  props: {
+    url: {
+      type: String,
+      required: true,
+    },
+    index: {
+      type: Number,
+      required: true,
+    },
+    acceptLanguage: {
+      type: String,
+      required: true,
+    },
+    ignoreHttpsErrors: {
+      type: Boolean,
+      required: true,
+    },
+    enableHar: {
+      type: Boolean,
+      required: true,
+    },
+    referer: {
+      type: String,
+      required: true,
+    },
+    timeout: {
+      type: Number,
+      required: true,
+    },
+    userAgent: {
+      type: String,
+      required: true,
+    },
+    deviceName: {
+      type: String,
+      required: true,
+    },
+    waitUntil: {
+      type: String as PropType<WaitUntilType>,
+      required: true,
+    },
+    otherHeaders: {
+      type: Array as PropType<Header[]>,
+      required: true,
+    },
+  },
+  setup(props) {
+    const sleep = (): Promise<void> => {
+      const timeout = 1000 * props.index;
+      return new Promise((resolve) => setTimeout(resolve, timeout));
+    };
 
-  @Prop() private acceptLanguage!: string;
-  @Prop() private host!: string;
-  @Prop() private ignoreHTTPSErrors!: boolean;
-  @Prop() private referer!: string;
-  @Prop() private timeout!: number;
-  @Prop() private userAgent!: string;
+    const takeSnapshotTask = generateTakeSnapshotTask();
 
-  private result: Snapshot | ErrorData | undefined = undefined;
+    const takeSnapshot = async () => {
+      await sleep();
 
-  sleep(): Promise<void> {
-    const timeout = 1000 * this.index;
-    return new Promise((resolve) => setTimeout(resolve, timeout));
-  }
+      const headers: Headers = {};
+      headers["User-Agent"] = props.userAgent;
 
-  mounted() {
-    this.submit();
-  }
-
-  async submit() {
-    await this.sleep();
-
-    try {
-      const response = await axios.post<Snapshot>("/api/snapshots/", {
-        url: this.url,
-        acceptLanguage:
-          this.acceptLanguage === "" ? undefined : this.acceptLanguage,
-        host: this.host === "" ? undefined : this.host,
-        ignoreHttpsErrors: this.ignoreHTTPSErrors,
-        referer: this.referer === "" ? undefined : this.referer,
-        timeout: this.timeout,
-        userAgent: this.userAgent === "" ? undefined : this.userAgent,
-      });
-      this.result = response.data;
-    } catch (error) {
-      let data = error.response.data as ErrorData;
-      if (typeof data === "string") {
-        data = { detail: error };
+      if (props.acceptLanguage !== "") {
+        headers["Accept-Language"] = props.acceptLanguage;
       }
-      this.result = data;
-    }
-    this.$forceUpdate();
-  }
+      if (props.referer !== "") {
+        headers["Referer"] = props.referer;
+      }
 
-  hasResult(): boolean {
-    return this.result !== undefined;
-  }
+      props.otherHeaders.forEach((header) => {
+        if (header.key !== "" && header.value !== "") {
+          headers[header.key] = header.value;
+        }
+      });
 
-  isErrorResult(): boolean {
-    return this.result !== undefined && "detail" in this.result;
-  }
-}
+      const payload: CreateSnapshotPayload = {
+        url: props.url,
+        enableHar: props.enableHar,
+        timeout: props.timeout,
+        ignoreHttpsErrors: props.ignoreHttpsErrors,
+        waitUntil: props.waitUntil,
+        deviceName: props.deviceName === "" ? undefined : props.deviceName,
+        headers,
+      };
+
+      return await takeSnapshotTask.perform(payload);
+    };
+
+    onMounted(async () => {
+      await takeSnapshot();
+    });
+
+    return { takeSnapshotTask };
+  },
+});
 </script>
 
 <style scoped>

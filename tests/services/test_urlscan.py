@@ -5,10 +5,11 @@ import pytest
 import respx
 from httpx import Response
 
-from uzen.services.urlscan import URLScan
+from app.services.urlscan import URLScan
 
 path = pathlib.Path(__file__).parent / "../fixtures/urlscan.json"
-fixture = open(path).read()
+with open(path) as f:
+    fixture = f.read()
 
 
 @pytest.mark.asyncio
@@ -28,9 +29,4 @@ async def test_urlscan_import():
     snapshot = result.snapshot
     assert snapshot.url == "https://nnpub.org/"
     assert snapshot.ip_address == "162.215.240.128"
-    assert (
-        snapshot.server
-        == "Apache/2.4.41 (cPanel) OpenSSL/1.1.1d mod_bwlimited/1.4 Phusion_Passenger/5.3.7"
-    )
-    assert snapshot.content_type == "text/html; charset=utf-8"
     assert isinstance(snapshot.created_at, datetime.datetime)

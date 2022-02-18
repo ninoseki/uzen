@@ -1,10 +1,13 @@
 <template>
-  <b-message> N/A </b-message>
+  <article class="message is-warning">
+    <div class="message-body">The data is not available.</div>
+  </article>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { defineComponent } from "vue";
 
-@Component
-export default class NA extends Vue {}
+export default defineComponent({
+  name: "NA",
+});
 </script>

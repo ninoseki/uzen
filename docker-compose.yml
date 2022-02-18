@@ -1,0 +1,106 @@
+version: "3.7"
+services:
+  minio:
+    container_name: uzen_minio
+    image: minio/minio:latest
+    volumes:
+      - minio-data:/data
+    ports:
+      - "9000:9000"
+    environment:
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+    command: server /data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+    restart: always
+
+  redis:
+    container_name: uzen_redis
+    image: bitnami/redis:6.2
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    restart: always
+    volumes:
+      - "redis-data:/data"
+
+  database:
+    container_name: uzen_db
+    image: mysql/mysql-server:8.0
+    volumes:
+      - db-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    restart: always
+
+  ip2asn:
+    container_name: uzen_ip2asn
+    image: ninoseki/iptoasn:latest
+    ports:
+      - "53661:53661"
+    restart: always
+
+  worker:
+    build:
+      context: ./
+      dockerfile: worker.dockerfile
+    environment:
+      - TESTING=False
+      - DEBUG=False
+      - SECRET_API_KEY=${SECRET_API_KEY}
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+      - MINIO_SECURE=False
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/
+      - DATABASE_URL=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@database:3306/${MYSQL_DATABASE}
+      - GOOGLE_SAFE_BROWSING_API_KEY=${GOOGLE_SAFE_BROWSING_API_KEY}
+      - VIRUSTOTAL_API_KEY=${VIRUSTOTAL_API_KEY}
+      - IP2ASN_WEB_SERVICE_URL=http://ip2asn:53661
+    restart: always
+    depends_on:
+      - minio
+      - redis
+      - database
+      - ip2asn
+    deploy:
+      mode: replicated
+      replicas: 2
+
+  uzen:
+    container_name: uzen_app
+    build:
+      context: ./
+      dockerfile: app.dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - TESTING=False
+      - DEBUG=False
+      - SECRET_API_KEY=${SECRET_API_KEY}
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+      - MINIO_SECURE=False
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/
+      - DATABASE_URL=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@database:3306/${MYSQL_DATABASE}
+      - GOOGLE_SAFE_BROWSING_API_KEY=${GOOGLE_SAFE_BROWSING_API_KEY}
+      - VIRUSTOTAL_API_KEY=${VIRUSTOTAL_API_KEY}
+      - IP2ASN_WEB_SERVICE_URL=http://ip2asn:53661
+    restart: always
+    depends_on:
+      - worker
+
+volumes:
+  minio-data:
+  redis-data:
+  db-data:

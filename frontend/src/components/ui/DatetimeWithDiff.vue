@@ -1,7 +1,7 @@
 <template>
   <div>
     <p>{{ createdAtInLocalFormat }}</p>
-    <p>({{ humanreadableTimeDifference }} ago)</p>
+    <p>({{ humanreadableTimeDifference }})</p>
   </div>
 </template>
 
@@ -10,28 +10,36 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { computed, defineComponent } from "vue";
 
 dayjs.extend(relativeTime);
 dayjs.extend(timezone);
 dayjs.extend(utc);
 
-@Component
-export default class DatetimeWithDiff extends Vue {
-  @Prop() private datetime!: string | undefined;
+export default defineComponent({
+  name: "DatetimeWithDiff",
+  props: {
+    datetime: {
+      type: String,
+      required: false,
+    },
+  },
+  setup(props) {
+    const createdAtInLocalFormat = computed((): string => {
+      if (props.datetime === undefined) {
+        return "N/A";
+      }
+      return dayjs(props.datetime).local().format();
+    });
 
-  get createdAtInLocalFormat(): string {
-    if (this.datetime === undefined) {
-      return "N/A";
-    }
-    return dayjs(this.datetime).local().format();
-  }
+    const humanreadableTimeDifference = computed((): string => {
+      if (props.datetime === undefined) {
+        return "N/A";
+      }
+      return dayjs(props.datetime).local().fromNow();
+    });
 
-  get humanreadableTimeDifference(): string {
-    if (this.datetime === undefined) {
-      return "N/A";
-    }
-    return dayjs(this.datetime).local().fromNow();
-  }
-}
+    return { createdAtInLocalFormat, humanreadableTimeDifference };
+  },
+});
 </script>

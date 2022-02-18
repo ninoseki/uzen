@@ -1,25 +1,23 @@
 import pytest
-
-from uzen.services.whois import Whois
-
-
-def mock_whois(hostname: str):
-    return "foo"
+from fastapi.testclient import TestClient
 
 
-@pytest.mark.asyncio
-async def test_get(client, monkeypatch):
-    monkeypatch.setattr(Whois, "whois", mock_whois)
-
+@pytest.mark.usefixtures("patch_whois_lookup")
+def test_get(client: TestClient):
     hostname = "example.com"
-    response = await client.get(f"/api/domain/{hostname}")
+    response = client.get(f"/api/domain/{hostname}")
     assert response.status_code == 200
 
-    json = response.json()
-    assert json.get("hostname") == hostname
+    data = response.json()
+    assert data.get("hostname") == hostname
 
-    snapshots = json.get("snapshots", [])
+    snapshots = data.get("snapshots", [])
     assert len(snapshots) == 0
 
-    whois = json.get("whois", "")
-    assert whois == whois
+    whois = data.get("whois", "")
+    assert whois
+
+
+def test_get_with_invalid_input(client: TestClient):
+    response = client.get("/api/domain/1.1.1.1")
+    assert response.status_code == 404

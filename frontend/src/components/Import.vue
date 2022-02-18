@@ -1,61 +1,60 @@
 <template>
   <div>
-    <b-message type="is-warning">
-      Importing data from urlscan.io might be lossy
-    </b-message>
+    <article class="message is-warning">
+      <div class="message-body">Importing data from urlscan.io is lossy.</div>
+    </article>
 
     <div class="box">
-      <b-field>
-        <b-input
-          class="control is-expanded"
-          placeholder="UUID"
-          v-model="uuid"
-        ></b-input>
+      <div class="field has-addons">
+        <div class="control is-expanded">
+          <input class="input" type="text" placeholder="UUID" v-model="uuid" />
+        </div>
         <p class="control">
-          <b-button
-            type="is-light"
-            icon-pack="fas"
-            icon-left="file-import"
-            @click="importFromUrlscan"
-            >Import from urlscan.io</b-button
-          >
+          <button class="button is-light" @click="importFromUrlscan">
+            <span class="icon">
+              <i class="fas fa-file-import"></i>
+            </span>
+            <span>Import from urlscan.io</span>
+          </button>
         </p>
-      </b-field>
+      </div>
     </div>
+
+    <Loading v-if="importTask.isRunning"></Loading>
+    <Error
+      :error="importTask.last?.error.response.data"
+      v-else-if="importTask.isError"
+    ></Error>
   </div>
 </template>
 
 <script lang="ts">
-import axios from "axios";
-import { Component, Mixins } from "vue-mixin-decorator";
+import { defineComponent, ref } from "vue";
+import { useRouter } from "vue-router";
 
-import { ErrorDialogMixin } from "@/components/mixins";
-import { ErrorData, Snapshot } from "@/types";
+import Error from "@/components/ui/SimpleError.vue";
+import Loading from "@/components/ui/SimpleLoading.vue";
+import { generateImportFromUrlscanTask } from "@/api-helper";
 
-@Component
-export default class Import extends Mixins<ErrorDialogMixin>(ErrorDialogMixin) {
-  private uuid = "";
+export default defineComponent({
+  name: "Import",
+  components: {
+    Error,
+    Loading,
+  },
+  setup() {
+    const router = useRouter();
 
-  async importFromUrlscan() {
-    const loadingComponent = this.$buefy.loading.open({
-      container: this.$el.firstElementChild,
-    });
+    const uuid = ref<string>("");
 
-    try {
-      const response = await axios.post<Snapshot>(`/api/import/${this.uuid}`);
+    const importTask = generateImportFromUrlscanTask();
 
-      loadingComponent.close();
+    const importFromUrlscan = async () => {
+      const snapshot = await importTask.perform(uuid.value);
+      router.push({ path: `/snapshots/${snapshot.id}` });
+    };
 
-      const snapshot = response.data;
-
-      // redirect to the details page
-      this.$router.push({ path: `/snapshots/${snapshot.id}` });
-    } catch (error) {
-      loadingComponent.close();
-
-      const data = error.response.data as ErrorData;
-      this.alertError(data);
-    }
-  }
-}
+    return { uuid, importTask, importFromUrlscan };
+  },
+});
 </script>

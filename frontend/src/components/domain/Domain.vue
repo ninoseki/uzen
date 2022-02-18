@@ -1,12 +1,12 @@
 <template>
-  <div class="box" v-if="hasInformation()">
+  <div class="box">
     <nav class="navbar">
       <div class="navbar-brand">
-        <H2>Domain: {{ information.hostname }}</H2>
+        <H2>Domain: {{ domain.hostname }}</H2>
       </div>
       <div class="navbar-menu">
         <div class="navbar-end">
-          <Links v-bind:hostname="information.hostname" type="domain" />
+          <Links :hostname="domain.hostname" type="domain" />
         </div>
       </div>
     </nav>
@@ -15,11 +15,11 @@
       <div class="columns">
         <div class="column is-half">
           <H3> DNS records </H3>
-          <DnsRecords v-bind:dnsRecords="information.dnsRecords" />
+          <DnsRecords :dnsRecords="domain.dnsRecords" />
         </div>
         <div class="column is-half">
           <H3> Live preview </H3>
-          <Preview v-bind:hostname="information.hostname" />
+          <Preview :hostname="domain.hostname" />
         </div>
       </div>
     </div>
@@ -27,35 +27,35 @@
     <div class="column">
       <H3>
         Recent snapshots
-        <Counter v-bind:hostname="information.hostname" />
+        <Counter :hostname="domain.hostname" />
       </H3>
 
-      <Table v-if="hasSnapshots()" v-bind:snapshots="information.snapshots" />
+      <Table v-if="hasSnapshots" :snapshots="domain.snapshots" />
       <p v-else>N/A</p>
     </div>
 
     <div class="column">
       <H3> Whois </H3>
-      <pre>{{ information.whois || "N/A" }}</pre>
+      <Whois :whois="domain.whois" v-if="domain.whois"></Whois>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import axios from "axios";
-import { Component, Mixins } from "vue-mixin-decorator";
+import { computed, defineComponent, PropType } from "vue";
 
-import DnsRecords from "@/components/dns_records/DnsRecords.vue";
-import Links from "@/components/links/Links.vue";
-import { ErrorDialogMixin } from "@/components/mixins";
-import Preview from "@/components/screenshots/Preview.vue";
-import Counter from "@/components/snapshots/Counter.vue";
-import Table from "@/components/snapshots/TableWithScreenshot.vue";
+import DnsRecords from "@/components/dns_record/DnsRecords.vue";
+import Links from "@/components/link/Links.vue";
+import Preview from "@/components/screenshot/Preview.vue";
+import Counter from "@/components/snapshot/Counter.vue";
+import Table from "@/components/snapshot/TableWithScreenshot.vue";
 import H2 from "@/components/ui/H2.vue";
 import H3 from "@/components/ui/H3.vue";
-import { DomainInformation, ErrorData } from "@/types";
+import Whois from "@/components/whois/Whois.vue";
+import { DomainInformation } from "@/types";
 
-@Component({
+export default defineComponent({
+  name: "Domain",
   components: {
     Counter,
     DnsRecords,
@@ -64,43 +64,20 @@ import { DomainInformation, ErrorData } from "@/types";
     Links,
     Preview,
     Table,
+    Whois,
   },
-})
-export default class Domain extends Mixins<ErrorDialogMixin>(ErrorDialogMixin) {
-  private information: DomainInformation | undefined = undefined;
-
-  created() {
-    this.load();
-  }
-
-  async load() {
-    const loadingComponent = this.$buefy.loading.open({
-      container: this.$el,
+  props: {
+    domain: {
+      type: Object as PropType<DomainInformation>,
+      required: true,
+    },
+  },
+  setup(props) {
+    const hasSnapshots = computed(() => {
+      return (props.domain.snapshots.length || 0) > 0;
     });
 
-    try {
-      const hostname = this.$route.params.hostname;
-      const res = await axios.get<DomainInformation>(`/api/domain/${hostname}`);
-      this.information = res.data;
-
-      loadingComponent.close();
-      this.$forceUpdate();
-    } catch (error) {
-      loadingComponent.close();
-
-      const data = error.response.data as ErrorData;
-      this.alertError(data);
-    }
-  }
-
-  hasInformation(): boolean {
-    return this.information !== undefined;
-  }
-
-  hasSnapshots(): boolean {
-    return (
-      this.information !== undefined && this.information.snapshots.length > 0
-    );
-  }
-}
+    return { hasSnapshots };
+  },
+});
 </script>

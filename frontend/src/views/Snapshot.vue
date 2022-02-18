@@ -1,26 +1,30 @@
 <template>
-  <SnapshotComponebnt
-    v-bind:id="this.$route.params.id"
-    v-bind:yaraResult="yaraResult"
-  />
+  <Snapshot :snapshotId="snapshotId" :yaraResult="yaraResult" />
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from "vue-mixin-decorator";
-import { Prop } from "vue-property-decorator";
+import { defineComponent, PropType } from "vue";
+import { useRoute } from "vue-router";
 
-import { ErrorDialogMixin } from "@/components/mixins";
-import SnapshotComponebnt from "@/components/snapshots/Snapshot.vue";
+import Snapshot from "@/components/snapshot/SnapshotWrapper.vue";
 import { YaraResult } from "@/types";
 
-@Component({
+export default defineComponent({
+  name: "SnapshotView",
   components: {
-    SnapshotComponebnt,
+    Snapshot,
   },
-})
-export default class SnapshotView extends Mixins<ErrorDialogMixin>(
-  ErrorDialogMixin
-) {
-  @Prop() private yaraResult!: YaraResult;
-}
+  props: {
+    yaraResult: {
+      type: Object as PropType<YaraResult>,
+      required: false,
+    },
+  },
+  setup() {
+    const route = useRoute();
+    const snapshotId = route.params.id as string;
+
+    return { snapshotId };
+  },
+});
 </script>

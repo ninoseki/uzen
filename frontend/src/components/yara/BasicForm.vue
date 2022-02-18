@@ -1,48 +1,48 @@
 <template>
   <div>
-    <b-field label="YARA rule">
-      <b-input
-        class="is-expanded"
-        type="textarea"
-        rows="10"
-        placeholder="rule foo: bar {strings: $a = 'lmn' condition: $a}"
-        v-model="_source"
-      ></b-input>
-    </b-field>
+    <div class="field">
+      <label class="label">YARA rule</label>
+      <div class="control is-expanded">
+        <textarea
+          class="textarea"
+          rows="10"
+          placeholder="rule foo: bar {strings: $a = 'lmn' condition: $a}"
+          v-model="source"
+        />
+      </div>
+    </div>
 
-    <b-field label="Target">
-      <b-select placeholder="Target for a YARA rule" v-model="_target">
-        <option v-for="t in targets" :value="t" :key="t">{{ t }}</option>
-      </b-select>
-    </b-field>
+    <div class="field">
+      <label class="label">Target</label>
+      <div class="control">
+        <div class="select">
+          <select placeholder="Target for a YARA rule" v-model="target">
+            <option v-for="t in targets" :value="t" :key="t">{{ t }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { defineComponent, ref, watchEffect } from "vue";
 
 import { TargetTypes } from "@/types";
 
-@Component
-export default class BasicForm extends Vue {
-  private source = "";
-  private target: TargetTypes = "body";
-  private targets: TargetTypes[] = ["body", "whois", "certificate", "script"];
+export default defineComponent({
+  name: "YaraBasicForm",
+  setup(_, context) {
+    const source = ref("");
+    const target = ref<TargetTypes>("html");
+    const targets: TargetTypes[] = ["html", "whois", "certificate", "script"];
 
-  get _source() {
-    return this.source;
-  }
+    watchEffect(() => {
+      context.emit("update:source", source.value);
+      context.emit("update:target", target.value);
+    });
 
-  set _source(value) {
-    this.$emit("update:source", value);
-  }
-
-  get _target() {
-    return this.target;
-  }
-
-  set _target(value) {
-    this.$emit("update:target", value);
-  }
-}
+    return { source, target, targets };
+  },
+});
 </script>

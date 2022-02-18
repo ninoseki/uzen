@@ -1,6 +1,11 @@
-from uzen.services.certificate import Certificate
+from app.services.certificate import Certificate
 
 
-def test_load_and_dump_from_url():
-    assert "example.com" in Certificate.load_and_dump_from_url("https://example.com")
-    assert Certificate.load_and_dump_from_url("http://example.com") is None
+def test_load_from_url_with_http_website():
+    assert Certificate.load_from_url("http://example.com") is None
+
+
+def test_load_from_url_with_https_website():
+    certificate = Certificate.load_from_url("https://example.com")
+    assert certificate
+    assert len(certificate.fingerprint) == 64

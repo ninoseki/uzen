@@ -1,25 +1,63 @@
 <template>
   <div>
-    <pre v-if="hasCertificate">{{ certificate }}</pre>
+    <div v-if="certificate">
+      <div class="column">
+        <table class="table is-completely-borderless is-fullwidth">
+          <tbody>
+            <tr>
+              <th>X509 fingerprint (SHA256)</th>
+              <td>
+                <router-link
+                  :to="{
+                    name: 'Snapshots',
+                    query: { certificateFingerprint: certificate.id },
+                  }"
+                  >{{ certificate.id }}
+                </router-link>
+              </td>
+            </tr>
+            <tr>
+              <th>Subject</th>
+              <td>{{ certificate.subject }}</td>
+            </tr>
+            <tr>
+              <th>Issuer</th>
+              <td>{{ certificate.issuer }}</td>
+            </tr>
+            <tr>
+              <th>Not After</th>
+              <td>{{ certificate.notAfter || "N/A" }}</td>
+            </tr>
+            <tr>
+              <th>Not Before</th>
+              <td>{{ certificate.notBefore || "N/A" }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="column">
+        <pre>{{ certificate.content }}</pre>
+      </div>
+    </div>
     <NA v-else />
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { defineComponent, PropType } from "vue";
 
 import NA from "@/components/ui/NA.vue";
+import { Certificate } from "@/types/snapshot";
 
-@Component({
-  components: {
-    NA,
+export default defineComponent({
+  name: "Certificate",
+  components: { NA },
+  props: {
+    certificate: {
+      type: Object as PropType<Certificate>,
+      required: false,
+    },
   },
-})
-export default class Certificate extends Vue {
-  @Prop() private certificate!: string | null;
-
-  get hasCertificate(): boolean {
-    return this.certificate !== null;
-  }
-}
+});
 </script>

@@ -1,0 +1,5 @@
+ENRICH_SNAPSHOT_TASK_NAME = "enrich_snapshot_task"
+PREVIEW_TASK_NAME = "preview_task"
+SIMILARITY_SCAN_TASK_NAME = "similarity_scan_task"
+SNAPSHOT_TASK_NAME = "take_snapshot_task"
+YARA_SCAN_TASK_NAME = "yara_scan_task"

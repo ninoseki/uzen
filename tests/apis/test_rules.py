@@ -1,86 +1,102 @@
-import json
+import asyncio
+from typing import List
 
-import pytest
+from fastapi.testclient import TestClient
 
-from tests.utils import first_rule_id
-from uzen.models.rules import Rule
+from app import models
+from app.models.rule import Rule
+from tests.helper import count_all_rules
 
 
-@pytest.mark.asyncio
-async def test_create_rule_with_invalid_target(client):
+def test_create_rule_with_invalid_target(client: TestClient):
     payload = {"name": "test", "target": "foo", "source": "foo"}
-    response = await client.post("/api/rules/", data=json.dumps(payload))
+    response = client.post("/api/rules/", json=payload)
     assert response.status_code == 422
 
 
-@pytest.mark.asyncio
-async def test_create_rule_with_invalid_source(client):
-    payload = {"name": "test", "target": "body", "source": "foo; bar;"}
-    response = await client.post("/api/rules/", data=json.dumps(payload))
+def test_create_rule_with_invalid_source(client: TestClient):
+    payload = {"name": "test", "target": "html", "source": "foo; bar;"}
+    response = client.post("/api/rules/", json=payload)
     assert response.status_code == 422
 
 
-@pytest.mark.asyncio
-async def test_create_rule(client):
+def test_create_rule(client: TestClient, event_loop: asyncio.AbstractEventLoop):
     payload = {
         "name": "test",
-        "target": "body",
+        "target": "html",
         "source": 'rule foo: bar {strings: $a = "lmn" condition: $a}',
     }
-    response = await client.post("/api/rules/", data=json.dumps(payload))
+    response = client.post("/api/rules/", json=payload)
     assert response.status_code == 201
 
-    count = await Rule.all().count()
+    count = count_all_rules(event_loop)
     assert count == 1
 
+    # cannot use the same rule name twice
+    response = client.post("/api/rules/", json=payload)
+    assert response.status_code == 400
 
-@pytest.mark.asyncio
-@pytest.mark.usefixtures("rules_setup")
-async def test_delete_rule(client):
-    id_ = await first_rule_id()
-    response = await client.delete(f"/api/rules/{id_}")
+
+def test_create_rule_with_options(
+    client: TestClient, event_loop: asyncio.AbstractEventLoop
+):
+    payload = {
+        "name": "test2",
+        "target": "html",
+        "source": 'rule foo: bar {strings: $a = "lmn" condition: $a}',
+        "allowedNetworkAddresses": "1.1.1.1,example.com",
+    }
+    response = client.post("/api/rules/", json=payload)
+    assert response.status_code == 201
+
+
+def test_delete_rule(
+    client: TestClient, event_loop: asyncio.AbstractEventLoop, rules: List[models.Rule]
+):
+    id_ = rules[0].id
+    response = client.delete(f"/api/rules/{id_}")
     assert response.status_code == 204
 
 
-@pytest.mark.asyncio
-@pytest.mark.usefixtures("rules_setup")
-async def test_rules_search(client):
-    count = await Rule.all().count()
+def test_rules_search(
+    client: TestClient, event_loop: asyncio.AbstractEventLoop, rules: List[models.Rule]
+):
+    count = len(rules)
 
-    response = await client.get("/api/rules/search")
-    json = response.json()
-    rules = json.get("results")
+    response = client.get("/api/rules/search")
+    data = response.json()
+    rules = data.get("results")
     assert len(rules) == count
 
     # it matches with a rule
-    response = await client.get("/api/rules/search", params={"name": "test1"})
-    json = response.json()
-    rules = json.get("results")
+    response = client.get("/api/rules/search", params={"name": "test1"})
+    data = response.json()
+    rules = data.get("results")
     assert len(rules) == 1
 
     # it matches with the all rules
-    response = await client.get("/api/rules/search", params={"target": "body"})
-    json = response.json()
-    rules = json.get("results")
+    response = client.get("/api/rules/search", params={"target": "html"})
+    data = response.json()
+    rules = data.get("results")
     assert len(rules) == count
 
     # it matches with the all rules
-    response = await client.get("/api/rules/search", params={"source": "lmn"})
-    json = response.json()
-    rules = json.get("results")
+    response = client.get("/api/rules/search", params={"source": "lmn"})
+    data = response.json()
+    rules = data.get("results")
     assert len(rules) == count
 
 
-@pytest.mark.asyncio
-@pytest.mark.usefixtures("rules_setup")
-async def test_update(client):
-    id_ = await first_rule_id()
+def test_update(
+    client: TestClient, event_loop: asyncio.AbstractEventLoop, rules: List[models.Rule]
+):
+    id_ = rules[0].id
 
     payload = {"name": "woweee"}
-    response = await client.put(f"/api/rules/{id_}", data=json.dumps(payload))
+    response = client.put(f"/api/rules/{id_}", json=payload)
     assert response.status_code == 200
 
-    rule = await Rule.get(id=id_)
+    rule = event_loop.run_until_complete(Rule.get(id=id_))
     assert rule.name == "woweee"
     old_updated_at = rule.updated_at
 
@@ -89,10 +105,10 @@ async def test_update(client):
         "target": "script",
         "source": 'rule foo: bar {strings: $a = "html" condition: $a}',
     }
-    response = await client.put(f"/api/rules/{id_}", data=json.dumps(payload))
+    response = client.put(f"/api/rules/{id_}", json=payload)
     assert response.status_code == 200
 
-    rule = await Rule.get(id=id_)
+    rule = event_loop.run_until_complete(Rule.get(id=id_))
     assert rule.name == "test"
     assert rule.target == "script"
     assert rule.source == 'rule foo: bar {strings: $a = "html" condition: $a}'

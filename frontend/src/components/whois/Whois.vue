@@ -1,25 +1,61 @@
 <template>
   <div>
-    <pre v-if="hasWhois">{{ whois }}</pre>
+    <div v-if="whois">
+      <div class="column">
+        <table class="table is-completely-borderless">
+          <tbody>
+            <tr>
+              <th>Created</th>
+              <td>{{ whois.created || "N/A" }}</td>
+            </tr>
+            <tr>
+              <th>Updated</th>
+              <td>{{ whois.updated || "N/A" }}</td>
+            </tr>
+            <tr>
+              <th>Expires</th>
+              <td>{{ whois.expires || "N/A" }}</td>
+            </tr>
+            <tr>
+              <th>Registrar</th>
+              <td>{{ whois.registrar || "N/A" }}</td>
+            </tr>
+            <tr>
+              <th>Registrant Organization</th>
+              <td>{{ whois.registrantOrganization || "N/A" }}</td>
+            </tr>
+            <tr>
+              <th>Registrant Name</th>
+              <td>{{ whois.registrantName || "N/A" }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="column">
+        <pre>{{ whois.content }}</pre>
+      </div>
+    </div>
     <NA v-else />
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { defineComponent, PropType } from "vue";
 
 import NA from "@/components/ui/NA.vue";
+import { Whois } from "@/types/snapshot";
 
-@Component({
+export default defineComponent({
+  name: "Whois",
+  props: {
+    whois: {
+      type: Object as PropType<Whois>,
+      required: false,
+    },
+  },
   components: {
     NA,
   },
-})
-export default class Whois extends Vue {
-  @Prop() private whois!: string | null;
-
-  get hasWhois(): boolean {
-    return this.whois !== null;
-  }
-}
+});
 </script>

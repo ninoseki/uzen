@@ -3,23 +3,26 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { useTitle } from "@vueuse/core";
+import { defineComponent } from "vue";
+import { useRoute } from "vue-router";
 
-import Domain from "@/components/domain/Domain.vue";
+import Domain from "@/components/domain/DomainWrapper.vue";
 
-@Component({
+export default defineComponent({
+  name: "DomainView",
   components: {
     Domain,
   },
-})
-export default class DomainView extends Vue {
-  updateTitle(): void {
-    const hostname = this.$route.params.hostname;
-    document.title = `${hostname} - Uzen`;
-  }
+  setup() {
+    const route = useRoute();
 
-  mounted() {
-    this.updateTitle();
-  }
-}
+    const updateTitle = (): void => {
+      const hostname = route.params.hostname;
+      useTitle(`${hostname} - Uzen`);
+    };
+
+    updateTitle();
+  },
+});
 </script>

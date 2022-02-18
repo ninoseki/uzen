@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Navbar />
-    <section class="section is-medium">
+    <section class="section">
       <div class="container">
         <router-view />
       </div>
@@ -10,18 +10,16 @@
 </template>
 
 <script lang="ts">
-import "highlight.js/styles/androidstudio.css";
-
-import { Component, Vue } from "vue-property-decorator";
+import { defineComponent } from "vue";
 
 import Navbar from "@/components/ui/Navbar.vue";
 
-@Component({
+export default defineComponent({
+  name: "App",
   components: {
     Navbar,
   },
-})
-export default class App extends Vue {}
+});
 </script>
 
 <style>
@@ -45,7 +43,10 @@ pre {
 }
 
 .container .navbar {
-  margin-bottom: 10px;
-  border-bottom: 2px solid lightgray;
+  border-bottom: none;
+}
+
+table {
+  border: none;
 }
 </style>

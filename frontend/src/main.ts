@@ -1,22 +1,14 @@
 import "@fortawesome/fontawesome-free/css/all.css";
 import "@fortawesome/fontawesome-free/js/all.js";
 import "@mdi/font/css/materialdesignicons.css";
-import "buefy/dist/buefy.css";
+import "bulma/css/bulma.css";
+import "bulma-helpers/css/bulma-helpers.min.css";
+import "highlight.js/styles/androidstudio.css";
+import "vue3-date-time-picker/dist/main.css";
 
-import Buefy from "buefy";
-import Vue from "vue";
+import { createApp } from "vue";
 
-import App from "@/App.vue";
-import router from "@/router";
-import { truncate } from "@/utils/truncate";
+import App from "./App.vue";
+import router from "./router";
 
-Vue.use(Buefy);
-
-Vue.config.productionTip = false;
-
-Vue.filter("truncate", truncate);
-
-new Vue({
-  router,
-  render: (h) => h(App),
-}).$mount("#app");
+createApp(App).use(router).mount("#app");
