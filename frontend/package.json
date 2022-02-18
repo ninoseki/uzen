@@ -25,7 +25,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "5.15.1",
     "@mdi/font": "5.8.55",
-    "axios": "0.21.1",
+    "axios": "0.21.2",
     "boxicons": "2.0.7",
     "buefy": "0.9.4",
     "core-js": "3.8.1",
