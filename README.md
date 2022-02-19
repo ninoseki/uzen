@@ -13,10 +13,11 @@ Uzen is an application combines YARA and headless Chrome. Uzen provides two main
 
 It can be used for phishing and web-based c2 detection.
 
-**Note:** This project is in an alpha state.
 
 ## Table of Contents
 
 - [Requirements](https://github.com/ninoseki/uzen/wiki/Requirements)
+- [Architecture](https://github.com/ninoseki/uzen/wiki/Architecture)
 - [Installation](https://github.com/ninoseki/uzen/wiki/Installation)
 - [Configuration](https://github.com/ninoseki/uzen/wiki/Configuration)
+- [Alternatives](https://github.com/ninoseki/uzen/wiki/Alternatives)

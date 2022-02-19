@@ -27,7 +27,7 @@ import { defineComponent, PropType } from "vue";
 import { Script } from "@/types";
 
 export default defineComponent({
-  name: "Scripts",
+  name: "ScriptsItem",
   props: {
     scripts: {
       type: Array as PropType<Script[]>,

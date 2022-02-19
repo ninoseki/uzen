@@ -28,7 +28,7 @@ import { defineComponent, PropType } from "vue";
 import { Stylesheet } from "@/types";
 
 export default defineComponent({
-  name: "Stylesheets",
+  name: "StylesheetsItem",
   props: {
     stylesheets: {
       type: Array as PropType<Stylesheet[]>,

@@ -69,7 +69,7 @@ import Options from "@/components/snapshot/Options.vue";
 import { Header, WaitUntilType } from "@/types";
 
 export default defineComponent({
-  name: "Form",
+  name: "FormItem",
   components: {
     Options,
     Row,

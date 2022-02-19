@@ -107,7 +107,7 @@ import { highlightCodeBlocks } from "@/utils/highlight";
 import { generateDeleteRuleTask } from "@/api-helper";
 
 export default defineComponent({
-  name: "Rule",
+  name: "RuleItem",
   components: {
     Counter,
     H2,

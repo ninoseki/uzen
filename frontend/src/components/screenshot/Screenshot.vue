@@ -8,7 +8,7 @@
 import { computed, defineComponent } from "vue";
 
 export default defineComponent({
-  name: "Screenshot",
+  name: "ScreenshotItem",
   props: {
     snapshotId: {
       type: String,

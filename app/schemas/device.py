@@ -31,7 +31,7 @@ class Device(APIModel):
     descriptor: DeviceDescriptor = Field(...)
 
 
-@lru_cache()
+@lru_cache(maxsize=1)
 def get_devices() -> List[Device]:
     devices: List[Device] = []
 

@@ -37,7 +37,7 @@ import Loading from "@/components/ui/SimpleLoading.vue";
 import { generateImportFromUrlscanTask } from "@/api-helper";
 
 export default defineComponent({
-  name: "Import",
+  name: "ImportItem",
   components: {
     Error,
     Loading,

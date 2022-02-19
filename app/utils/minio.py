@@ -17,7 +17,7 @@ def get_client() -> Minio:
     )
 
 
-@lru_cache()
+@lru_cache(maxsize=1)
 def create_bucket_if_not_exists(client: Minio, bucket_name: str) -> None:
     policy = {
         "Version": "2012-10-17",

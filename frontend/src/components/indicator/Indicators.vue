@@ -50,7 +50,7 @@ import NA from "@/components/ui/NA.vue";
 import { Indicators } from "@/types";
 
 export default defineComponent({
-  name: "Indicators",
+  name: "IndicatorsItem",
   props: {
     indicators: {
       type: Object as PropType<Indicators>,

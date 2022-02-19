@@ -47,7 +47,7 @@ import NA from "@/components/ui/NA.vue";
 import { Whois } from "@/types/snapshot";
 
 export default defineComponent({
-  name: "Whois",
+  name: "WhoisItem",
   props: {
     whois: {
       type: Object as PropType<Whois>,

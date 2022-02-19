@@ -29,7 +29,7 @@ import { updateClient } from "@/api";
 import { useGlobalState } from "@/store";
 
 export default defineComponent({
-  name: "Configuration",
+  name: "ConfigurationItem",
   setup() {
     const state = useGlobalState();
 

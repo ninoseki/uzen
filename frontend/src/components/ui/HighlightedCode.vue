@@ -12,7 +12,7 @@ import Loading from "@/components/ui/SimpleLoading.vue";
 import { highlightWorkerFn } from "@/utils/highlight.worker";
 
 export default defineComponent({
-  name: "Code",
+  name: "CodeItem",
   props: {
     data: {
       type: String,

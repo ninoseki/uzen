@@ -11,7 +11,7 @@ import { defineComponent, PropType } from "vue";
 import { Link } from "@/types";
 
 export default defineComponent({
-  name: "Link",
+  name: "LinkItem",
   props: {
     hostname: {
       type: String,

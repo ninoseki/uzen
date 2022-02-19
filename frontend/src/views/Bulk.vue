@@ -8,7 +8,7 @@ import { defineComponent } from "vue";
 import Form from "@/components/bulk/Form.vue";
 
 export default defineComponent({
-  name: "Bulk",
+  name: "BulkItem",
   components: {
     Form,
   },
