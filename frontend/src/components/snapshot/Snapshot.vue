@@ -155,7 +155,7 @@ type States =
   | "whois";
 
 export default defineComponent({
-  name: "Snapshot",
+  name: "SnapshotItem",
   components: {
     Certificate,
     DnsRecords,

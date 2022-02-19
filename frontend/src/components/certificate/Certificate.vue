@@ -51,7 +51,7 @@ import NA from "@/components/ui/NA.vue";
 import { Certificate } from "@/types/snapshot";
 
 export default defineComponent({
-  name: "Certificate",
+  name: "CertificateItem",
   components: { NA },
   props: {
     certificate: {

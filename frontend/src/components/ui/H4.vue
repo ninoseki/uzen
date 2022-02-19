@@ -8,7 +8,7 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "H4",
+  name: "H4Item",
 });
 </script>
 

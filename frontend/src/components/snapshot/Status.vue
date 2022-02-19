@@ -13,7 +13,7 @@ import { countryCodeToEmoji } from "@/utils/country";
 import { generateGetStatusTask } from "@/api-helper";
 
 export default defineComponent({
-  name: "Status",
+  name: "StatusItem",
   setup() {
     const statusState = useSessionStorage("uzen-status", {
       ipAddress: "",

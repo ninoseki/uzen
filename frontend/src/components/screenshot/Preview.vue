@@ -21,7 +21,7 @@ import { computed, defineComponent, ref } from "vue";
 import Loading from "@/components/ui/SimpleLoading.vue";
 
 export default defineComponent({
-  name: "Preview",
+  name: "PreviewItem",
   props: {
     hostname: {
       type: String,

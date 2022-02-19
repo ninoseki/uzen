@@ -55,7 +55,7 @@ import Whois from "@/components/whois/Whois.vue";
 import { DomainInformation } from "@/types";
 
 export default defineComponent({
-  name: "Domain",
+  name: "DomainItem",
   components: {
     Counter,
     DnsRecords,

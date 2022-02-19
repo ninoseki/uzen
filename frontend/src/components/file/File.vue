@@ -34,7 +34,7 @@ import NA from "@/components/ui/NA.vue";
 import { File } from "@/types";
 
 export default defineComponent({
-  name: "File",
+  name: "FileItem",
   props: {
     file: {
       type: Object as PropType<File>,

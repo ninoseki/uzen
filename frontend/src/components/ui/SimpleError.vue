@@ -16,7 +16,7 @@ import { computed, defineComponent, PropType } from "vue";
 import { ErrorData } from "@/types";
 
 export default defineComponent({
-  name: "Error",
+  name: "ErrorItem",
   props: {
     error: {
       type: Object as PropType<ErrorData>,

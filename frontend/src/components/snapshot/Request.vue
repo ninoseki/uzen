@@ -26,7 +26,7 @@ import H3 from "@/components/ui/H3.vue";
 import { Headers } from "@/types";
 
 export default defineComponent({
-  name: "Request",
+  name: "RequestItem",
   components: {
     H3,
   },
