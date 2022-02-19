@@ -1,9 +1,0 @@
-{
-  "name": "Uzen",
-  "description": "YARA with Puppeteer",
-  "keywords": ["YARA", "Puppeteer"],
-  "website": "https://github.com/ninoseki/uzen",
-  "repository": "https://github.com/ninoseki/uzen",
-  "success_url": "/",
-  "stack": "container"
-}
