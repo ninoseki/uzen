@@ -144,7 +144,7 @@ class PlainSnapshot(SnapshotBasicAttributes, AbstractBaseModel, TimestampMixin):
     html_id: str = Field(...)
 
     @classmethod
-    @lru_cache()
+    @lru_cache(maxsize=1)
     def field_keys(cls) -> List[str]:
         return list(cls.__fields__.keys())
 
