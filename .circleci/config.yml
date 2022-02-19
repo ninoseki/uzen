@@ -68,7 +68,7 @@ jobs:
           name: Run Test
           command: |
             cd frontend
-            npm run test
+            npm run test:unit
 
 workflows:
   version: 2
