@@ -1,5 +1,5 @@
 # build env
-FROM node:14-alpine as build
+FROM node:16-alpine as build
 
 COPY ./frontend /frontend
 WORKDIR /frontend
@@ -26,20 +26,18 @@ RUN apt-get update \
 
 WORKDIR /uzen
 
-COPY pyproject.toml /uzen
-COPY poetry.lock /uzen
+COPY pyproject.toml poetry.lock gunicorn.conf.py /uzen/
 COPY app /uzen/app
-COPY --from=build /frontend /uzen/frontend
 
 RUN pip3 install poetry \
   && poetry config virtualenvs.create false \
   && poetry install --no-dev
 
+COPY --from=build /frontend /uzen/frontend
+
 ENV PORT 8000
 
 EXPOSE $PORT
-
-COPY gunicorn.conf.py /uzen
 
 CMD gunicorn -k uvicorn.workers.UvicornWorker app:app
 
