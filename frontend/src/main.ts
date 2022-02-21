@@ -6,6 +6,10 @@ import "bulma-helpers/css/bulma-helpers.min.css";
 import "highlight.js/styles/androidstudio.css";
 import "vue3-date-time-picker/dist/main.css";
 
+// Polyfill
+import "core-js/stable";
+import "regenerator-runtime/runtime";
+
 import { createApp } from "vue";
 
 import App from "./App.vue";
