@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-from typing import Any, List, cast
+from typing import Any
 
 from tortoise.fields.data import CharField, DatetimeField, TextField
 from tortoise.fields.relational import ManyToManyRelation
 
 from app import models, schemas, types
+from app.builders.rule import RuleBuilder
 
 from .base import AbstractBaseModel
 from .mixin import TimestampMixin
@@ -25,31 +26,21 @@ class Rule(TimestampMixin, AbstractBaseModel):
 
     updated_at = DatetimeField(auto_now=True)
 
-    _snapshots: ManyToManyRelation[models.Snapshot]
+    snapshots: ManyToManyRelation[models.Snapshot]
 
     def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
 
-        self.snapshots_: list[models.Snapshot] | None = None
-
-    @property
-    def snapshots(self) -> list[schemas.Snapshot]:
-        if hasattr(self, "snapshots_") and self.snapshots_ is not None:
-            return cast(
-                List[schemas.Snapshot],
-                [snapshot.to_model() for snapshot in self.snapshots_],
-            )
-
-        return []
+        self.related_snapshots: list[models.Snapshot] | None = None
 
     def to_model(self) -> schemas.Rule:
-        return schemas.Rule.from_orm(self)
+        return RuleBuilder.build(self)
 
     @classmethod
     async def get_by_id(cls, id_: str | types.ULID) -> Rule:
         rule = await cls.get(id=str(id_))
-        rule.snapshots_ = (
-            await rule._snapshots.all()
+        rule.related_snapshots = (
+            await rule.snapshots.all()
             .limit(LIMIT_OF_PREFETCH)
             .prefetch_related(
                 "html",

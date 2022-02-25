@@ -30,8 +30,8 @@ def is_snapshot_allowed_by_rule(snapshot: models.Snapshot, rule: models.Rule) ->
     if rule.allowed_resource_hashes is not None:
         values = rule.allowed_resource_hashes.split(",")
 
-        scripts = [str(script.file.id) for script in snapshot._scripts]
-        stylesheets = [str(stylesheet.file.id) for stylesheet in snapshot._stylesheets]
+        scripts = [str(script.file.id) for script in snapshot.scripts]
+        stylesheets = [str(stylesheet.file.id) for stylesheet in snapshot.stylesheets]
         hashes = scripts + stylesheets
 
         return has_intersection(values, hashes)
@@ -54,8 +54,8 @@ def is_snapshot_disallowed_by_rule(
     if rule.disallowed_resource_hashes is not None:
         values = rule.disallowed_resource_hashes.split(",")
 
-        scripts = [str(script.file.id) for script in snapshot._scripts]
-        stylesheets = [str(stylesheet.file.id) for stylesheet in snapshot._stylesheets]
+        scripts = [str(script.file.id) for script in snapshot.scripts]
+        stylesheets = [str(stylesheet.file.id) for stylesheet in snapshot.stylesheets]
         hashes = scripts + stylesheets
 
         return has_intersection(values, hashes)
@@ -83,7 +83,7 @@ class RuleScanner:
         self, rule: models.Rule, scanner: YaraScanner
     ) -> List[schemas.MatchResult]:
         results = []
-        for script in cast(List[models.Script], self.snapshot._scripts):
+        for script in cast(List[models.Script], self.snapshot.scripts):
             data = script.file.content
             matches = scanner.match(data)
             if len(matches) > 0:

@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 class Tag(AbstractBaseModel, TimestampMixin):
     name = CharField(max_length=64, unique=True)
 
-    _snapshots: ManyToManyRelation["Snapshot"]
+    snapshots: ManyToManyRelation["Snapshot"]
 
     def to_model(self) -> schemas.Tag:
         return schemas.Tag.from_orm(self)

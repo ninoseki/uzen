@@ -22,7 +22,7 @@ class Script(TimestampMixin, AbstractBaseModel):
 
     snapshot: ForeignKeyRelation["Snapshot"] = ForeignKeyField(
         "models.Snapshot",
-        related_name="_scripts",
+        related_name="scripts",
         to_field="id",
         on_delete=CASCADE,
     )

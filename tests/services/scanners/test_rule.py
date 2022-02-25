@@ -68,7 +68,7 @@ async def test_scan():
     snapshot = (
         await models.Snapshot.all()
         .first()
-        .prefetch_related("_scripts__file", "_stylesheets__file")
+        .prefetch_related("scripts__file", "stylesheets__file")
     )
     matcher = RuleScanner(snapshot)
     results = await matcher.scan()
@@ -82,7 +82,7 @@ async def test_scan_with_rule_with_disallowed_network_address():
     snapshot = (
         await models.Snapshot.all()
         .first()
-        .prefetch_related("_scripts__file", "_stylesheets__file")
+        .prefetch_related("scripts__file", "stylesheets__file")
     )
     matcher = RuleScanner(snapshot)
     results = await matcher.scan()
@@ -98,7 +98,7 @@ async def test_scan_with_rule_with_allowed_network_address():
     snapshot = (
         await models.Snapshot.all()
         .first()
-        .prefetch_related("_scripts__file", "_stylesheets__file")
+        .prefetch_related("scripts__file", "stylesheets__file")
     )
     matcher = RuleScanner(snapshot)
     results = await matcher.scan()

@@ -19,7 +19,7 @@ class DnsRecord(TimestampMixin, AbstractBaseModel):
 
     snapshot: ForeignKeyRelation["Snapshot"] = ForeignKeyField(
         "models.Snapshot",
-        related_name="_dns_records",
+        related_name="dns_records",
         to_field="id",
         on_delete=CASCADE,
     )

@@ -77,7 +77,7 @@ class Rule(BaseRule, AbstractBaseModel, TimestampMixin):
     snapshots: List["Snapshot"] = Field(
         ...,
         title="Snapshots",
-        description="A list of matched snapshots. It contains only the latest 10 snapshots.",
+        description="A list of matched snapshots. It only contains the latest 10 snapshots.",
     )
 
 
@@ -128,7 +128,7 @@ class Snapshot(BaseSnapshot, AbstractBaseModel, TimestampMixin):
 
     html: BaseHTML = Field(...)
     certificate: Optional[CertificateMetaData] = Field(None)
-    whois: WhoisMetaData = Field(None)
+    whois: Optional[WhoisMetaData] = Field(None)
 
     scripts: List[Script] = Field(...)
     stylesheets: List[Stylesheet] = Field(...)
