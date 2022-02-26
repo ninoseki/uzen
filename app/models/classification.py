@@ -20,7 +20,7 @@ class Classification(TimestampMixin, AbstractBaseModel):
 
     snapshot: ForeignKeyRelation["Snapshot"] = ForeignKeyField(
         "models.Snapshot",
-        related_name="_classifications",
+        related_name="classifications",
         to_field="id",
         on_delete=CASCADE,
     )

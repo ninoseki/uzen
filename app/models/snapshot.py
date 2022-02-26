@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from tortoise.exceptions import IntegrityError, NoValuesFetched
+from tortoise.exceptions import IntegrityError
 from tortoise.fields.base import RESTRICT
 from tortoise.fields.data import BooleanField, CharField, IntField, JSONField, TextField
 from tortoise.fields.relational import (
@@ -17,6 +17,7 @@ from tortoise.fields.relational import (
 from tortoise.transactions import in_transaction
 
 from app import schemas, types
+from app.builders.snapshot import SnapshotBuilder
 from app.models.script import Script
 from app.models.stylesheet import Stylesheet
 from app.models.tag import Tag
@@ -80,90 +81,42 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
 
     har = OneToOneRelation["HAR"]
 
-    _scripts: ReverseRelation[Script]
-    _stylesheets: ReverseRelation[Stylesheet]
-    _dns_records: ReverseRelation[DnsRecord]
-    _classifications: ReverseRelation[Classification]
+    scripts: ReverseRelation[Script]
+    stylesheets: ReverseRelation[Stylesheet]
+    dns_records: ReverseRelation[DnsRecord]
+    classifications: ReverseRelation[Classification]
 
-    _rules: ManyToManyRelation[Rule] = ManyToManyField(
+    rules: ManyToManyRelation[Rule] = ManyToManyField(
         "models.Rule",
-        related_name="_snapshots",
+        related_name="snapshots",
         through="matches",
         forward_key="rule_id",
         backward_key="snapshot_id",
     )
 
-    _tags: ManyToManyRelation[Tag] = ManyToManyField(
+    tags: ManyToManyRelation[Tag] = ManyToManyField(
         "models.Tag",
-        related_name="_snapshots",
+        related_name="snapshots",
         through="taggings",
         forward_key="tag_id",
         backward_key="snapshot_id",
     )
 
-    @property
-    def rules(self) -> list[schemas.Rule]:
-        try:
-            return [rule.to_model() for rule in self._rules]
-        except NoValuesFetched:
-            return []
-
-    @property
-    def tags(self) -> list[schemas.Tag]:
-        try:
-            return [tag.to_model() for tag in self._tags]
-        except NoValuesFetched:
-            return []
-
-    @property
-    def scripts(self) -> list[schemas.Script]:
-        try:
-            return [script.to_model() for script in self._scripts]
-        except NoValuesFetched:
-            return []
-
-    @property
-    def stylesheets(self) -> list[schemas.Stylesheet]:
-        try:
-            return [stylesheet.to_model() for stylesheet in self._stylesheets]
-        except NoValuesFetched:
-            return []
-
-    @property
-    def dns_records(self) -> list[schemas.DnsRecord]:
-        try:
-            return [record.to_model() for record in self._dns_records]
-        except NoValuesFetched:
-            return []
-
-    @property
-    def classifications(self) -> list[schemas.Classification]:
-        try:
-            return [
-                classification.to_model() for classification in self._classifications
-            ]
-        except NoValuesFetched:
-            return []
-
     def to_model(self) -> schemas.Snapshot:
-        return schemas.Snapshot.from_orm(self)
+        return SnapshotBuilder.build(self)
 
     def to_plain_model(self) -> schemas.PlainSnapshot:
         return schemas.PlainSnapshot.from_orm(self)
 
-    def to_dict(self) -> dict:
-        model = self.to_model()
-        return model.dict()
-
     @classmethod
     async def get_by_id(cls, id_: str | types.ULID) -> Snapshot:
         return await cls.get(id=str(id_)).prefetch_related(
-            "_scripts",
-            "_stylesheets",
-            "_dns_records",
-            "_classifications",
-            "_rules",
-            "_tags",
+            "scripts",
+            "stylesheets",
+            "dns_records",
+            "classifications",
+            "rules",
+            "tags",
             "html",
             "whois",
             "certificate",
@@ -234,7 +187,7 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
             # create and add tags
             if tag_names:
                 tags_ = [(await Tag.get_or_create(name=name))[0] for name in tag_names]
-                await snapshot._tags.add(*tags_)
+                await snapshot.tags.add(*tags_)
 
             # save scripts
             await Script.save_script_files(wrapper.script_files, snapshot.id)

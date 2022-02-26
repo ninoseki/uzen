@@ -31,15 +31,15 @@ def build_query(
     if filters.hash is not None:
         queries.append(
             Q(html__id=filters.hash)
-            | Q(_scripts__file_id=filters.hash)
-            | Q(_stylesheets__file_id=filters.hash)
+            | Q(scripts__file_id=filters.hash)
+            | Q(stylesheets__file_id=filters.hash)
         )
 
     if filters.certificate_fingerprint is not None:
         queries.append(Q(certificate__id=filters.certificate_fingerprint))
 
     if filters.tag is not None:
-        queries.append(Q(_tags__name=filters.tag))
+        queries.append(Q(tags__name=filters.tag))
 
     if filters.from_at is not None:
         queries.append(Q(created_at__gt=convert_to_datetime(filters.from_at)))
@@ -74,7 +74,7 @@ class SnapshotSearcher(AbstractSearcher):
         instance = cls(
             model=models.Snapshot,
             query=query,
-            prefetch_related=["_tags"],
+            prefetch_related=["tags"],
             values=schemas.PlainSnapshot.field_keys(),
             group_by=["id"],
         )
@@ -97,5 +97,5 @@ class SnapshotSearcher(AbstractSearcher):
     ) -> dataclasses.SearchResultsForIDs:
         query = build_query(filters, additional_queries)
         # Run search
-        instance = cls(model=models.Snapshot, query=query, prefetch_related=["_tags"])
+        instance = cls(model=models.Snapshot, query=query, prefetch_related=["tags"])
         return await instance._search_for_ids(size=size, offset=offset)

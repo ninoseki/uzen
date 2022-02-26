@@ -22,7 +22,7 @@ class Stylesheet(TimestampMixin, AbstractBaseModel):
 
     snapshot: ForeignKeyRelation["Snapshot"] = ForeignKeyField(
         "models.Snapshot",
-        related_name="_stylesheets",
+        related_name="stylesheets",
         to_field="id",
         on_delete=CASCADE,
     )
