@@ -9,7 +9,7 @@ jobs:
           GOOGLE_SAFE_BROWSING_API_KEY: foo
           TORTOISE_TEST_DB: mysql://root:rootpass@127.0.0.1:3306/ci_test
           REDIS_URL: redis://localhost:6379
-      - image: cimg/mysql:8
+      - image: cimg/mysql:8.0
         environment:
           MYSQL_DATABASE: "ci_test"
           MYSQL_ROOT_PASSWORD: "rootpass"
