@@ -55,3 +55,6 @@ VIRUSTOTAL_API_KEY: Secret = config("VIRUSTOTAL_API_KEY", cast=Secret, default="
 
 # Sentry
 SENTRY_DNS: Optional[Secret] = config("SENTRY_DNS", cast=Secret, default=None)
+SENTRY_TRACES_SAMPLE_RATE: float = config(
+    "SENTRY_TRACES_SAMPLE_RATE", cast=float, default=0.1
+)
