@@ -17,6 +17,8 @@ class DomainFactory:
         ]
         whois, records, snapshots = await aiometer.run_all(tasks)
 
+        snapshots = [snapshot.to_model() for snapshot in snapshots]
+
         return schemas.Domain(
             hostname=hostname, whois=whois, dns_records=records, snapshots=snapshots
         )

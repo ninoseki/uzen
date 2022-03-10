@@ -18,6 +18,8 @@ class IPAddressFactory:
         ]
         whois, res, snapshots = await aiometer.run_all(tasks)
 
+        snapshots = [snapshot.to_model() for snapshot in snapshots]
+
         res = cast(Optional[dataclasses.IP2ASNResponse], res)
         asn = res.asn if res is not None else ""
         country_code = res.country_code if res is not None else ""
