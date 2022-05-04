@@ -4,7 +4,7 @@ import "@mdi/font/css/materialdesignicons.css";
 import "bulma/css/bulma.css";
 import "bulma-helpers/css/bulma-helpers.min.css";
 import "highlight.js/styles/androidstudio.css";
-import "vue3-date-time-picker/dist/main.css";
+import "@vuepic/vue-datepicker/dist/main.css";
 
 // Polyfill
 import "core-js/stable";

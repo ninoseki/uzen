@@ -107,7 +107,7 @@
 
 <script lang="ts">
 import { defineComponent, reactive } from "vue";
-import Datepicker from "vue3-date-time-picker";
+import Datepicker from "@vuepic/vue-datepicker";
 
 import { SnapshotFilters } from "@/types";
 import { normalizeFilterValue } from "@/utils/form";
