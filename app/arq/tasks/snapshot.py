@@ -1,19 +1,20 @@
-from typing import Optional, Union
+from typing import Optional, Union, cast
 from uuid import UUID
 
+from arq.connections import ArqRedis
+
 from app import models, schemas, types
-from app.api.dependencies.arq import get_arq_redis_with_context
 from app.arq.constants import ENRICH_SNAPSHOT_TASK_NAME
 from app.arq.tasks.classes.enrichment import EnrichmentTasks
 from app.arq.tasks.classes.match import MatchingTask
-from app.arq.tasks.classes.screenshot import UploadScrenshotTask
+from app.arq.tasks.classes.screenshot import UploadScreenshotTask
 from app.arq.tasks.classes.snapshot import UpdateProcessingTask
 from app.core.exceptions import TakeSnapshotError
 from app.services.browser import Browser
 
 
 async def enrich_snapshot_task(
-    ctx: dict, snapshot: models.Snapshot
+    ctx_: dict, snapshot: models.Snapshot
 ) -> schemas.JobResultWrapper:
     await EnrichmentTasks.process(snapshot)
     await MatchingTask.process(snapshot)
@@ -46,9 +47,10 @@ async def take_snapshot_task(
 
     # upload screenshot
     if wrapper.screenshot is not None:
-        UploadScrenshotTask.process(uuid=snapshot.id, screenshot=wrapper.screenshot)
+        UploadScreenshotTask.process(uuid=snapshot.id, screenshot=wrapper.screenshot)
 
-    async with get_arq_redis_with_context() as arq_redis:
-        await arq_redis.enqueue_job(ENRICH_SNAPSHOT_TASK_NAME, snapshot)
+    redis = cast(Optional[ArqRedis], ctx.get("redis"))
+    if redis is not None:
+        await redis.enqueue_job(ENRICH_SNAPSHOT_TASK_NAME, snapshot)
 
     return schemas.JobResultWrapper(result={"snapshot_id": snapshot.id}, error=None)

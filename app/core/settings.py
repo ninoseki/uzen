@@ -43,6 +43,11 @@ REDIS_URL: DatabaseURL = config("REDIS_URL", cast=DatabaseURL, default="")
 
 # ARQ settings
 ARQ_MAX_JOBS: int = config("ARQ_MAX_JOBS", cast=int, default=10)
+ARQ_REDIS_CONN_TIMEOUT: int = config("ARQ_REDIS_CONN_TIMEOUT", cast=int, default=10)
+ARQ_REDIS_CONN_RETRIES: int = config("ARQ_REDIS_CONN_RETRIES", cast=int, default=5)
+ARQ_REDIS_CONN_RETRY_DELAY: int = config(
+    "ARQ_REDIS_CONN_RETRY_DELAY", cast=int, default=1
+)
 
 # IP to ASN web service settings
 IP2ASN_WEB_SERVICE_URL: str = config("IP2ASN_WEB_SERVICE_URL", cast=str, default="")
