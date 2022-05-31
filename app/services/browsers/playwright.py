@@ -1,7 +1,7 @@
+import tempfile
 from typing import Any, Dict, Optional
 
 from playwright.async_api import Browser, Error, Playwright, Response, async_playwright
-from playwright_har_tracer import HarTracer
 
 from app import dataclasses
 
@@ -29,50 +29,56 @@ async def run_playwright_browser(
         if not device:
             device["user_agent"] = user_agent
 
-        context = await browser.new_context(
-            **device,
-            ignore_https_errors=options.ignore_https_errors,
-        )
+        with tempfile.NamedTemporaryFile(delete=False) as har_file:
+            context = await browser.new_context(
+                **device,
+                ignore_https_errors=options.ignore_https_errors,
+                record_har_path=har_file.name
+            )
 
-        tracer = HarTracer(context=context, browser_name=playwright.chromium.name)
-        page = await context.new_page()
+            page = await context.new_page()
 
-        # work on copy
-        headers = options.headers.copy()
+            # work on copy
+            headers = options.headers.copy()
 
-        # delete the user agent because it is already set as a context
-        headers.pop("user-agent", None)
-        # delete the referer because it is used in "goto"
-        referer = headers.pop("referer", None)
+            # delete the user agent because it is already set as a context
+            headers.pop("user-agent", None)
+            # delete the referer because it is used in "goto"
+            referer = headers.pop("referer", None)
 
-        if headers:
-            await page.set_extra_http_headers(headers)
+            if headers:
+                await page.set_extra_http_headers(headers)
 
-        res: Optional[Response] = await page.goto(
-            url, referer=referer, timeout=options.timeout, wait_until=options.wait_until
-        )
-        if res is None:
-            raise Error("Cannot get the response")
+            res: Optional[Response] = await page.goto(
+                url,
+                referer=referer,
+                timeout=options.timeout,
+                wait_until=options.wait_until,
+            )
+            if res is None:
+                raise Error("Cannot get the response")
 
-        url = page.url
-        screenshot = await page.screenshot()
-        content = await page.content()
+            url = page.url
+            screenshot = await page.screenshot()
+            content = await page.content()
 
-        har = await tracer.flush()
+            await context.close()
+            await browser.close()
 
-        await context.close()
-        await browser.close()
+            # read HAR file
+            har_str = har_file.read().decode()
+            har = dataclasses.Har.from_json(har_str)
 
-        return dataclasses.Snapshot(
-            url=url,
-            screenshot=screenshot,
-            html=content,
-            response_headers=res.headers,
-            request_headers=res.request.headers,
-            status=res.status,
-            har=har,
-            options=options,
-        )
+            return dataclasses.Snapshot(
+                url=url,
+                screenshot=screenshot,
+                html=content,
+                response_headers=res.headers,
+                request_headers=res.request.headers,
+                status=res.status,
+                har=har,
+                options=options,
+            )
 
 
 class PlaywrightBrowser(AbstractBrowser):

@@ -2,8 +2,8 @@ import json
 import pathlib
 
 import dateutil.parser
-from playwright_har_tracer.dataclasses.har import Har
 
+from app import dataclasses
 from app.services.har import HarReader
 
 
@@ -20,7 +20,7 @@ with open(path) as f:
 
 
 def test_find_script_files():
-    har = Har.from_dict(fixture)
+    har = dataclasses.Har.from_dict(fixture)
     reader = HarReader(har)
     script_files = reader.find_script_files()
 
@@ -40,7 +40,7 @@ def test_find_script_files():
 
 
 def test_find_request():
-    har = Har.from_dict(fixture)
+    har = dataclasses.Har.from_dict(fixture)
     reader = HarReader(har)
     request = reader.find_request()
 

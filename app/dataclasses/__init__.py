@@ -6,6 +6,7 @@ from app.dataclasses.browser import (
     StylesheetFile,
 )
 from app.dataclasses.certificate import Certificate
+from app.dataclasses.har import Har
 from app.dataclasses.ip2asn import IP2ASNResponse
 from app.dataclasses.search import SearchResults, SearchResultsForIDs
 from app.dataclasses.similarity import SimilarityResult
@@ -26,4 +27,5 @@ __all__ = [
     "SnapshotModelWrapper",
     "StylesheetFile",
     "Whois",
+    "Har",
 ]

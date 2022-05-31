@@ -1,9 +1,8 @@
 import base64
 from typing import List, Optional
 
-from playwright_har_tracer.dataclasses.har import Entry, Har, Request
-
 from app import dataclasses, models
+from app.dataclasses.har import Entry, Har, Request
 from app.utils.hash import sha256
 
 
