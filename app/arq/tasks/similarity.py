@@ -5,9 +5,9 @@ from app.services.scanners import SimilarityScanner
 
 
 async def similarity_scan_task(
-    ctx: dict, payload: schemas.SimilarityScanPayloadWithSearchOptions
+    ctx_: dict, payload: schemas.SimilarityScanPayloadWithSearchOptions
 ) -> schemas.JobResultWrapper:
-    scan_results: Optional[List[schemas.PlainSnapshot]] = None
+    scan_results: Optional[List[schemas.SimilarityScanResult]] = None
 
     try:
         scanner = SimilarityScanner(html=payload.html, threshold=payload.threshold)
@@ -19,9 +19,6 @@ async def similarity_scan_task(
             exclude_ip_address=payload.exclude_ip_address,
         )
     except Exception as e:
-        from loguru import logger
-
-        logger.exception(e)
         return schemas.JobResultWrapper(result=scan_results, error=str(e))
 
     return schemas.JobResultWrapper(result=scan_results, error=None)
