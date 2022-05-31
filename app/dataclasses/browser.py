@@ -1,9 +1,9 @@
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
-from playwright_har_tracer.dataclasses.har import Har
-
 from app.types import WaitUntilType
+
+from .har import Har
 
 if TYPE_CHECKING:
     from app import models

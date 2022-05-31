@@ -30,7 +30,7 @@ def convert_to_absolute_url(url: str, source: str) -> str:
     return f"{base_url}/{source}"
 
 
-@lru_cache()
+@lru_cache
 def parse_html(html: str) -> BeautifulSoup:
     return BeautifulSoup(html, "html.parser")
 

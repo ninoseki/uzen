@@ -1,7 +1,5 @@
 from typing import List, Optional, cast
 
-from playwright_har_tracer.dataclasses.har import Har
-
 from app import dataclasses, models
 from app.factories.certificate import CertificateFactory
 from app.factories.har import HarFactory
@@ -18,7 +16,7 @@ from app.utils.network import (
 )
 
 
-def find_ip_address(url: str, har: Optional[Har]) -> str:
+def find_ip_address(url: str, har: Optional[dataclasses.Har]) -> str:
     """Find an IP address of a URL from HAR
 
     Args:
