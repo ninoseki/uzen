@@ -2,7 +2,7 @@ import base64
 from typing import List, Optional
 
 from app import dataclasses, models
-from app.dataclasses.har import Entry, Har, Request
+from app.dataclasses.har import Content, Entry, Har, Request
 from app.utils.hash import sha256
 
 
@@ -46,6 +46,14 @@ def find_request(har: Har) -> Optional[Request]:
     return None
 
 
+def get_text(content: Content) -> str:
+    if content.encoding == "base64":
+        encoded_text = str(content.text)
+        return base64.b64decode(encoded_text).decode("utf-8", "replace")
+
+    return str(content.text)
+
+
 def find_script_files(har: Har) -> List[dataclasses.ScriptFile]:
     script_files: List[dataclasses.ScriptFile] = []
 
@@ -58,9 +66,7 @@ def find_script_files(har: Har) -> List[dataclasses.ScriptFile]:
             continue
 
         if is_js_content_type(content.mime_type):
-            encoded_text = str(content.text)
-            text = base64.b64decode(encoded_text).decode("utf8", "replace")
-
+            text = get_text(content)
             file_id = sha256(text)
 
             script = models.Script(url=url, ip_address=ip_address, file_id=file_id)
@@ -82,9 +88,7 @@ def find_stylesheet_files(har: Har) -> List[dataclasses.StylesheetFile]:
             continue
 
         if is_stylesheet_content_type(content.mime_type):
-            encoded_text = str(content.text)
-            text = base64.b64decode(encoded_text).decode("utf8", "replace")
-
+            text = get_text(content)
             file_id = sha256(text)
 
             stylesheet = models.Stylesheet(
