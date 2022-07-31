@@ -3,12 +3,12 @@ from typing import List, Optional, cast
 from tortoise.expressions import Q
 
 from app import dataclasses, models, schemas
-from app.services.searchers import AbstractSearcher
+from app.services.searchers.base import AbstractSearcher
 from app.services.searchers.utils import convert_to_datetime
 
 
 def build_query(filters: schemas.RuleSearchFilters) -> Q:
-    # build queirs from filters
+    # build queries from filters
     queries = []
 
     if filters.name is not None:

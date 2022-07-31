@@ -1,10 +1,12 @@
-from typing import List, Optional, cast
+from typing import Any, List, Optional, cast
 
 from tortoise.expressions import Q
 
 from app import dataclasses, models, schemas
-from app.services.searchers import AbstractSearcher
+from app.services.searchers.base import AbstractSearcher
 from app.services.searchers.utils import convert_to_datetime
+
+PREFETCH_RELATED = ["tags"]
 
 
 def build_query(
@@ -74,12 +76,12 @@ class SnapshotSearcher(AbstractSearcher):
         instance = cls(
             model=models.Snapshot,
             query=query,
-            prefetch_related=["tags"],
+            prefetch_related=PREFETCH_RELATED,
             values=schemas.PlainSnapshot.field_keys(),
             group_by=["id"],
         )
         results = await instance._search(size=size, offset=offset)
-        snapshots = cast(List[dict], results.results)
+        snapshots = cast(List[dict[Any, Any]], results.results)
         return schemas.SnapshotsSearchResults(
             results=[
                 schemas.PlainSnapshot.parse_obj(snapshot) for snapshot in snapshots
@@ -97,5 +99,7 @@ class SnapshotSearcher(AbstractSearcher):
     ) -> dataclasses.SearchResultsForIDs:
         query = build_query(filters, additional_queries)
         # Run search
-        instance = cls(model=models.Snapshot, query=query, prefetch_related=["tags"])
+        instance = cls(
+            model=models.Snapshot, query=query, prefetch_related=PREFETCH_RELATED
+        )
         return await instance._search_for_ids(size=size, offset=offset)
