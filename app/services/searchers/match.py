@@ -3,8 +3,10 @@ from typing import List, Optional, cast
 from tortoise.expressions import Q
 
 from app import dataclasses, models, schemas
-from app.services.searchers import AbstractSearcher
+from app.services.searchers.base import AbstractSearcher
 from app.services.searchers.utils import convert_to_datetime
+
+PREFETCH_RELATED = ["snapshot", "rule", "script"]
 
 
 def build_query(filters: schemas.MatchSearchFilters) -> Q:
@@ -41,9 +43,7 @@ class MatchSearcher(AbstractSearcher):
     ) -> schemas.MatchesSearchResults:
         query = build_query(filters)
         instance = cls(
-            model=models.Match,
-            query=query,
-            prefetch_related=["snapshot", "rule", "script"],
+            model=models.Match, query=query, prefetch_related=PREFETCH_RELATED
         )
         results = await instance._search(size=size, offset=offset)
         matches: List[schemas.Match] = [
@@ -60,8 +60,6 @@ class MatchSearcher(AbstractSearcher):
     ) -> dataclasses.SearchResultsForIDs:
         query = build_query(filters)
         instance = cls(
-            model=models.Match,
-            query=query,
-            prefetch_related=["snapshot", "rule", "script"],
+            model=models.Match, query=query, prefetch_related=PREFETCH_RELATED
         )
         return await instance._search_for_ids(size=size, offset=offset)
