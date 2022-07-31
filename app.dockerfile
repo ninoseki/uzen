@@ -1,5 +1,5 @@
 # build env
-FROM node:16-alpine as build
+FROM node:18-alpine as build
 
 COPY ./frontend /frontend
 WORKDIR /frontend
@@ -9,7 +9,7 @@ RUN npm install -g npm@8 && npm install && npm run build && rm -rf node_modules
 FROM python:3.9-slim-buster
 
 RUN apt-get update \
-  && apt-get install -y \
+  && apt-get install --no-install-recommends -y \
   # Install YARA dependencies
   # Ref. https://yara.readthedocs.io/en/latest/gettingstarted.html
   automake \
@@ -29,7 +29,7 @@ WORKDIR /uzen
 COPY pyproject.toml poetry.lock gunicorn.conf.py /uzen/
 COPY app /uzen/app
 
-RUN pip3 install poetry \
+RUN pip install --no-cache-dir poetry==1.1.14 \
   && poetry config virtualenvs.create false \
   && poetry install --no-dev
 
@@ -39,5 +39,5 @@ ENV PORT 8000
 
 EXPOSE $PORT
 
-CMD gunicorn -k uvicorn.workers.UvicornWorker app:app
+CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", "app:app"]
 
