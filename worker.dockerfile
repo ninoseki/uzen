@@ -2,7 +2,7 @@
 FROM python:3.9-slim-buster
 
 RUN apt-get update \
-  && apt-get install -y \
+  && apt-get install --no-install-recommends -y \
   # Install chromium dependencies
   # Ref. https://github.com/puppeteer/puppeteer/blob/master/docs/troubleshooting.md#chrome-headless-doesnt-launch-on-unix
   fonts-liberation \
@@ -73,7 +73,7 @@ COPY pyproject.toml /uzen
 COPY poetry.lock /uzen
 COPY app /uzen/app
 
-RUN pip3 install poetry \
+RUN pip install --no-cache-dir poetry==1.1.14 \
   && poetry config virtualenvs.create false \
   && poetry install --no-dev
 
@@ -85,4 +85,4 @@ RUN mkdir -p /uzen/playwright \
 RUN  mkdir -p frontend/dist/static frontend/dist/images \
   && touch frontend/dist/index.html frontend/dist/images/not-found.png
 
-CMD arq app.arq.worker.ArqWorkerSettings
+CMD ["arq", "app.arq.worker.ArqWorkerSettings"]
