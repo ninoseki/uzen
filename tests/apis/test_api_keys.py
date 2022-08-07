@@ -5,7 +5,7 @@ def test_api_key_verification(client_without_verity_api_key_override: TestClient
     client = client_without_verity_api_key_override
 
     # create new API key
-    res = client.get("/api/api_keys/new")
+    res = client.post("/api/api_keys/new")
     assert res.status_code == 201
 
     data = res.json()
