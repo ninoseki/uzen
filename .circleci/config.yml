@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-  build:
+  test-backend:
     docker:
       - image: cimg/python:3.9-browsers
         environment:
@@ -47,9 +47,9 @@ jobs:
       - store_artifacts:
           path: test-results
 
-  build-frontend:
+  test-frontend:
     docker:
-      - image: cimg/node:16.14
+      - image: cimg/node:18.7.0
     steps:
       - checkout
       - restore_cache:
@@ -74,5 +74,5 @@ workflows:
   version: 2
   build_and_test:
     jobs:
-      - build
-      - build-frontend
+      - test-backend
+      - test-frontend
