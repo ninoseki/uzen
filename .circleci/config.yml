@@ -49,7 +49,7 @@ jobs:
 
   test-frontend:
     docker:
-      - image: cimg/node:18
+      - image: cimg/node:18.7.0
     steps:
       - checkout
       - restore_cache:
