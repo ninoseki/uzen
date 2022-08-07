@@ -44,7 +44,7 @@ async def create_new_api_key(
     status_code=204,
 )
 async def revoke_api_key(
-    payload: schemas.RevokeOrActivateAPIKey, _: Any = Depends(verify_secret_api_key)
+    payload: schemas.APIKeyRevokeOrActivate, _: Any = Depends(verify_secret_api_key)
 ):
     api_key = await _get_api_key(payload.api_key)
     await api_key.revoke()
@@ -57,7 +57,7 @@ async def revoke_api_key(
     status_code=204,
 )
 async def activate_api_key(
-    payload: schemas.RevokeOrActivateAPIKey, _: Any = Depends(verify_secret_api_key)
+    payload: schemas.APIKeyRevokeOrActivate, _: Any = Depends(verify_secret_api_key)
 ):
     api_key = await _get_api_key(payload.api_key)
     await api_key.activate()
@@ -70,7 +70,7 @@ async def activate_api_key(
     summary="Get a status of an API key",
 )
 async def get_api_key(
-    payload: schemas.RevokeOrActivateAPIKey, _: Any = Depends(verify_secret_api_key)
+    payload: schemas.APIKeyRevokeOrActivate, _: Any = Depends(verify_secret_api_key)
 ) -> schemas.APIKey:
     api_key = await _get_api_key(payload.api_key)
     return schemas.APIKey.from_orm(api_key)

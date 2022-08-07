@@ -1,7 +1,7 @@
 from app.schemas.api_key import (  # noqa: F401
     APIKey,
     APIKeyCreate,
-    RevokeOrActivateAPIKey,
+    APIKeyRevokeOrActivate,
 )
 from app.schemas.certificate import Certificate
 from app.schemas.classification import Classification

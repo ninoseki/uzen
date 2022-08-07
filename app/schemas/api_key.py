@@ -16,7 +16,7 @@ class APIKey(APIModel, TimestampMixin):
     memo: Optional[str] = Field(default=None)
 
 
-class RevokeOrActivateAPIKey(APIModel):
+class APIKeyRevokeOrActivate(APIModel):
     api_key: Union[str, UUID] = Field(...)
 
 
