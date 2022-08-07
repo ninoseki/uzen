@@ -1,4 +1,4 @@
-from typing import Any, Union
+from typing import Any, Optional, Union
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -19,16 +19,22 @@ async def _get_api_key(api_key: Union[str, UUID]) -> models.APIKey:
     return key
 
 
-@router.get(
+@router.post(
     "/new",
     response_model=schemas.APIKey,
     summary="Create a new API key",
     status_code=201,
 )
-async def create_new_api_key(_: Any = Depends(verify_secret_api_key)) -> schemas.APIKey:
+async def create_new_api_key(
+    payload: Optional[schemas.APIKeyCreate] = None,
+    *,
+    _: Any = Depends(verify_secret_api_key),
+) -> schemas.APIKey:
     key = models.APIKey()
-    await key.save()
+    if payload is not None:
+        key.memo = payload.memo
 
+    await key.save()
     return schemas.APIKey.from_orm(key)
 
 
@@ -39,7 +45,7 @@ async def create_new_api_key(_: Any = Depends(verify_secret_api_key)) -> schemas
 )
 async def revoke_api_key(
     payload: schemas.RevokeOrActivateAPIKey, _: Any = Depends(verify_secret_api_key)
-) -> schemas.APIKey:
+):
     api_key = await _get_api_key(payload.api_key)
     await api_key.revoke()
     return {}
@@ -52,7 +58,7 @@ async def revoke_api_key(
 )
 async def activate_api_key(
     payload: schemas.RevokeOrActivateAPIKey, _: Any = Depends(verify_secret_api_key)
-) -> schemas.APIKey:
+):
     api_key = await _get_api_key(payload.api_key)
     await api_key.activate()
     return {}
