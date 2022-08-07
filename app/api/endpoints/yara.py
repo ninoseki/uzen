@@ -18,13 +18,13 @@ router = APIRouter()
     summary="Perform YARA scans against snapshots",
 )
 async def scan(
-    payload: schemas.YaraScanPayload,
+    payload: schemas.YaraScan,
     size: Optional[int] = None,
     offset: Optional[int] = None,
     filters: SearchFilters = Depends(),
     arq_redis: ArqRedis = Depends(get_arq_redis),
 ) -> schemas.Job:
-    task_payload = schemas.YaraScanPayloadWithSearchOptions(
+    task_payload = schemas.YaraScanWithSearchOptions(
         target=payload.target,
         source=payload.source,
         size=size,

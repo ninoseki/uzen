@@ -3,7 +3,7 @@ from typing import Optional
 import pytest
 from pydantic import ValidationError
 
-from app.schemas.similarity import SimilarityScanPayload
+from app.schemas.similarity import SimilarityScan
 
 html = "<p>foo</p>"
 
@@ -21,7 +21,7 @@ html = "<p>foo</p>"
 def test_validation(threshold: Optional[float], error):
     if error is not None:
         with pytest.raises(error):
-            SimilarityScanPayload(html=html, threshold=threshold)
+            SimilarityScan(html=html, threshold=threshold)
     else:
-        payload = SimilarityScanPayload(html=html, threshold=threshold)
+        payload = SimilarityScan(html=html, threshold=threshold)
         assert payload.threshold == threshold

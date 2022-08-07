@@ -155,7 +155,7 @@ class SnapshotsSearchResults(BaseSearchResults):
     results: List[PlainSnapshot] = Field(...)
 
 
-class CreateSnapshotPayload(APIModel):
+class SnapshotCreate(APIModel):
     """Payload to create a snapshot"""
 
     url: AnyHttpUrl = Field(...)

@@ -18,13 +18,13 @@ router = APIRouter()
     summary="Perform similarity scans against snapshots",
 )
 async def scan(
-    payload: schemas.SimilarityScanPayload,
+    payload: schemas.SimilarityScan,
     size: Optional[int] = None,
     offset: Optional[int] = None,
     filters: SearchFilters = Depends(),
     arq_redis: ArqRedis = Depends(get_arq_redis),
 ) -> schemas.Job:
-    task_payload = schemas.SimilarityScanPayloadWithSearchOptions(
+    task_payload = schemas.SimilarityScanWithSearchOptions(
         html=payload.html,
         threshold=payload.threshold,
         exclude_hostname=payload.exclude_hostname,

@@ -5,7 +5,7 @@ from app.services.scanners import YaraScanner
 
 
 async def yara_scan_task(
-    ctx_: dict, payload: schemas.YaraScanPayloadWithSearchOptions
+    ctx_: dict, payload: schemas.YaraScanWithSearchOptions
 ) -> schemas.JobResultWrapper:
     scan_results: Optional[List[schemas.YaraScanResult]] = None
     try:

@@ -6,12 +6,12 @@ from pydantic import Field
 
 from app.schemas.base import APIModel
 from app.schemas.jobs.common import JobStatus
-from app.schemas.yara import YaraScanPayloadWithSearchOptions, YaraScanResult
+from app.schemas.yara import YaraScanResult, YaraScanWithSearchOptions
 
 
 class YaraScanJobDefinition(APIModel):
     enqueue_time: datetime
-    payload: YaraScanPayloadWithSearchOptions
+    payload: YaraScanWithSearchOptions
 
     @classmethod
     def from_job_definition(cls, job_definition: JobDef) -> "YaraScanJobDefinition":

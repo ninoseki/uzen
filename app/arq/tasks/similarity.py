@@ -5,7 +5,7 @@ from app.services.scanners import SimilarityScanner
 
 
 async def similarity_scan_task(
-    ctx_: dict, payload: schemas.SimilarityScanPayloadWithSearchOptions
+    ctx_: dict, payload: schemas.SimilarityScanWithSearchOptions
 ) -> schemas.JobResultWrapper:
     scan_results: Optional[List[schemas.SimilarityScanResult]] = None
 

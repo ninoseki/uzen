@@ -3,16 +3,16 @@ from app.schemas.api_key import (  # noqa: F401
     APIKeyCreate,
     APIKeyRevokeOrActivate,
 )
-from app.schemas.certificate import Certificate
-from app.schemas.classification import Classification
-from app.schemas.dns_record import BaseDnsRecord, DnsRecord
-from app.schemas.domain import Domain
-from app.schemas.file import File
-from app.schemas.har import HAR
-from app.schemas.html import HTML
-from app.schemas.indicators import Indicators
-from app.schemas.ip_address import IPAddress
-from app.schemas.jobs import (
+from app.schemas.certificate import Certificate  # noqa: F401
+from app.schemas.classification import Classification  # noqa: F401
+from app.schemas.dns_record import BaseDnsRecord, DnsRecord  # noqa: F401
+from app.schemas.domain import Domain  # noqa: F401
+from app.schemas.file import File  # noqa: F401
+from app.schemas.har import HAR  # noqa: F401
+from app.schemas.html import HTML  # noqa: F401
+from app.schemas.indicators import Indicators  # noqa: F401
+from app.schemas.ip_address import IPAddress  # noqa: F401
+from app.schemas.jobs import (  # noqa: F401
     Job,
     JobResultWrapper,
     SimilarityScanJobDefinition,
@@ -25,101 +25,45 @@ from app.schemas.jobs import (
     YaraScanJobResult,
     YaraScanJobStatus,
 )
-from app.schemas.match import (
+from app.schemas.match import (  # noqa: F401
     Match,
     MatchesSearchResults,
     MatchResult,
     MatchSearchFilters,
 )
-from app.schemas.rule import (
-    CreateRulePayload,
+from app.schemas.rule import (  # noqa: F401
+    RuleCreate,
     RuleSearchFilters,
     RulesSearchResults,
-    UpdateRulePayload,
+    RuleUpdate,
 )
-from app.schemas.screenshot import Screenshot
-from app.schemas.script import Script
-from app.schemas.similarity import (
-    SimilarityScanPayload,
-    SimilarityScanPayloadWithSearchOptions,
+from app.schemas.screenshot import Screenshot  # noqa: F401
+from app.schemas.script import Script  # noqa: F401
+from app.schemas.similarity import (  # noqa: F401
+    SimilarityScan,
     SimilarityScanResult,
+    SimilarityScanWithSearchOptions,
 )
-from app.schemas.snapshot import (
+from app.schemas.snapshot import (  # noqa: F401
     BaseSnapshot,
-    CreateSnapshotPayload,
     Device,
     PlainSnapshot,
     Rule,
     Snapshot,
+    SnapshotCreate,
     SnapshotSearchFilters,
     SnapshotsSearchResults,
     Tag,
 )
-from app.schemas.status import Status
-from app.schemas.stylesheet import Stylesheet
-from app.schemas.utils import CountResponse
-from app.schemas.whois import Whois
-from app.schemas.yara import (
+from app.schemas.status import Status  # noqa: F401
+from app.schemas.stylesheet import Stylesheet  # noqa: F401
+from app.schemas.utils import CountResponse  # noqa: F401
+from app.schemas.whois import Whois  # noqa: F401
+from app.schemas.yara import (  # noqa: F401
     YaraMatch,
     YaraMatchString,
     YaraResult,
-    YaraScanPayload,
-    YaraScanPayloadWithSearchOptions,
+    YaraScan,
     YaraScanResult,
+    YaraScanWithSearchOptions,
 )
-
-__all__ = [
-    "BaseDnsRecord",
-    "BaseSnapshot",
-    "Certificate",
-    "Classification",
-    "CountResponse",
-    "CreateRulePayload",
-    "CreateSnapshotPayload",
-    "Device",
-    "DnsRecord",
-    "Domain",
-    "File",
-    "HAR",
-    "HTML",
-    "Indicators",
-    "IPAddress",
-    "Job",
-    "JobResultWrapper",
-    "Match",
-    "MatchesSearchResults",
-    "MatchResult",
-    "MatchSearchFilters",
-    "PlainSnapshot",
-    "Rule",
-    "RuleSearchFilters",
-    "RulesSearchResults",
-    "Screenshot",
-    "Script",
-    "SimilarityScanJobDefinition",
-    "SimilarityScanJobResult",
-    "SimilarityScanJobStatus",
-    "SimilarityScanPayload",
-    "SimilarityScanPayloadWithSearchOptions",
-    "SimilarityScanResult",
-    "Snapshot",
-    "SnapshotJobDefinition",
-    "SnapshotJobResult",
-    "SnapshotJobStatus",
-    "SnapshotSearchFilters",
-    "SnapshotsSearchResults",
-    "Status",
-    "Stylesheet",
-    "Tag",
-    "UpdateRulePayload",
-    "Whois",
-    "YaraMatch",
-    "YaraMatchString",
-    "YaraResult",
-    "YaraScanJobDefinition",
-    "YaraScanJobResult",
-    "YaraScanJobStatus",
-    "YaraScanPayload",
-    "YaraScanPayloadWithSearchOptions",
-    "YaraScanResult",
-]

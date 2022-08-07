@@ -82,7 +82,7 @@ async def get_indicators(snapshot_id: types.ULID) -> schemas.Indicators:
     status_code=201,
 )
 async def create(
-    payload: schemas.CreateSnapshotPayload,
+    payload: schemas.SnapshotCreate,
     api_key: Optional[str] = Header(None),
     *,
     _: Any = Depends(verify_api_key),
