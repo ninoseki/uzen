@@ -24,7 +24,7 @@ async def enrich_snapshot_task(
 
 async def take_snapshot_task(
     ctx: dict,
-    payload: schemas.CreateSnapshotPayload,
+    payload: schemas.SnapshotCreate,
     api_key: Optional[Union[str, UUID]] = None,
 ) -> schemas.JobResultWrapper:
     ignore_https_error = payload.ignore_https_errors or False

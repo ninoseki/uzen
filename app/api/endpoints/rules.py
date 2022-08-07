@@ -45,7 +45,7 @@ async def get(rule_id: types.ULID) -> schemas.Rule:
 )
 async def put(
     rule_id: types.ULID,
-    payload: schemas.UpdateRulePayload,
+    payload: schemas.RuleUpdate,
     _: Any = Depends(verify_api_key),
 ) -> schemas.Rule:
     try:
@@ -80,7 +80,7 @@ async def put(
     status_code=201,
 )
 async def create(
-    payload: schemas.CreateRulePayload, _: Any = Depends(verify_api_key)
+    payload: schemas.RuleCreate, _: Any = Depends(verify_api_key)
 ) -> schemas.Rule:
     rule = models.Rule(
         name=payload.name,

@@ -6,15 +6,12 @@ from pydantic import Field
 
 from app.schemas.base import APIModel
 from app.schemas.jobs.common import JobStatus
-from app.schemas.similarity import (
-    SimilarityScanPayloadWithSearchOptions,
-    SimilarityScanResult,
-)
+from app.schemas.similarity import SimilarityScanResult, SimilarityScanWithSearchOptions
 
 
 class SimilarityScanJobDefinition(APIModel):
     enqueue_time: datetime
-    payload: SimilarityScanPayloadWithSearchOptions
+    payload: SimilarityScanWithSearchOptions
 
     @classmethod
     def from_job_definition(

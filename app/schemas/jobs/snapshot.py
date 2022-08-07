@@ -7,7 +7,7 @@ from pydantic import Field
 from app import types
 from app.schemas.base import APIModel
 from app.schemas.jobs.common import JobStatus
-from app.schemas.snapshot import CreateSnapshotPayload
+from app.schemas.snapshot import SnapshotCreate
 
 
 class SnapshotJobResult(APIModel):
@@ -16,7 +16,7 @@ class SnapshotJobResult(APIModel):
 
 class SnapshotJobDefinition(APIModel):
     enqueue_time: datetime
-    payload: CreateSnapshotPayload
+    payload: SnapshotCreate
 
     @classmethod
     def from_job_definition(cls, job_definition: JobDef) -> "SnapshotJobDefinition":

@@ -3,7 +3,7 @@ from typing import Optional
 import pytest
 from pydantic import ValidationError
 
-from app.schemas.rule import UpdateRulePayload
+from app.schemas.rule import RuleUpdate
 from app.schemas.snapshot import BaseRule
 
 source = 'rule foo: bar {strings: $a = "lmn" condition: $a}'
@@ -44,6 +44,6 @@ def test_update_payload_validation(
 
     if error is not None:
         with pytest.raises(error):
-            UpdateRulePayload.parse_obj(input_)
+            RuleUpdate.parse_obj(input_)
     else:
-        UpdateRulePayload.parse_obj(input_)
+        RuleUpdate.parse_obj(input_)

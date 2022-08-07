@@ -9,11 +9,11 @@ from app.schemas.snapshot import PlainSnapshot, SnapshotSearchFilters
 from app.types import ULID
 
 
-class YaraScanPayload(Source, Target, APIModel):
+class YaraScan(Source, Target, APIModel):
     """Playload for YARA scan"""
 
 
-class YaraScanPayloadWithSearchOptions(YaraScanPayload):
+class YaraScanWithSearchOptions(YaraScan):
     """YARA scan payload with search options"""
 
     size: Optional[int] = Field(None)

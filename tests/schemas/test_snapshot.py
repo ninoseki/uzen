@@ -3,8 +3,8 @@ from typing import Optional
 import pytest
 
 from app.schemas.snapshot import (
-    CreateSnapshotPayload,
     SnapshotBasicAttributes,
+    SnapshotCreate,
     remove_sharp_and_question_from_tail,
 )
 
@@ -18,19 +18,19 @@ from app.schemas.snapshot import (
         ("http://example.com", "foo", ValueError),
     ],
 )
-def test_create_snapsnot_payload(url: str, device_name: Optional[str], error):
+def test_create_snapshot_payload(url: str, device_name: Optional[str], error):
     if error is not None:
         with pytest.raises(error):
-            CreateSnapshotPayload(url=url, device_name=device_name)
+            SnapshotCreate(url=url, device_name=device_name)
     else:
-        payload = CreateSnapshotPayload(url=url, device_name=device_name)
+        payload = SnapshotCreate(url=url, device_name=device_name)
         assert payload.url == "http://example.com"
         assert payload.device_name == device_name
 
 
-def test_create_snapsnot_payload_with_headers():
+def test_create_snapshot_payload_with_headers():
     # header keys should be lower cases
-    payload = CreateSnapshotPayload(url="http://example.com", headers={"Foo": "bar"})
+    payload = SnapshotCreate(url="http://example.com", headers={"Foo": "bar"})
     assert payload.headers == {"foo": "bar"}
 
 

@@ -7,7 +7,7 @@ from app.schemas.base import APIModel
 from app.schemas.snapshot import PlainSnapshot, SnapshotSearchFilters
 
 
-class SimilarityScanPayload(APIModel):
+class SimilarityScan(APIModel):
     """Similarity scan payload"""
 
     html: str = Field(...)
@@ -29,7 +29,7 @@ class SimilarityScanPayload(APIModel):
         return v
 
 
-class SimilarityScanPayloadWithSearchOptions(SimilarityScanPayload):
+class SimilarityScanWithSearchOptions(SimilarityScan):
     """Similarity scan payload with search options"""
 
     size: Optional[int] = Field(None)

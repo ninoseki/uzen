@@ -11,11 +11,11 @@ from app.schemas.types import TargetTypes
 from app.types import ULID
 
 
-class CreateRulePayload(BaseRule):
+class RuleCreate(BaseRule):
     """Payload to create a rule"""
 
 
-class UpdateRulePayload(BaseRule):
+class RuleUpdate(BaseRule):
     """Payload to update a rule"""
 
     name: Optional[str] = Field(None, description="A name of the YARA rule")
