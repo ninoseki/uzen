@@ -11,7 +11,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.1.2",
     "@mdi/font": "^7.0.96",
-    "@vuepic/vue-datepicker": "^3.3.1",
+    "@vuepic/vue-datepicker": "3.4.6",
     "@vueuse/core": "^9.0.2",
     "@vueuse/router": "^9.0.2",
     "axios": "^0.27.2",
