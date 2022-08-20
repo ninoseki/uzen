@@ -29,18 +29,18 @@ httpx = "^0.23.0"
 loguru = "^0.6.0"
 minio = "^7.1.11"
 niteru = "^0.2.1"
-playwright = "1.24.0"
+playwright = "1.25.1"
 ppdeep = "^20200505"
 pyhumps = "^3.7.2"
 pyopenssl = "^22.0.0"
 python-ulid = "^1.1.0"
-sentry-sdk = "^1.9.0"
+sentry-sdk = "^1.9.5"
 tldextract = "^3.3.1"
 tortoise-orm = "0.19.2"
 ujson = "^5.4.0"
 uvicorn = {extras = ["standard"], version = "^0.18.2"}
 whois-parser = "^0.1.4"
-yara-python = "^4.2.0"
+yara-python = "^4.2.3"
 watchgod = "^0.8.2"
 
 [tool.poetry.dev-dependencies]
@@ -72,13 +72,6 @@ vcrpy = "4.2.0"
 app = "uvicorn app:app --reload"
 worker = "arq app.arq.worker.WorkerSettings --watch ./"
 
-[tool.isort]
-force_grid_wrap = 0
-include_trailing_comma = true
-known_third_party = ["OpenSSL", "aiometer", "alembic", "bs4", "dns", "fastapi", "fastapi_utils", "httpx", "ipwhois", "loguru", "playwright", "pydantic", "pyppeteer", "pysafebrowsing", "pytest", "requests", "respx", "sqlalchemy", "starlette", "tortoise", "vcr", "whois", "yara"]
-line_length = 88
-multi_line_output = 3
-use_parentheses= true
 
 [tool.pytest.ini_options]
 env = ["IP2ASN_WEB_SERVICE_URL=http://127.0.0.1:80", "TESTING=True", "workers=auto"]
