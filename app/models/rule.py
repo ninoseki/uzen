@@ -6,7 +6,7 @@ from tortoise.fields.data import CharField, DatetimeField, TextField
 from tortoise.fields.relational import ManyToManyRelation
 
 from app import models, schemas, types
-from app.builders.rule import RuleBuilder
+from app.factories.rule import RuleFactory
 
 from .base import AbstractBaseModel
 from .mixin import TimestampMixin
@@ -34,7 +34,7 @@ class Rule(TimestampMixin, AbstractBaseModel):
         self.related_snapshots: list[models.Snapshot] | None = None
 
     def to_model(self) -> schemas.Rule:
-        return RuleBuilder.build(self)
+        return RuleFactory.from_model(self)
 
     @classmethod
     async def get_by_id(cls, id_: str | types.ULID) -> Rule:

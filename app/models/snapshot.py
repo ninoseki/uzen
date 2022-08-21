@@ -17,7 +17,7 @@ from tortoise.fields.relational import (
 from tortoise.transactions import in_transaction
 
 from app import schemas, types
-from app.builders.snapshot import SnapshotBuilder
+from app.factories.snapshot import SnapshotFactory
 from app.models.script import Script
 from app.models.stylesheet import Stylesheet
 from app.models.tag import Tag
@@ -103,7 +103,7 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
     )
 
     def to_model(self) -> schemas.Snapshot:
-        return SnapshotBuilder.build(self)
+        return SnapshotFactory.from_model(self)
 
     def to_plain_model(self) -> schemas.PlainSnapshot:
         return schemas.PlainSnapshot.from_orm(self)

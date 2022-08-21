@@ -66,9 +66,9 @@ def build_whois(snapshot: "Snapshot") -> Optional[schemas.Whois]:
     return None
 
 
-class SnapshotBuilder:
-    @classmethod
-    def build(cls, snapshot: "Snapshot") -> schemas.Snapshot:
+class SnapshotFactory:
+    @staticmethod
+    def from_model(snapshot: "Snapshot") -> schemas.Snapshot:
         return schemas.Snapshot(
             id=snapshot.id,
             url=snapshot.url,

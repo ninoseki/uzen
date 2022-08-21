@@ -9,7 +9,7 @@ from tortoise.fields.relational import (
 )
 
 from app import schemas
-from app.builders.match import MatchBuilder
+from app.factories.match import MatchFactory
 
 from .base import AbstractBaseModel
 from .mixin import TimestampMixin
@@ -30,7 +30,7 @@ class Match(TimestampMixin, AbstractBaseModel):
     )
 
     def to_model(self) -> schemas.Match:
-        return MatchBuilder.build(self)
+        return MatchFactory.from_model(self)
 
     class Meta:
         table = "matches"
