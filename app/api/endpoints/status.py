@@ -1,14 +1,13 @@
 from fastapi import APIRouter
-from fastapi_cache.coder import PickleCoder
-from fastapi_cache.decorator import cache
 
 from app import schemas
+from app.cache.decorator import cached
 from app.factories.status import StatusFactory
 
 router = APIRouter()
 
 
-@cache(coder=PickleCoder)
+@cached()
 async def get_status() -> schemas.Status:
     return await StatusFactory.from_ipinfo()
 
