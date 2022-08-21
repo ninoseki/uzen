@@ -1,5 +1,12 @@
 version: 2.1
 
+workflows:
+  version: 2
+  test_backend_and_frontend:
+    jobs:
+      - test-backend
+      - test-frontend
+
 jobs:
   test-backend:
     docker:
@@ -22,7 +29,7 @@ jobs:
       - run:
           name: Install Python Dependencies
           command: |
-            pip install poetry
+            pip install poetry==1.1.14
             poetry install
             poetry run python -m playwright install chromium
       - save_cache:
@@ -69,10 +76,3 @@ jobs:
           command: |
             cd frontend
             npm run test:unit
-
-workflows:
-  version: 2
-  build_and_test:
-    jobs:
-      - test-backend
-      - test-frontend
