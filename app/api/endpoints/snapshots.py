@@ -11,6 +11,7 @@ from app.api.dependencies.verification import verify_api_key
 from app.arq.constants import SNAPSHOT_TASK_NAME
 from app.factories.indicators import IndicatorsFactory
 from app.services.searchers.snapshot import SnapshotSearcher
+from app.utils.ulid import get_ulid_str
 
 router = APIRouter()
 
@@ -88,8 +89,7 @@ async def create(
     _: Any = Depends(verify_api_key),
     arq_redis: ArqRedis = Depends(get_arq_redis),
 ) -> schemas.Job:
-    ulid = types.ULID()
-    job_id = str(ulid.to_uuid())
+    job_id = get_ulid_str()
     job = await arq_redis.enqueue_job(
         SNAPSHOT_TASK_NAME, payload, api_key, _job_id=job_id
     )
