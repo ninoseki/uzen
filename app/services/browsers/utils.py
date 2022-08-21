@@ -2,11 +2,11 @@ from typing import List, Optional, cast
 
 from app import dataclasses, models
 from app.factories.certificate import CertificateFactory
-from app.factories.har import HarFactory
+from app.factories.har import HARFactory
 from app.factories.html import HTMLFactory
 from app.factories.whois import WhoisFactory
 from app.services.certificate import Certificate
-from app.services.har import HarReader
+from app.services.har import HARReader
 from app.services.whois import Whois
 from app.utils.network import (
     get_asn_by_ip_address,
@@ -16,12 +16,12 @@ from app.utils.network import (
 )
 
 
-def find_ip_address(url: str, har: Optional[dataclasses.Har]) -> str:
+def find_ip_address(url: str, har: Optional[dataclasses.HAR]) -> str:
     """Find an IP address of a URL from HAR
 
     Args:
         url (str): URL
-        har (Optional[Har]): HAR
+        har (Optional[HAR]): HAR
 
     Returns:
         str: IP address
@@ -52,7 +52,7 @@ async def build_snapshot_model_wrapper(
     stylesheet_files: List[dataclasses.StylesheetFile] = []
 
     if har is not None:
-        har_reader = HarReader(har)
+        har_reader = HARReader(har)
         script_files = har_reader.find_script_files()
         stylesheet_files = har_reader.find_stylesheet_files()
 
@@ -80,7 +80,7 @@ async def build_snapshot_model_wrapper(
         if certificate_data
         else None
     )
-    har_model = HarFactory.from_dataclass(har) if har else None
+    har_model = HARFactory.from_dataclass(har) if har else None
 
     return dataclasses.SnapshotModelWrapper(
         screenshot=snapshot.screenshot,

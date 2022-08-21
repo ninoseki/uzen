@@ -10,7 +10,7 @@ from app.types import ULID
 
 
 class YaraScan(Source, Target, APIModel):
-    """Playload for YARA scan"""
+    """Payload for YARA scan"""
 
 
 class YaraScanWithSearchOptions(YaraScan):

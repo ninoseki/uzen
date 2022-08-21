@@ -5,7 +5,7 @@ import httpx
 from bs4 import BeautifulSoup
 
 from app import dataclasses
-from app.dataclasses.utils import HttpResource
+from app.dataclasses.utils import HTTPResource
 from app.utils.url import url_base_form
 
 
@@ -86,7 +86,7 @@ def get_stylesheet_urls(
 
 async def get_http_resource(
     client: httpx.AsyncClient, url: str, headers: Dict[str, Any]
-) -> Optional[dataclasses.HttpResource]:
+) -> Optional[dataclasses.HTTPResource]:
     """Get an http resource
 
     Arguments:
@@ -99,6 +99,6 @@ async def get_http_resource(
         res = await client.get(url, headers=headers)
         res.raise_for_status()
         content_type = res.headers.get("content-type", None)
-        return HttpResource(url=url, content=res.text, content_type=content_type)
+        return HTTPResource(url=url, content=res.text, content_type=content_type)
     except httpx.HTTPError:
         return None

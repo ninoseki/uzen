@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class HttpResource:
+class HTTPResource:
     """HTTP response resource"""
 
     url: str

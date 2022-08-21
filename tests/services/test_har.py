@@ -4,7 +4,7 @@ import pathlib
 import dateutil.parser
 
 from app import dataclasses
-from app.services.har import HarReader
+from app.services.har import HARReader
 
 
 def datetime_decoder(data: dict) -> dict:
@@ -20,8 +20,8 @@ with open(path) as f:
 
 
 def test_find_script_files():
-    har = dataclasses.Har.from_dict(fixture)
-    reader = HarReader(har)
+    har = dataclasses.HAR.from_dict(fixture)
+    reader = HARReader(har)
     script_files = reader.find_script_files()
 
     assert len(script_files) == 2
@@ -40,8 +40,8 @@ def test_find_script_files():
 
 
 def test_find_request():
-    har = dataclasses.Har.from_dict(fixture)
-    reader = HarReader(har)
+    har = dataclasses.HAR.from_dict(fixture)
+    reader = HARReader(har)
     request = reader.find_request()
 
     assert request.url == "https://www.w3.org/"

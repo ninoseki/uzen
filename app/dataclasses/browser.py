@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 from app.types import WaitUntilType
 
-from .har import Har
+from .har import HAR
 
 if TYPE_CHECKING:
     from app import models
@@ -28,7 +28,7 @@ class Snapshot:
     response_headers: Dict[str, Any]
     request_headers: Dict[str, Any]
     screenshot: Optional[bytes] = None
-    har: Optional[Har] = None
+    har: Optional[HAR] = None
 
 
 @dataclass

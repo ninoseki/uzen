@@ -2,7 +2,7 @@ import base64
 from typing import List, Optional
 
 from app import dataclasses, models
-from app.dataclasses.har import Content, Entry, Har, Request
+from app.dataclasses.har import HAR, Content, Entry, Request
 from app.utils.hash import sha256
 
 
@@ -30,7 +30,7 @@ def is_stylesheet_content_type(content_type: Optional[str]) -> bool:
     return False
 
 
-def find_main_entry(har: Har) -> Optional[Entry]:
+def find_main_entry(har: HAR) -> Optional[Entry]:
     for entry in har.log.entries:
         if entry.response.redirect_url == "":
             return entry
@@ -38,7 +38,7 @@ def find_main_entry(har: Har) -> Optional[Entry]:
     return None
 
 
-def find_request(har: Har) -> Optional[Request]:
+def find_request(har: HAR) -> Optional[Request]:
     main_entry = find_main_entry(har)
     if main_entry:
         return main_entry.request
@@ -54,7 +54,7 @@ def get_text(content: Content) -> str:
     return str(content.text)
 
 
-def find_script_files(har: Har) -> List[dataclasses.ScriptFile]:
+def find_script_files(har: HAR) -> List[dataclasses.ScriptFile]:
     script_files: List[dataclasses.ScriptFile] = []
 
     for entry in har.log.entries:
@@ -76,7 +76,7 @@ def find_script_files(har: Har) -> List[dataclasses.ScriptFile]:
     return script_files
 
 
-def find_stylesheet_files(har: Har) -> List[dataclasses.StylesheetFile]:
+def find_stylesheet_files(har: HAR) -> List[dataclasses.StylesheetFile]:
     stylesheet_files: List[dataclasses.StylesheetFile] = []
 
     for entry in har.log.entries:
@@ -102,9 +102,9 @@ def find_stylesheet_files(har: Har) -> List[dataclasses.StylesheetFile]:
     return stylesheet_files
 
 
-class HarReader:
-    def __init__(self, har: Har):
-        self.har: Har = har
+class HARReader:
+    def __init__(self, har: HAR):
+        self.har: HAR = har
 
     def find_script_files(self) -> List[dataclasses.ScriptFile]:
         return find_script_files(self.har)

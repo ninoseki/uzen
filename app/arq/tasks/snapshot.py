@@ -3,7 +3,7 @@ from uuid import UUID
 
 from arq.connections import ArqRedis
 
-from app import models, schemas, types
+from app import models, schemas
 from app.arq.constants import ENRICH_SNAPSHOT_TASK_NAME
 from app.arq.tasks.classes.enrichment import EnrichmentTasks
 from app.arq.tasks.classes.match import MatchingTask
@@ -11,6 +11,7 @@ from app.arq.tasks.classes.screenshot import UploadScreenshotTask
 from app.arq.tasks.classes.snapshot import UpdateProcessingTask
 from app.core.exceptions import TakeSnapshotError
 from app.services.browser import Browser
+from app.utils.ulid import get_ulid_str
 
 
 async def enrich_snapshot_task(
@@ -42,7 +43,7 @@ async def take_snapshot_task(
         return schemas.JobResultWrapper(result=None, error=str(e))
 
     snapshot = await models.Snapshot.save_snapshot(
-        wrapper, id=str(types.ULID()), api_key=api_key, tag_names=payload.tags
+        wrapper, id=get_ulid_str(), api_key=api_key, tag_names=payload.tags
     )
 
     # upload screenshot
