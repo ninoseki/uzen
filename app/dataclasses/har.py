@@ -224,5 +224,5 @@ class Log(CustomizedDataClassJsonMixin):
 
 
 @dataclass
-class Har(CustomizedDataClassJsonMixin):
+class HAR(CustomizedDataClassJsonMixin):
     log: Log

@@ -67,7 +67,7 @@ async def run_playwright_browser(
 
             # read HAR file
             har_str = har_file.read().decode()
-            har = dataclasses.Har.from_json(har_str)
+            har = dataclasses.HAR.from_json(har_str)
 
             return dataclasses.Snapshot(
                 url=url,
