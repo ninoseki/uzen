@@ -10,7 +10,7 @@ from app.dataclasses.har import Har
 from app.dataclasses.ip2asn import IP2ASNResponse
 from app.dataclasses.search import SearchResults, SearchResultsForIDs
 from app.dataclasses.similarity import SimilarityResult
-from app.dataclasses.utils import Enrichments, HttpResource
+from app.dataclasses.utils import Enrichments, HTTPResource
 from app.dataclasses.whois import Whois
 
 __all__ = [
@@ -18,7 +18,7 @@ __all__ = [
     "Snapshot",
     "Certificate",
     "Enrichments",
-    "HttpResource",
+    "HTTPResource",
     "IP2ASNResponse",
     "ScriptFile",
     "SearchResults",
