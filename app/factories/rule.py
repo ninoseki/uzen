@@ -14,9 +14,9 @@ def build_snapshots(rule: "Rule"):
     return []
 
 
-class RuleBuilder:
-    @classmethod
-    def build(cls, rule: "Rule") -> schemas.Rule:
+class RuleFactory:
+    @staticmethod
+    def from_model(rule: "Rule") -> schemas.Rule:
         return schemas.Rule(
             id=rule.id,
             name=rule.name,

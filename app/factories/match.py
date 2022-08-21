@@ -13,9 +13,9 @@ def build_script(match: "Match") -> Optional[schemas.Script]:
     return None
 
 
-class MatchBuilder:
-    @classmethod
-    def build(cls, match: "Match") -> schemas.Match:
+class MatchFactory:
+    @staticmethod
+    def from_model(match: "Match") -> schemas.Match:
         return schemas.Match(
             id=match.id,
             matches=match.matches,
