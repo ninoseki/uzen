@@ -1,14 +1,11 @@
-import ssl
 from typing import Dict, Optional
 
-import httpx
 from cached_property import cached_property
 from loguru import logger
 from playwright.async_api import Error, async_playwright
 
 from app import dataclasses
 from app.core.exceptions import TakeSnapshotError
-from app.services.browsers.httpx import HttpxBrowser
 from app.services.browsers.playwright import (
     PlaywrightBrowser,
     launch_playwright_browser,
@@ -31,28 +28,6 @@ async def take_screenshot(hostname: str, protocol: str = "http") -> bytes:
         await browser.close()
 
         return screenshot
-
-
-def is_unsafe_header(header: str) -> bool:
-    # ref. https://github.com/chromium/chromium/blob/99314be8152e688bafbbf9a615536bdbb289ea87/services/network/public/cpp/header_util.cc#L22-L48
-    return header in [
-        "host",
-        "content-length",
-        "trailer",
-        "te",
-        "upgrade",
-        "cookie2",
-        "keep-alive",
-        "transfer-encoding",
-    ]
-
-
-def are_headers_safe(headers: Dict[str, str]) -> bool:
-    for header in headers.keys():
-        if is_unsafe_header(header):
-            return False
-
-    return True
 
 
 class Browser:
@@ -85,37 +60,20 @@ class Browser:
 
     async def take_snapshot(self, url: str) -> dataclasses.SnapshotModelWrapper:
         result: Optional[dataclasses.SnapshotModelWrapper] = None
-        errors = []
+        error: Optional[Exception] = None
 
-        if are_headers_safe(self.headers):
-            try:
-                result = await PlaywrightBrowser.take_snapshot(url, self.options)
-            except Error as e:
-                message = "Failed to take a snapshot by playwright"
-                logger.debug(message)
-                logger.exception(e)
-                errors.append(e)
-
-            if result is not None:
-                return result
-
-        logger.debug("Fallback to HTTPX")
         try:
-            result = await HttpxBrowser.take_snapshot(url, self.options)
-        except (
-            httpx.HTTPError,
-            httpx.TransportError,
-            ssl.SSLCertVerificationError,
-        ) as e:
-            message = "Failed to take a snapshot by HTTPX"
+            result = await PlaywrightBrowser.take_snapshot(url, self.options)
+        except Error as e:
+            message = "Failed to take a snapshot by playwright"
             logger.debug(message)
             logger.exception(e)
-            errors.append(e)
+            error = e
 
         if result is not None:
             return result
 
-        raise TakeSnapshotError(errors[-1])
+        raise TakeSnapshotError(error)
 
     @staticmethod
     async def preview(hostname: str) -> bytes:
