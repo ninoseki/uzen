@@ -5,7 +5,6 @@ from playwright.async_api import Browser, Error, Playwright, Response, async_pla
 
 from app import dataclasses
 
-from .abstract import AbstractBrowser
 from .utils import build_snapshot_model_wrapper
 
 
@@ -81,7 +80,7 @@ async def run_playwright_browser(
             )
 
 
-class PlaywrightBrowser(AbstractBrowser):
+class PlaywrightBrowser:
     @staticmethod
     async def take_snapshot(
         url: str,

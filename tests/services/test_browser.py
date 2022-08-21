@@ -1,12 +1,7 @@
-from unittest.mock import AsyncMock
-
 import pytest
-from pytest_mock.plugin import MockerFixture
 
 from app.core.exceptions import TakeSnapshotError
 from app.services.browser import Browser
-from app.services.browsers.httpx import HttpxBrowser
-from app.services.browsers.playwright import PlaywrightBrowser
 
 
 @pytest.mark.asyncio
@@ -71,18 +66,3 @@ async def test_take_snapshot_with_bad_ssl():
     )
     snapshot = result.snapshot
     assert snapshot.url == "https://expired.badssl.com/"
-
-
-@pytest.mark.asyncio
-async def test_take_snapshot_httpx_fallback(mocker: MockerFixture):
-    mocker.patch(
-        "app.services.browsers.playwright.PlaywrightBrowser.take_snapshot", AsyncMock()
-    )
-    mocker.patch("app.services.browsers.httpx.HttpxBrowser.take_snapshot", AsyncMock())
-
-    # it should fallback to HTTPX if a host is given
-    browser = Browser(headers={"host": "example.com"})
-    await browser.take_snapshot("http://example.com")
-
-    PlaywrightBrowser.take_snapshot.assert_not_called()
-    HttpxBrowser.take_snapshot.assert_called_once()
