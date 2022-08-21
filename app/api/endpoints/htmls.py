@@ -1,18 +1,17 @@
 from typing import cast
 
 from fastapi import APIRouter, HTTPException
-from fastapi_cache.coder import PickleCoder
-from fastapi_cache.decorator import cache
 from tortoise.exceptions import DoesNotExist
 
 from app import models, schemas
 from app.cache.constants import ONE_DAY
+from app.cache.decorator import cached
 from app.services.html2text import html2text
 
 router = APIRouter()
 
 
-@cache(coder=PickleCoder, expire=ONE_DAY)
+@cached(ttl=ONE_DAY)
 async def _get_html_by_sha256(sha256: str) -> schemas.HTML:
     html = await models.HTML.get_by_id(sha256)
     html = cast(models.HTML, html)

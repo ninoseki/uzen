@@ -39,7 +39,9 @@ MINIO_SECRET_KEY: Secret = config("MINIO_SECRET_KEY", cast=Secret, default="")
 MINIO_SECURE: bool = config("MINIO_SECURE", cast=bool, default=False)
 
 # Redis settings
-REDIS_URL: DatabaseURL = config("REDIS_URL", cast=DatabaseURL, default="")
+REDIS_URL: DatabaseURL = config(
+    "REDIS_URL", cast=DatabaseURL, default="redis://localhost:6379"
+)
 
 # ARQ settings
 ARQ_MAX_JOBS: int = config("ARQ_MAX_JOBS", cast=int, default=10)
@@ -48,6 +50,12 @@ ARQ_REDIS_CONN_RETRIES: int = config("ARQ_REDIS_CONN_RETRIES", cast=int, default
 ARQ_REDIS_CONN_RETRY_DELAY: int = config(
     "ARQ_REDIS_CONN_RETRY_DELAY", cast=int, default=1
 )
+
+# Redis cache settings
+REDIS_CACHE_URL: DatabaseURL = config(
+    "REDIS_URL", cast=DatabaseURL, default="redis://localhost:6379"
+)
+REDIS_CACHE_NAMESPACE: str = config("REDIS_CACHE_NAMESPACE", cast=str, default="cache")
 
 # IP to ASN web service settings
 IP2ASN_WEB_SERVICE_URL: str = config("IP2ASN_WEB_SERVICE_URL", cast=str, default="")

@@ -2,11 +2,12 @@ import asyncio
 from typing import Optional
 
 import tldextract
-from aiocache import Cache, cached
-from aiocache.serializers import PickleSerializer
+from aiocache import Cache
 from whois_parser import WhoisParser
 
 from app import dataclasses
+from app.cache.constants import ONE_HOUR
+from app.cache.decorator import cached
 
 
 def convert_hostname(hostname: str) -> str:
@@ -53,7 +54,7 @@ async def aio_from_whois_cmd(hostname: str, timeout: int) -> dataclasses.Whois:
 
 class Whois:
     @staticmethod
-    @cached(ttl=60 * 10, cache=Cache.MEMORY, serializer=PickleSerializer())
+    @cached(ttl=ONE_HOUR, cache=Cache.MEMORY)
     async def lookup(hostname: str) -> Optional[dataclasses.Whois]:
         """Perform Whois lookup
 

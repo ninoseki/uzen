@@ -1,16 +1,16 @@
 from typing import Optional
 
 import httpx
-from aiocache import Cache, cached
-from aiocache.serializers import PickleSerializer
+from aiocache import Cache
 
 from app import dataclasses
+from app.cache.decorator import cached
 from app.core import settings
 
 
 class IP2ASN:
     @staticmethod
-    @cached(ttl=60 * 10, cache=Cache.MEMORY, serializer=PickleSerializer())
+    @cached(ttl=60 * 10, cache=Cache.MEMORY)
     async def lookup(ip_address: str) -> Optional[dataclasses.IP2ASNResponse]:
         if settings.IP2ASN_WEB_SERVICE_URL == "":
             return None
