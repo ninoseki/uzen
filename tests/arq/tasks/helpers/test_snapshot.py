@@ -3,7 +3,7 @@ from typing import List
 import pytest
 
 from app import models
-from app.arq.tasks.classes.snapshot import UpdateProcessingTask
+from app.arq.tasks.helpers.snapshot import UpdateProcessingHelper
 
 
 @pytest.mark.asyncio
@@ -14,7 +14,7 @@ async def test_update_processing_task(snapshots: List[models.Snapshot]):
     snapshot = await models.Snapshot.get(id=id_)
     assert snapshot.processing
 
-    await UpdateProcessingTask.process(snapshot)
+    await UpdateProcessingHelper.process(snapshot)
 
     snapshot = await models.Snapshot.get(id=id_)
     assert not snapshot.processing

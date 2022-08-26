@@ -9,12 +9,12 @@ from app.models.script import Script
 from app.models.snapshot import Snapshot
 
 
-class AbstractAsyncTask(ABC):
+class AbstractAsyncHelper(ABC):
     @abstractmethod
     async def _process(self) -> Any:
         raise NotImplementedError()
 
-    async def safe_process(self) -> Any:
+    async def process_with_error_handling(self) -> Any:
         try:
             return await self._process()
         except Exception as e:
@@ -22,21 +22,7 @@ class AbstractAsyncTask(ABC):
             logger.exception(e)
 
 
-class AbstractSyncTask(ABC):
-    @abstractmethod
-    def _process(self) -> Any:
-        raise NotImplementedError()
-
-    def safe_process(self) -> Any:
-        try:
-            return self._process()
-        except Exception as e:
-            logger.error(
-                f"Failed to process {self.__class__.__name__} task. Error: {e}"
-            )
-
-
-class EnrichmentTask(AbstractAsyncTask):
+class EnrichmentHelper(AbstractAsyncHelper):
     def __init__(self, snapshot: Snapshot, insert_to_db: bool = True):
         self.snapshot = snapshot
         self.insert_to_db = insert_to_db
@@ -46,7 +32,7 @@ class EnrichmentTask(AbstractAsyncTask):
     ) -> Union[List[Script], List[DnsRecord], List[Classification]]:
         raise NotImplementedError()
 
-    async def safe_process(
+    async def process_with_error_handling(
         self,
     ) -> Union[List[Script], List[DnsRecord], List[Classification]]:
         try:
@@ -63,4 +49,4 @@ class EnrichmentTask(AbstractAsyncTask):
         cls, snapshot: Snapshot, insert_to_db: bool = True
     ) -> Union[List[Script], List[DnsRecord], List[Classification]]:
         instance = cls(snapshot, insert_to_db)
-        return await instance.safe_process()
+        return await instance.process_with_error_handling()

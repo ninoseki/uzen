@@ -5,10 +5,10 @@ from arq.connections import ArqRedis
 
 from app import models, schemas
 from app.arq.constants import ENRICH_SNAPSHOT_TASK_NAME
-from app.arq.tasks.classes.enrichment import EnrichmentTasks
-from app.arq.tasks.classes.match import MatchingTask
-from app.arq.tasks.classes.screenshot import UploadScreenshotTask
-from app.arq.tasks.classes.snapshot import UpdateProcessingTask
+from app.arq.tasks.helpers.enrichment import EnrichmentHelpers
+from app.arq.tasks.helpers.match import MatchingHelper
+from app.arq.tasks.helpers.screenshot import UploadScreenshotHelper
+from app.arq.tasks.helpers.snapshot import UpdateProcessingHelper
 from app.core.exceptions import TakeSnapshotError
 from app.services.browser import Browser
 from app.utils.ulid import get_ulid_str
@@ -17,9 +17,9 @@ from app.utils.ulid import get_ulid_str
 async def enrich_snapshot_task(
     ctx_: dict, snapshot: models.Snapshot
 ) -> schemas.JobResultWrapper:
-    await EnrichmentTasks.process(snapshot)
-    await MatchingTask.process(snapshot)
-    await UpdateProcessingTask.process(snapshot)
+    await EnrichmentHelpers.process(snapshot)
+    await MatchingHelper.process(snapshot)
+    await UpdateProcessingHelper.process(snapshot)
     return schemas.JobResultWrapper(result={"snapshot_id": snapshot.id}, error=None)
 
 
@@ -48,7 +48,9 @@ async def take_snapshot_task(
 
     # upload screenshot
     if wrapper.screenshot is not None:
-        UploadScreenshotTask.process(uuid=snapshot.id, screenshot=wrapper.screenshot)
+        await UploadScreenshotHelper.process(
+            uuid=snapshot.id, screenshot=wrapper.screenshot
+        )
 
     redis = cast(Optional[ArqRedis], ctx.get("redis"))
     if redis is not None:
