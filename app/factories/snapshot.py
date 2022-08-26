@@ -36,7 +36,7 @@ def build_stylesheets(snapshot: "Snapshot") -> list[schemas.Stylesheet]:
         return []
 
 
-def build_dns_records(snapshot: "Snapshot") -> list[schemas.DnsRecord]:
+def build_dns_records(snapshot: "Snapshot") -> list[schemas.DNSRecord]:
     try:
         return [record.to_model() for record in snapshot.dns_records]
     except NoValuesFetched:

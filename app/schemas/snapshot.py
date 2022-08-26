@@ -11,7 +11,7 @@ from app.schemas.certificate import CertificateMetaData
 from app.schemas.classification import Classification
 from app.schemas.common import Source, Target
 from app.schemas.device import Device, get_devices
-from app.schemas.dns_record import DnsRecord
+from app.schemas.dns_record import DNSRecord
 from app.schemas.html import BaseHTML
 from app.schemas.mixin import TimestampMixin
 from app.schemas.script import Script
@@ -132,7 +132,7 @@ class Snapshot(BaseSnapshot, AbstractBaseModel, TimestampMixin):
 
     scripts: List[Script] = Field(...)
     stylesheets: List[Stylesheet] = Field(...)
-    dns_records: List[DnsRecord] = Field(...)
+    dns_records: List[DNSRecord] = Field(...)
     classifications: List[Classification] = Field(...)
     rules: List[Rule] = Field(...)
     tags: List[Tag] = Field(...)

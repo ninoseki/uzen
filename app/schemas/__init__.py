@@ -2,7 +2,7 @@ from app.schemas.api_key import APIKey, APIKeyCreate, APIKeyRevokeOrActivate
 from app.schemas.certificate import Certificate
 from app.schemas.classification import Classification
 from app.schemas.device import Device
-from app.schemas.dns_record import BaseDnsRecord, DnsRecord
+from app.schemas.dns_record import BaseDNSRecord, DNSRecord
 from app.schemas.domain import Domain
 from app.schemas.file import File
 from app.schemas.har import HAR
@@ -68,13 +68,13 @@ __all__ = [
     "APIKey",
     "APIKeyCreate",
     "APIKeyRevokeOrActivate",
-    "BaseDnsRecord",
+    "BaseDNSRecord",
     "BaseSnapshot",
     "Certificate",
     "Classification",
     "CountResponse",
     "Device",
-    "DnsRecord",
+    "DNSRecord",
     "Domain",
     "File",
     "HAR",

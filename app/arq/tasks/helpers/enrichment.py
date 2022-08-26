@@ -6,7 +6,7 @@ import aiometer
 from app import dataclasses, models
 from app.arq.tasks.helpers.abstract import AbstractAsyncHelper
 from app.arq.tasks.helpers.classification import ClassificationHelper
-from app.arq.tasks.helpers.dns_record import DnsRecordHelper
+from app.arq.tasks.helpers.dns_record import DNSRecordHelper
 
 
 class EnrichmentHelpers(AbstractAsyncHelper):
@@ -17,18 +17,18 @@ class EnrichmentHelpers(AbstractAsyncHelper):
     ):
         self.tasks = [
             partial(ClassificationHelper.process, snapshot, insert_to_db),
-            partial(DnsRecordHelper.process, snapshot, insert_to_db),
+            partial(DNSRecordHelper.process, snapshot, insert_to_db),
         ]
 
     async def _process(self) -> dataclasses.Enrichments:
         results = await aiometer.run_all(self.tasks)
 
         classifications: List[models.Classification] = []
-        dns_records: List[models.DnsRecord] = []
+        dns_records: List[models.DNSRecord] = []
         for result in results:
             if isinstance(result, models.Classification):
                 classifications.append(result)
-            elif isinstance(result, models.DnsRecord):
+            elif isinstance(result, models.DNSRecord):
                 dns_records.append(result)
 
         return dataclasses.Enrichments(

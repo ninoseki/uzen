@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from app.models.snapshot import Snapshot
 
 
-class DnsRecord(TimestampMixin, AbstractBaseModel):
+class DNSRecord(TimestampMixin, AbstractBaseModel):
     type = CharField(max_length=5)
     value = TextField()
 
@@ -24,8 +24,8 @@ class DnsRecord(TimestampMixin, AbstractBaseModel):
         on_delete=CASCADE,
     )
 
-    def to_model(self) -> schemas.DnsRecord:
-        return schemas.DnsRecord.from_orm(self)
+    def to_model(self) -> schemas.DNSRecord:
+        return schemas.DNSRecord.from_orm(self)
 
     class Meta:
         table = "dns_records"

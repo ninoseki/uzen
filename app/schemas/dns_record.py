@@ -4,7 +4,7 @@ from app.schemas.base import AbstractBaseModel, APIModel
 from app.schemas.mixin import TimestampMixin
 
 
-class BaseDnsRecord(APIModel):
+class BaseDNSRecord(APIModel):
     """Base model for DNS record"""
 
     type: str = Field(
@@ -18,5 +18,5 @@ class BaseDnsRecord(APIModel):
         orm_mode = True
 
 
-class DnsRecord(BaseDnsRecord, AbstractBaseModel, TimestampMixin):
+class DNSRecord(BaseDNSRecord, AbstractBaseModel, TimestampMixin):
     """DNS record"""

@@ -199,11 +199,11 @@ def scripts(
 def dns_records(
     snapshots: List[models.Snapshot],
     event_loop: asyncio.AbstractEventLoop,
-) -> List[models.DnsRecord]:
+) -> List[models.DNSRecord]:
     snapshot_ids = [str(snapshot.id) for snapshot in snapshots]
-    records: List[models.DnsRecord] = []
+    records: List[models.DNSRecord] = []
     for id_ in snapshot_ids:
-        record = models.DnsRecord(
+        record = models.DNSRecord(
             snapshot_id=id_,
             value="1.1.1.1",
             type="A",

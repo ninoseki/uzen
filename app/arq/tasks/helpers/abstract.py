@@ -4,7 +4,7 @@ from typing import Any, List, Union
 from loguru import logger
 
 from app.models.classification import Classification
-from app.models.dns_record import DnsRecord
+from app.models.dns_record import DNSRecord
 from app.models.script import Script
 from app.models.snapshot import Snapshot
 
@@ -29,12 +29,12 @@ class EnrichmentHelper(AbstractAsyncHelper):
 
     async def _process(
         self,
-    ) -> Union[List[Script], List[DnsRecord], List[Classification]]:
+    ) -> Union[List[Script], List[DNSRecord], List[Classification]]:
         raise NotImplementedError()
 
     async def process_with_error_handling(
         self,
-    ) -> Union[List[Script], List[DnsRecord], List[Classification]]:
+    ) -> Union[List[Script], List[DNSRecord], List[Classification]]:
         try:
             return await self._process()
         except Exception as e:
@@ -47,6 +47,6 @@ class EnrichmentHelper(AbstractAsyncHelper):
     @classmethod
     async def process(
         cls, snapshot: Snapshot, insert_to_db: bool = True
-    ) -> Union[List[Script], List[DnsRecord], List[Classification]]:
+    ) -> Union[List[Script], List[DNSRecord], List[Classification]]:
         instance = cls(snapshot, insert_to_db)
         return await instance.process_with_error_handling()

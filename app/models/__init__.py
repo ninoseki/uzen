@@ -17,7 +17,7 @@ from app.models import (
 from app.models.api_keys import APIKey
 from app.models.certificate import Certificate
 from app.models.classification import Classification
-from app.models.dns_record import DnsRecord
+from app.models.dns_record import DNSRecord
 from app.models.file import File
 from app.models.har import HAR
 from app.models.html import HTML
@@ -37,7 +37,7 @@ __all__ = [
     "classification",
     "Classification",
     "dns_record",
-    "DnsRecord",
+    "DNSRecord",
     "file",
     "File",
     "har",

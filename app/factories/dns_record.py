@@ -20,7 +20,7 @@ async def resolve(
     raise_on_no_answer: bool = True,
     source_port: int = 0,
     lifetime: Optional[float] = None,
-) -> List[schemas.BaseDnsRecord]:
+) -> List[schemas.BaseDNSRecord]:
     try:
         answer = await resolver.resolve(
             hostname,
@@ -33,19 +33,19 @@ async def resolve(
             lifetime,
             True,
         )
-        return [schemas.BaseDnsRecord(type=rdtype, value=str(rr)) for rr in answer]
+        return [schemas.BaseDNSRecord(type=rdtype, value=str(rr)) for rr in answer]
     except DNSException:
         return []
 
 
-async def query(hostname: str) -> List[schemas.BaseDnsRecord]:
+async def query(hostname: str) -> List[schemas.BaseDNSRecord]:
     """Query DNS records
 
     Arguments:
         hostname {str} -- A hostname to query
 
     Returns:
-        List[schemas.dns_records.BaseDnsRecord] -- A list of DNS records
+        List[schemas.dns_records.BaseDNSRecord] -- A list of DNS records
     """
     resolver = Resolver()
     tasks = [partial(resolve, resolver, hostname, record_type) for record_type in TYPES]
@@ -53,13 +53,13 @@ async def query(hostname: str) -> List[schemas.BaseDnsRecord]:
     return sum(results, [])
 
 
-class DnsRecordFactory:
+class DNSRecordFactory:
     @staticmethod
     async def from_snapshot(
         snapshot: models.Snapshot,
-    ) -> List[models.DnsRecord]:
+    ) -> List[models.DNSRecord]:
         return [
-            models.DnsRecord(
+            models.DNSRecord(
                 type=record.type,
                 value=record.value,
                 # insert a dummy ID if a snapshot doesn't have ID
@@ -69,5 +69,5 @@ class DnsRecordFactory:
         ]
 
     @staticmethod
-    async def from_hostname(hostname: str) -> List[schemas.BaseDnsRecord]:
+    async def from_hostname(hostname: str) -> List[schemas.BaseDNSRecord]:
         return await query(hostname)

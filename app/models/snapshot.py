@@ -32,7 +32,7 @@ if TYPE_CHECKING:
         APIKey,
         Certificate,
         Classification,
-        DnsRecord,
+        DNSRecord,
         Rule,
         Whois,
     )
@@ -83,7 +83,7 @@ class Snapshot(TimestampMixin, AbstractBaseModel):
 
     scripts: ReverseRelation[Script]
     stylesheets: ReverseRelation[Stylesheet]
-    dns_records: ReverseRelation[DnsRecord]
+    dns_records: ReverseRelation[DNSRecord]
     classifications: ReverseRelation[Classification]
 
     rules: ManyToManyRelation[Rule] = ManyToManyField(
