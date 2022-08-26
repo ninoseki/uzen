@@ -1,3 +1,4 @@
+import json
 from typing import Optional
 
 import httpx
@@ -25,7 +26,11 @@ class IP2ASN:
             except httpx.HTTPError:
                 return None
 
-            data = res.json()
+            try:
+                data = res.json()
+            except json.JSONDecodeError:
+                # the API returns non-JSON response when an invalid IP address is given
+                return None
 
             asn = "AS" + str(data.get("as_number", ""))
             country_code = data.get("as_country_code", "")
