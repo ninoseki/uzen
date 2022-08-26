@@ -18,13 +18,13 @@ router = APIRouter()
 
 @router.get(
     "/count",
-    response_model=schemas.CountResponse,
+    response_model=schemas.Count,
     summary="Count snapshots",
     status_code=200,
 )
-async def count() -> schemas.CountResponse:
+async def count() -> schemas.Count:
     count_ = await models.Snapshot.count()
-    return schemas.CountResponse(count=count_)
+    return schemas.Count(count=count_)
 
 
 @router.get(

@@ -53,7 +53,7 @@ from app.schemas.snapshot import (
 )
 from app.schemas.status import Status
 from app.schemas.stylesheet import Stylesheet
-from app.schemas.utils import CountResponse
+from app.schemas.utils import Count
 from app.schemas.whois import Whois
 from app.schemas.yara import (
     YaraMatch,
@@ -72,7 +72,7 @@ __all__ = [
     "BaseSnapshot",
     "Certificate",
     "Classification",
-    "CountResponse",
+    "Count",
     "Device",
     "DNSRecord",
     "Domain",
