@@ -3,7 +3,7 @@ from typing import List
 import pytest
 
 from app import models
-from app.arq.tasks.classes.match import MatchingTask
+from app.arq.tasks.helpers.match import MatchingHelper
 
 
 @pytest.mark.asyncio
@@ -21,7 +21,7 @@ async def test_matching_task(snapshots: List[models.Snapshot]):
 
     assert await models.Match.all().count() == 0
 
-    await MatchingTask.process(snapshot)
+    await MatchingHelper.process(snapshot)
 
     assert await models.Match.all().count() == 1
 
@@ -41,6 +41,6 @@ async def test_matching_task_with_zero_matches(snapshots: List[models.Snapshot])
 
     assert await models.Match.all().count() == 0
 
-    await MatchingTask.process(snapshot)
+    await MatchingHelper.process(snapshot)
 
     assert await models.Match.all().count() == 0

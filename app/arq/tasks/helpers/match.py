@@ -3,11 +3,11 @@ from typing import List
 from loguru import logger
 
 from app import models, schemas
-from app.arq.tasks.classes.abstract import AbstractAsyncTask
+from app.arq.tasks.helpers.abstract import AbstractAsyncHelper
 from app.services.scanners import RuleScanner
 
 
-class MatchingTask(AbstractAsyncTask):
+class MatchingHelper(AbstractAsyncHelper):
     def __init__(self, snapshot: models.Snapshot):
         self.snapshot = snapshot
 
@@ -40,4 +40,4 @@ class MatchingTask(AbstractAsyncTask):
     @classmethod
     async def process(cls, snapshot: models.Snapshot) -> None:
         instance = cls(snapshot)
-        return await instance.safe_process()
+        return await instance.process_with_error_handling()

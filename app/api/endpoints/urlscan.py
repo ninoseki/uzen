@@ -5,8 +5,8 @@ from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 
 from app import models, schemas
 from app.api.dependencies.verification import verify_api_key
-from app.arq.tasks.classes.match import MatchingTask
-from app.arq.tasks.snapshot import UpdateProcessingTask
+from app.arq.tasks.helpers.match import MatchingHelper
+from app.arq.tasks.snapshot import UpdateProcessingHelper
 from app.services.urlscan import URLScan
 
 router = APIRouter()
@@ -28,8 +28,8 @@ async def import_from_urlscan(
 
     snapshot = await models.Snapshot.save_snapshot(result)
 
-    background_tasks.add_task(MatchingTask.process, snapshot)
-    background_tasks.add_task(UpdateProcessingTask.process, snapshot)
+    background_tasks.add_task(MatchingHelper.process, snapshot)
+    background_tasks.add_task(UpdateProcessingHelper.process, snapshot)
 
     snapshot = await models.Snapshot.get_by_id(snapshot.id)
     return snapshot.to_model()

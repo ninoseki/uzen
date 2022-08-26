@@ -4,20 +4,20 @@ from typing import List, cast
 import aiometer
 
 from app import dataclasses, models
-from app.arq.tasks.classes.abstract import AbstractAsyncTask
-from app.arq.tasks.classes.classification import ClassificationTask
-from app.arq.tasks.classes.dns_record import DnsRecordTask
+from app.arq.tasks.helpers.abstract import AbstractAsyncHelper
+from app.arq.tasks.helpers.classification import ClassificationHelper
+from app.arq.tasks.helpers.dns_record import DnsRecordHelper
 
 
-class EnrichmentTasks(AbstractAsyncTask):
+class EnrichmentHelpers(AbstractAsyncHelper):
     def __init__(
         self,
         snapshot: models.Snapshot,
         insert_to_db: bool = True,
     ):
         self.tasks = [
-            partial(ClassificationTask.process, snapshot, insert_to_db),
-            partial(DnsRecordTask.process, snapshot, insert_to_db),
+            partial(ClassificationHelper.process, snapshot, insert_to_db),
+            partial(DnsRecordHelper.process, snapshot, insert_to_db),
         ]
 
     async def _process(self) -> dataclasses.Enrichments:
@@ -41,5 +41,5 @@ class EnrichmentTasks(AbstractAsyncTask):
         cls, snapshot: models.Snapshot, insert_to_db: bool = True
     ) -> dataclasses.Enrichments:
         instance = cls(snapshot, insert_to_db)
-        results = await instance.safe_process()
+        results = await instance.process_with_error_handling()
         return cast(dataclasses.Enrichments, results)
