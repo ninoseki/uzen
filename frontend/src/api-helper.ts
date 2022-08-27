@@ -226,12 +226,6 @@ export function generateYaraScanTask(): Task<
   );
 }
 
-export function generateImportFromUrlscanTask(): Task<Snapshot, [string]> {
-  return useAsyncTask<Snapshot, [string]>(async (_signal, uuid) => {
-    return await API.importFromUrlscan(uuid);
-  });
-}
-
 export function generateGetStatusTask(): Task<Status, []> {
   return useAsyncTask<Status, []>(async () => {
     return await API.getStatus();
