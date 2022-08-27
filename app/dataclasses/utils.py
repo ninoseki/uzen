@@ -24,7 +24,7 @@ class Enrichments:
     """Classifications and DNS records"""
 
     classifications: List["models.Classification"]
-    dns_records: List["models.DnsRecord"]
+    dns_records: List["models.DNSRecord"]
 
 
 @dataclass

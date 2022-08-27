@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 
 
-class CountResponse(BaseModel):
+class Count(BaseModel):
     """Count"""
 
     count: int = Field(
