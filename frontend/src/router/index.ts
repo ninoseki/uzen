@@ -65,15 +65,6 @@ const routes: Array<RouteRecordRaw> = [
     },
   },
   {
-    path: "/import",
-    name: "Import",
-    component: () =>
-      import(/* webpackChunkName: "import" */ "@/views/Import.vue"),
-    meta: {
-      title: "Import - Uzen",
-    },
-  },
-  {
     path: "/rules",
     name: "Rules",
     component: () =>

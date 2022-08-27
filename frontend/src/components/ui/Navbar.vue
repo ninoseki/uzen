@@ -31,9 +31,6 @@
         <router-link class="navbar-item" :to="{ path: '/similarity' }"
           >Similarity</router-link
         >
-        <router-link class="navbar-item" :to="{ path: '/import' }"
-          >Import</router-link
-        >
         <router-link class="navbar-item" :to="{ path: '/bulk' }"
           >Bulk submission</router-link
         >

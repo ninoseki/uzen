@@ -16,7 +16,6 @@ from app.api.endpoints import (
     similarity,
     snapshots,
     status,
-    urlscan,
     whois,
     yara,
 )
@@ -42,6 +41,5 @@ api_router.include_router(
 api_router.include_router(similarity.router, prefix="/similarity", tags=["Similarity"])
 api_router.include_router(snapshots.router, prefix="/snapshots", tags=["Snapshots"])
 api_router.include_router(status.router, prefix="/status", tags=["Status"])
-api_router.include_router(urlscan.router, prefix="/import", tags=["Import"])
 api_router.include_router(whois.router, prefix="/whoises", tags=["Whois"])
 api_router.include_router(yara.router, prefix="/yara", tags=["YARA"])
