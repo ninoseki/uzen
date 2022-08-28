@@ -15,8 +15,7 @@ async def get_arq_redis_with_context() -> AsyncGenerator[ArqRedis, None]:
         yield redis
     finally:
         if redis is not None:
-            redis.close()
-            await redis.wait_closed()
+            await redis.close()
 
 
 async def get_arq_redis():

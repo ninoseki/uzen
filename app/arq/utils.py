@@ -23,12 +23,12 @@ async def is_finished_job(arq_redis: ArqRedis, id: str) -> bool:
 
 
 async def get_job_definition(arq_redis: ArqRedis, id: str) -> JobDef:
-    return await arq_redis._get_job_def(id, 0)
+    return await arq_redis._get_job_def(id.encode(), 0)
 
 
 async def get_result(arq_redis: ArqRedis, id: str) -> JobResult:
     key = result_key_prefix + id
-    return await arq_redis._get_job_result(key)
+    return await arq_redis._get_job_result(key.encode())
 
 
 async def get_job_definition_and_result(
@@ -56,7 +56,7 @@ async def get_job_definition_and_result(
             if result.error is not None:
                 raise JobExecutionError(result.error)
         except AttributeError:
-            # then someting went wrong with the job...
+            # something went wrong with the job...
             # e.g. result=AttributeError("'dict' object has no attribute 'asn'")
             raise JobExecutionError(str(result))
 
