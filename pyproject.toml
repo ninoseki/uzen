@@ -65,7 +65,7 @@ pytest-timeout = "^2.1.0"
 pyupgrade = "^2.37.3"
 requests = "^2.28.1"
 respx = "^0.19.2"
-vcrpy = "4.2.0"
+vcrpy = "4.4.0"
 
 [tool.taskipy.tasks]
 app = "uvicorn app:app --reload"
