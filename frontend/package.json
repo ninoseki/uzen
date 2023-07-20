@@ -49,7 +49,7 @@
     "@vue/cli-plugin-unit-jest": "~5.0.8",
     "@vue/cli-service": "~5.0.8",
     "@vue/eslint-config-typescript": "^9.1.0",
-    "@vue/test-utils": "2.0.2",
+    "@vue/test-utils": "2.4.1",
     "@vue/vue3-jest": "27.0.0-alpha.4",
     "babel-jest": "^27.5.1",
     "eslint": "^7.32.0",
